@@ -10,7 +10,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.Matrix4f;
-import util.HudTransforms;
+import com.github.burgerguy.hudtweaks.util.HudTransforms;
 
 @Mixin(InGameHud.class)
 public class InGameHudMixin {

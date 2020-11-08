@@ -1,7 +1,7 @@
 {
   "required": true,
   "minVersion": "0.8",
-  "package": "com.github.burgerdude.hudtweaks.mixin",
+  "package": "com.github.burgerguy.hudtweaks.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
   ],
