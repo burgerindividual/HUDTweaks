@@ -175,18 +175,34 @@ public abstract class InGameHudMixin extends DrawableHelper {
 	}
 	
 	@Unique
-	private int storedX;
+	private static final int STATUS_EFFECT_OFFSET = 25;
 	@Unique
-	private int storedY;
+	private int preX;
+	@Unique
+	private int preY;
+	@Unique
+	private int postX;
+	@Unique
+	private int postY;
+	
+	@Inject(method = "renderStatusEffectOverlay",
+			at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/effect/StatusEffect;isBeneficial()Z"),
+			locals = LocalCapture.CAPTURE_FAILHARD)
+	protected void setupPreCalcVars(MatrixStack matrixStack, CallbackInfo callbackInfo,
+			Collection<?> u1, int u2, int u3, StatusEffectSpriteManager u4, List<?> u5, Iterator<?> u6, StatusEffectInstance u7, StatusEffect u8, // unused vars
+			int x, int y) {
+		this.preX = x;
+		this.preY = y;
+	}
 	
 	@Inject(method = "renderStatusEffectOverlay",
 			at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/effect/StatusEffectInstance;isAmbient()Z"),
 			locals = LocalCapture.CAPTURE_FAILHARD)
-	protected void setupStoredVars(MatrixStack matrixStack, CallbackInfo callbackInfo,
+	protected void setupPostCalcVars(MatrixStack matrixStack, CallbackInfo callbackInfo,
 			Collection<?> u1, int u2, int u3, StatusEffectSpriteManager u4, List<?> u5, Iterator<?> u6, StatusEffectInstance u7, StatusEffect u8, // unused vars
 			int x, int y) {
-		this.storedX = x;
-		this.storedY = y;
+		this.postX = x;
+		this.postY = y;
 	}
 	
 	@ModifyVariable(method = "renderStatusEffectOverlay",
@@ -194,7 +210,7 @@ public abstract class InGameHudMixin extends DrawableHelper {
 					at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/effect/StatusEffectInstance;isAmbient()Z"))
 	protected int modifyStatusEffectX(int x, MatrixStack maxtixStack) {
 		if (HudConfig.statusEffectVertical) {
-			return scaledWidth - 25 + (client.isDemo() ? 16 : 1) - storedY;
+			return scaledWidth - STATUS_EFFECT_OFFSET + preY - postY;
 		} else {
 			return x;
 		}
@@ -205,7 +221,7 @@ public abstract class InGameHudMixin extends DrawableHelper {
 					at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/effect/StatusEffectInstance;isAmbient()Z"))
 	protected int modifyStatusEffectY(int y, MatrixStack maxtixStack) {
 		if (HudConfig.statusEffectVertical) {
-			return (client.isDemo() ? 16 : 1) + scaledWidth - storedX - 25;
+			return preY + scaledWidth - postX - STATUS_EFFECT_OFFSET;
 		} else {
 			return y;
 		}

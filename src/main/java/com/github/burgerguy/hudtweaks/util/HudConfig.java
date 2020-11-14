@@ -15,6 +15,6 @@ public enum HudConfig {
 	public static boolean statusEffectVertical = false;
 	
 	static {
-		//statusEffectVertical = true;
+		statusEffectVertical = true;
 	}
 }
