@@ -1,5 +1,7 @@
 package com.github.burgerguy.hudtweaks.util;
 
+import net.minecraft.util.math.Matrix4f;
+
 public enum HudConfig {
 	;
 	
@@ -15,6 +17,7 @@ public enum HudConfig {
 	public static boolean statusEffectVertical = false;
 	
 	static {
+		hotbarTransform.set(Matrix4f.translate(100, -400, 0));
 		statusEffectVertical = true;
 	}
 }

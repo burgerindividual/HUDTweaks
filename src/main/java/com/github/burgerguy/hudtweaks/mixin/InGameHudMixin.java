@@ -43,6 +43,8 @@ public abstract class InGameHudMixin extends DrawableHelper {
 	
 	@Inject(method = "renderHotbar", at = @At(value = "HEAD"))
 	protected void renderHotbarHead(float f, MatrixStack matrixStack, CallbackInfo callbackInfo) {
+		//RenderSystem.scalef(10F, 10F, 10F);
+		RenderSystem.rotatef(60F, 0.0F, 0.0F, 1.0F);
 		if (HudConfig.hotbarTransform.isSet()) {
 			tempMatrix = matrixStack.peek().getModel();
 			tempMatrix.multiply(HudConfig.hotbarTransform.get());
@@ -51,6 +53,8 @@ public abstract class InGameHudMixin extends DrawableHelper {
 	
 	@Inject(method = "renderHotbar", at = @At(value = "RETURN"))
 	protected void renderHotbarReturn(float f, MatrixStack matrixStack, CallbackInfo callbackInfo) {
+		//RenderSystem.scalef(0.1F, 0.1F, 0.1F);
+		RenderSystem.rotatef(75F, 0.0F, 0.0F, -1.0F);
 		if (HudConfig.hotbarTransform.isSet()) tempMatrix.multiply(HudConfig.hotbarTransform.getInverse());
 	}
 	
