@@ -4,3 +4,4 @@ accessible method net/minecraft/client/gui/hud/InGameHud renderHotbar (FLnet/min
 accessible method net/minecraft/client/gui/hud/InGameHud renderHotbarItem (IIFLnet/minecraft/entity/player/PlayerEntity;Lnet/minecraft/client/util/math/MatrixStack;)V
 accessible method net/minecraft/client/gui/hud/InGameHud renderStatusBars (Lnet/minecraft/client/util/math/MatrixStack;)V
 accessible method net/minecraft/client/gui/hud/InGameHud renderMountHealth (Lnet/minecraft/client/util/math/MatrixStack;)V
+accessible method net/minecraft/client/gui/hud/InGameHud renderStatusEffectOverlay (Lnet/minecraft/client/util/math/MatrixStack;)V
