@@ -3,8 +3,8 @@
   "minVersion": "0.8",
   "package": "com.github.burgerguy.hudtweaks.mixin",
   "compatibilityLevel": "JAVA_8",
-  "mixins": [
-  ],
+  "plugin": "com.github.burgerguy.hudtweaks.mixin.HudTweaksMixinPlugin",
+  "mixins": [],
   "client": [
     "InGameHudMixin"
   ],

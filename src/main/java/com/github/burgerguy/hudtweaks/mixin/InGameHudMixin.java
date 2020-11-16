@@ -14,7 +14,10 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
-import com.github.burgerguy.hudtweaks.util.HudConfig;
+import com.github.burgerguy.hudtweaks.gui.HudContainer;
+import com.github.burgerguy.hudtweaks.gui.HudElement;
+import com.github.burgerguy.hudtweaks.gui.HudPosHelper.Anchor;
+import com.github.burgerguy.hudtweaks.util.gui.MatrixCache;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.MinecraftClient;
@@ -34,213 +37,235 @@ public abstract class InGameHudMixin extends DrawableHelper {
 	
 	@Shadow
 	private int scaledWidth;
-	
 	@Shadow
 	private int scaledHeight;
 	
 	@Unique
-	private Matrix4f tempMatrix;
+	private int lastWidth;
+	@Unique
+	private int lastHeight;
+	
+	@Unique
+	private boolean multipliedMatrix;
+	
+	@Inject(method = "render", at = @At(value = "HEAD"))
+	private void tryUpdateMatricies(MatrixStack matrixStack, float tickDelta, CallbackInfo callbackInfo) {
+		if (scaledWidth != lastWidth || scaledHeight != lastHeight) {
+			lastWidth = scaledWidth;
+			lastHeight = scaledHeight;
+			MatrixCache.calculateAllMatricies(scaledWidth, scaledHeight);
+		}
+		
+		for (HudElement element : HudContainer.getElements()) {
+			if (element.requiresUpdate()) {
+				MatrixCache.calculateMatrix(element, scaledWidth, scaledHeight);
+			}
+		}
+	}
 	
 	@Inject(method = "renderHotbar", at = @At(value = "HEAD"))
-	protected void renderHotbarHead(float f, MatrixStack matrixStack, CallbackInfo callbackInfo) {
-		//RenderSystem.scalef(10F, 10F, 10F);
-		RenderSystem.rotatef(60F, 0.0F, 0.0F, 1.0F);
-		if (HudConfig.hotbarTransform.isSet()) {
-			tempMatrix = matrixStack.peek().getModel();
-			tempMatrix.multiply(HudConfig.hotbarTransform.get());
+	private void renderHotbarHead(float tickDelta, MatrixStack matrixStack, CallbackInfo callbackInfo) {
+		Matrix4f hotbarMatrix = MatrixCache.getMatrix("hotbar");
+		if (hotbarMatrix != null) {
+			multipliedMatrix = true;
+			RenderSystem.pushMatrix();
+			RenderSystem.multMatrix(hotbarMatrix);
 		}
+		
+//		if (HudTweaksOptions.hotbarVertical) {
+//			RenderSystem.pushMatrix();
+//			RenderSystem.rotatef(90.0F, 0.0F, 0.0F, 1.0F);
+//			RenderSystem.translatef(-200.0F, -scaledHeight, 0.0F);
+//		}
 	}
 	
 	@Inject(method = "renderHotbar", at = @At(value = "RETURN"))
-	protected void renderHotbarReturn(float f, MatrixStack matrixStack, CallbackInfo callbackInfo) {
-		//RenderSystem.scalef(0.1F, 0.1F, 0.1F);
-		RenderSystem.rotatef(75F, 0.0F, 0.0F, -1.0F);
-		if (HudConfig.hotbarTransform.isSet()) tempMatrix.multiply(HudConfig.hotbarTransform.getInverse());
+	private void renderHotbarReturn(float tickDelta, MatrixStack matrixStack, CallbackInfo callbackInfo) {
+//		if (HudTweaksOptions.hotbarVertical) RenderSystem.popMatrix();
+		if (multipliedMatrix) RenderSystem.popMatrix();
 	}
 	
-	@Inject(method = "renderHotbarItem", at = @At(value = "HEAD"))
-	private void renderHotbarItemHead(CallbackInfo callbackInfo) {
-		if (HudConfig.hotbarTransform.isSet()) RenderSystem.multMatrix(HudConfig.hotbarTransform.get());
-	}
+//	@Inject(method = "renderHotbarItem", at = @At(value = "HEAD"))
+//	private void renderHotbarItemHead(CallbackInfo callbackInfo) {
+//	}
+//	
+//	@Inject(method = "renderHotbarItem", at = @At(value = "RETURN"))
+//	private void renderHotbarItemReturn(CallbackInfo callbackInfo) {
+//	}
 	
-	@Inject(method = "renderHotbarItem", at = @At(value = "RETURN"))
-	private void renderHotbarItemReturn(CallbackInfo callbackInfo) {
-		if (HudConfig.hotbarTransform.isSet()) RenderSystem.multMatrix(HudConfig.hotbarTransform.getInverse());
-	}
-	
-	@Inject(method = "renderStatusBars",
-			at = @At(value = "INVOKE_STRING", target = "Lnet/minecraft/util/profiler/Profiler;push(Ljava/lang/String;)V",
-			args = "ldc=armor"))
-	private void renderArmor(MatrixStack matrixStack, CallbackInfo callbackInfo) {
-		if (HudConfig.armorTransform.isSet()) {
-			tempMatrix = matrixStack.peek().getModel();
-			tempMatrix.multiply(HudConfig.armorTransform.get());
-		}
-	}
-	
-	@Inject(method = "renderStatusBars",
-			at = @At(value = "INVOKE_STRING", target = "Lnet/minecraft/util/profiler/Profiler;swap(Ljava/lang/String;)V",
-			args = "ldc=health"))
-	private void renderHealth(MatrixStack matrixStack, CallbackInfo callbackInfo) {
-		if (HudConfig.armorTransform.isSet()) tempMatrix.multiply(HudConfig.armorTransform.getInverse());
-		
-		if (HudConfig.healthTransform.isSet()) {
-			tempMatrix = matrixStack.peek().getModel();
-			tempMatrix.multiply(HudConfig.healthTransform.get());
-		}
-	}
-	
-	@Inject(method = "renderStatusBars",at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;getRiddenEntity()Lnet/minecraft/entity/LivingEntity;"))
-	private void renderFood(MatrixStack matrixStack, CallbackInfo callbackInfo) {
-		if (HudConfig.healthTransform.isSet()) tempMatrix.multiply(HudConfig.healthTransform.getInverse());
-		
-		if (HudConfig.foodTransform.isSet()) {
-			tempMatrix = matrixStack.peek().getModel();
-			tempMatrix.multiply(HudConfig.foodTransform.get());
-		}
-	}
-	
-	@Inject(method = "renderStatusBars",
-			at = @At(value = "INVOKE_STRING", target = "Lnet/minecraft/util/profiler/Profiler;swap(Ljava/lang/String;)V",
-			args = "ldc=air"))
-	private void renderAir(MatrixStack matrixStack, CallbackInfo callbackInfo) {
-		if (HudConfig.foodTransform.isSet()) tempMatrix.multiply(HudConfig.foodTransform.getInverse());
-		
-		if (HudConfig.airTransform.isSet()) {
-			tempMatrix = matrixStack.peek().getModel();
-			tempMatrix.multiply(HudConfig.airTransform.get());
-		}
-	}
-	
-	@Inject(method = "renderStatusBars", at = @At(value = "RETURN"))
-	private void renderStatusBarsReturn(MatrixStack matrixStack, CallbackInfo callbackInfo) {
-		if (HudConfig.airTransform.isSet()) tempMatrix.multiply(HudConfig.airTransform.getInverse());
-	}
-	
-	@Inject(method = "renderMountHealth", at = @At(value = "HEAD"))
-	private void renderMountHealthHead(MatrixStack matrixStack, CallbackInfo callbackInfo) {
-		if (HudConfig.mountTransform.isSet()) {
-			tempMatrix = matrixStack.peek().getModel();
-			tempMatrix.multiply(HudConfig.mountTransform.get());
-		} else if (HudConfig.foodTransform.isSet()) {
-			tempMatrix = matrixStack.peek().getModel();
-			tempMatrix.multiply(HudConfig.foodTransform.get());
-		}
-	}
-	
-	@Inject(method = "renderMountHealth", at = @At(value = "RETURN"))
-	private void renderMountHealthReturn(MatrixStack matrixStack, CallbackInfo callbackInfo) {
-		if (HudConfig.mountTransform.isSet()) {
-			tempMatrix.multiply(HudConfig.mountTransform.getInverse());
-		} else if (HudConfig.foodTransform.isSet()) {
-			tempMatrix.multiply(HudConfig.foodTransform.getInverse());
-		}
-	}
-	
-	@Inject(method = "renderExperienceBar", at = @At(value = "HEAD"))
-	public void renderExperienceBarHead(MatrixStack matrixStack, int x, CallbackInfo callbackInfo) {
-		if (HudConfig.expBarTransform.isSet()) {
-			tempMatrix = matrixStack.peek().getModel();
-			tempMatrix.multiply(HudConfig.expBarTransform.get());
-		}
-	}
-	
-	@Inject(method = "renderExperienceBar", at = @At(value = "RETURN"))
-	public void renderExperienceBarReturn(MatrixStack matrixStack, int x, CallbackInfo callbackInfo) {
-		if (HudConfig.expBarTransform.isSet()) tempMatrix.multiply(HudConfig.expBarTransform.getInverse());
-	}
-	
-	@Inject(method = "renderMountJumpBar", at = @At(value = "HEAD"))
-	public void renderMountJumpBarHead(MatrixStack matrixStack, int x, CallbackInfo callbackInfo) {
-		if (HudConfig.expBarTransform.isSet()) {
-			tempMatrix = matrixStack.peek().getModel();
-			tempMatrix.multiply(HudConfig.expBarTransform.get());
-		} else if (HudConfig.jumpBarTransform.isSet()) {
-			tempMatrix = matrixStack.peek().getModel();
-			tempMatrix.multiply(HudConfig.jumpBarTransform.get());
-		}
-	}
-	
-	@Inject(method = "renderMountJumpBar", at = @At(value = "RETURN"))
-	public void renderMountJumpBarReturn(MatrixStack matrixStack, int x, CallbackInfo callbackInfo) {
-		if (HudConfig.expBarTransform.isSet()) {
-			tempMatrix.multiply(HudConfig.expBarTransform.getInverse());
-		} else if (HudConfig.jumpBarTransform.isSet()) {
-			tempMatrix.multiply(HudConfig.jumpBarTransform.getInverse());
-		}
-	}
-	
-	@Inject(method = "renderStatusEffectOverlay", at = @At(value = "HEAD"))
-	protected void renderStatusEffectOverlayHead(MatrixStack matrixStack, CallbackInfo callbackInfo) {
-		if (HudConfig.statusEffectTransform.isSet()) {
-			tempMatrix = matrixStack.peek().getModel();
-			tempMatrix.multiply(HudConfig.statusEffectTransform.get());
-		}
-	}
-	
-	@Unique
-	private static final int STATUS_EFFECT_OFFSET = 25;
-	@Unique
-	private int preX;
-	@Unique
-	private int preY;
-	@Unique
-	private int postX;
-	@Unique
-	private int postY;
-	
-	@Inject(method = "renderStatusEffectOverlay",
-			at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/effect/StatusEffect;isBeneficial()Z"),
-			locals = LocalCapture.CAPTURE_FAILHARD)
-	protected void setupPreCalcVars(MatrixStack matrixStack, CallbackInfo callbackInfo,
-			Collection<?> u1, int u2, int u3, StatusEffectSpriteManager u4, List<?> u5, Iterator<?> u6, StatusEffectInstance u7, StatusEffect u8, // unused vars
-			int x, int y) {
-		this.preX = x;
-		this.preY = y;
-	}
-	
-	@Inject(method = "renderStatusEffectOverlay",
-			at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/effect/StatusEffectInstance;isAmbient()Z"),
-			locals = LocalCapture.CAPTURE_FAILHARD)
-	protected void setupPostCalcVars(MatrixStack matrixStack, CallbackInfo callbackInfo,
-			Collection<?> u1, int u2, int u3, StatusEffectSpriteManager u4, List<?> u5, Iterator<?> u6, StatusEffectInstance u7, StatusEffect u8, // unused vars
-			int x, int y) {
-		this.postX = x;
-		this.postY = y;
-	}
-	
-	@ModifyVariable(method = "renderStatusEffectOverlay",
-					ordinal = 2,
-					at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/effect/StatusEffectInstance;isAmbient()Z"))
-	protected int modifyStatusEffectX(int x, MatrixStack maxtixStack) {
-		if (HudConfig.statusEffectVertical) {
-			return scaledWidth - STATUS_EFFECT_OFFSET + preY - postY;
-		} else {
-			return x;
-		}
-	}
-	
-	@ModifyVariable(method = "renderStatusEffectOverlay",
-					ordinal = 3,
-					at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/effect/StatusEffectInstance;isAmbient()Z"))
-	protected int modifyStatusEffectY(int y, MatrixStack maxtixStack) {
-		if (HudConfig.statusEffectVertical) {
-			return preY + scaledWidth - postX - STATUS_EFFECT_OFFSET;
-		} else {
-			return y;
-		}
-	}
-	
-	@Inject(method = "renderStatusEffectOverlay", at = @At(value = "RETURN"))
-	protected void renderStatusEffectOverlayReturn(MatrixStack matrixStack, CallbackInfo callbackInfo) {
-		if (HudConfig.statusEffectTransform.isSet()) tempMatrix.multiply(HudConfig.statusEffectTransform.getInverse());
-	}
+//	@Inject(method = "renderStatusBars",
+//			at = @At(value = "INVOKE_STRING", target = "Lnet/minecraft/util/profiler/Profiler;push(Ljava/lang/String;)V",
+//			args = "ldc=armor"))
+//	private void renderArmor(MatrixStack matrixStack, CallbackInfo callbackInfo) {
+//		if (MatrixCache.armorTransform != null) {
+//			matrixStack.push();
+//			matrixStack.peek().getModel().multiply(MatrixCache.armorTransform);
+//		}
+//	}
+//	
+//	@Inject(method = "renderStatusBars",
+//			at = @At(value = "INVOKE_STRING", target = "Lnet/minecraft/util/profiler/Profiler;swap(Ljava/lang/String;)V",
+//			args = "ldc=health"))
+//	private void renderHealth(MatrixStack matrixStack, CallbackInfo callbackInfo) {
+//		if (MatrixCache.armorTransform != null) tempMatrix.multiply(HudTweaksOptions.armorTransform.getInverse());
+//		
+//		if (MatrixCache.healthTransform != null) {
+//			tempMatrix = matrixStack.peek().getModel();
+//			tempMatrix.multiply(MatrixCache.healthTransform);
+//		}
+//	}
+//	
+//	@Inject(method = "renderStatusBars",at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;getRiddenEntity()Lnet/minecraft/entity/LivingEntity;"))
+//	private void renderFood(MatrixStack matrixStack, CallbackInfo callbackInfo) {
+//		if (MatrixCache.healthTransform != null) tempMatrix.multiply(HudTweaksOptions.healthTransform.getInverse());
+//		
+//		if (MatrixCache.foodTransform != null) {
+//			tempMatrix = matrixStack.peek().getModel();
+//			tempMatrix.multiply(MatrixCache.foodTransform);
+//		}
+//	}
+//	
+//	@Inject(method = "renderStatusBars",
+//			at = @At(value = "INVOKE_STRING", target = "Lnet/minecraft/util/profiler/Profiler;swap(Ljava/lang/String;)V",
+//			args = "ldc=air"))
+//	private void renderAir(MatrixStack matrixStack, CallbackInfo callbackInfo) {
+//		if (MatrixCache.foodTransform != null) tempMatrix.multiply(HudTweaksOptions.foodTransform.getInverse());
+//		
+//		if (MatrixCache.airTransform != null) {
+//			tempMatrix = matrixStack.peek().getModel();
+//			tempMatrix.multiply(MatrixCache.airTransform);
+//		}
+//	}
+//	
+//	@Inject(method = "renderStatusBars", at = @At(value = "RETURN"))
+//	private void renderStatusBarsReturn(MatrixStack matrixStack, CallbackInfo callbackInfo) {
+//		if (MatrixCache.airTransform != null) tempMatrix.multiply(HudTweaksOptions.airTransform.getInverse());
+//	}
+//	
+//	@Inject(method = "renderMountHealth", at = @At(value = "HEAD"))
+//	private void renderMountHealthHead(MatrixStack matrixStack, CallbackInfo callbackInfo) {
+//		if (MatrixCache.mountTransform != null) {
+//			tempMatrix = matrixStack.peek().getModel();
+//			tempMatrix.multiply(MatrixCache.mountTransform);
+//		} else if (MatrixCache.foodTransform != null) {
+//			tempMatrix = matrixStack.peek().getModel();
+//			tempMatrix.multiply(MatrixCache.foodTransform);
+//		}
+//	}
+//	
+//	@Inject(method = "renderMountHealth", at = @At(value = "RETURN"))
+//	private void renderMountHealthReturn(MatrixStack matrixStack, CallbackInfo callbackInfo) {
+//		if (MatrixCache.mountTransform != null) {
+//			tempMatrix.multiply(HudTweaksOptions.mountTransform.getInverse());
+//		} else if (MatrixCache.foodTransform != null) {
+//			tempMatrix.multiply(HudTweaksOptions.foodTransform.getInverse());
+//		}
+//	}
+//	
+//	@Inject(method = "renderExperienceBar", at = @At(value = "HEAD"))
+//	public void renderExperienceBarHead(MatrixStack matrixStack, int x, CallbackInfo callbackInfo) {
+//		if (MatrixCache.expBarTransform != null) {
+//			tempMatrix = matrixStack.peek().getModel();
+//			tempMatrix.multiply(MatrixCache.expBarTransform);
+//		}
+//	}
+//	
+//	@Inject(method = "renderExperienceBar", at = @At(value = "RETURN"))
+//	public void renderExperienceBarReturn(MatrixStack matrixStack, int x, CallbackInfo callbackInfo) {
+//		if (MatrixCache.expBarTransform != null) tempMatrix.multiply(HudTweaksOptions.expBarTransform.getInverse());
+//	}
+//	
+//	@Inject(method = "renderMountJumpBar", at = @At(value = "HEAD"))
+//	public void renderMountJumpBarHead(MatrixStack matrixStack, int x, CallbackInfo callbackInfo) {
+//		if (MatrixCache.expBarTransform != null) {
+//			tempMatrix = matrixStack.peek().getModel();
+//			tempMatrix.multiply(MatrixCache.expBarTransform);
+//		} else if (MatrixCache.jumpBarTransform != null) {
+//			tempMatrix = matrixStack.peek().getModel();
+//			tempMatrix.multiply(MatrixCache.jumpBarTransform);
+//		}
+//	}
+//	
+//	@Inject(method = "renderMountJumpBar", at = @At(value = "RETURN"))
+//	public void renderMountJumpBarReturn(MatrixStack matrixStack, int x, CallbackInfo callbackInfo) {
+//		if (MatrixCache.expBarTransform != null) {
+//			tempMatrix.multiply(HudTweaksOptions.expBarTransform.getInverse());
+//		} else if (MatrixCache.jumpBarTransform != null) {
+//			tempMatrix.multiply(HudTweaksOptions.jumpBarTransform.getInverse());
+//		}
+//	}
+//	
+//	@Inject(method = "renderStatusEffectOverlay", at = @At(value = "HEAD"))
+//	private void renderStatusEffectOverlayHead(MatrixStack matrixStack, CallbackInfo callbackInfo) {
+//		if (MatrixCache.statusEffectTransform != null) {
+//			tempMatrix = matrixStack.peek().getModel();
+//			tempMatrix.multiply(MatrixCache.statusEffectTransform);
+//		}
+//	}
+//	
+//	@Unique
+//	private static final int STATUS_EFFECT_OFFSET = 25;
+//	@Unique
+//	private int preX;
+//	@Unique
+//	private int preY;
+//	@Unique
+//	private int postX;
+//	@Unique
+//	private int postY;
+//	
+//	@Inject(method = "renderStatusEffectOverlay",
+//			at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/effect/StatusEffect;isBeneficial()Z"),
+//			locals = LocalCapture.CAPTURE_FAILHARD)
+//	private void setupPreCalcVars(MatrixStack matrixStack, CallbackInfo callbackInfo,
+//			Collection<?> u1, int u2, int u3, StatusEffectSpriteManager u4, List<?> u5, Iterator<?> u6, StatusEffectInstance u7, StatusEffect u8, // unused vars
+//			int x, int y) {
+//		this.preX = x;
+//		this.preY = y;
+//	}
+//	
+//	@Inject(method = "renderStatusEffectOverlay",
+//			at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/effect/StatusEffectInstance;isAmbient()Z"),
+//			locals = LocalCapture.CAPTURE_FAILHARD)
+//	private void setupPostCalcVars(MatrixStack matrixStack, CallbackInfo callbackInfo,
+//			Collection<?> u1, int u2, int u3, StatusEffectSpriteManager u4, List<?> u5, Iterator<?> u6, StatusEffectInstance u7, StatusEffect u8, // unused vars
+//			int x, int y) {
+//		this.postX = x;
+//		this.postY = y;
+//	}
+//	
+//	@ModifyVariable(method = "renderStatusEffectOverlay",
+//					ordinal = 2,
+//					at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/effect/StatusEffectInstance;isAmbient()Z"))
+//	private int modifyStatusEffectX(int x, MatrixStack maxtixStack) {
+//		if (HudTweaksOptions.statusEffectVertical) {
+//			return scaledWidth - STATUS_EFFECT_OFFSET + preY - postY;
+//		} else {
+//			return x;
+//		}
+//	}
+//	
+//	@ModifyVariable(method = "renderStatusEffectOverlay",
+//					ordinal = 3,
+//					at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/effect/StatusEffectInstance;isAmbient()Z"))
+//	private int modifyStatusEffectY(int y, MatrixStack maxtixStack) {
+//		if (HudTweaksOptions.statusEffectVertical) {
+//			return preY + scaledWidth - postX - STATUS_EFFECT_OFFSET;
+//		} else {
+//			return y;
+//		}
+//	}
+//	
+//	@Inject(method = "renderStatusEffectOverlay", at = @At(value = "RETURN"))
+//	private void renderStatusEffectOverlayReturn(MatrixStack matrixStack, CallbackInfo callbackInfo) {
+//		if (MatrixCache.statusEffectTransform != null) tempMatrix.multiply(HudTweaksOptions.statusEffectTransform.getInverse());
+//	}
 	
 //	@Overwrite
 //	public void renderStatusEffectOverlay(MatrixStack matrixStack) {
-//		if (HudConfig.statusEffectTransform.isSet()) {
+//		if (MatrixCache.statusEffectTransform != null) {
 //			tempMatrix = matrixStack.peek().getModel();
-//			tempMatrix.multiply(HudConfig.statusEffectTransform.get());
+//			tempMatrix.multiply(MatrixCache.statusEffectTransform);
 //		}
 //		
 //		Collection<StatusEffectInstance> collection = this.client.player.getStatusEffects();
@@ -263,7 +288,7 @@ public abstract class InGameHudMixin extends DrawableHelper {
 //						l += 15;
 //					}
 //					
-//					if (HudConfig.statusEffectVertical) {
+//					if (HudTweaksOptions.statusEffectVertical) {
 //						k -= 25;
 //						l -= 25;
 //						
@@ -309,7 +334,7 @@ public abstract class InGameHudMixin extends DrawableHelper {
 //			for (Runnable r : drawList) r.run();
 //		}
 //		
-//		if (HudConfig.statusEffectTransform.isSet()) tempMatrix.multiply(HudConfig.statusEffectTransform.getInverse());
+//		if (MatrixCache.statusEffectTransform != null) tempMatrix.multiply(HudTweaksOptions.statusEffectTransform.getInverse());
 //	}
 //	
 //	private Runnable statusEffectRunnableHelper(MatrixStack matrixStack, int k, int l, float alpha, Sprite sprite) {
