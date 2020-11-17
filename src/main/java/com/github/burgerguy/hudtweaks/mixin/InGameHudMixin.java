@@ -17,6 +17,7 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import com.github.burgerguy.hudtweaks.gui.HudContainer;
 import com.github.burgerguy.hudtweaks.gui.HudElement;
 import com.github.burgerguy.hudtweaks.gui.HudPosHelper.Anchor;
+import com.github.burgerguy.hudtweaks.gui.HudTweaksOptionsScreen;
 import com.github.burgerguy.hudtweaks.util.gui.MatrixCache;
 import com.mojang.blaze3d.systems.RenderSystem;
 
@@ -50,6 +51,8 @@ public abstract class InGameHudMixin extends DrawableHelper {
 	
 	@Inject(method = "render", at = @At(value = "HEAD"))
 	private void tryUpdateMatricies(MatrixStack matrixStack, float tickDelta, CallbackInfo callbackInfo) {
+		if (HudTweaksOptionsScreen.isOpen()) fillGradient(matrixStack, 0, 0, scaledWidth, scaledHeight, -1072689136, -804253680);
+		
 		if (scaledWidth != lastWidth || scaledHeight != lastHeight) {
 			lastWidth = scaledWidth;
 			lastHeight = scaledHeight;

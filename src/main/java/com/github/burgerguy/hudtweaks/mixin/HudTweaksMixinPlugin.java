@@ -6,6 +6,8 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.objectweb.asm.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
@@ -13,14 +15,19 @@ import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
 import net.fabricmc.loader.api.FabricLoader;
 
 public class HudTweaksMixinPlugin implements IMixinConfigPlugin {
+	
 	public static final Path configFile = FabricLoader.getInstance().getConfigDir().resolve("hudtweaks.conf");
+	
+	private final Logger logger = LogManager.getLogger("HUDTweaks");
 	
 	@Override
 	public void onLoad(String mixinPackage) {
-		try {
-			Files.createFile(configFile);
-		} catch (IOException e) {
-			e.printStackTrace();
+		if (!Files.exists(configFile)) {
+			try {
+				Files.createFile(configFile);
+			} catch (IOException e) {
+				logger.catching(e);
+			}
 		}
 	}
 

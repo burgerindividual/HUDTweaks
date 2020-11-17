@@ -10,12 +10,16 @@ public class HudElement {
 	private transient final String identifier;
 	private final HudPosHelper xPos;
 	private final HudPosHelper yPos;
+	private transient final int elementWidth;
+	private transient final int elementHeight;
 	private transient final HudCoordinatesSupplier defaultCoordsSupplier;
 	
 	public HudElement(String identifier, int elementWidth, int elementHeight, HudCoordinatesSupplier defaultCoordsSupplier) {
 		this.identifier = identifier;
 		this.xPos = new HudPosHelper(elementWidth);
 		this.yPos = new HudPosHelper(elementHeight);
+		this.elementWidth = elementWidth;
+		this.elementHeight = elementHeight;
 		this.defaultCoordsSupplier = defaultCoordsSupplier;
 	}
 	
@@ -29,6 +33,14 @@ public class HudElement {
 	
 	public HudPosHelper getYPosHelper() {
 		return yPos;
+	}
+	
+	public int getWidth() {
+		return elementWidth;
+	}
+
+	public int getHeight() {
+		return elementHeight;
 	}
 	
 	public boolean requiresUpdate() {

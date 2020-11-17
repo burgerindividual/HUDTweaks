@@ -17,7 +17,10 @@
   "license": "MIT",
   "icon": "assets/hudtweaks/icon.png",
 
-  "environment": "*",
+  "environment": "client",
+  "entrypoints": {
+    "modmenu": [ "com.github.burgerguy.hudtweaks.gui.ModMenuApiImpl" ]
+  },
   "mixins": [
     "hudtweaks.mixins.json"
   ],
