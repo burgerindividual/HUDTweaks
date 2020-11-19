@@ -12,7 +12,6 @@ import org.apache.logging.log4j.Level;
 
 import com.github.burgerguy.hudtweaks.gui.HudContainer;
 import com.github.burgerguy.hudtweaks.util.Util;
-import com.google.gson.JsonElement;
 
 import net.fabricmc.loader.api.FabricLoader;
 
@@ -28,8 +27,7 @@ public enum ConfigHelper {
 		if (Files.exists(configFile)) {
 			Util.LOGGER.log(Level.INFO, "Loading config file...");
 			try (BufferedReader reader = new BufferedReader(new FileReader(configFile.toFile()))) {
-				JsonElement json = Util.JSON_PARSER.parse(reader);
-				HudContainer.updateFromJson(json);
+				HudContainer.updateFromJson(Util.JSON_PARSER.parse(reader));
 			} catch (IOException e) {	// TODO: implement cases for different types of exceptions
 				Util.LOGGER.error("Config file invalid", e);
 			}
