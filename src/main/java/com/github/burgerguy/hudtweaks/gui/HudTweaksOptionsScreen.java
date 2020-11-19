@@ -1,5 +1,9 @@
 package com.github.burgerguy.hudtweaks.gui;
 
+import java.awt.Point;
+
+import com.github.burgerguy.hudtweaks.config.ConfigHelper;
+
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.math.MatrixStack;
@@ -26,8 +30,9 @@ public class HudTweaksOptionsScreen extends Screen {
 		super.renderBackground(matrixStack);
 		
 		for (HudElement element : HudContainer.getElements()) {
-			int x1 = element.getXPosHelper().calculateScreenPos(this.width);
-			int y1 = element.getYPosHelper().calculateScreenPos(this.height);
+			Point defaultCoords = element.calculateDefaultCoords(this.width, this.height);
+			int x1 = element.getXPosHelper().calculateScreenPos(this.width, defaultCoords.x);
+			int y1 = element.getYPosHelper().calculateScreenPos(this.height, defaultCoords.y);
 			int x2 = x1 + element.getWidth();
 			int y2 = y1 + element.getHeight();
 			DrawableHelper.fill(matrixStack, x1 - 1, y1 - 1, x2 + 1, y1,     OUTLINE_COLOR);
@@ -48,6 +53,7 @@ public class HudTweaksOptionsScreen extends Screen {
 	
 	@Override
 	public void onClose() {
+		ConfigHelper.saveConfig();
 		this.client.openScreen(this.prevScreen);
 		isOpen = false;
 	}

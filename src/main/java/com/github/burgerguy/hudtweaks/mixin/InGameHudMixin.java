@@ -51,7 +51,7 @@ public abstract class InGameHudMixin extends DrawableHelper {
 	
 	@Inject(method = "render", at = @At(value = "HEAD"))
 	private void tryUpdateMatricies(MatrixStack matrixStack, float tickDelta, CallbackInfo callbackInfo) {
-		if (HudTweaksOptionsScreen.isOpen()) fillGradient(matrixStack, 0, 0, scaledWidth, scaledHeight, -1072689136, -804253680);
+		if (HudTweaksOptionsScreen.isOpen()) super.fillGradient(matrixStack, 0, 0, scaledWidth, scaledHeight, -1072689136, -804253680);
 		
 		if (scaledWidth != lastWidth || scaledHeight != lastHeight) {
 			lastWidth = scaledWidth;
@@ -85,7 +85,10 @@ public abstract class InGameHudMixin extends DrawableHelper {
 	@Inject(method = "renderHotbar", at = @At(value = "RETURN"))
 	private void renderHotbarReturn(float tickDelta, MatrixStack matrixStack, CallbackInfo callbackInfo) {
 //		if (HudTweaksOptions.hotbarVertical) RenderSystem.popMatrix();
-		if (multipliedMatrix) RenderSystem.popMatrix();
+		if (multipliedMatrix) {
+			RenderSystem.popMatrix();
+			multipliedMatrix = false;
+		}
 	}
 	
 //	@Inject(method = "renderHotbarItem", at = @At(value = "HEAD"))
@@ -100,9 +103,11 @@ public abstract class InGameHudMixin extends DrawableHelper {
 //			at = @At(value = "INVOKE_STRING", target = "Lnet/minecraft/util/profiler/Profiler;push(Ljava/lang/String;)V",
 //			args = "ldc=armor"))
 //	private void renderArmor(MatrixStack matrixStack, CallbackInfo callbackInfo) {
-//		if (MatrixCache.armorTransform != null) {
+//		Matrix4f armorMatrix = MatrixCache.getMatrix("armor");
+//		if (armorMatrix != null) {
+//			multipliedMatrix = true;
 //			matrixStack.push();
-//			matrixStack.peek().getModel().multiply(MatrixCache.armorTransform);
+//			matrixStack.peek().getModel().multiply(armorMatrix);
 //		}
 //	}
 //	
@@ -110,21 +115,31 @@ public abstract class InGameHudMixin extends DrawableHelper {
 //			at = @At(value = "INVOKE_STRING", target = "Lnet/minecraft/util/profiler/Profiler;swap(Ljava/lang/String;)V",
 //			args = "ldc=health"))
 //	private void renderHealth(MatrixStack matrixStack, CallbackInfo callbackInfo) {
-//		if (MatrixCache.armorTransform != null) tempMatrix.multiply(HudTweaksOptions.armorTransform.getInverse());
+//		if (multipliedMatrix) {
+//			matrixStack.pop();
+//			multipliedMatrix = false;
+//		}
 //		
-//		if (MatrixCache.healthTransform != null) {
-//			tempMatrix = matrixStack.peek().getModel();
-//			tempMatrix.multiply(MatrixCache.healthTransform);
+//		Matrix4f healthMatrix = MatrixCache.getMatrix("health");
+//		if (healthMatrix != null) {
+//			multipliedMatrix = true;
+//			matrixStack.push();
+//			matrixStack.peek().getModel().multiply(healthMatrix);
 //		}
 //	}
 //	
 //	@Inject(method = "renderStatusBars",at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;getRiddenEntity()Lnet/minecraft/entity/LivingEntity;"))
 //	private void renderFood(MatrixStack matrixStack, CallbackInfo callbackInfo) {
-//		if (MatrixCache.healthTransform != null) tempMatrix.multiply(HudTweaksOptions.healthTransform.getInverse());
+//		if (multipliedMatrix) {
+//			matrixStack.pop();
+//			multipliedMatrix = false;
+//		}
 //		
-//		if (MatrixCache.foodTransform != null) {
-//			tempMatrix = matrixStack.peek().getModel();
-//			tempMatrix.multiply(MatrixCache.foodTransform);
+//		Matrix4f foodMatrix = MatrixCache.getMatrix("food");
+//		if (foodMatrix != null) {
+//			multipliedMatrix = true;
+//			matrixStack.push();
+//			matrixStack.peek().getModel().multiply(foodMatrix);
 //		}
 //	}
 //	
@@ -132,19 +147,27 @@ public abstract class InGameHudMixin extends DrawableHelper {
 //			at = @At(value = "INVOKE_STRING", target = "Lnet/minecraft/util/profiler/Profiler;swap(Ljava/lang/String;)V",
 //			args = "ldc=air"))
 //	private void renderAir(MatrixStack matrixStack, CallbackInfo callbackInfo) {
-//		if (MatrixCache.foodTransform != null) tempMatrix.multiply(HudTweaksOptions.foodTransform.getInverse());
+//		if (multipliedMatrix) {
+//			matrixStack.pop();
+//			multipliedMatrix = false;
+//		}
 //		
-//		if (MatrixCache.airTransform != null) {
-//			tempMatrix = matrixStack.peek().getModel();
-//			tempMatrix.multiply(MatrixCache.airTransform);
+//		Matrix4f airMatrix = MatrixCache.getMatrix("air");
+//		if (airMatrix != null) {
+//			multipliedMatrix = true;
+//			matrixStack.push();
+//			matrixStack.peek().getModel().multiply(airMatrix);
 //		}
 //	}
 //	
 //	@Inject(method = "renderStatusBars", at = @At(value = "RETURN"))
 //	private void renderStatusBarsReturn(MatrixStack matrixStack, CallbackInfo callbackInfo) {
-//		if (MatrixCache.airTransform != null) tempMatrix.multiply(HudTweaksOptions.airTransform.getInverse());
+//		if (multipliedMatrix) {
+//			matrixStack.pop();
+//			multipliedMatrix = false;
+//		}
 //	}
-//	
+	
 //	@Inject(method = "renderMountHealth", at = @At(value = "HEAD"))
 //	private void renderMountHealthHead(MatrixStack matrixStack, CallbackInfo callbackInfo) {
 //		if (MatrixCache.mountTransform != null) {
@@ -165,18 +188,23 @@ public abstract class InGameHudMixin extends DrawableHelper {
 //		}
 //	}
 //	
-//	@Inject(method = "renderExperienceBar", at = @At(value = "HEAD"))
-//	public void renderExperienceBarHead(MatrixStack matrixStack, int x, CallbackInfo callbackInfo) {
-//		if (MatrixCache.expBarTransform != null) {
-//			tempMatrix = matrixStack.peek().getModel();
-//			tempMatrix.multiply(MatrixCache.expBarTransform);
-//		}
-//	}
-//	
-//	@Inject(method = "renderExperienceBar", at = @At(value = "RETURN"))
-//	public void renderExperienceBarReturn(MatrixStack matrixStack, int x, CallbackInfo callbackInfo) {
-//		if (MatrixCache.expBarTransform != null) tempMatrix.multiply(HudTweaksOptions.expBarTransform.getInverse());
-//	}
+	@Inject(method = "renderExperienceBar", at = @At(value = "HEAD"))
+	public void renderExperienceBarHead(MatrixStack matrixStack, int x, CallbackInfo callbackInfo) {
+		Matrix4f expBarMatrix = MatrixCache.getMatrix("expBar");
+		if (expBarMatrix != null) {
+			multipliedMatrix = true;
+			matrixStack.push();
+			matrixStack.peek().getModel().multiply(expBarMatrix);
+		}
+	}
+	
+	@Inject(method = "renderExperienceBar", at = @At(value = "RETURN"))
+	public void renderExperienceBarReturn(MatrixStack matrixStack, int x, CallbackInfo callbackInfo) {
+		if (multipliedMatrix) {
+			matrixStack.pop();
+			multipliedMatrix = false;
+		}
+	}
 //	
 //	@Inject(method = "renderMountJumpBar", at = @At(value = "HEAD"))
 //	public void renderMountJumpBarHead(MatrixStack matrixStack, int x, CallbackInfo callbackInfo) {

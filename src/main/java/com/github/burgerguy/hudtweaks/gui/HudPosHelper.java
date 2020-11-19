@@ -1,5 +1,7 @@
 package com.github.burgerguy.hudtweaks.gui;
 
+import com.google.gson.annotations.SerializedName;
+
 public class HudPosHelper {
 	/**
 	 * Either width or height
@@ -7,9 +9,10 @@ public class HudPosHelper {
 	private transient final int elementDimension;
 	
 	/**
-	 * The anchor point for calculation
+	 * The anchor point for calculation. Defaults to DEFAULT, which
+	 * keeps the position in the unmodified spot.
 	 */
-	private Anchor anchor;
+	private Anchor anchor = Anchor.DEFAULT;
 	
 	/**
 	 * The offset from the anchor point.
@@ -39,6 +42,17 @@ public class HudPosHelper {
 	public void setAnchor(Anchor type) {
 		this.anchor = type;
 		this.requiresUpdate = true;
+	}
+	
+	public enum Anchor {
+		@SerializedName(value = "default", alternate = "DEFAULT")
+		DEFAULT,
+		@SerializedName(value = "minimum", alternate = "MINIMUM")
+		MINIMUM,
+		@SerializedName(value = "center", alternate = "CENTER")
+		CENTER,
+		@SerializedName(value = "maximum", alternate = "MAXIMUM")
+		MAXIMUM
 	}
 
 	public int getOffset() {
@@ -77,9 +91,9 @@ public class HudPosHelper {
 		this.requiresUpdate = true;
 	}
 	
-	public int calculateScreenPos(int screenDimension) {
-		if (anchor == null) {
-			return Integer.MIN_VALUE;
+	public int calculateScreenPos(int screenDimension, int defaultPos) {
+		if (anchor.equals(Anchor.DEFAULT)) {
+			return defaultPos + offset;
 		}
 		
 		int negativeAnchorPos = (int) (screenDimension * relativePos) + offset;
@@ -92,13 +106,8 @@ public class HudPosHelper {
 			case MAXIMUM:
 				return negativeAnchorPos - elementDimension;
 			default:
-				throw new UnsupportedOperationException("how");
+				throw new UnsupportedOperationException("Unexpected anchor value");
 		}
 	}
 	
-	public enum Anchor {
-		MINIMUM,
-		CENTER,
-		MAXIMUM
-	}
 }
