@@ -1,6 +1,7 @@
 package com.github.burgerguy.hudtweaks.gui;
 
 import com.github.burgerguy.hudtweaks.config.ConfigHelper;
+import com.github.burgerguy.hudtweaks.gui.HudElement.HudElementWidget;
 
 import net.minecraft.client.gui.Drawable;
 import net.minecraft.client.gui.Element;
@@ -26,6 +27,23 @@ public class HudTweaksOptionsScreen extends Screen {
 		for (HudElement element : HudContainer.getElements()) {
 			this.children.add(element.createWidget(this));
 		}
+		
+		// this makes sure that the smallest elements go first, which should get selected first
+		children.sort((e1, e2) -> {
+			boolean isHudElement1 = e1 instanceof HudElementWidget;
+			boolean isHudElement2 = e2 instanceof HudElementWidget;
+			if (isHudElement1 && !isHudElement2) {
+				return -1;
+			} else if (!isHudElement1 && isHudElement2) {
+				return 1;
+			} else if (isHudElement1 && isHudElement2) {
+				HudElement he1 = ((HudElementWidget) e1).getParent();
+				HudElement he2 = ((HudElementWidget) e2).getParent();
+				return Integer.compare(he1.getWidth() * he1.getHeight(), he2.getWidth() * he2.getHeight());
+			} else {
+				return 1;
+			}
+		});
 	}
 	
 	@Override
@@ -49,10 +67,24 @@ public class HudTweaksOptionsScreen extends Screen {
 	}
 	
 	@Override
+	public boolean mouseReleased(double mouseX, double mouseY, int button) {
+		boolean releasedOnElement = super.mouseReleased(mouseX, mouseY, button);
+		if (!releasedOnElement) {
+			this.setFocused(null);
+		}
+		return releasedOnElement;
+	}
+	
+	@Override
 	public void onClose() {
 		ConfigHelper.saveConfig();
 		this.client.openScreen(this.prevScreen);
 		isOpen = false;
+	}
+	
+	public boolean isFocused(Element element) {
+		if (element == null || this.getFocused() == null) return false;
+		return this.getFocused().equals(element);
 	}
 	
 	public static boolean isOpen() {

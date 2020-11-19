@@ -16,7 +16,6 @@ import com.google.gson.reflect.TypeToken;
 import net.minecraft.client.gui.Drawable;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.Element;
-import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.Matrix4f;
 
@@ -131,59 +130,72 @@ public class HudElement {
 		}
 	}
 	
-	public Element createWidget(Screen parentScreen) {
-		return new HudElementWidget(parentScreen);
+	public HudElementWidget createWidget(HudTweaksOptionsScreen optionsScreen) {
+		return new HudElementWidget(optionsScreen);
 	}
 	
-	private class HudElementWidget implements Drawable, Element {
+	public class HudElementWidget implements Drawable, Element {
 		private static final int OUTLINE_COLOR_NORMAL = 0xFFFF0000;
 		private static final int OUTLINE_COLOR_SELECTED = 0xFF0000FF;
-		private final Screen parentScreen;
-		private boolean clicked = false;
 		
-		private HudElementWidget(Screen parentScreen) {
-			this.parentScreen = parentScreen;
+		private final HudTweaksOptionsScreen optionsScreen;
+		
+		private HudElementWidget(HudTweaksOptionsScreen optionsScreen) {
+			this.optionsScreen = optionsScreen;
 		}
 
 		@Override
 		public void render(MatrixStack matrixStack, int mouseX, int mouseY, float delta) {
-			Point defaultCoords = calculateDefaultCoords(parentScreen.width, parentScreen.height);
-			int x1 = xPosHelper.calculateScreenPos(parentScreen.width, defaultCoords.x);
-			int y1 = yPosHelper.calculateScreenPos(parentScreen.height, defaultCoords.y);
+			Point defaultCoords = calculateDefaultCoords(optionsScreen.width, optionsScreen.height);
+			int x1 = xPosHelper.calculateScreenPos(optionsScreen.width, defaultCoords.x);
+			int y1 = yPosHelper.calculateScreenPos(optionsScreen.height, defaultCoords.y);
 			int x2 = x1 + elementWidth;
 			int y2 = y1 + elementHeight;
-			DrawableHelper.fill(matrixStack, x1 - 1, y1 - 1, x2 + 1, y1,     clicked ? OUTLINE_COLOR_SELECTED : OUTLINE_COLOR_NORMAL);
-			DrawableHelper.fill(matrixStack, x1 - 1, y2,     x2 + 1, y2 + 1, clicked ? OUTLINE_COLOR_SELECTED : OUTLINE_COLOR_NORMAL);
-			DrawableHelper.fill(matrixStack, x1 - 1, y1,     x1,     y2,     clicked ? OUTLINE_COLOR_SELECTED : OUTLINE_COLOR_NORMAL);
-			DrawableHelper.fill(matrixStack, x2,     y1,     x2 + 1, y2,     clicked ? OUTLINE_COLOR_SELECTED : OUTLINE_COLOR_NORMAL);
+			
+			int color = optionsScreen.isFocused(this) ? OUTLINE_COLOR_SELECTED : OUTLINE_COLOR_NORMAL;
+			DrawableHelper.fill(matrixStack, x1 - 1, y1 - 1, x2 + 1, y1,     color);
+			DrawableHelper.fill(matrixStack, x1 - 1, y2,     x2 + 1, y2 + 1, color);
+			DrawableHelper.fill(matrixStack, x1 - 1, y1,     x1,     y2,     color);
+			DrawableHelper.fill(matrixStack, x2,     y1,     x2 + 1, y2,     color);
 		}
 		
 		@Override
 		public boolean mouseClicked(double mouseX, double mouseY, int button) {
 			if (button == GLFW.GLFW_MOUSE_BUTTON_LEFT) {
-				return clicked = isInBounds(mouseX, mouseY);
+				if (isMouseOver(mouseX, mouseY)) {
+					return true;
+				}
 			}
 			return false;
 		}
 		
-		private boolean isInBounds(double mouseX, double mouseY) {
-			Point defaultCoords = calculateDefaultCoords(parentScreen.width, parentScreen.height);
-			int x1 = xPosHelper.calculateScreenPos(parentScreen.width, defaultCoords.x);
-			int y1 = yPosHelper.calculateScreenPos(parentScreen.height, defaultCoords.y);
+		@Override
+		public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
+			xPosHelper.setOffset(xPosHelper.getOffset() + deltaX);
+			yPosHelper.setOffset(yPosHelper.getOffset() + deltaY);
+			return true;
+			// TODO: implement dragging relative normally and dragging offset with shift
+			// make sure when it's implemented to only check the bounds when it's initially clicked, and then
+			// don't check again until release
+		}
+		
+		@Override
+		public boolean mouseReleased(double mouseX, double mouseY, int button) {
+			return true; // needed so it doesn't lose focus instantly after dragging
+		}
+		
+		@Override
+		public boolean isMouseOver(double mouseX, double mouseY) {
+			Point defaultCoords = calculateDefaultCoords(optionsScreen.width, optionsScreen.height);
+			int x1 = xPosHelper.calculateScreenPos(optionsScreen.width, defaultCoords.x);
+			int y1 = yPosHelper.calculateScreenPos(optionsScreen.height, defaultCoords.y);
 			int x2 = x1 + elementWidth;
 			int y2 = y1 + elementHeight;
 			return mouseX > x1 && mouseX < x2 && mouseY > y1 && mouseY < y2;
 		}
 		
-		@Override
-		public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
-			if (clicked) {
-				xPosHelper.setOffset(xPosHelper.getOffset() + deltaX);
-				yPosHelper.setOffset(yPosHelper.getOffset() + deltaY);
-			}
-			return true; // TODO: implement dragging relative normally and dragging offset with shift
-			// make sure when it's implemented to only check the bounds when it's initially clicked, and then
-			// don't check again until release
+		public HudElement getParent() {
+			return HudElement.this;
 		}
 		
 	}
