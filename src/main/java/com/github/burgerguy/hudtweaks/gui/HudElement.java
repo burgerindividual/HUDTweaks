@@ -4,6 +4,8 @@ import java.awt.Point;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.lwjgl.glfw.GLFW;
+
 import com.github.burgerguy.hudtweaks.util.Util;
 import com.github.burgerguy.hudtweaks.util.gui.HudCoordinatesSupplier;
 import com.google.gson.JsonElement;
@@ -11,6 +13,11 @@ import com.google.gson.JsonObject;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.reflect.TypeToken;
 
+import net.minecraft.client.gui.Drawable;
+import net.minecraft.client.gui.DrawableHelper;
+import net.minecraft.client.gui.Element;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.Matrix4f;
 
 public class HudElement {
@@ -107,12 +114,12 @@ public class HudElement {
 		
 		JsonObject xPosJson = elementJson.get("xPos").getAsJsonObject();
 		xPosHelper.setAnchor(Util.GSON.fromJson(xPosJson.get("anchor"), HudPosHelper.Anchor.class));
-		xPosHelper.setOffset(xPosJson.get("offset").getAsInt());
+		xPosHelper.setOffset(xPosJson.get("offset").getAsDouble());
 		xPosHelper.setRelativePos(xPosJson.get("relativePos").getAsDouble());
 		
 		JsonObject yPosJson = elementJson.get("yPos").getAsJsonObject();
 		yPosHelper.setAnchor(Util.GSON.fromJson(yPosJson.get("anchor"), HudPosHelper.Anchor.class));
-		yPosHelper.setOffset(yPosJson.get("offset").getAsInt());
+		yPosHelper.setOffset(yPosJson.get("offset").getAsDouble());
 		yPosHelper.setRelativePos(yPosJson.get("relativePos").getAsDouble());
 		
 		JsonElement optionsJson = elementJson.get("elementOptions");
@@ -122,6 +129,63 @@ public class HudElement {
 				setElementOption(entry.getKey(), entry.getValue());
 			}
 		}
+	}
+	
+	public Element createWidget(Screen parentScreen) {
+		return new HudElementWidget(parentScreen);
+	}
+	
+	private class HudElementWidget implements Drawable, Element {
+		private static final int OUTLINE_COLOR_NORMAL = 0xFFFF0000;
+		private static final int OUTLINE_COLOR_SELECTED = 0xFF0000FF;
+		private final Screen parentScreen;
+		private boolean clicked = false;
+		
+		private HudElementWidget(Screen parentScreen) {
+			this.parentScreen = parentScreen;
+		}
+
+		@Override
+		public void render(MatrixStack matrixStack, int mouseX, int mouseY, float delta) {
+			Point defaultCoords = calculateDefaultCoords(parentScreen.width, parentScreen.height);
+			int x1 = xPosHelper.calculateScreenPos(parentScreen.width, defaultCoords.x);
+			int y1 = yPosHelper.calculateScreenPos(parentScreen.height, defaultCoords.y);
+			int x2 = x1 + elementWidth;
+			int y2 = y1 + elementHeight;
+			DrawableHelper.fill(matrixStack, x1 - 1, y1 - 1, x2 + 1, y1,     clicked ? OUTLINE_COLOR_SELECTED : OUTLINE_COLOR_NORMAL);
+			DrawableHelper.fill(matrixStack, x1 - 1, y2,     x2 + 1, y2 + 1, clicked ? OUTLINE_COLOR_SELECTED : OUTLINE_COLOR_NORMAL);
+			DrawableHelper.fill(matrixStack, x1 - 1, y1,     x1,     y2,     clicked ? OUTLINE_COLOR_SELECTED : OUTLINE_COLOR_NORMAL);
+			DrawableHelper.fill(matrixStack, x2,     y1,     x2 + 1, y2,     clicked ? OUTLINE_COLOR_SELECTED : OUTLINE_COLOR_NORMAL);
+		}
+		
+		@Override
+		public boolean mouseClicked(double mouseX, double mouseY, int button) {
+			if (button == GLFW.GLFW_MOUSE_BUTTON_LEFT) {
+				return clicked = isInBounds(mouseX, mouseY);
+			}
+			return false;
+		}
+		
+		private boolean isInBounds(double mouseX, double mouseY) {
+			Point defaultCoords = calculateDefaultCoords(parentScreen.width, parentScreen.height);
+			int x1 = xPosHelper.calculateScreenPos(parentScreen.width, defaultCoords.x);
+			int y1 = yPosHelper.calculateScreenPos(parentScreen.height, defaultCoords.y);
+			int x2 = x1 + elementWidth;
+			int y2 = y1 + elementHeight;
+			return mouseX > x1 && mouseX < x2 && mouseY > y1 && mouseY < y2;
+		}
+		
+		@Override
+		public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
+			if (clicked) {
+				xPosHelper.setOffset(xPosHelper.getOffset() + deltaX);
+				yPosHelper.setOffset(yPosHelper.getOffset() + deltaY);
+			}
+			return true; // TODO: implement dragging relative normally and dragging offset with shift
+			// make sure when it's implemented to only check the bounds when it's initially clicked, and then
+			// don't check again until release
+		}
+		
 	}
 	
 }

@@ -17,7 +17,7 @@ public class HudPosHelper {
 	/**
 	 * The offset from the anchor point.
 	 */
-	private int offset;
+	private double offset;
 	
 	/**
 	 * The relative position of the element from 0 to 1 on the screen,
@@ -55,11 +55,11 @@ public class HudPosHelper {
 		MAXIMUM
 	}
 
-	public int getOffset() {
+	public double getOffset() {
 		return offset;
 	}
 
-	public void setOffset(int offset) {
+	public void setOffset(double offset) {
 		this.offset = offset;
 		this.requiresUpdate = true;
 	}
@@ -93,10 +93,10 @@ public class HudPosHelper {
 	
 	public int calculateScreenPos(int screenDimension, int defaultPos) {
 		if (anchor.equals(Anchor.DEFAULT)) {
-			return defaultPos + offset;
+			return (int) (defaultPos + offset);
 		}
 		
-		int negativeAnchorPos = (int) (screenDimension * relativePos) + offset;
+		int negativeAnchorPos = (int) (screenDimension * relativePos + offset);
 		
 		switch(anchor) {
 			case MINIMUM:
