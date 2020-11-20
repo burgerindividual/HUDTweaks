@@ -152,7 +152,7 @@ public class HudElement {
 			int x2 = x1 + elementWidth;
 			int y2 = y1 + elementHeight;
 			
-			int color = optionsScreen.isFocused(this) ? OUTLINE_COLOR_SELECTED : OUTLINE_COLOR_NORMAL;
+			int color = optionsScreen.isHudElementFocused(this) ? OUTLINE_COLOR_SELECTED : OUTLINE_COLOR_NORMAL;
 			DrawableHelper.fill(matrixStack, x1 - 1, y1 - 1, x2 + 1, y1,     color);
 			DrawableHelper.fill(matrixStack, x1 - 1, y2,     x2 + 1, y2 + 1, color);
 			DrawableHelper.fill(matrixStack, x1 - 1, y1,     x1,     y2,     color);
@@ -177,11 +177,6 @@ public class HudElement {
 			// TODO: implement dragging relative normally and dragging offset with shift
 			// make sure when it's implemented to only check the bounds when it's initially clicked, and then
 			// don't check again until release
-		}
-		
-		@Override
-		public boolean mouseReleased(double mouseX, double mouseY, int button) {
-			return true; // needed so it doesn't lose focus instantly after dragging
 		}
 		
 		@Override
