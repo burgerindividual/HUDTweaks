@@ -10,7 +10,6 @@ import org.lwjgl.glfw.GLFW;
 
 import com.github.burgerguy.hudtweaks.gui.HudElement;
 import com.github.burgerguy.hudtweaks.gui.HudElement.HudElementWidget;
-import com.github.burgerguy.hudtweaks.gui.HudPosHelper;
 import com.github.burgerguy.hudtweaks.gui.HudPosHelper.Anchor;
 import com.github.burgerguy.hudtweaks.gui.HudTweaksOptionsScreen;
 import com.google.common.collect.Lists;
@@ -32,30 +31,16 @@ public class SidebarElement extends AbstractParentElement implements Drawable {
 	public int width;
 	public int color;
 	
-	private final AnchorButtonWidget xAnchorButton;
-	private final AnchorButtonWidget yAnchorButton;
 	private final CustomSliderWidget xRelativeSlider;
 	private final CustomSliderWidget yRelativeSlider;
+	private final AnchorButtonWidget xAnchorButton;
+	private final AnchorButtonWidget yAnchorButton;
 
 	
 	public SidebarElement(HudTweaksOptionsScreen optionsScreen, int width, int color) {
 		this.optionsScreen = optionsScreen;
 		this.width = width;
 		this.color = color;
-		
-		this.xAnchorButton = new AnchorButtonWidget(80, 50, true, a -> {
-			HudElementWidget focusedWidget = optionsScreen.getFocusedHudElement();
-			if (focusedWidget != null) {
-				focusedWidget.getParent().getXPosHelper().setAnchor(a);
-			}
-		});
-		
-		this.yAnchorButton = new AnchorButtonWidget(80, 90, false, a -> {
-			HudElementWidget focusedWidget = optionsScreen.getFocusedHudElement();
-			if (focusedWidget != null) {
-				focusedWidget.getParent().getYPosHelper().setAnchor(a);
-			}
-		});
 		
 		this.xRelativeSlider = new CustomSliderWidget(4, 70, this.width - 8, 14, 0.0) {
 			@Override
@@ -65,10 +50,7 @@ public class SidebarElement extends AbstractParentElement implements Drawable {
 			
 			@Override
 			public void applyValue() {
-				HudElementWidget focusedWidget = optionsScreen.getFocusedHudElement();
-				if (focusedWidget != null) {
-					focusedWidget.getParent().getXPosHelper().setRelativePos(value);
-				}
+				optionsScreen.getFocusedHudElement().getParent().getXPosHelper().setRelativePos(value);
 			}
 		};
 		
@@ -80,17 +62,24 @@ public class SidebarElement extends AbstractParentElement implements Drawable {
 			
 			@Override
 			public void applyValue() {
-				HudElementWidget focusedWidget = optionsScreen.getFocusedHudElement();
-				if (focusedWidget != null) {
-					focusedWidget.getParent().getYPosHelper().setRelativePos(value);
-				}
+				optionsScreen.getFocusedHudElement().getParent().getYPosHelper().setRelativePos(value);
 			}
 		};
 		
-		this.addButton(xAnchorButton);
-		this.addButton(yAnchorButton);
+		this.xAnchorButton = new AnchorButtonWidget(80, 50, true, a -> {
+			optionsScreen.getFocusedHudElement().getParent().getXPosHelper().setAnchor(a);
+			xRelativeSlider.active = !a.equals(Anchor.DEFAULT);
+		});
+		
+		this.yAnchorButton = new AnchorButtonWidget(80, 90, false, a -> {
+			optionsScreen.getFocusedHudElement().getParent().getYPosHelper().setAnchor(a);
+			yRelativeSlider.active = !a.equals(Anchor.DEFAULT);
+		});
+		
 		this.addButton(xRelativeSlider);
 		this.addButton(yRelativeSlider);
+		this.addButton(xAnchorButton);
+		this.addButton(yAnchorButton);
 	}
 
 	@Override
@@ -104,10 +93,14 @@ public class SidebarElement extends AbstractParentElement implements Drawable {
 	
 	public void updateValues() {
 		HudElement focusedElement = optionsScreen.getFocusedHudElement().getParent();
-		xAnchorButton.setAnchor(focusedElement.getXPosHelper().getAnchor());
-		yAnchorButton.setAnchor(focusedElement.getYPosHelper().getAnchor());
+		Anchor xAnchor = focusedElement.getXPosHelper().getAnchor();
+		Anchor yAnchor = focusedElement.getYPosHelper().getAnchor();
+		xAnchorButton.setAnchor(xAnchor);
+		yAnchorButton.setAnchor(yAnchor);
 		xRelativeSlider.setValue(focusedElement.getXPosHelper().getRelativePos());
 		yRelativeSlider.setValue(focusedElement.getYPosHelper().getRelativePos());
+		xRelativeSlider.active = !xAnchor.equals(Anchor.DEFAULT);
+		yRelativeSlider.active = !yAnchor.equals(Anchor.DEFAULT);
 	}
 
 	@Override
@@ -132,6 +125,7 @@ public class SidebarElement extends AbstractParentElement implements Drawable {
 		Element currentElement;
 		do {
 			if (!iterator.hasNext()) {
+				this.setFocused(null);
 				if (button == GLFW.GLFW_MOUSE_BUTTON_LEFT) {
 					if (isMouseOver(mouseX, mouseY)) {
 						return true;

@@ -32,6 +32,7 @@ public abstract class CustomSliderWidget extends SliderWidget {
 		this.renderBg(matrixStack, minecraftClient, mouseX, mouseY);
 		int j = this.active ? 0x00FFFFFF : 0x00A0A0A0;
 		drawCenteredText(matrixStack, textRenderer, this.getMessage(), this.x + this.width / 2, this.y + (this.height - 8) / 2, j | MathHelper.ceil(this.alpha * 255.0F) << 24);
+		if (!this.active) DrawableHelper.fill(matrixStack, x1, y1, x2, y2, 0x50303030);
 	}
 	
 	@Override
@@ -40,7 +41,7 @@ public abstract class CustomSliderWidget extends SliderWidget {
 		int y1 = this.y;
 		int x2 = x1 + HANDLE_WIDTH;
 		int y2 = y1 + this.height;
-		int color = this.isHovered() ? 0xFFFFFFFF : 0xFF000000;
+		int color = this.isHovered() && this.active ? 0xFFFFFFFF : 0xFF000000;
 		DrawableHelper.fill(matrixStack, x1,     y1,     x2,     y1 + 1, color);
 		DrawableHelper.fill(matrixStack, x1,     y2,     x2,     y2 - 1, color);
 		DrawableHelper.fill(matrixStack, x1,     y1 + 1, x1 + 1, y2 - 1, color);
