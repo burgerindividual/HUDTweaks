@@ -47,19 +47,19 @@ public class AnchorButtonWidget extends AbstractButtonWidget {
 	private void cycleAnchor() {
 		switch(currentAnchor) {
 			case TOP:
-				this.currentAnchor = DisplayedAnchor.BOTTOM;
+				this.currentAnchor = DisplayedAnchor.CENTER;
 				break;
 			case BOTTOM:
-				this.currentAnchor = DisplayedAnchor.CENTER;
+				this.currentAnchor = DisplayedAnchor.DEFAULT;
 				break;
 			case LEFT:
-				this.currentAnchor = DisplayedAnchor.RIGHT;
-				break;
-			case RIGHT:
 				this.currentAnchor = DisplayedAnchor.CENTER;
 				break;
-			case CENTER:
+			case RIGHT:
 				this.currentAnchor = DisplayedAnchor.DEFAULT;
+				break;
+			case CENTER:
+				this.currentAnchor = isXAnchor ? DisplayedAnchor.RIGHT : DisplayedAnchor.BOTTOM;
 				break;
 			case DEFAULT:
 				this.currentAnchor = isXAnchor ? DisplayedAnchor.LEFT : DisplayedAnchor.TOP;
