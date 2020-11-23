@@ -8,12 +8,13 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.LiteralText;
 import net.minecraft.util.math.MathHelper;
 
-public abstract class TransparentSliderWidget extends SliderWidget {
+public abstract class CustomSliderWidget extends SliderWidget {
 	private static final int HANDLE_WIDTH = 7;
 
-	public TransparentSliderWidget(int x, int y, int width, int height, double value) {
+	public CustomSliderWidget(int x, int y, int width, int height, double value) {
 		super(x, y, width, height, LiteralText.EMPTY, value);
 		this.setAlpha(0.8F);
+		this.updateMessage();
 	}
 	
 	@Override
@@ -67,9 +68,9 @@ public abstract class TransparentSliderWidget extends SliderWidget {
 		this.setValue((mouseX - (double) (this.x + (HANDLE_WIDTH / 2.0D - 1.0D))) / (double) (this.width - HANDLE_WIDTH));
 	}
 	
-	private void setValue(double mouseX) {
+	public void setValue(double newValue) {
 		double oldValue = this.value;
-		this.value = MathHelper.clamp(mouseX, 0.0D, 1.0D);
+		this.value = MathHelper.clamp(newValue, 0.0D, 1.0D);
 		if (oldValue != this.value) {
 			this.applyValue();
 		}

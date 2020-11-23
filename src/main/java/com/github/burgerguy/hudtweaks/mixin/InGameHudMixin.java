@@ -180,7 +180,7 @@ public abstract class InGameHudMixin extends DrawableHelper {
 //	
 	@Inject(method = "renderExperienceBar", at = @At(value = "HEAD"))
 	public void renderExperienceBarHead(MatrixStack matrixStack, int x, CallbackInfo callbackInfo) {
-		Matrix4f expBarMatrix = MatrixCache.getMatrix("expBar");
+		Matrix4f expBarMatrix = MatrixCache.getMatrix("expbar");
 		if (expBarMatrix != null) {
 			multipliedMatrix = true;
 			matrixStack.push();

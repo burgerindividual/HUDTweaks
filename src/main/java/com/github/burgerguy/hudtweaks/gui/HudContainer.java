@@ -16,7 +16,7 @@ public class HudContainer {
 		HudElement hotbar = new HudElement("hotbar", 182, 22, (w, h) -> new Point((w / 2) - 91, h - 22), null);
 		addElementIfAbsent(hotbar.getIdentifier(), hotbar);
 		
-		HudElement expBar = new HudElement("expBar", 182, 12, (w, h) -> new Point((w / 2) - 91, h - 36), null);
+		HudElement expBar = new HudElement("expbar", 182, 12, (w, h) -> new Point((w / 2) - 91, h - 36), null);
 		addElementIfAbsent(expBar.getIdentifier(), expBar);
 		
 //		HudElement armor = new HudElement("armor", 182, 22, (w, h) -> new Point((w / 2) - 91, h - 22));

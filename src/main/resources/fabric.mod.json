@@ -4,7 +4,7 @@
   "version": "0.1-alpha",
 
   "name": "HUDTweaks",
-  "description": "Allows greater configuration of the HUD in-game.",
+  "description": "Adds better HUD configuration.",
   "authors": [
     "burgerdude"
   ],
@@ -19,6 +19,7 @@
 
   "environment": "client",
   "entrypoints": {
+ 	"client": [ "com.github.burgerguy.hudtweaks.HudTweaksMod" ],
     "modmenu": [ "com.github.burgerguy.hudtweaks.gui.ModMenuApiImpl" ]
   },
   "mixins": [

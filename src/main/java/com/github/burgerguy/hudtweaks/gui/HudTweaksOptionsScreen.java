@@ -3,15 +3,12 @@ package com.github.burgerguy.hudtweaks.gui;
 import com.github.burgerguy.hudtweaks.config.ConfigHelper;
 import com.github.burgerguy.hudtweaks.gui.HudElement.HudElementWidget;
 import com.github.burgerguy.hudtweaks.gui.widget.SidebarElement;
-import com.github.burgerguy.hudtweaks.gui.widget.TransparentSliderWidget;
 
 import net.minecraft.client.gui.Drawable;
-import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.AbstractButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.TranslatableText;
 
 public class HudTweaksOptionsScreen extends Screen {
@@ -21,12 +18,15 @@ public class HudTweaksOptionsScreen extends Screen {
 	private static boolean isOpen = false;
 	
 	private final Screen prevScreen;
+	private final SidebarElement sidebar;
 	
 	private HudElementWidget focusedHudElement;
 	
 	public HudTweaksOptionsScreen(Screen prevScreen) {
 		super(new TranslatableText("HUDTweaks Config"));
 		this.prevScreen = prevScreen;
+		
+		this.sidebar = new SidebarElement(this, SIDEBAR_WIDTH, SIDEBAR_COLOR);
 	}
 	
 	@Override
@@ -34,32 +34,12 @@ public class HudTweaksOptionsScreen extends Screen {
 		super.init();
 		
 		isOpen = true;
+		
+		this.addChild(sidebar);
+
 		for (HudElement element : HudContainer.getElements()) {
 			this.children.add(element.createWidget(this));
 		}
-		
-		SidebarElement sidebar = new SidebarElement(this, SIDEBAR_WIDTH, SIDEBAR_COLOR);
-		this.addChild(sidebar);
-		
-		TransparentSliderWidget slider = new TransparentSliderWidget(4, 20, SIDEBAR_WIDTH - 8, 14, 0.0) {
-			@Override
-			protected void updateMessage() {
-//				Element focused = HudTweaksOptionsScreen.this.getFocused();
-//				if (focused != null) {
-//					if (focused instanceof HudElementWidget) {
-//						this.setMessage(new LiteralText(((HudElementWidget) focused).getParent().getIdentifier()));
-//					}
-//				}
-				this.setMessage(new LiteralText(Double.toString(this.value)));
-			}
-
-			@Override
-			protected void applyValue() {
-				//this.setAlpha((float) this.value);
-			}
-		};
-		
-		sidebar.addButton(slider);
 		
 		// This makes sure that the smallest elements get selected first if there are multiple on top of eachother
 		// We also want normal elements to be the first to be selected
@@ -112,21 +92,39 @@ public class HudTweaksOptionsScreen extends Screen {
 	@Override
 	public void onClose() {
 		ConfigHelper.saveConfig();
-		this.client.openScreen(this.prevScreen);
+		if (this.client.world == null) {
+			this.client.openScreen(this.prevScreen);
+		} else {
+			this.client.openScreen(null);
+		}
 		isOpen = false;
 	}
 	
 	@Override
 	public void setFocused(Element focused) {
-		if (focused instanceof HudElementWidget || focused == null) {
+		if (focused instanceof HudElementWidget) {
 			this.focusedHudElement = (HudElementWidget) focused;
+			updateSidebarValues();
 		}
+		
+		if (focused == null) {
+			this.focusedHudElement = null;
+		}
+		
 		super.setFocused(focused);
+	}
+	
+	public void updateSidebarValues() {
+		sidebar.updateValues();
 	}
 	
 	public boolean isHudElementFocused(HudElementWidget element) {// TODO: allow changing focus of elements with arrows, make tab only change focus for sidebar
 		if (element == null || this.focusedHudElement == null) return false;
 		return this.focusedHudElement.equals(element);
+	}
+	
+	public HudElementWidget getFocusedHudElement() {
+		return this.focusedHudElement;
 	}
 	
 	public static boolean isOpen() {

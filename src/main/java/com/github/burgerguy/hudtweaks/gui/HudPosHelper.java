@@ -45,14 +45,14 @@ public class HudPosHelper {
 	}
 	
 	public enum Anchor {
-		@SerializedName(value = "default", alternate = "DEFAULT")
-		DEFAULT,
 		@SerializedName(value = "minimum", alternate = "MINIMUM")
 		MINIMUM,
+		@SerializedName(value = "maximum", alternate = "MAXIMUM")
+		MAXIMUM,
 		@SerializedName(value = "center", alternate = "CENTER")
 		CENTER,
-		@SerializedName(value = "maximum", alternate = "MAXIMUM")
-		MAXIMUM
+		@SerializedName(value = "default", alternate = "DEFAULT")
+		DEFAULT
 	}
 
 	public double getOffset() {

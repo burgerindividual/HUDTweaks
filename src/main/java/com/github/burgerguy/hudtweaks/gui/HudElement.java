@@ -16,6 +16,7 @@ import com.google.gson.reflect.TypeToken;
 import net.minecraft.client.gui.Drawable;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.Element;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.Matrix4f;
 
@@ -171,8 +172,14 @@ public class HudElement {
 		
 		@Override
 		public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
-			xPosHelper.setOffset(xPosHelper.getOffset() + deltaX);
-			yPosHelper.setOffset(yPosHelper.getOffset() + deltaY);
+			if (Screen.hasShiftDown()) {
+				xPosHelper.setRelativePos(xPosHelper.getRelativePos() + (deltaX / optionsScreen.width));
+				yPosHelper.setRelativePos(yPosHelper.getRelativePos() + (deltaY / optionsScreen.height));
+			} else {
+				xPosHelper.setOffset(xPosHelper.getOffset() + deltaX);
+				yPosHelper.setOffset(yPosHelper.getOffset() + deltaY);
+			}
+			optionsScreen.updateSidebarValues();
 			return true;
 			// TODO: implement dragging relative normally and dragging offset with shift
 			// make sure when it's implemented to only check the bounds when it's initially clicked, and then
@@ -186,7 +193,7 @@ public class HudElement {
 			int y1 = yPosHelper.calculateScreenPos(optionsScreen.height, defaultCoords.y);
 			int x2 = x1 + elementWidth;
 			int y2 = y1 + elementHeight;
-			return mouseX > x1 && mouseX < x2 && mouseY > y1 && mouseY < y2;
+			return mouseX >= x1 && mouseX <= x2 && mouseY >= y1 && mouseY <= y2;
 		}
 		
 		public HudElement getParent() {
