@@ -14,6 +14,8 @@ import com.github.burgerguy.hudtweaks.gui.HudPosHelper.Anchor;
 import com.github.burgerguy.hudtweaks.gui.HudTweaksOptionsScreen;
 import com.google.common.collect.Lists;
 
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.AbstractParentElement;
 import net.minecraft.client.gui.Drawable;
 import net.minecraft.client.gui.DrawableHelper;
@@ -52,6 +54,16 @@ public class SidebarElement extends AbstractParentElement implements Drawable {
 			public void applyValue() {
 				optionsScreen.getFocusedHudElement().getParent().getXPosHelper().setRelativePos(value);
 			}
+			
+			@Override
+			public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+				boolean bl = keyCode == 263;
+				if (bl || keyCode == 262) {
+					this.setValue(this.value + (bl ? -0.001 : 0.001));
+					return true;
+				}
+				return false;
+			}
 		};
 		
 		this.yRelativeSlider = new CustomSliderWidget(4, 110, this.width - 8, 14, 0.0) {
@@ -63,6 +75,16 @@ public class SidebarElement extends AbstractParentElement implements Drawable {
 			@Override
 			public void applyValue() {
 				optionsScreen.getFocusedHudElement().getParent().getYPosHelper().setRelativePos(value);
+			}
+			
+			@Override
+			public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+				boolean bl = keyCode == 263;
+				if (bl || keyCode == 262) {
+					this.setValue(this.value + (bl ? -0.001 : 0.001));
+					return true;
+				}
+				return false;
 			}
 		};
 		
@@ -107,9 +129,12 @@ public class SidebarElement extends AbstractParentElement implements Drawable {
 	public void render(MatrixStack matrixStack, int mouseX, int mouseY, float delta) {
 		DrawableHelper.fill(matrixStack, 0, 0, width, optionsScreen.height, color);
 		
+		TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
 		HudElementWidget focusedHudElement = optionsScreen.getFocusedHudElement();
 		if (focusedHudElement != null) {
+			textRenderer.drawWithShadow(matrixStack, "Anchor Type:", 8, 50 + 4, 0xCCFFFFFF);
 			xAnchorButton.render(matrixStack, mouseX, mouseY, delta);
+			textRenderer.drawWithShadow(matrixStack, "Anchor Type:", 8, 90 + 4, 0xCCFFFFFF);
 			yAnchorButton.render(matrixStack, mouseX, mouseY, delta);
 			xRelativeSlider.render(matrixStack, mouseX, mouseY, delta);
 			yRelativeSlider.render(matrixStack, mouseX, mouseY, delta);

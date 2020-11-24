@@ -89,74 +89,74 @@ public abstract class InGameHudMixin extends DrawableHelper {
 //	private void renderHotbarItemReturn(CallbackInfo callbackInfo) {
 //	}
 	
-//	@Inject(method = "renderStatusBars",
-//			at = @At(value = "INVOKE_STRING", target = "Lnet/minecraft/util/profiler/Profiler;push(Ljava/lang/String;)V",
-//			args = "ldc=armor"))
-//	private void renderArmor(MatrixStack matrixStack, CallbackInfo callbackInfo) {
-//		Matrix4f armorMatrix = MatrixCache.getMatrix("armor");
-//		if (armorMatrix != null) {
-//			multipliedMatrix = true;
-//			matrixStack.push();
-//			matrixStack.peek().getModel().multiply(armorMatrix);
-//		}
-//	}
-//	
-//	@Inject(method = "renderStatusBars",
-//			at = @At(value = "INVOKE_STRING", target = "Lnet/minecraft/util/profiler/Profiler;swap(Ljava/lang/String;)V",
-//			args = "ldc=health"))
-//	private void renderHealth(MatrixStack matrixStack, CallbackInfo callbackInfo) {
-//		if (multipliedMatrix) {
-//			matrixStack.pop();
-//			multipliedMatrix = false;
-//		}
-//		
-//		Matrix4f healthMatrix = MatrixCache.getMatrix("health");
-//		if (healthMatrix != null) {
-//			multipliedMatrix = true;
-//			matrixStack.push();
-//			matrixStack.peek().getModel().multiply(healthMatrix);
-//		}
-//	}
-//	
-//	@Inject(method = "renderStatusBars",at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;getRiddenEntity()Lnet/minecraft/entity/LivingEntity;"))
-//	private void renderFood(MatrixStack matrixStack, CallbackInfo callbackInfo) {
-//		if (multipliedMatrix) {
-//			matrixStack.pop();
-//			multipliedMatrix = false;
-//		}
-//		
-//		Matrix4f foodMatrix = MatrixCache.getMatrix("food");
-//		if (foodMatrix != null) {
-//			multipliedMatrix = true;
-//			matrixStack.push();
-//			matrixStack.peek().getModel().multiply(foodMatrix);
-//		}
-//	}
-//	
-//	@Inject(method = "renderStatusBars",
-//			at = @At(value = "INVOKE_STRING", target = "Lnet/minecraft/util/profiler/Profiler;swap(Ljava/lang/String;)V",
-//			args = "ldc=air"))
-//	private void renderAir(MatrixStack matrixStack, CallbackInfo callbackInfo) {
-//		if (multipliedMatrix) {
-//			matrixStack.pop();
-//			multipliedMatrix = false;
-//		}
-//		
-//		Matrix4f airMatrix = MatrixCache.getMatrix("air");
-//		if (airMatrix != null) {
-//			multipliedMatrix = true;
-//			matrixStack.push();
-//			matrixStack.peek().getModel().multiply(airMatrix);
-//		}
-//	}
-//	
-//	@Inject(method = "renderStatusBars", at = @At(value = "RETURN"))
-//	private void renderStatusBarsReturn(MatrixStack matrixStack, CallbackInfo callbackInfo) {
-//		if (multipliedMatrix) {
-//			matrixStack.pop();
-//			multipliedMatrix = false;
-//		}
-//	}
+	@Inject(method = "renderStatusBars",
+			at = @At(value = "INVOKE_STRING", target = "Lnet/minecraft/util/profiler/Profiler;push(Ljava/lang/String;)V",
+			args = "ldc=armor"))
+	private void renderArmor(MatrixStack matrixStack, CallbackInfo callbackInfo) {
+		Matrix4f armorMatrix = MatrixCache.getMatrix("armor");
+		if (armorMatrix != null) {
+			multipliedMatrix = true;
+			matrixStack.push();
+			matrixStack.peek().getModel().multiply(armorMatrix);
+		}
+	}
+	
+	@Inject(method = "renderStatusBars",
+			at = @At(value = "INVOKE_STRING", target = "Lnet/minecraft/util/profiler/Profiler;swap(Ljava/lang/String;)V",
+			args = "ldc=health"))
+	private void renderHealth(MatrixStack matrixStack, CallbackInfo callbackInfo) {
+		if (multipliedMatrix) {
+			matrixStack.pop();
+			multipliedMatrix = false;
+		}
+		
+		Matrix4f healthMatrix = MatrixCache.getMatrix("health");
+		if (healthMatrix != null) {
+			multipliedMatrix = true;
+			matrixStack.push();
+			matrixStack.peek().getModel().multiply(healthMatrix);
+		}
+	}
+	
+	@Inject(method = "renderStatusBars",at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;getRiddenEntity()Lnet/minecraft/entity/LivingEntity;"))
+	private void renderFood(MatrixStack matrixStack, CallbackInfo callbackInfo) {
+		if (multipliedMatrix) {
+			matrixStack.pop();
+			multipliedMatrix = false;
+		}
+		
+		Matrix4f foodMatrix = MatrixCache.getMatrix("food");
+		if (foodMatrix != null) {
+			multipliedMatrix = true;
+			matrixStack.push();
+			matrixStack.peek().getModel().multiply(foodMatrix);
+		}
+	}
+	
+	@Inject(method = "renderStatusBars",
+			at = @At(value = "INVOKE_STRING", target = "Lnet/minecraft/util/profiler/Profiler;swap(Ljava/lang/String;)V",
+			args = "ldc=air"))
+	private void renderAir(MatrixStack matrixStack, CallbackInfo callbackInfo) {
+		if (multipliedMatrix) {
+			matrixStack.pop();
+			multipliedMatrix = false;
+		}
+		
+		Matrix4f airMatrix = MatrixCache.getMatrix("air");
+		if (airMatrix != null) {
+			multipliedMatrix = true;
+			matrixStack.push();
+			matrixStack.peek().getModel().multiply(airMatrix);
+		}
+	}
+	
+	@Inject(method = "renderStatusBars", at = @At(value = "RETURN"))
+	private void renderStatusBarsReturn(MatrixStack matrixStack, CallbackInfo callbackInfo) {
+		if (multipliedMatrix) {
+			matrixStack.pop();
+			multipliedMatrix = false;
+		}
+	}
 	
 //	@Inject(method = "renderMountHealth", at = @At(value = "HEAD"))
 //	private void renderMountHealthHead(MatrixStack matrixStack, CallbackInfo callbackInfo) {

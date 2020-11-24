@@ -22,11 +22,11 @@ public class HudContainer {
 //		HudElement armor = new HudElement("armor", 182, 22, (w, h) -> new Point((w / 2) - 91, h - 22));
 //		addElement(armor.getIdentifier(), armor);
 //		
-//		HudElement health = new HudElement("health", 182, 22, (w, h) -> new Point((w / 2) - 91, h - 22));
-//		addElement(health.getIdentifier(), health);
-//		
-//		HudElement food = new HudElement("food", 182, 22, (w, h) -> new Point((w / 2) - 91, h - 22));
-//		addElement(food.getIdentifier(), food);
+		HudElement health = new HudElement("health", 81, 9, (w, h) -> new Point((w / 2) - 91, h - 39), null);
+		addElement(health.getIdentifier(), health);
+		
+		HudElement food = new HudElement("food", 81, 9, (w, h) -> new Point((w / 2) + 10, h - 39), null);
+		addElement(food.getIdentifier(), food);
 //		
 //		HudElement air = new HudElement("air", 182, 22, (w, h) -> new Point((w / 2) - 91, h - 22));
 //		addElement(air.getIdentifier(), air);

@@ -60,12 +60,13 @@ public abstract class CustomSliderWidget extends SliderWidget {
 		if (bl || keyCode == 262) {
 			double f = bl ? -1.0 : 1.0;
 			this.setValue(this.value + f / (this.width - HANDLE_WIDTH));
+			return true;
 		}
 		
 		return false;
 	}
 	
-	private void setValueFromMouse(double mouseX) {
+	protected void setValueFromMouse(double mouseX) {
 		this.setValue((mouseX - (double) (this.x + (HANDLE_WIDTH / 2.0D - 1.0D))) / (double) (this.width - HANDLE_WIDTH));
 	}
 	

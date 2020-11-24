@@ -6,6 +6,7 @@ import java.util.Map.Entry;
 
 import org.lwjgl.glfw.GLFW;
 
+import com.github.burgerguy.hudtweaks.gui.HudPosHelper.Anchor;
 import com.github.burgerguy.hudtweaks.util.Util;
 import com.github.burgerguy.hudtweaks.util.gui.HudCoordinatesSupplier;
 import com.google.gson.JsonElement;
@@ -18,6 +19,7 @@ import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Matrix4f;
 
 public class HudElement {
@@ -173,8 +175,8 @@ public class HudElement {
 		@Override
 		public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
 			if (Screen.hasShiftDown()) {
-				xPosHelper.setRelativePos(xPosHelper.getRelativePos() + (deltaX / optionsScreen.width));
-				yPosHelper.setRelativePos(yPosHelper.getRelativePos() + (deltaY / optionsScreen.height));
+				if (!xPosHelper.getAnchor().equals(Anchor.DEFAULT)) xPosHelper.setRelativePos(MathHelper.clamp(xPosHelper.getRelativePos() + (deltaX / optionsScreen.width), 0.0D, 1.0D));
+				if (!yPosHelper.getAnchor().equals(Anchor.DEFAULT)) yPosHelper.setRelativePos(MathHelper.clamp(yPosHelper.getRelativePos() + (deltaY / optionsScreen.height), 0.0D, 1.0D));
 			} else {
 				xPosHelper.setOffset(xPosHelper.getOffset() + deltaX);
 				yPosHelper.setOffset(yPosHelper.getOffset() + deltaY);
