@@ -5,3 +5,4 @@ accessible method net/minecraft/client/gui/hud/InGameHud renderHotbarItem (IIFLn
 accessible method net/minecraft/client/gui/hud/InGameHud renderStatusBars (Lnet/minecraft/client/util/math/MatrixStack;)V
 accessible method net/minecraft/client/gui/hud/InGameHud renderMountHealth (Lnet/minecraft/client/util/math/MatrixStack;)V
 accessible method net/minecraft/client/gui/hud/InGameHud renderStatusEffectOverlay (Lnet/minecraft/client/util/math/MatrixStack;)V
+accessible method net/minecraft/client/gui/hud/InGameHud getHeartCount (Lnet/minecraft/entity/LivingEntity;)I

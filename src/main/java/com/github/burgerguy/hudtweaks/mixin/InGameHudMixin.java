@@ -23,6 +23,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.HungerManager;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.Matrix4f;
@@ -44,7 +45,9 @@ public abstract class InGameHudMixin extends DrawableHelper {
 	@Unique
 	private int lastHeight;
 	@Unique
-	private int lastHealthRows;
+	private int lastHeartRows;
+	@Unique
+	private int lastRidingHeartRows;
 	
 	@Unique
 	private boolean multipliedMatrix;
@@ -126,9 +129,9 @@ public abstract class InGameHudMixin extends DrawableHelper {
 			locals = LocalCapture.CAPTURE_FAILSOFT)//Math.max
 	private void checkHealthRows(MatrixStack matrixStack, CallbackInfo callbackInfo,
 			PlayerEntity u1, int u2, boolean u3, long u4, int u5, HungerManager u6, int u7, int u8, int u9, int u10, float u11, int u12,
-			int healthRows) {
-		if (healthRows != lastHealthRows) {
-			lastHealthRows = healthRows;
+			int heartRows) {
+		if (heartRows != lastHeartRows) {
+			lastHeartRows = heartRows;
 			fireUpdateEvent(UpdateEvent.ON_HEALTH_ROWS_CHANGE);
 		}
 	}
@@ -176,11 +179,24 @@ public abstract class InGameHudMixin extends DrawableHelper {
 		}
 	}
 	
-	@Inject(method = "renderStatusBars", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;getRiddenEntity()Lnet/minecraft/entity/LivingEntity;"))
-	private void renderHunger(MatrixStack matrixStack, CallbackInfo callbackInfo) {
+	@Shadow
+	protected abstract int getHeartRows(int heartCount);
+	
+	@Inject(method = "renderStatusBars",
+			at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/client/gui/hud/InGameHud;getHeartCount(Lnet/minecraft/entity/LivingEntity;)I"),
+			locals = LocalCapture.CAPTURE_FAILSOFT)
+	private void renderHungerAndCheckRidingHealth(MatrixStack matrixStack, CallbackInfo callbackInfo,
+			PlayerEntity u1, int u2, boolean u3, long u4, int u5, HungerManager u6, int u7, int u8, int u9, int u10, float u11, int u12, int u13, int u14, int u15, int u16, LivingEntity u17,
+			int ridingHealth) {
 		if (multipliedMatrix) {
 			matrixStack.pop();
 			multipliedMatrix = false;
+		}
+		
+		int ridingHeartRows = this.getHeartRows(ridingHealth);
+		if (this.lastRidingHeartRows != ridingHeartRows) {
+			this.lastRidingHeartRows = ridingHeartRows;
+			fireUpdateEvent(UpdateEvent.ON_RIDING_HEALTH_ROWS_CHANGE);
 		}
 		
 		Matrix4f hungerMatrix = MatrixCache.getMatrix("hunger");

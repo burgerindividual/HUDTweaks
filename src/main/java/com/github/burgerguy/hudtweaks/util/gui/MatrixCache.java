@@ -38,7 +38,8 @@ public enum MatrixCache {
 	public enum UpdateEvent {
 		ON_RENDER,
 		ON_HEALTH_ROWS_CHANGE,
-		ON_SCREEN_BOUNDS_CHANGE;
+		ON_SCREEN_BOUNDS_CHANGE,
+		ON_RIDING_HEALTH_ROWS_CHANGE
 		// TODO: add update events for exp/jump bar switch, food/ridable health switch, status effect change, status effect appear/disappear, etc.
 	}
 }

@@ -28,8 +28,8 @@ public class HudContainer {
 		HudElement hunger = new HungerElement();
 		addElement(hunger.getIdentifier(), hunger);
 		
-//		HudElement air = new HudElement("air", 182, 22, (w, h) -> new Point((w / 2) - 91, h - 22));
-//		addElement(air.getIdentifier(), air);
+		HudElement air = new AirElement();
+		addElement(air.getIdentifier(), air);
 	}
 
 	public static HudElement getElement(String identifier) {
