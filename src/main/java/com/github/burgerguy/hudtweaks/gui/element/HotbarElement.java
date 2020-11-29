@@ -21,12 +21,12 @@ public class HotbarElement extends HudElement {
 
 	@Override
 	public int getHeight(MinecraftClient client) {
-		return 22;
+		return 24;
 	}
 
 	@Override
 	public Point calculateDefaultCoords(MinecraftClient client) {
-		return new Point((client.getWindow().getScaledWidth() / 2) - 91, client.getWindow().getScaledHeight() - 22);
+		return new Point((client.getWindow().getScaledWidth() / 2) - 91, client.getWindow().getScaledHeight() - 24);
 	}
 	
 }

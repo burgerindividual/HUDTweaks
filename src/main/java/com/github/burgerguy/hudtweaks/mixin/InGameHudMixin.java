@@ -73,14 +73,6 @@ public abstract class InGameHudMixin extends DrawableHelper {
 			lastHeight = scaledHeight;
 			fireUpdateEvent(UpdateEvent.ON_SCREEN_BOUNDS_CHANGE);
 		}
-		
-//		double maxHealth = this.client.player.getAttributeValue(EntityAttributes.GENERIC_MAX_HEALTH);
-//		int absorption = MathHelper.ceil(this.client.player.getAbsorptionAmount());
-//		int healthRows = MathHelper.ceil((maxHealth + absorption) / 2.0D / 10.0D);
-//		if (healthRows != lastHealthRows) {
-//			lastHealthRows = healthRows;
-//			fireUpdateEvent(UpdateEvent.ON_HEALTH_ROWS_CHANGE);
-//		}
 	}
 	
 	@Unique
