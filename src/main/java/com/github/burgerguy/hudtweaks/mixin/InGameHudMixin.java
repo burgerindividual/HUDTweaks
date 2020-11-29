@@ -62,7 +62,7 @@ public abstract class InGameHudMixin extends DrawableHelper {
 		
 		for (int i = 0; i < updatableElements.length; i++) {
 			HudElement element = updatableElements[i];
-			if (element.requiresUpdate()) {
+			if (element != null && element.requiresUpdate()) {
 				MatrixCache.calculateMatrix(element, this.client);
 				updatableElements[i] = null;
 			}

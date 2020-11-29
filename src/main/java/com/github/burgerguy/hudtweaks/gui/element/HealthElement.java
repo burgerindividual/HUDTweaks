@@ -47,15 +47,15 @@ public class HealthElement extends HudElement {
 
 	@Override
 	public int getHeight(MinecraftClient client) {
-		if (client != null && client.player != null) {
-			return getRawHeight(client) + 9 + getHeartJumpDistance(client); // +9 because of the base heart height
+		if (client == null || client.player == null) {
+			return 9 + getHeartJumpDistance(client);
 		} else {
-			return 9;
+			return getRawHeight(client) + 9 + getHeartJumpDistance(client); // +9 because of the base heart height
 		}
 	}
 
 	@Override
-	public Point calculateDefaultCoords(MinecraftClient client) {// FIXME
+	public Point calculateDefaultCoords(MinecraftClient client) {
 		return new Point((client.getWindow().getScaledWidth() / 2) - 91, client.getWindow().getScaledHeight() - 39 - (flipped || client == null || client.player == null ? 0 : getRawHeight(client)) - getHeartJumpDistance(client));
 	}
 	
