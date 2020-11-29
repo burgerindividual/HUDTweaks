@@ -2,7 +2,7 @@ package com.github.burgerguy.hudtweaks.gui;
 
 import com.github.burgerguy.hudtweaks.config.ConfigHelper;
 import com.github.burgerguy.hudtweaks.gui.HudElement.HudElementWidget;
-import com.github.burgerguy.hudtweaks.gui.widget.SidebarElement;
+import com.github.burgerguy.hudtweaks.gui.widget.SidebarWidget;
 
 import net.minecraft.client.gui.Drawable;
 import net.minecraft.client.gui.Element;
@@ -18,15 +18,15 @@ public class HudTweaksOptionsScreen extends Screen {
 	private static boolean isOpen = false;
 	
 	private final Screen prevScreen;
-	private final SidebarElement sidebar;
+	private final SidebarWidget sidebar;
 	
 	private HudElementWidget focusedHudElement;
 	
 	public HudTweaksOptionsScreen(Screen prevScreen) {
-		super(new TranslatableText("HUDTweaks Config"));
+		super(new TranslatableText("hudtweaks.options"));
 		this.prevScreen = prevScreen;
 		
-		this.sidebar = new SidebarElement(this, SIDEBAR_WIDTH, SIDEBAR_COLOR);
+		this.sidebar = new SidebarWidget(this, SIDEBAR_WIDTH, SIDEBAR_COLOR);
 	}
 	
 	@Override
@@ -34,15 +34,13 @@ public class HudTweaksOptionsScreen extends Screen {
 		super.init();
 		
 		isOpen = true;
-		
-		this.addChild(sidebar);
 
 		for (HudElement element : HudContainer.getElements()) {
 			this.children.add(element.createWidget(this));
 		}
 		
-		// This makes sure that the smallest elements get selected first if there are multiple on top of eachother
-		// We also want normal elements to be the first to be selected
+		// This makes sure that the smallest elements get selected first if there are multiple on top of eachother.
+		// We also want normal elements to be the first to be selected.
 		children.sort((e1, e2) -> {
 			boolean isHudElement1 = e1 instanceof HudElementWidget;
 			boolean isHudElement2 = e2 instanceof HudElementWidget;
@@ -53,11 +51,17 @@ public class HudTweaksOptionsScreen extends Screen {
 			} else if (isHudElement1 && isHudElement2) {
 				HudElement he1 = ((HudElementWidget) e1).getParent();
 				HudElement he2 = ((HudElementWidget) e2).getParent();
-				return Integer.compare(he1.getWidth() * he1.getHeight(), he2.getWidth() * he2.getHeight());
+				return Integer.compare(
+										he1.getWidth(this.client) * he1.getHeight(this.client),
+										he2.getWidth(this.client) * he2.getHeight(this.client)
+									  );
 			} else {
 				return -1;
 			}
 		});
+		
+		// This is added last to make sure it's selected as a last resort.
+		this.addChild(sidebar);
 	}
 	
 	@Override

@@ -1,23 +1,30 @@
 package com.github.burgerguy.hudtweaks.mixin;
 
+import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import com.github.burgerguy.hudtweaks.gui.HudContainer;
 import com.github.burgerguy.hudtweaks.gui.HudElement;
 import com.github.burgerguy.hudtweaks.gui.HudTweaksOptionsScreen;
+import com.github.burgerguy.hudtweaks.gui.element.HealthElement;
 import com.github.burgerguy.hudtweaks.util.gui.MatrixCache;
+import com.github.burgerguy.hudtweaks.util.gui.MatrixCache.UpdateEvent;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.entity.player.HungerManager;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.Matrix4f;
 
 @Mixin(InGameHud.class)
@@ -26,32 +33,63 @@ public abstract class InGameHudMixin extends DrawableHelper {
 	@Shadow
 	private MinecraftClient client;
 	
-	@Shadow
-	private int scaledWidth;
-	@Shadow
-	private int scaledHeight;
-	
+	@Unique
+	/**
+	 * Elements that haven't had their matricies updated this frame and
+	 * are still ready to be updated.
+	 */
+	private HudElement[] updatableElements;
 	@Unique
 	private int lastWidth;
 	@Unique
 	private int lastHeight;
+	@Unique
+	private int lastHealthRows;
 	
 	@Unique
 	private boolean multipliedMatrix;
 	
 	@Inject(method = "render", at = @At(value = "HEAD"))
-	private void tryUpdateMatricies(MatrixStack matrixStack, float tickDelta, CallbackInfo callbackInfo) {
+	private void renderStart(MatrixStack matrixStack, float tickDelta, CallbackInfo callbackInfo) {
+		int scaledWidth = this.client.getWindow().getScaledWidth();
+		int scaledHeight = this.client.getWindow().getScaledHeight();
+		
 		if (HudTweaksOptionsScreen.isOpen()) super.fillGradient(matrixStack, 0, 0, scaledWidth, scaledHeight, -1072689136, -804253680);
+		
+		this.updatableElements = HudContainer.getElements().toArray(new HudElement[HudContainer.getElements().size()]);
+		
+		fireUpdateEvent(UpdateEvent.ON_RENDER);
+		
+		for (int i = 0; i < updatableElements.length; i++) {
+			HudElement element = updatableElements[i];
+			if (element.requiresUpdate()) {
+				MatrixCache.calculateMatrix(element, this.client);
+				updatableElements[i] = null;
+			}
+		}
 		
 		if (scaledWidth != lastWidth || scaledHeight != lastHeight) {
 			lastWidth = scaledWidth;
 			lastHeight = scaledHeight;
-			MatrixCache.calculateAllMatricies(scaledWidth, scaledHeight);
+			fireUpdateEvent(UpdateEvent.ON_SCREEN_BOUNDS_CHANGE);
 		}
 		
-		for (HudElement element : HudContainer.getElements()) {
-			if (element.requiresUpdate()) {
-				MatrixCache.calculateMatrix(element, scaledWidth, scaledHeight);
+//		double maxHealth = this.client.player.getAttributeValue(EntityAttributes.GENERIC_MAX_HEALTH);
+//		int absorption = MathHelper.ceil(this.client.player.getAbsorptionAmount());
+//		int healthRows = MathHelper.ceil((maxHealth + absorption) / 2.0D / 10.0D);
+//		if (healthRows != lastHealthRows) {
+//			lastHealthRows = healthRows;
+//			fireUpdateEvent(UpdateEvent.ON_HEALTH_ROWS_CHANGE);
+//		}
+	}
+	
+	@Unique
+	private void fireUpdateEvent(UpdateEvent event) {
+		for (int i = 0; i < updatableElements.length; i++) {
+			HudElement element = updatableElements[i];
+			if (element != null && element.shouldUpdateOnEvent(event)) {
+				MatrixCache.calculateMatrix(element, this.client);
+				updatableElements[i] = null;
 			}
 		}
 	}
@@ -64,17 +102,10 @@ public abstract class InGameHudMixin extends DrawableHelper {
 			RenderSystem.pushMatrix();
 			RenderSystem.multMatrix(hotbarMatrix);
 		}
-		
-//		if (HudTweaksOptions.hotbarVertical) {
-//			RenderSystem.pushMatrix();
-//			RenderSystem.rotatef(90.0F, 0.0F, 0.0F, 1.0F);
-//			RenderSystem.translatef(-200.0F, -scaledHeight, 0.0F);
-//		}
 	}
 	
 	@Inject(method = "renderHotbar", at = @At(value = "RETURN"))
 	private void renderHotbarReturn(float tickDelta, MatrixStack matrixStack, CallbackInfo callbackInfo) {
-//		if (HudTweaksOptions.hotbarVertical) RenderSystem.popMatrix();
 		if (multipliedMatrix) {
 			RenderSystem.popMatrix();
 			multipliedMatrix = false;
@@ -88,6 +119,18 @@ public abstract class InGameHudMixin extends DrawableHelper {
 //	@Inject(method = "renderHotbarItem", at = @At(value = "RETURN"))
 //	private void renderHotbarItemReturn(CallbackInfo callbackInfo) {
 //	}
+	
+	@Inject(method = "renderStatusBars",
+			at = @At(value = "INVOKE", target = "Ljava/lang/Math;max(II)I"),
+			locals = LocalCapture.CAPTURE_FAILSOFT)//Math.max
+	private void checkHealthRows(MatrixStack matrixStack, CallbackInfo callbackInfo,
+			PlayerEntity u1, int u2, boolean u3, long u4, int u5, HungerManager u6, int u7, int u8, int u9, int u10, float u11, int u12,
+			int healthRows) {
+		if (healthRows != lastHealthRows) {
+			lastHealthRows = healthRows;
+			fireUpdateEvent(UpdateEvent.ON_HEALTH_ROWS_CHANGE);
+		}
+	}
 	
 	@Inject(method = "renderStatusBars",
 			at = @At(value = "INVOKE_STRING", target = "Lnet/minecraft/util/profiler/Profiler;push(Ljava/lang/String;)V",
@@ -118,18 +161,32 @@ public abstract class InGameHudMixin extends DrawableHelper {
 		}
 	}
 	
-	@Inject(method = "renderStatusBars",at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;getRiddenEntity()Lnet/minecraft/entity/LivingEntity;"))
-	private void renderFood(MatrixStack matrixStack, CallbackInfo callbackInfo) {
+	// injects before if (i <= 4)
+	// this reverses the negation it does right before
+	@ModifyVariable(method = "renderStatusBars",
+					ordinal = 19,
+					at = @At(value = "JUMP", opcode = Opcodes.IF_ICMPGT))
+	private int flipHealthStackDirection(int healthPos) {
+		if (((HealthElement) HudContainer.getElement("health")).isFlipped()) {
+			int originalHealthPos = this.client.getWindow().getScaledHeight() - 39;
+			return originalHealthPos + (originalHealthPos - healthPos);
+		} else {
+			return healthPos;
+		}
+	}
+	
+	@Inject(method = "renderStatusBars", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;getRiddenEntity()Lnet/minecraft/entity/LivingEntity;"))
+	private void renderHunger(MatrixStack matrixStack, CallbackInfo callbackInfo) {
 		if (multipliedMatrix) {
 			matrixStack.pop();
 			multipliedMatrix = false;
 		}
 		
-		Matrix4f foodMatrix = MatrixCache.getMatrix("food");
-		if (foodMatrix != null) {
+		Matrix4f hungerMatrix = MatrixCache.getMatrix("hunger");
+		if (hungerMatrix != null) {
 			multipliedMatrix = true;
 			matrixStack.push();
-			matrixStack.peek().getModel().multiply(foodMatrix);
+			matrixStack.peek().getModel().multiply(hungerMatrix);
 		}
 	}
 	

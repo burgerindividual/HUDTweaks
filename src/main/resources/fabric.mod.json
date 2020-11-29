@@ -20,7 +20,7 @@
   "environment": "client",
   "entrypoints": {
  	"client": [ "com.github.burgerguy.hudtweaks.HudTweaksMod" ],
-    "modmenu": [ "com.github.burgerguy.hudtweaks.gui.ModMenuApiImpl" ]
+    "modmenu": [ "com.github.burgerguy.hudtweaks.ModMenuApiImpl" ]
   },
   "mixins": [
     "hudtweaks.mixins.json"

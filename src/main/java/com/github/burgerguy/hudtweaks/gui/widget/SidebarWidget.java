@@ -21,11 +21,13 @@ import net.minecraft.client.gui.Drawable;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.widget.AbstractButtonWidget;
+import net.minecraft.client.resource.language.I18n;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.LiteralText;
+import net.minecraft.text.TranslatableText;
 
-public class SidebarElement extends AbstractParentElement implements Drawable {
+public class SidebarWidget extends AbstractParentElement implements Drawable {
 	private static final NumberFormat RELATIVE_FORMATTER = new DecimalFormat("#.000");
+	@SuppressWarnings("unused")
 	private static final NumberFormat OFFSET_FORMATTER = new DecimalFormat("####");
 	
 	private final List<AbstractButtonWidget> buttons = Lists.newArrayList();
@@ -39,7 +41,7 @@ public class SidebarElement extends AbstractParentElement implements Drawable {
 	private final AnchorButtonWidget yAnchorButton;
 
 	
-	public SidebarElement(HudTweaksOptionsScreen optionsScreen, int width, int color) {
+	public SidebarWidget(HudTweaksOptionsScreen optionsScreen, int width, int color) {
 		this.optionsScreen = optionsScreen;
 		this.width = width;
 		this.color = color;
@@ -47,7 +49,7 @@ public class SidebarElement extends AbstractParentElement implements Drawable {
 		this.xRelativeSlider = new CustomSliderWidget(4, 70, this.width - 8, 14, 0.0) {
 			@Override
 			protected void updateMessage() {
-				this.setMessage(new LiteralText("Relative Pos: " + RELATIVE_FORMATTER.format(this.value)));
+				this.setMessage(new TranslatableText("hudtweaks.options.relative_pos.display", RELATIVE_FORMATTER.format(this.value)));
 			}
 			
 			@Override
@@ -69,7 +71,7 @@ public class SidebarElement extends AbstractParentElement implements Drawable {
 		this.yRelativeSlider = new CustomSliderWidget(4, 110, this.width - 8, 14, 0.0) {
 			@Override
 			protected void updateMessage() {
-				this.setMessage(new LiteralText("Relative Pos: " + RELATIVE_FORMATTER.format(this.value)));
+				this.setMessage(new TranslatableText("hudtweaks.options.relative_pos.display", RELATIVE_FORMATTER.format(this.value)));
 			}
 			
 			@Override
@@ -129,10 +131,11 @@ public class SidebarElement extends AbstractParentElement implements Drawable {
 	public void render(MatrixStack matrixStack, int mouseX, int mouseY, float delta) {
 		DrawableHelper.fill(matrixStack, 0, 0, width, optionsScreen.height, color);
 		
+		@SuppressWarnings("resource")
 		TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
 		HudElementWidget focusedHudElement = optionsScreen.getFocusedHudElement();
 		if (focusedHudElement != null) {
-			textRenderer.drawWithShadow(matrixStack, "Anchor Type:", 8, 50 + 4, 0xCCFFFFFF);
+			textRenderer.drawWithShadow(matrixStack, I18n.translate("hudtweaks.options.anchor_type.display"), 8, 50 + 4, 0xCCFFFFFF);
 			xAnchorButton.render(matrixStack, mouseX, mouseY, delta);
 			textRenderer.drawWithShadow(matrixStack, "Anchor Type:", 8, 90 + 4, 0xCCFFFFFF);
 			yAnchorButton.render(matrixStack, mouseX, mouseY, delta);

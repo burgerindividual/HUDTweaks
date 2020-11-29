@@ -1,19 +1,17 @@
 package com.github.burgerguy.hudtweaks.gui;
 
 import java.awt.Point;
-import java.util.Map;
-import java.util.Map.Entry;
 
 import org.lwjgl.glfw.GLFW;
 
 import com.github.burgerguy.hudtweaks.gui.HudPosHelper.Anchor;
 import com.github.burgerguy.hudtweaks.util.Util;
-import com.github.burgerguy.hudtweaks.util.gui.HudCoordinatesSupplier;
+import com.github.burgerguy.hudtweaks.util.gui.MatrixCache.UpdateEvent;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.SerializedName;
-import com.google.gson.reflect.TypeToken;
 
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.Drawable;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.Element;
@@ -22,34 +20,21 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Matrix4f;
 
-public class HudElement {
+public abstract class HudElement {
 	private transient final String identifier;
-	private transient final int elementWidth;
-	private transient final int elementHeight;
-	private transient final HudCoordinatesSupplier defaultCoordsSupplier;
+	private transient final UpdateEvent[] updateEvents;
 	
 	@SerializedName(value = "xPos")
 	private final HudPosHelper xPosHelper;
 	@SerializedName(value = "yPos")
 	private final HudPosHelper yPosHelper;
+	// TODO: add rotation and scale. the anchor points of these should be retrieved from the HudPosHelpers
 	
-	/**
-	 * The element specific options are only used by subclasses that want
-	 * to take advantage of it.
-	 */
-	private final Map<String, Object> elementOptions;
-	
-	/**
-	 * The extraSettingsMap can be null.
-	 */
-	public HudElement(String identifier, int elementWidth, int elementHeight, HudCoordinatesSupplier defaultCoordsSupplier, Map<String, Object> defaultElementOptions) {
+	public HudElement(String identifier, UpdateEvent... updateEvents) {
 		this.identifier = identifier;
-		this.elementWidth = elementWidth;
-		this.elementHeight = elementHeight;
-		this.defaultCoordsSupplier = defaultCoordsSupplier;
-		this.xPosHelper = new HudPosHelper(elementWidth);
-		this.yPosHelper = new HudPosHelper(elementHeight);
-		this.elementOptions = defaultElementOptions;
+		this.updateEvents = updateEvents;
+		this.xPosHelper = new HudPosHelper();
+		this.yPosHelper = new HudPosHelper();
 	}
 	
 	public String getIdentifier() {
@@ -64,29 +49,24 @@ public class HudElement {
 		return yPosHelper;
 	}
 	
-	public int getWidth() {
-		return elementWidth;
-	}
+	public abstract int getWidth(MinecraftClient client);
 
-	public int getHeight() {
-		return elementHeight;
+	public abstract int getHeight(MinecraftClient client);
+	
+	/**
+	 * Calculates the top left coordinate of the default position.
+	 */
+	public abstract Point calculateDefaultCoords(MinecraftClient client);
+	
+	public boolean shouldUpdateOnEvent(UpdateEvent event) {
+		for (UpdateEvent e : updateEvents) {
+			if (event.equals(e)) return true;
+		}
+		return false;
 	}
 	
 	public boolean requiresUpdate() {
 		return xPosHelper.requiresUpdate() || yPosHelper.requiresUpdate();
-	}
-	
-	public void setElementOption(String identifier, Object value) {
-		if (elementOptions == null) Util.LOGGER.error("Element doesn't have any options");
-		if (elementOptions.replace(identifier, value) == null) {
-			Util.LOGGER.error("Element option " + identifier + " doesn't exist in element " + this.identifier);
-		}
-	}
-	
-	public Object getElementOption(String identifier) {
-		if (elementOptions == null) Util.LOGGER.error("Element doesn't have any options");
-		if (!elementOptions.containsKey(identifier)) Util.LOGGER.error("Element option " + identifier + " doesn't exist in element " + this.identifier);
-		return elementOptions.get(identifier);
 	}
 	
 	private void setUpdated() {
@@ -94,14 +74,10 @@ public class HudElement {
 		xPosHelper.setUpdated();
 	}
 	
-	public Point calculateDefaultCoords(int screenWidth, int screenHeight) {
-		return defaultCoordsSupplier.getPos(screenWidth, screenHeight);	// top left coordinate of default
-	}
-	
-	public Matrix4f calculateMatrix(int screenWidth, int screenHeight) {
-		Point defaultCoords = calculateDefaultCoords(screenWidth, screenHeight);
-		int calculatedX = xPosHelper.calculateScreenPos(screenWidth, defaultCoords.x);
-		int calculatedY = yPosHelper.calculateScreenPos(screenHeight, defaultCoords.y);
+	public Matrix4f calculateMatrix(MinecraftClient client) {		
+		Point defaultCoords = calculateDefaultCoords(client);
+		int calculatedX = xPosHelper.calculateScreenPos(client.getWindow().getScaledWidth(), this.getWidth(client), defaultCoords.x);
+		int calculatedY = yPosHelper.calculateScreenPos(client.getWindow().getScaledHeight(), this.getHeight(client), defaultCoords.y);
 		
 		Matrix4f matrix = Matrix4f.translate(calculatedX - defaultCoords.x,
 											 calculatedY - defaultCoords.y,
@@ -111,6 +87,10 @@ public class HudElement {
 		return matrix;
 	}
 	
+	/**
+	 * Override if any extra options are added to the element.
+	 * Make sure to call super before anything else.
+	 */
 	public void updateFromJson(JsonElement json) {
 		JsonObject elementJson = json.getAsJsonObject();
 		
@@ -123,14 +103,6 @@ public class HudElement {
 		yPosHelper.setAnchor(Util.GSON.fromJson(yPosJson.get("anchor"), HudPosHelper.Anchor.class));
 		yPosHelper.setOffset(yPosJson.get("offset").getAsDouble());
 		yPosHelper.setRelativePos(yPosJson.get("relativePos").getAsDouble());
-		
-		JsonElement optionsJson = elementJson.get("elementOptions");
-		if (optionsJson != null) {
-			Map<String, Object> optionsFromJson = Util.GSON.fromJson(optionsJson, TypeToken.getParameterized(Map.class, String.class, Object.class).getType());
-			for (Entry<String, Object> entry : optionsFromJson.entrySet()) {
-				setElementOption(entry.getKey(), entry.getValue());
-			}
-		}
 	}
 	
 	public HudElementWidget createWidget(HudTweaksOptionsScreen optionsScreen) {
@@ -149,9 +121,14 @@ public class HudElement {
 
 		@Override
 		public void render(MatrixStack matrixStack, int mouseX, int mouseY, float delta) {
-			Point defaultCoords = calculateDefaultCoords(optionsScreen.width, optionsScreen.height);
-			int x1 = xPosHelper.calculateScreenPos(optionsScreen.width, defaultCoords.x);
-			int y1 = yPosHelper.calculateScreenPos(optionsScreen.height, defaultCoords.y);
+			MinecraftClient client = MinecraftClient.getInstance();
+			
+			Point defaultCoords = calculateDefaultCoords(client);
+			int elementWidth = HudElement.this.getWidth(client);
+			int elementHeight = HudElement.this.getHeight(client);
+			
+			int x1 = xPosHelper.calculateScreenPos(client.getWindow().getScaledWidth(), elementWidth, defaultCoords.x);
+			int y1 = yPosHelper.calculateScreenPos(client.getWindow().getScaledHeight(), elementHeight, defaultCoords.y);
 			int x2 = x1 + elementWidth;
 			int y2 = y1 + elementHeight;
 			
@@ -183,16 +160,18 @@ public class HudElement {
 			}
 			optionsScreen.updateSidebarValues();
 			return true;
-			// TODO: implement dragging relative normally and dragging offset with shift
-			// make sure when it's implemented to only check the bounds when it's initially clicked, and then
-			// don't check again until release
 		}
 		
 		@Override
 		public boolean isMouseOver(double mouseX, double mouseY) {
-			Point defaultCoords = calculateDefaultCoords(optionsScreen.width, optionsScreen.height);
-			int x1 = xPosHelper.calculateScreenPos(optionsScreen.width, defaultCoords.x);
-			int y1 = yPosHelper.calculateScreenPos(optionsScreen.height, defaultCoords.y);
+			MinecraftClient client = MinecraftClient.getInstance();
+			
+			Point defaultCoords = calculateDefaultCoords(client);
+			int elementWidth = HudElement.this.getWidth(client);
+			int elementHeight = HudElement.this.getHeight(client);
+			
+			int x1 = xPosHelper.calculateScreenPos(client.getWindow().getScaledWidth(), elementWidth, defaultCoords.x);
+			int y1 = yPosHelper.calculateScreenPos(client.getWindow().getScaledHeight(), elementHeight, defaultCoords.y);
 			int x2 = x1 + elementWidth;
 			int y2 = y1 + elementHeight;
 			return mouseX >= x1 && mouseX <= x2 && mouseY >= y1 && mouseY <= y2;

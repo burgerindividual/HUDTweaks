@@ -1,0 +1,5 @@
+{
+	"hudtweaks.options": "HUDTweaks Config",
+	"hudtweaks.options.relative_pos.display": "Relative Pos: %s",
+	"hudtweaks.options.anchor_type.display": "Anchor Type:"
+}

@@ -1,4 +1,6 @@
-package com.github.burgerguy.hudtweaks.gui;
+package com.github.burgerguy.hudtweaks;
+
+import com.github.burgerguy.hudtweaks.gui.HudTweaksOptionsScreen;
 
 import io.github.prospector.modmenu.api.ConfigScreenFactory;
 import io.github.prospector.modmenu.api.ModMenuApi;

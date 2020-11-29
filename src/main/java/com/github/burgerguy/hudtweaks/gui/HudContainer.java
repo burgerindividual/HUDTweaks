@@ -1,11 +1,11 @@
 package com.github.burgerguy.hudtweaks.gui;
 
-import java.awt.Point;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.github.burgerguy.hudtweaks.gui.element.*;
 import com.github.burgerguy.hudtweaks.util.Util;
 import com.google.gson.JsonElement;
 
@@ -13,21 +13,21 @@ public class HudContainer {
 	private static Map<String, HudElement> elementMap = new HashMap<>();
 	
 	static {
-		HudElement hotbar = new HudElement("hotbar", 182, 22, (w, h) -> new Point((w / 2) - 91, h - 22), null);
+		HudElement hotbar = new HotbarElement();
 		addElementIfAbsent(hotbar.getIdentifier(), hotbar);
 		
-		HudElement expBar = new HudElement("expbar", 182, 12, (w, h) -> new Point((w / 2) - 91, h - 36), null);
+		HudElement expBar = new ExperienceBarElement();
 		addElementIfAbsent(expBar.getIdentifier(), expBar);
 		
 //		HudElement armor = new HudElement("armor", 182, 22, (w, h) -> new Point((w / 2) - 91, h - 22));
 //		addElement(armor.getIdentifier(), armor);
-//		
-		HudElement health = new HudElement("health", 81, 9, (w, h) -> new Point((w / 2) - 91, h - 39), null);
+		
+		HudElement health = new HealthElement();
 		addElement(health.getIdentifier(), health);
 		
-		HudElement food = new HudElement("food", 81, 9, (w, h) -> new Point((w / 2) + 10, h - 39), null);
-		addElement(food.getIdentifier(), food);
-//		
+		HudElement hunger = new HungerElement();
+		addElement(hunger.getIdentifier(), hunger);
+		
 //		HudElement air = new HudElement("air", 182, 22, (w, h) -> new Point((w / 2) - 91, h - 22));
 //		addElement(air.getIdentifier(), air);
 	}

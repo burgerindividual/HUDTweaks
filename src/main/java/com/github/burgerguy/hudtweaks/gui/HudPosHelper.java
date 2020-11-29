@@ -2,12 +2,7 @@ package com.github.burgerguy.hudtweaks.gui;
 
 import com.google.gson.annotations.SerializedName;
 
-public class HudPosHelper {
-	/**
-	 * Either width or height
-	 */
-	private transient final int elementDimension;
-	
+public class HudPosHelper {	
 	/**
 	 * The anchor point for calculation. Defaults to DEFAULT, which
 	 * keeps the position in the unmodified spot.
@@ -31,8 +26,7 @@ public class HudPosHelper {
 	 */
 	private transient boolean requiresUpdate;
 	
-	public HudPosHelper(int elementDimension) {
-		this.elementDimension = elementDimension;
+	public HudPosHelper() {
 	}
 	
 	public Anchor getAnchor() {
@@ -91,7 +85,7 @@ public class HudPosHelper {
 		this.requiresUpdate = true;
 	}
 	
-	public int calculateScreenPos(int screenDimension, int defaultPos) {
+	public int calculateScreenPos(int screenDimension, int elementDimension, int defaultPos) {
 		if (anchor.equals(Anchor.DEFAULT)) {
 			return (int) (defaultPos + offset);
 		}
