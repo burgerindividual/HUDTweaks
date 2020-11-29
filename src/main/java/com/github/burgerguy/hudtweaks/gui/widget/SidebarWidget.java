@@ -137,7 +137,7 @@ public class SidebarWidget extends AbstractParentElement implements Drawable {
 		if (focusedHudElement != null) {
 			textRenderer.drawWithShadow(matrixStack, I18n.translate("hudtweaks.options.anchor_type.display"), 8, 50 + 4, 0xCCFFFFFF);
 			xAnchorButton.render(matrixStack, mouseX, mouseY, delta);
-			textRenderer.drawWithShadow(matrixStack, "Anchor Type:", 8, 90 + 4, 0xCCFFFFFF);
+			textRenderer.drawWithShadow(matrixStack, I18n.translate("hudtweaks.options.anchor_type.display"), 8, 90 + 4, 0xCCFFFFFF);
 			yAnchorButton.render(matrixStack, mouseX, mouseY, delta);
 			xRelativeSlider.render(matrixStack, mouseX, mouseY, delta);
 			yRelativeSlider.render(matrixStack, mouseX, mouseY, delta);
