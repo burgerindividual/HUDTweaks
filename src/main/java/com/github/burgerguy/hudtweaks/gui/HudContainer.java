@@ -14,13 +14,13 @@ public class HudContainer {
 	
 	static {
 		HudElement hotbar = new HotbarElement();
-		addElementIfAbsent(hotbar.getIdentifier(), hotbar);
+		addElement(hotbar.getIdentifier(), hotbar);
 		
 		HudElement expBar = new ExperienceBarElement();
-		addElementIfAbsent(expBar.getIdentifier(), expBar);
+		addElement(expBar.getIdentifier(), expBar);
 		
-//		HudElement armor = new HudElement("armor", 182, 22, (w, h) -> new Point((w / 2) - 91, h - 22));
-//		addElement(armor.getIdentifier(), armor);
+		HudElement armor = new ArmorElement();
+		addElement(armor.getIdentifier(), armor);
 		
 		HudElement health = new HealthElement();
 		addElement(health.getIdentifier(), health);

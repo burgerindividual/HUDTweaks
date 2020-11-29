@@ -95,7 +95,7 @@ public class HudTweaksOptionsScreen extends Screen {
 	
 	@Override
 	public void onClose() {
-		ConfigHelper.saveConfig();
+		ConfigHelper.trySaveConfig();
 		if (this.client.world == null) {
 			this.client.openScreen(this.prevScreen);
 		} else {

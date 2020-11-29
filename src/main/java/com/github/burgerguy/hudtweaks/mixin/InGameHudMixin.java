@@ -56,10 +56,15 @@ public abstract class InGameHudMixin extends DrawableHelper {
 		
 		if (HudTweaksOptionsScreen.isOpen()) super.fillGradient(matrixStack, 0, 0, scaledWidth, scaledHeight, -1072689136, -804253680);
 		
+		this.client.getProfiler().push("fireHudTweaksEvents");
+		this.client.getProfiler().push("createUpdatableElementsArray");
 		this.updatableElements = HudContainer.getElements().toArray(new HudElement[HudContainer.getElements().size()]);
+		this.client.getProfiler().pop();
+		this.client.getProfiler().pop();
 		
 		fireUpdateEvent(UpdateEvent.ON_RENDER);
 		
+		// this will update everything on the first render, as they will all have requiresUpdate true by default
 		for (int i = 0; i < updatableElements.length; i++) {
 			HudElement element = updatableElements[i];
 			if (element != null && element.requiresUpdate()) {
@@ -77,6 +82,8 @@ public abstract class InGameHudMixin extends DrawableHelper {
 	
 	@Unique
 	private void fireUpdateEvent(UpdateEvent event) {
+		this.client.getProfiler().push("fireHudTweaksEvents");
+		this.client.getProfiler().push(event.toString());
 		for (int i = 0; i < updatableElements.length; i++) {
 			HudElement element = updatableElements[i];
 			if (element != null && element.shouldUpdateOnEvent(event)) {
@@ -84,6 +91,8 @@ public abstract class InGameHudMixin extends DrawableHelper {
 				updatableElements[i] = null;
 			}
 		}
+		this.client.getProfiler().pop();
+		this.client.getProfiler().pop();
 	}
 	
 	@Inject(method = "renderHotbar", at = @At(value = "HEAD"))

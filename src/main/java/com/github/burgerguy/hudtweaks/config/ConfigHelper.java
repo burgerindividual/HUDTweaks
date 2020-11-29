@@ -21,7 +21,7 @@ public enum ConfigHelper {
 	public static final Path configFile = FabricLoader.getInstance().getConfigDir().resolve("hudtweaks.json");
 	
 	/**
-	 * Tries to parse the configuration file 
+	 * Tries to parse the configuration file.
 	 */
 	public static void tryLoadConfig() {
 		if (Files.exists(configFile)) {
@@ -43,7 +43,7 @@ public enum ConfigHelper {
 	 * fields that aren't included are set as transient in their
 	 * appropriate classes.
 	 */
-	public static void saveConfig() {
+	public static void trySaveConfig() {
 		Util.LOGGER.log(Level.INFO, "Saving config file...");
 		try (BufferedWriter writer = new BufferedWriter(new FileWriter(configFile.toFile()))) {
 			Util.GSON.toJson(HudContainer.getElementMap(), writer);
