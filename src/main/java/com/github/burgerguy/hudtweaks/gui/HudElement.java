@@ -241,7 +241,7 @@ public abstract class HudElement {
 			MinecraftClient client = MinecraftClient.getInstance();
 			
 			Point defaultCoords = calculateDefaultCoords(client);
-			//TODO: try to cache these
+			// i don't think we can cache these because they might change in multiplayer
 			int elementWidth = HudElement.this.getWidth(client);
 			int elementHeight = HudElement.this.getHeight(client);
 			
