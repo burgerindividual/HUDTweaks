@@ -8,10 +8,10 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.LiteralText;
 import net.minecraft.util.math.MathHelper;
 
-public abstract class CustomSliderWidget extends SliderWidget {
+public abstract class HudTweaksSliderWidget extends SliderWidget {
 	private static final int HANDLE_WIDTH = 7;
 
-	public CustomSliderWidget(int x, int y, int width, int height, double value) {
+	public HudTweaksSliderWidget(int x, int y, int width, int height, double value) {
 		super(x, y, width, height, LiteralText.EMPTY, value);
 		this.setAlpha(0.8F);
 		this.updateMessage();

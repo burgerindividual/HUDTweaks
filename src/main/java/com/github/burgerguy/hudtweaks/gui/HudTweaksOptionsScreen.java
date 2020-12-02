@@ -2,7 +2,7 @@ package com.github.burgerguy.hudtweaks.gui;
 
 import com.github.burgerguy.hudtweaks.config.ConfigHelper;
 import com.github.burgerguy.hudtweaks.gui.HudElement.HudElementWidget;
-import com.github.burgerguy.hudtweaks.gui.widget.SidebarWidget;
+import com.github.burgerguy.hudtweaks.gui.widget.HudTweaksSidebar;
 
 import net.minecraft.client.gui.Drawable;
 import net.minecraft.client.gui.Element;
@@ -18,7 +18,7 @@ public class HudTweaksOptionsScreen extends Screen {
 	private static boolean isOpen = false;
 	
 	private final Screen prevScreen;
-	private final SidebarWidget sidebar;
+	private final HudTweaksSidebar sidebar;
 	
 	private HudElementWidget focusedHudElement;
 	
@@ -26,7 +26,7 @@ public class HudTweaksOptionsScreen extends Screen {
 		super(new TranslatableText("hudtweaks.options"));
 		this.prevScreen = prevScreen;
 		
-		this.sidebar = new SidebarWidget(this, SIDEBAR_WIDTH, SIDEBAR_COLOR);
+		this.sidebar = new HudTweaksSidebar(this, SIDEBAR_WIDTH, SIDEBAR_COLOR);
 	}
 	
 	@Override
@@ -108,27 +108,21 @@ public class HudTweaksOptionsScreen extends Screen {
 	public void setFocused(Element focused) {
 		if (focused instanceof HudElementWidget) {
 			this.focusedHudElement = (HudElementWidget) focused;
-			updateSidebarValues();
+			this.sidebar.clearDrawables();
+			((HudElementWidget) focused).getParent().fillSidebar(this.sidebar);
 		}
 		
 		if (focused == null) {
 			this.focusedHudElement = null;
+			this.sidebar.clearDrawables();
 		}
 		
 		super.setFocused(focused);
 	}
 	
-	public void updateSidebarValues() {
-		sidebar.updateValues();
-	}
-	
 	public boolean isHudElementFocused(HudElementWidget element) {// TODO: allow changing focus of elements with arrows, make tab only change focus for sidebar
 		if (element == null || this.focusedHudElement == null) return false;
 		return this.focusedHudElement.equals(element);
-	}
-	
-	public HudElementWidget getFocusedHudElement() {
-		return this.focusedHudElement;
 	}
 	
 	public static boolean isOpen() {

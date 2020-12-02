@@ -27,6 +27,13 @@ public class AnchorButtonWidget extends AbstractButtonWidget {
 		this.onClick = onClick;
 	}
 	
+	public AnchorButtonWidget(int x, int y, boolean isXAnchor, Anchor startingAnchor, Consumer<Anchor> onClick) {
+		super(x, y, 16, 16, LiteralText.EMPTY);
+		this.isXAnchor = isXAnchor;
+		this.onClick = onClick;
+		setAnchor(startingAnchor);
+	}
+	
 	@Override
 	public void renderButton(MatrixStack matrixStack, int mouseX, int mouseY, float delta) {
 		if (currentAnchor != null) {

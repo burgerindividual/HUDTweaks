@@ -5,6 +5,10 @@ import java.awt.Point;
 import org.lwjgl.glfw.GLFW;
 
 import com.github.burgerguy.hudtweaks.gui.HudPosHelper.Anchor;
+import com.github.burgerguy.hudtweaks.gui.widget.AnchorButtonWidget;
+import com.github.burgerguy.hudtweaks.gui.widget.HudTweaksLabel;
+import com.github.burgerguy.hudtweaks.gui.widget.HudTweaksSidebar;
+import com.github.burgerguy.hudtweaks.gui.widget.HudTweaksSliderWidget;
 import com.github.burgerguy.hudtweaks.util.Util;
 import com.github.burgerguy.hudtweaks.util.gui.MatrixCache.UpdateEvent;
 import com.google.gson.JsonElement;
@@ -16,7 +20,9 @@ import net.minecraft.client.gui.Drawable;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.resource.language.I18n;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.text.TranslatableText;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Matrix4f;
 
@@ -105,6 +111,73 @@ public abstract class HudElement {
 		yPosHelper.setRelativePos(yPosJson.get("relativePos").getAsDouble());
 	}
 	
+	/**
+	 * Override if any extra options are added to the element.
+	 * Make sure to call super before anything else.
+	 */
+	public void fillSidebar(HudTweaksSidebar sidebar) {
+		HudTweaksSliderWidget xRelativeSlider = new HudTweaksSliderWidget(4, 70, sidebar.width - 8, 14, HudElement.this.getXPosHelper().getRelativePos()) {
+			@Override
+			protected void updateMessage() {
+				this.setMessage(new TranslatableText("hudtweaks.options.relative_pos.display", Util.RELATIVE_POS_FORMATTER.format(this.value)));
+			}
+			
+			@Override
+			public void applyValue() {
+				HudElement.this.getXPosHelper().setRelativePos(value);
+			}
+			
+			@Override
+			public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+				boolean bl = keyCode == 263;
+				if (bl || keyCode == 262) {
+					this.setValue(this.value + (bl ? -0.001 : 0.001));
+					return true;
+				}
+				return false;
+			}
+		};
+		
+		HudTweaksSliderWidget yRelativeSlider = new HudTweaksSliderWidget(4, 110, sidebar.width - 8, 14, HudElement.this.getYPosHelper().getRelativePos()) {
+			@Override
+			protected void updateMessage() {
+				this.setMessage(new TranslatableText("hudtweaks.options.relative_pos.display", Util.RELATIVE_POS_FORMATTER.format(this.value)));
+			}
+			
+			@Override
+			public void applyValue() {
+				HudElement.this.getYPosHelper().setRelativePos(value);
+			}
+			
+			@Override
+			public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+				boolean bl = keyCode == 263;
+				if (bl || keyCode == 262) {
+					this.setValue(this.value + (bl ? -0.001 : 0.001));
+					return true;
+				}
+				return false;
+			}
+		};
+		
+		AnchorButtonWidget xAnchorButton = new AnchorButtonWidget(80, 50, true, HudElement.this.getXPosHelper().getAnchor(), a -> {
+			HudElement.this.getXPosHelper().setAnchor(a);
+			xRelativeSlider.active = !a.equals(Anchor.DEFAULT);
+		});
+		
+		AnchorButtonWidget yAnchorButton = new AnchorButtonWidget(80, 90, false, HudElement.this.getYPosHelper().getAnchor(), a -> {
+			HudElement.this.getYPosHelper().setAnchor(a);
+			yRelativeSlider.active = !a.equals(Anchor.DEFAULT);
+		});
+		
+		sidebar.addDrawable(xRelativeSlider);
+		sidebar.addDrawable(yRelativeSlider);
+		sidebar.addDrawable(xAnchorButton);
+		sidebar.addDrawable(yAnchorButton);
+		sidebar.addDrawable(new HudTweaksLabel(I18n.translate("hudtweaks.options.anchor_type.display"), 8, 54));
+		sidebar.addDrawable(new HudTweaksLabel(I18n.translate("hudtweaks.options.anchor_type.display"), 8, 94));
+	}
+	
 	public HudElementWidget createWidget(HudTweaksOptionsScreen optionsScreen) {
 		return new HudElementWidget(optionsScreen);
 	}
@@ -158,7 +231,6 @@ public abstract class HudElement {
 				xPosHelper.setOffset(xPosHelper.getOffset() + deltaX);
 				yPosHelper.setOffset(yPosHelper.getOffset() + deltaY);
 			}
-			optionsScreen.updateSidebarValues();
 			return true;
 		}
 		

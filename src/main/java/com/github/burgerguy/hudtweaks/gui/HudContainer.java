@@ -9,7 +9,9 @@ import com.github.burgerguy.hudtweaks.gui.element.*;
 import com.github.burgerguy.hudtweaks.util.Util;
 import com.google.gson.JsonElement;
 
-public class HudContainer {
+public enum HudContainer {
+	;
+	
 	private static Map<String, HudElement> elementMap = new HashMap<>();
 	
 	static {
