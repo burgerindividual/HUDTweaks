@@ -3,6 +3,8 @@ package com.github.burgerguy.hudtweaks.gui.element;
 import java.awt.Point;
 
 import com.github.burgerguy.hudtweaks.gui.HudElement;
+import com.github.burgerguy.hudtweaks.gui.widget.HudTweaksLabel;
+import com.github.burgerguy.hudtweaks.gui.widget.HudTweaksSidebar;
 import com.github.burgerguy.hudtweaks.util.gui.MatrixCache.UpdateEvent;
 import com.google.gson.JsonElement;
 
@@ -71,6 +73,12 @@ public class HealthElement extends HudElement {
 	public void updateFromJson(JsonElement json) {
 		super.updateFromJson(json);
 		setFlipped(json.getAsJsonObject().get("flipped").getAsBoolean());
+	}
+	
+	@Override
+	public void fillSidebar(HudTweaksSidebar sidebar) {
+		super.fillSidebar(sidebar);
+		sidebar.addDrawable(new HudTweaksLabel("test", 8, 120));
 	}
 	
 }

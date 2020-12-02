@@ -170,6 +170,8 @@ public abstract class HudElement {
 			yRelativeSlider.active = !a.equals(Anchor.DEFAULT);
 		});
 		
+		xRelativeSlider.active = !HudElement.this.getXPosHelper().getAnchor().equals(Anchor.DEFAULT);
+		yRelativeSlider.active = !HudElement.this.getYPosHelper().getAnchor().equals(Anchor.DEFAULT);
 		sidebar.addDrawable(xRelativeSlider);
 		sidebar.addDrawable(yRelativeSlider);
 		sidebar.addDrawable(xAnchorButton);
