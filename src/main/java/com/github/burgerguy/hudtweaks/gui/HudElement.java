@@ -146,7 +146,7 @@ public abstract class HudElement {
 			}
 		};
 		
-		HudTweaksSliderWidget yRelativeSlider = new HudTweaksSliderWidget(4, 130, sidebar.width - 8, 14, HudElement.this.getYPosHelper().getRelativePos()) {
+		HudTweaksSliderWidget yRelativeSlider = new HudTweaksSliderWidget(4, 153, sidebar.width - 8, 14, HudElement.this.getYPosHelper().getRelativePos()) {
 			@Override
 			protected void updateMessage() {
 				this.setMessage(new TranslatableText("hudtweaks.options.relative_pos.display", Util.RELATIVE_POS_FORMATTER.format(this.value)));
@@ -179,7 +179,7 @@ public abstract class HudElement {
 			xRelativeSlider.active = !a.equals(Anchor.DEFAULT);
 		});
 		
-		AnchorButtonWidget yAnchorButton = new AnchorButtonWidget(sidebar.width - 20, 110, false, HudElement.this.getYPosHelper().getAnchor(), a -> {
+		AnchorButtonWidget yAnchorButton = new AnchorButtonWidget(sidebar.width - 20, 133, false, HudElement.this.getYPosHelper().getAnchor(), a -> {
 			HudElement.this.getYPosHelper().setAnchor(a);
 			yRelativeSlider.active = !a.equals(Anchor.DEFAULT);
 		});
@@ -187,7 +187,7 @@ public abstract class HudElement {
 		xRelativeSlider.active = !HudElement.this.getXPosHelper().getAnchor().equals(Anchor.DEFAULT);
 		yRelativeSlider.active = !HudElement.this.getYPosHelper().getAnchor().equals(Anchor.DEFAULT);
 		
-		HudTweaksNumberBox xOffsetBox = new HudTweaksNumberBox(MinecraftClient.getInstance().textRenderer, 44, 91, sidebar.width - 49, 12, new TranslatableText("hudtweaks.options.offset.name")) {
+		HudTweaksNumberBox xOffsetBox = new HudTweaksNumberBox(MinecraftClient.getInstance().textRenderer, 44, 90, sidebar.width - 49, 12, new TranslatableText("hudtweaks.options.offset.name")) {
 			@Override
 			public void updateValue() {
 				this.setText(Double.toString(HudElement.this.getXPosHelper().getOffset()));
@@ -204,7 +204,7 @@ public abstract class HudElement {
 			}
 		});
 		
-		HudTweaksNumberBox yOffsetBox = new HudTweaksNumberBox(MinecraftClient.getInstance().textRenderer, 44, 151, sidebar.width - 49, 12, new TranslatableText("hudtweaks.options.offset.name")) {
+		HudTweaksNumberBox yOffsetBox = new HudTweaksNumberBox(MinecraftClient.getInstance().textRenderer, 44, 173, sidebar.width - 49, 12, new TranslatableText("hudtweaks.options.offset.name")) {
 			@Override
 			public void updateValue() {
 				this.setText(Double.toString(HudElement.this.getYPosHelper().getOffset()));
@@ -227,10 +227,10 @@ public abstract class HudElement {
 		sidebar.addDrawable(yAnchorButton);
 		sidebar.addDrawable(xOffsetBox);
 		sidebar.addDrawable(yOffsetBox);
-		sidebar.addDrawable(new HudTweaksLabel(I18n.translate("hudtweaks.options.offset.display"), 5, 94));
-		sidebar.addDrawable(new HudTweaksLabel(I18n.translate("hudtweaks.options.offset.display"), 5, 154));
+		sidebar.addDrawable(new HudTweaksLabel(I18n.translate("hudtweaks.options.offset.display"), 5, 92));
+		sidebar.addDrawable(new HudTweaksLabel(I18n.translate("hudtweaks.options.offset.display"), 5, 175));
 		sidebar.addDrawable(new HudTweaksLabel(I18n.translate("hudtweaks.options.anchor_type.display"), 5, 54));
-		sidebar.addDrawable(new HudTweaksLabel(I18n.translate("hudtweaks.options.anchor_type.display"), 5, 114));
+		sidebar.addDrawable(new HudTweaksLabel(I18n.translate("hudtweaks.options.anchor_type.display"), 5, 137));
 	}
 	
 	public HudElementWidget createWidget(HudTweaksOptionsScreen optionsScreen) {
