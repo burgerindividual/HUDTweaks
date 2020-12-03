@@ -8,7 +8,7 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.LiteralText;
 import net.minecraft.util.math.MathHelper;
 
-public abstract class HudTweaksSliderWidget extends SliderWidget {
+public abstract class HudTweaksSliderWidget extends SliderWidget implements ValueUpdatable {
 	private static final int HANDLE_WIDTH = 7;
 
 	public HudTweaksSliderWidget(int x, int y, int width, int height, double value) {
@@ -84,4 +84,5 @@ public abstract class HudTweaksSliderWidget extends SliderWidget {
 	protected void onDrag(double mouseX, double mouseY, double deltaX, double deltaY) {
 		this.setValueFromMouse(mouseX);
 	}
+	
 }

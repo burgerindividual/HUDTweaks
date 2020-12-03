@@ -32,6 +32,20 @@ public class HudTweaksSidebar extends AbstractParentElement implements Drawable 
 		this.color = color;
 	}
 	
+	public void updateValues() {
+		for (Drawable drawable : globalDrawables) {
+			if (drawable instanceof ValueUpdatable) {
+				((ValueUpdatable) drawable).updateValue();
+			}
+		}
+		
+		for (Drawable drawable : drawables) {
+			if (drawable instanceof ValueUpdatable) {
+				((ValueUpdatable) drawable).updateValue();
+			}
+		}
+	}
+	
 	public void addDrawable(Drawable drawable) {
 		drawables.add(drawable);
 		if (drawable instanceof Element) {

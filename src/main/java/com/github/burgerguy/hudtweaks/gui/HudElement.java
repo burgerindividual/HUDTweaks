@@ -7,6 +7,7 @@ import org.lwjgl.glfw.GLFW;
 import com.github.burgerguy.hudtweaks.gui.HudPosHelper.Anchor;
 import com.github.burgerguy.hudtweaks.gui.widget.AnchorButtonWidget;
 import com.github.burgerguy.hudtweaks.gui.widget.HudTweaksLabel;
+import com.github.burgerguy.hudtweaks.gui.widget.HudTweaksNumberBox;
 import com.github.burgerguy.hudtweaks.gui.widget.HudTweaksSidebar;
 import com.github.burgerguy.hudtweaks.gui.widget.HudTweaksSliderWidget;
 import com.github.burgerguy.hudtweaks.util.Util;
@@ -115,6 +116,7 @@ public abstract class HudElement {
 	 * Override if any extra options are added to the element.
 	 * Make sure to call super before anything else.
 	 */
+	@SuppressWarnings("resource")
 	public void fillSidebar(HudTweaksSidebar sidebar) {
 		HudTweaksSliderWidget xRelativeSlider = new HudTweaksSliderWidget(4, 70, sidebar.width - 8, 14, HudElement.this.getXPosHelper().getRelativePos()) {
 			@Override
@@ -136,9 +138,15 @@ public abstract class HudElement {
 				}
 				return false;
 			}
+
+			@Override
+			public void updateValue() {
+				this.value = MathHelper.clamp(HudElement.this.getXPosHelper().getRelativePos(), 0.0D, 1.0D);
+				this.updateMessage();
+			}
 		};
 		
-		HudTweaksSliderWidget yRelativeSlider = new HudTweaksSliderWidget(4, 110, sidebar.width - 8, 14, HudElement.this.getYPosHelper().getRelativePos()) {
+		HudTweaksSliderWidget yRelativeSlider = new HudTweaksSliderWidget(4, 130, sidebar.width - 8, 14, HudElement.this.getYPosHelper().getRelativePos()) {
 			@Override
 			protected void updateMessage() {
 				this.setMessage(new TranslatableText("hudtweaks.options.relative_pos.display", Util.RELATIVE_POS_FORMATTER.format(this.value)));
@@ -158,26 +166,71 @@ public abstract class HudElement {
 				}
 				return false;
 			}
+
+			@Override
+			public void updateValue() {
+				this.value = MathHelper.clamp(HudElement.this.getYPosHelper().getRelativePos(), 0.0D, 1.0D);
+				this.updateMessage();
+			}
 		};
 		
-		AnchorButtonWidget xAnchorButton = new AnchorButtonWidget(80, 50, true, HudElement.this.getXPosHelper().getAnchor(), a -> {
+		AnchorButtonWidget xAnchorButton = new AnchorButtonWidget(sidebar.width - 20, 50, true, HudElement.this.getXPosHelper().getAnchor(), a -> {
 			HudElement.this.getXPosHelper().setAnchor(a);
 			xRelativeSlider.active = !a.equals(Anchor.DEFAULT);
 		});
 		
-		AnchorButtonWidget yAnchorButton = new AnchorButtonWidget(80, 90, false, HudElement.this.getYPosHelper().getAnchor(), a -> {
+		AnchorButtonWidget yAnchorButton = new AnchorButtonWidget(sidebar.width - 20, 110, false, HudElement.this.getYPosHelper().getAnchor(), a -> {
 			HudElement.this.getYPosHelper().setAnchor(a);
 			yRelativeSlider.active = !a.equals(Anchor.DEFAULT);
 		});
 		
 		xRelativeSlider.active = !HudElement.this.getXPosHelper().getAnchor().equals(Anchor.DEFAULT);
 		yRelativeSlider.active = !HudElement.this.getYPosHelper().getAnchor().equals(Anchor.DEFAULT);
+		
+		HudTweaksNumberBox xOffsetBox = new HudTweaksNumberBox(MinecraftClient.getInstance().textRenderer, 44, 91, sidebar.width - 49, 12, new TranslatableText("hudtweaks.options.offset.name")) {
+			@Override
+			public void updateValue() {
+				this.setText(Double.toString(HudElement.this.getXPosHelper().getOffset()));
+			}
+		};
+		xOffsetBox.setText(Double.toString(HudElement.this.getXPosHelper().getOffset()));
+		xOffsetBox.setChangedListener(s -> {
+			if (s.equals("")) {
+				HudElement.this.getXPosHelper().setOffset(0.0D);
+			} else {
+				try {
+					HudElement.this.getXPosHelper().setOffset(Double.parseDouble(s));
+				} catch(NumberFormatException ignored) {}
+			}
+		});
+		
+		HudTweaksNumberBox yOffsetBox = new HudTweaksNumberBox(MinecraftClient.getInstance().textRenderer, 44, 151, sidebar.width - 49, 12, new TranslatableText("hudtweaks.options.offset.name")) {
+			@Override
+			public void updateValue() {
+				this.setText(Double.toString(HudElement.this.getYPosHelper().getOffset()));
+			}
+		};
+		yOffsetBox.setText(Double.toString(HudElement.this.getYPosHelper().getOffset()));
+		yOffsetBox.setChangedListener(s -> {
+			if (s.equals("")) {
+				HudElement.this.getYPosHelper().setOffset(0.0D);
+			} else {
+				try {
+					HudElement.this.getYPosHelper().setOffset(Double.parseDouble(s));
+				} catch(NumberFormatException ignored) {}
+			}
+		});
+		
 		sidebar.addDrawable(xRelativeSlider);
 		sidebar.addDrawable(yRelativeSlider);
 		sidebar.addDrawable(xAnchorButton);
 		sidebar.addDrawable(yAnchorButton);
-		sidebar.addDrawable(new HudTweaksLabel(I18n.translate("hudtweaks.options.anchor_type.display"), 8, 54));
-		sidebar.addDrawable(new HudTweaksLabel(I18n.translate("hudtweaks.options.anchor_type.display"), 8, 94));
+		sidebar.addDrawable(xOffsetBox);
+		sidebar.addDrawable(yOffsetBox);
+		sidebar.addDrawable(new HudTweaksLabel(I18n.translate("hudtweaks.options.offset.display"), 5, 94));
+		sidebar.addDrawable(new HudTweaksLabel(I18n.translate("hudtweaks.options.offset.display"), 5, 154));
+		sidebar.addDrawable(new HudTweaksLabel(I18n.translate("hudtweaks.options.anchor_type.display"), 5, 54));
+		sidebar.addDrawable(new HudTweaksLabel(I18n.translate("hudtweaks.options.anchor_type.display"), 5, 114));
 	}
 	
 	public HudElementWidget createWidget(HudTweaksOptionsScreen optionsScreen) {
@@ -233,6 +286,7 @@ public abstract class HudElement {
 				xPosHelper.setOffset(xPosHelper.getOffset() + deltaX);
 				yPosHelper.setOffset(yPosHelper.getOffset() + deltaY);
 			}
+			optionsScreen.updateSidebarValues();
 			return true;
 		}
 		

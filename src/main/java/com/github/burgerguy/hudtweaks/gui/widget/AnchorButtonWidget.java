@@ -12,6 +12,7 @@ import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.widget.AbstractButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.LiteralText;
+import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 
 public class AnchorButtonWidget extends AbstractButtonWidget {
@@ -22,15 +23,13 @@ public class AnchorButtonWidget extends AbstractButtonWidget {
 	private DisplayedAnchor currentAnchor;
 
 	public AnchorButtonWidget(int x, int y, boolean isXAnchor, Consumer<Anchor> onClick) {
-		super(x, y, 16, 16, LiteralText.EMPTY);
+		super(x, y, 16, 16, new TranslatableText("hudtweaks.options.anchor_type.name"));
 		this.isXAnchor = isXAnchor;
 		this.onClick = onClick;
 	}
 	
 	public AnchorButtonWidget(int x, int y, boolean isXAnchor, Anchor startingAnchor, Consumer<Anchor> onClick) {
-		super(x, y, 16, 16, LiteralText.EMPTY);
-		this.isXAnchor = isXAnchor;
-		this.onClick = onClick;
+		this(x, y, isXAnchor, onClick);
 		setAnchor(startingAnchor);
 	}
 	

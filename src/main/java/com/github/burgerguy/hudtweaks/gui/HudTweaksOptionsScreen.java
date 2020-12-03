@@ -106,7 +106,7 @@ public class HudTweaksOptionsScreen extends Screen {
 	
 	@Override
 	public void setFocused(Element focused) {
-		if (focused instanceof HudElementWidget) {
+		if (focused instanceof HudElementWidget && !focused.equals(focusedHudElement)) {
 			this.focusedHudElement = (HudElementWidget) focused;
 			this.sidebar.clearDrawables();
 			((HudElementWidget) focused).getParent().fillSidebar(this.sidebar);
@@ -123,6 +123,10 @@ public class HudTweaksOptionsScreen extends Screen {
 	public boolean isHudElementFocused(HudElementWidget element) {// TODO: allow changing focus of elements with arrows, make tab only change focus for sidebar
 		if (element == null || this.focusedHudElement == null) return false;
 		return this.focusedHudElement.equals(element);
+	}
+	
+	public void updateSidebarValues() {
+		this.sidebar.updateValues();
 	}
 	
 	public static boolean isOpen() {
