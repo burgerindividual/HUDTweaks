@@ -1,12 +1,10 @@
 package com.github.burgerguy.hudtweaks.gui.widget;
 
-import java.util.function.Supplier;
-
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.text.Text;
 
-public abstract class HudTweaksNumberBox extends TextFieldWidget implements ValueUpdatable {
+public class HudTweaksNumberBox extends TextFieldWidget implements ValueUpdatable {
 
 	public HudTweaksNumberBox(TextRenderer textRenderer, int x, int y, int width, int height, Text text) {
 		super(textRenderer, x, y, width, height, text);
