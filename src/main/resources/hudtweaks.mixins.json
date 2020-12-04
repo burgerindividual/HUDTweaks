@@ -5,7 +5,8 @@
   "compatibilityLevel": "JAVA_8",
   "mixins": [],
   "client": [
-    "InGameHudMixin"
+    "InGameHudMixin",
+    "TextFieldAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

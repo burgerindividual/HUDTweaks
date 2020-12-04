@@ -6,10 +6,10 @@ import org.lwjgl.glfw.GLFW;
 
 import com.github.burgerguy.hudtweaks.gui.HudPosHelper.Anchor;
 import com.github.burgerguy.hudtweaks.gui.widget.AnchorButtonWidget;
-import com.github.burgerguy.hudtweaks.gui.widget.HudTweaksLabel;
-import com.github.burgerguy.hudtweaks.gui.widget.HudTweaksNumberBox;
-import com.github.burgerguy.hudtweaks.gui.widget.HudTweaksSidebar;
-import com.github.burgerguy.hudtweaks.gui.widget.HudTweaksSliderWidget;
+import com.github.burgerguy.hudtweaks.gui.widget.HTLabelWidget;
+import com.github.burgerguy.hudtweaks.gui.widget.NumberFieldWidget;
+import com.github.burgerguy.hudtweaks.gui.widget.SidebarWidget;
+import com.github.burgerguy.hudtweaks.gui.widget.HTSliderWidget;
 import com.github.burgerguy.hudtweaks.util.Util;
 import com.github.burgerguy.hudtweaks.util.gui.MatrixCache.UpdateEvent;
 import com.google.gson.JsonElement;
@@ -117,8 +117,8 @@ public abstract class HudElement {
 	 * Make sure to call super before anything else.
 	 */
 	@SuppressWarnings("resource")
-	public void fillSidebar(HudTweaksSidebar sidebar) {
-		HudTweaksSliderWidget xRelativeSlider = new HudTweaksSliderWidget(4, 70, sidebar.width - 8, 14, HudElement.this.getXPosHelper().getRelativePos()) {
+	public void fillSidebar(SidebarWidget sidebar) {
+		HTSliderWidget xRelativeSlider = new HTSliderWidget(4, 70, sidebar.width - 8, 14, HudElement.this.getXPosHelper().getRelativePos()) {
 			@Override
 			protected void updateMessage() {
 				this.setMessage(new TranslatableText("hudtweaks.options.relative_pos.display", Util.RELATIVE_POS_FORMATTER.format(this.value)));
@@ -146,7 +146,7 @@ public abstract class HudElement {
 			}
 		};
 		
-		HudTweaksSliderWidget yRelativeSlider = new HudTweaksSliderWidget(4, 153, sidebar.width - 8, 14, HudElement.this.getYPosHelper().getRelativePos()) {
+		HTSliderWidget yRelativeSlider = new HTSliderWidget(4, 153, sidebar.width - 8, 14, HudElement.this.getYPosHelper().getRelativePos()) {
 			@Override
 			protected void updateMessage() {
 				this.setMessage(new TranslatableText("hudtweaks.options.relative_pos.display", Util.RELATIVE_POS_FORMATTER.format(this.value)));
@@ -187,14 +187,14 @@ public abstract class HudElement {
 		xRelativeSlider.active = !HudElement.this.getXPosHelper().getAnchor().equals(Anchor.DEFAULT);
 		yRelativeSlider.active = !HudElement.this.getYPosHelper().getAnchor().equals(Anchor.DEFAULT);
 		
-		HudTweaksNumberBox xOffsetBox = new HudTweaksNumberBox(MinecraftClient.getInstance().textRenderer, 44, 90, sidebar.width - 49, 12, new TranslatableText("hudtweaks.options.offset.name")) {
+		NumberFieldWidget xOffsetField = new NumberFieldWidget(MinecraftClient.getInstance().textRenderer, 43, 89, sidebar.width - 47, 14, new TranslatableText("hudtweaks.options.offset.name")) {
 			@Override
 			public void updateValue() {
 				this.setText(Double.toString(HudElement.this.getXPosHelper().getOffset()));
 			}
 		};
-		xOffsetBox.setText(Double.toString(HudElement.this.getXPosHelper().getOffset()));
-		xOffsetBox.setChangedListener(s -> {
+		xOffsetField.setText(Double.toString(HudElement.this.getXPosHelper().getOffset()));
+		xOffsetField.setChangedListener(s -> {
 			if (s.equals("")) {
 				HudElement.this.getXPosHelper().setOffset(0.0D);
 			} else {
@@ -204,14 +204,14 @@ public abstract class HudElement {
 			}
 		});
 		
-		HudTweaksNumberBox yOffsetBox = new HudTweaksNumberBox(MinecraftClient.getInstance().textRenderer, 44, 173, sidebar.width - 49, 12, new TranslatableText("hudtweaks.options.offset.name")) {
+		NumberFieldWidget yOffsetField = new NumberFieldWidget(MinecraftClient.getInstance().textRenderer, 43, 172, sidebar.width - 47, 14, new TranslatableText("hudtweaks.options.offset.name")) {
 			@Override
 			public void updateValue() {
 				this.setText(Double.toString(HudElement.this.getYPosHelper().getOffset()));
 			}
 		};
-		yOffsetBox.setText(Double.toString(HudElement.this.getYPosHelper().getOffset()));
-		yOffsetBox.setChangedListener(s -> {
+		yOffsetField.setText(Double.toString(HudElement.this.getYPosHelper().getOffset()));
+		yOffsetField.setChangedListener(s -> {
 			if (s.equals("")) {
 				HudElement.this.getYPosHelper().setOffset(0.0D);
 			} else {
@@ -225,15 +225,17 @@ public abstract class HudElement {
 		sidebar.addDrawable(yRelativeSlider);
 		sidebar.addDrawable(xAnchorButton);
 		sidebar.addDrawable(yAnchorButton);
-		sidebar.addDrawable(xOffsetBox);
-		sidebar.addDrawable(yOffsetBox);
-		sidebar.addDrawable(new HudTweaksLabel(I18n.translate("hudtweaks.options.offset.display"), 5, 92));
-		sidebar.addDrawable(new HudTweaksLabel(I18n.translate("hudtweaks.options.offset.display"), 5, 175));
-		sidebar.addDrawable(new HudTweaksLabel(I18n.translate("hudtweaks.options.anchor_type.display"), 5, 54));
-		sidebar.addDrawable(new HudTweaksLabel(I18n.translate("hudtweaks.options.anchor_type.display"), 5, 137));
+		sidebar.addDrawable(xOffsetField);
+		sidebar.addDrawable(yOffsetField);
+		sidebar.addDrawable(new HTLabelWidget(I18n.translate("hudtweaks.options.offset.display"), 5, 92, 0xCCFFFFFF, false));
+		sidebar.addDrawable(new HTLabelWidget(I18n.translate("hudtweaks.options.offset.display"), 5, 175, 0xCCFFFFFF, false));
+		sidebar.addDrawable(new HTLabelWidget(I18n.translate("hudtweaks.options.anchor_type.display"), 5, 54, 0xCCFFFFFF, false));
+		sidebar.addDrawable(new HTLabelWidget(I18n.translate("hudtweaks.options.anchor_type.display"), 5, 137, 0xCCFFFFFF, false));
+		sidebar.addDrawable(new HTLabelWidget(I18n.translate("hudtweaks.options.x_pos.display"), 5, 40, 0xCCB0B0B0, false));
+		sidebar.addDrawable(new HTLabelWidget(I18n.translate("hudtweaks.options.y_pos.display"), 5, 123, 0xCCB0B0B0, false));
 	}
 	
-	public HudElementWidget createWidget(HudTweaksOptionsScreen optionsScreen) {
+	public HudElementWidget createWidget(HTOptionsScreen optionsScreen) {
 		return new HudElementWidget(optionsScreen);
 	}
 	
@@ -241,9 +243,10 @@ public abstract class HudElement {
 		private static final int OUTLINE_COLOR_NORMAL = 0xFFFF0000;
 		private static final int OUTLINE_COLOR_SELECTED = 0xFF0000FF;
 		
-		private final HudTweaksOptionsScreen optionsScreen;
+		private final HTOptionsScreen optionsScreen;
+//		private byte clickedState;
 		
-		private HudElementWidget(HudTweaksOptionsScreen optionsScreen) {
+		private HudElementWidget(HTOptionsScreen optionsScreen) {
 			this.optionsScreen = optionsScreen;
 		}
 
@@ -271,23 +274,35 @@ public abstract class HudElement {
 		public boolean mouseClicked(double mouseX, double mouseY, int button) {
 			if (button == GLFW.GLFW_MOUSE_BUTTON_LEFT) {
 				if (isMouseOver(mouseX, mouseY)) {
+//					switch (clickedState) {
+//						case 0:
+//							this.clickedState = 1;
+//							break;
+//						case 1:
+//							clickedState = 2;
+//							break;
+//					}
 					return true;
 				}
 			}
+//			this.clickedState = 0;
 			return false;
 		}
 		
 		@Override
 		public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
-			if (Screen.hasShiftDown()) {
-				if (!xPosHelper.getAnchor().equals(Anchor.DEFAULT)) xPosHelper.setRelativePos(MathHelper.clamp(xPosHelper.getRelativePos() + (deltaX / optionsScreen.width), 0.0D, 1.0D));
-				if (!yPosHelper.getAnchor().equals(Anchor.DEFAULT)) yPosHelper.setRelativePos(MathHelper.clamp(yPosHelper.getRelativePos() + (deltaY / optionsScreen.height), 0.0D, 1.0D));
-			} else {
-				xPosHelper.setOffset(xPosHelper.getOffset() + deltaX);
-				yPosHelper.setOffset(yPosHelper.getOffset() + deltaY);
-			}
-			optionsScreen.updateSidebarValues();
-			return true;
+//			if (clickedState == 2) {
+				if (Screen.hasShiftDown()) {
+					if (!xPosHelper.getAnchor().equals(Anchor.DEFAULT)) xPosHelper.setRelativePos(MathHelper.clamp(xPosHelper.getRelativePos() + (deltaX / optionsScreen.width), 0.0D, 1.0D));
+					if (!yPosHelper.getAnchor().equals(Anchor.DEFAULT)) yPosHelper.setRelativePos(MathHelper.clamp(yPosHelper.getRelativePos() + (deltaY / optionsScreen.height), 0.0D, 1.0D));
+				} else {
+					xPosHelper.setOffset(xPosHelper.getOffset() + deltaX);
+					yPosHelper.setOffset(yPosHelper.getOffset() + deltaY);
+				}
+				optionsScreen.updateSidebarValues();
+				return true;
+//			}
+//			return false;
 		}
 		
 		@Override

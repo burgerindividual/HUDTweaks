@@ -6,27 +6,29 @@ import java.util.List;
 
 import org.lwjgl.glfw.GLFW;
 
-import com.github.burgerguy.hudtweaks.gui.HudTweaksOptionsScreen;
+import com.github.burgerguy.hudtweaks.gui.HTOptionsScreen;
 import com.github.burgerguy.hudtweaks.util.UnmodifiableMergedList;
 
 import net.minecraft.client.gui.AbstractParentElement;
 import net.minecraft.client.gui.Drawable;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.Element;
+import net.minecraft.client.gui.screen.TickableElement;
+import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.util.math.MatrixStack;
 
-public class HudTweaksSidebar extends AbstractParentElement implements Drawable {
+public class SidebarWidget extends AbstractParentElement implements Drawable, TickableElement {
 	private final List<Element> globalElements = new ArrayList<>();
 	private final List<Drawable> globalDrawables = new ArrayList<>();
 	private final List<Element> elements = new ArrayList<>();
 	private final List<Drawable> drawables = new ArrayList<>();
 	
-	private final HudTweaksOptionsScreen optionsScreen;
+	private final HTOptionsScreen optionsScreen;
 	public int width;
 	public int color;
 
 	
-	public HudTweaksSidebar(HudTweaksOptionsScreen optionsScreen, int width, int color) {
+	public SidebarWidget(HTOptionsScreen optionsScreen, int width, int color) {
 		this.optionsScreen = optionsScreen;
 		this.width = width;
 		this.color = color;
@@ -115,5 +117,28 @@ public class HudTweaksSidebar extends AbstractParentElement implements Drawable 
 	public boolean isMouseOver(double mouseX, double mouseY) {
 		return mouseX >= 0 && mouseX <= width && mouseY >= 0 && mouseY <= optionsScreen.height;
 	}
+
+	@Override
+	public void tick() {
+		for (Drawable drawable : globalDrawables) {
+			if (drawable instanceof TickableElement) {
+				((TickableElement) drawable).tick();
+			}
+			if (drawable instanceof TextFieldWidget) {
+				((TextFieldWidget) drawable).tick();
+			}
+		}
+		
+		for (Drawable drawable : drawables) {
+			if (drawable instanceof TickableElement) {
+				((TickableElement) drawable).tick();
+			}
+			if (drawable instanceof TextFieldWidget) {
+				((TextFieldWidget) drawable).tick();
+			}
+		}
+	}
+	
+	
 	
 }

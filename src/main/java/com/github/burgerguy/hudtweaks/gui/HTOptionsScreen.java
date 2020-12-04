@@ -2,31 +2,33 @@ package com.github.burgerguy.hudtweaks.gui;
 
 import com.github.burgerguy.hudtweaks.config.ConfigHelper;
 import com.github.burgerguy.hudtweaks.gui.HudElement.HudElementWidget;
-import com.github.burgerguy.hudtweaks.gui.widget.HudTweaksSidebar;
+import com.github.burgerguy.hudtweaks.gui.widget.SidebarWidget;
 
 import net.minecraft.client.gui.Drawable;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.screen.TickableElement;
 import net.minecraft.client.gui.widget.AbstractButtonWidget;
+import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.TranslatableText;
 
-public class HudTweaksOptionsScreen extends Screen {
+public class HTOptionsScreen extends Screen {
 	private static final int SIDEBAR_WIDTH = 108;
 	private static final int SIDEBAR_COLOR = 0x60424242;
 	
 	private static boolean isOpen = false;
 	
 	private final Screen prevScreen;
-	private final HudTweaksSidebar sidebar;
+	private final SidebarWidget sidebar;
 	
 	private HudElementWidget focusedHudElement;
 	
-	public HudTweaksOptionsScreen(Screen prevScreen) {
+	public HTOptionsScreen(Screen prevScreen) {
 		super(new TranslatableText("hudtweaks.options"));
 		this.prevScreen = prevScreen;
 		
-		this.sidebar = new HudTweaksSidebar(this, SIDEBAR_WIDTH, SIDEBAR_COLOR);
+		this.sidebar = new SidebarWidget(this, SIDEBAR_WIDTH, SIDEBAR_COLOR);
 	}
 	
 	@Override
@@ -41,7 +43,7 @@ public class HudTweaksOptionsScreen extends Screen {
 		
 		// This makes sure that the smallest elements get selected first if there are multiple on top of eachother.
 		// We also want normal elements to be the first to be selected.
-		children.sort((e1, e2) -> {
+		this.children.sort((e1, e2) -> {
 			boolean isHudElement1 = e1 instanceof HudElementWidget;
 			boolean isHudElement2 = e2 instanceof HudElementWidget;
 			if (isHudElement1 && !isHudElement2) {
@@ -118,6 +120,18 @@ public class HudTweaksOptionsScreen extends Screen {
 		}
 		
 		super.setFocused(focused);
+	}
+	
+	@Override
+	public void tick() {
+		for (Element element : this.children()) {
+			if (element instanceof TickableElement) {
+				((TickableElement) element).tick();
+			}
+			if (element instanceof TextFieldWidget) {
+				((TextFieldWidget) element).tick();
+			}
+		}
 	}
 	
 	public boolean isHudElementFocused(HudElementWidget element) {// TODO: allow changing focus of elements with arrows, make tab only change focus for sidebar

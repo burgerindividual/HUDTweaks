@@ -8,9 +8,9 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.MathHelper;
 
-public class HudTweaksButtonWidget extends AbstractButtonWidget {
+public class HTButtonWidget extends AbstractButtonWidget {
 	
-	public HudTweaksButtonWidget(int x, int y, int width, int height, Text message) {
+	public HTButtonWidget(int x, int y, int width, int height, Text message) {
 		super(x, y, width, height, message);
 		this.setAlpha(0.8F);
 	}

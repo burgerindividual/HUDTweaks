@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import com.github.burgerguy.hudtweaks.gui.HudContainer;
 import com.github.burgerguy.hudtweaks.gui.HudElement;
-import com.github.burgerguy.hudtweaks.gui.HudTweaksOptionsScreen;
+import com.github.burgerguy.hudtweaks.gui.HTOptionsScreen;
 import com.github.burgerguy.hudtweaks.gui.element.HealthElement;
 import com.github.burgerguy.hudtweaks.util.gui.MatrixCache;
 import com.github.burgerguy.hudtweaks.util.gui.MatrixCache.UpdateEvent;
@@ -57,7 +57,7 @@ public abstract class InGameHudMixin extends DrawableHelper {
 		int scaledWidth = this.client.getWindow().getScaledWidth();
 		int scaledHeight = this.client.getWindow().getScaledHeight();
 		
-		if (HudTweaksOptionsScreen.isOpen()) super.fillGradient(matrixStack, 0, 0, scaledWidth, scaledHeight, -1072689136, -804253680);
+		if (HTOptionsScreen.isOpen()) super.fillGradient(matrixStack, 0, 0, scaledWidth, scaledHeight, -1072689136, -804253680);
 		
 		this.client.getProfiler().push("fireHudTweaksEvents");
 		this.client.getProfiler().push("createUpdatableElementsArray");
