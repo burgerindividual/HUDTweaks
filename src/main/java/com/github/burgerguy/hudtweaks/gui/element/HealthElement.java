@@ -78,7 +78,7 @@ public class HealthElement extends HudElement {
 	@Override
 	public void fillSidebar(SidebarWidget sidebar) {
 		super.fillSidebar(sidebar);
-		sidebar.addDrawable(new HTLabelWidget("test", 8, 200));
+		sidebar.addDrawable(new HTLabelWidget("test", 8, 200, 0xCCFFFFFF, false));
 	}
 	
 }
