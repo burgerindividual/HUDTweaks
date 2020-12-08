@@ -19,7 +19,7 @@ public enum MatrixCache {
 	
 	public static void calculateMatrix(HudElement element, MinecraftClient client) {
 		matrixMap.put(element.getIdentifier(), element.calculateMatrix(client));
-		updateQueue.removeIf(e -> e != null && e.equals(element));
+		updateQueue.remove(element);
 	}
 	
 	public static void calculateMatrix(String identifier, MinecraftClient client) {
