@@ -13,7 +13,7 @@ import net.minecraft.entity.player.PlayerEntity;
 public class HotbarElement extends HudElement {
 
 	public HotbarElement() {
-		super("hotbar", UpdateEvent.ON_SCREEN_BOUNDS_CHANGE);
+		super("hotbar", UpdateEvent.ON_SCREEN_BOUNDS_CHANGE, UpdateEvent.ON_OFFHAND_STATUS_CHANGE);
 	}
 	
 	private int getAttackIndicatorOffset(MinecraftClient client) {

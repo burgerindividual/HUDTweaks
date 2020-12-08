@@ -6,5 +6,6 @@
 	"hudtweaks.options.offset.display": "Offset:",
 	"hudtweaks.options.offset.name": "Offset",
 	"hudtweaks.options.x_pos.display": "X Pos",
-	"hudtweaks.options.y_pos.display": "Y Pos"
+	"hudtweaks.options.y_pos.display": "Y Pos",
+	"hudtweaks.options.health.style.display": "Style: %s"
 }

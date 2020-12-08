@@ -3,13 +3,15 @@ package com.github.burgerguy.hudtweaks.gui.element;
 import java.awt.Point;
 
 import com.github.burgerguy.hudtweaks.gui.HudElement;
-import com.github.burgerguy.hudtweaks.gui.widget.HTLabelWidget;
+import com.github.burgerguy.hudtweaks.gui.widget.HTButtonWidget;
 import com.github.burgerguy.hudtweaks.gui.widget.SidebarWidget;
+import com.github.burgerguy.hudtweaks.util.gui.MatrixCache;
 import com.github.burgerguy.hudtweaks.util.gui.MatrixCache.UpdateEvent;
 import com.google.gson.JsonElement;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.attribute.EntityAttributes;
+import net.minecraft.text.TranslatableText;
 import net.minecraft.util.math.MathHelper;
 
 public class HealthElement extends HudElement {
@@ -78,7 +80,14 @@ public class HealthElement extends HudElement {
 	@Override
 	public void fillSidebar(SidebarWidget sidebar) {
 		super.fillSidebar(sidebar);
-		sidebar.addDrawable(new HTLabelWidget("test", 8, 200, 0xCCFFFFFF, false));
+		sidebar.addDrawable(new HTButtonWidget(4, 207, sidebar.width - 8, 14, new TranslatableText("hudtweaks.options.health.style.display", this.flipped ? "Flipped" : "Normal")) {
+			@Override
+			public void onPress() {
+				HealthElement.this.flipped = !HealthElement.this.flipped;
+				this.setMessage(new TranslatableText("hudtweaks.options.health.style.display", HealthElement.this.flipped ? "Flipped" : "Normal"));
+				MatrixCache.queueUpdate(HealthElement.this);
+			}
+		});
 	}
 	
 }

@@ -221,11 +221,11 @@ public abstract class HudElement {
 			}
 		});
 		
-		sidebar.addDrawable(xRelativeSlider);
-		sidebar.addDrawable(yRelativeSlider);
 		sidebar.addDrawable(xAnchorButton);
-		sidebar.addDrawable(yAnchorButton);
+		sidebar.addDrawable(xRelativeSlider);
 		sidebar.addDrawable(xOffsetField);
+		sidebar.addDrawable(yAnchorButton);
+		sidebar.addDrawable(yRelativeSlider);
 		sidebar.addDrawable(yOffsetField);
 		sidebar.addDrawable(new HTLabelWidget(I18n.translate("hudtweaks.options.offset.display"), 5, 92, 0xCCFFFFFF, false));
 		sidebar.addDrawable(new HTLabelWidget(I18n.translate("hudtweaks.options.offset.display"), 5, 175, 0xCCFFFFFF, false));

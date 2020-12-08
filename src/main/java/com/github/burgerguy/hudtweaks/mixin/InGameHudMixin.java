@@ -23,6 +23,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.HungerManager;
 import net.minecraft.entity.player.PlayerEntity;
@@ -48,6 +49,8 @@ public abstract class InGameHudMixin extends DrawableHelper {
 	private int lastHeartRows;
 	@Unique
 	private int lastRidingHeartRows;
+	@Unique
+	private boolean lastOffhandStatus;
 	
 	@Unique
 	private boolean multipliedMatrix;
@@ -81,6 +84,17 @@ public abstract class InGameHudMixin extends DrawableHelper {
 			lastHeight = scaledHeight;
 			fireUpdateEvent(UpdateEvent.ON_SCREEN_BOUNDS_CHANGE);
 		}
+		
+		Entity cameraEntity = client.getCameraEntity();
+		if (cameraEntity != null && cameraEntity instanceof PlayerEntity) {
+			boolean offhandStatus = ((PlayerEntity) cameraEntity).getOffHandStack().isEmpty();
+			if (offhandStatus != lastOffhandStatus) {
+				lastOffhandStatus = offhandStatus;
+				fireUpdateEvent(UpdateEvent.ON_OFFHAND_STATUS_CHANGE);
+			}
+		}
+		
+		MatrixCache.calculateQueued(client);
 	}
 	
 	@Unique
