@@ -372,7 +372,7 @@ public abstract class InGameHudMixin extends DrawableHelper {
 	@ModifyVariable(method = "renderStatusEffectOverlay",
 					ordinal = 2,
 					at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/effect/StatusEffectInstance;isAmbient()Z"))
-	private int modifyStatusEffectX(int x, MatrixStack maxtixStack) {//setVertical
+	private int modifyStatusEffectX(int x, MatrixStack maxtixStack) {
 		if (((StatusEffectsElement) HudContainer.getElement("statuseffects")).isVertical()) {
 			return lastWidth - STATUS_EFFECT_OFFSET + preY - postY;
 		} else {
@@ -398,89 +398,4 @@ public abstract class InGameHudMixin extends DrawableHelper {
 			multipliedMatrix = false;
 		}
 	}
-	
-	//	@Overwrite
-	//	public void renderStatusEffectOverlay(MatrixStack matrixStack) {
-	//		if (MatrixCache.statusEffectTransform != null) {
-	//			tempMatrix = matrixStack.peek().getModel();
-	//			tempMatrix.multiply(MatrixCache.statusEffectTransform);
-	//		}
-	//
-	//		Collection<StatusEffectInstance> collection = this.client.player.getStatusEffects();
-	//		if (!collection.isEmpty()) {
-	//			RenderSystem.enableBlend();
-	//			int i = 0;
-	//			int j = 0;
-	//			StatusEffectSpriteManager statusEffectSpriteManager = this.client.getStatusEffectSpriteManager();
-	//			List<Runnable> drawList = Lists.newArrayListWithExpectedSize(collection.size());
-	//			this.client.getTextureManager().bindTexture(HandledScreen.BACKGROUND_TEXTURE);
-	//			Iterator<StatusEffectInstance> iterator = Ordering.natural().reverse().sortedCopy(collection).iterator();
-	//
-	//			while (iterator.hasNext()) {
-	//				StatusEffectInstance statusEffectInstance = (StatusEffectInstance) iterator.next();
-	//				StatusEffect statusEffect = statusEffectInstance.getEffectType();
-	//				if (statusEffectInstance.shouldShowIcon()) {
-	//					int k = this.scaledWidth;
-	//					int l = 1;
-	//					if (this.client.isDemo()) {
-	//						l += 15;
-	//					}
-	//
-	//					if (HudTweaksOptions.statusEffectVertical) {
-	//						k -= 25;
-	//						l -= 25;
-	//
-	//						if (statusEffect.isBeneficial()) {
-	//							++i;
-	//							l += 25 * i;
-	//						} else {
-	//							++j;
-	//							l += 25 * j;
-	//							k -= 26;
-	//						}
-	//					} else {
-	//						if (statusEffect.isBeneficial()) {
-	//							++i;
-	//							k -= 25 * i;
-	//						} else {
-	//							++j;
-	//							k -= 25 * j;
-	//							l += 26;
-	//						}
-	//					}
-	//
-	//					RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-	//					float f = 1.0F;
-	//					if (statusEffectInstance.isAmbient()) {
-	//						this.drawTexture(matrixStack, k, l, 165, 166, 24, 24);
-	//					} else {
-	//						this.drawTexture(matrixStack, k, l, 141, 166, 24, 24);
-	//						if (statusEffectInstance.getDuration() <= 200) {
-	//							int m = 10 - statusEffectInstance.getDuration() / 20;
-	//							f = MathHelper.clamp((float) statusEffectInstance.getDuration() / 10.0F / 5.0F * 0.5F, 0.0F,
-	//									0.5F)
-	//									+ MathHelper.cos((float) statusEffectInstance.getDuration() * 3.1415927F / 5.0F)
-	//											* MathHelper.clamp((float) m / 10.0F * 0.25F, 0.0F, 0.25F);
-	//						}
-	//					}
-	//
-	//					Sprite sprite = statusEffectSpriteManager.getSprite(statusEffect);
-	//					drawList.add(statusEffectRunnableHelper(matrixStack, k, l, f, sprite));
-	//				}
-	//			}
-	//
-	//			for (Runnable r : drawList) r.run();
-	//		}
-	//
-	//		if (MatrixCache.statusEffectTransform != null) tempMatrix.multiply(HudTweaksOptions.statusEffectTransform.getInverse());
-	//	}
-	//
-	//	private Runnable statusEffectRunnableHelper(MatrixStack matrixStack, int k, int l, float alpha, Sprite sprite) {
-	//		return () -> {
-	//			this.client.getTextureManager().bindTexture(sprite.getAtlas().getId());
-	//			RenderSystem.color4f(1.0F, 1.0F, 1.0F, alpha);
-	//			DrawableHelper.drawSprite(matrixStack, k + 3, l + 3, this.getZOffset(), 18, 18, sprite);
-	//		};
-	//	}
-	
 }
