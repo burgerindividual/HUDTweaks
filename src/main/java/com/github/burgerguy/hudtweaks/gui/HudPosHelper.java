@@ -2,7 +2,7 @@ package com.github.burgerguy.hudtweaks.gui;
 
 import com.google.gson.annotations.SerializedName;
 
-public class HudPosHelper {	
+public class HudPosHelper {
 	/**
 	 * The anchor point for calculation. Defaults to DEFAULT, which
 	 * keeps the position in the unmodified spot.
@@ -34,8 +34,8 @@ public class HudPosHelper {
 	}
 
 	public void setAnchor(Anchor type) {
-		this.anchor = type;
-		this.requiresUpdate = true;
+		anchor = type;
+		requiresUpdate = true;
 	}
 	
 	public enum Anchor {
@@ -55,7 +55,7 @@ public class HudPosHelper {
 
 	public void setOffset(double offset) {
 		this.offset = offset;
-		this.requiresUpdate = true;
+		requiresUpdate = true;
 	}
 
 	public double getRelativePos() {
@@ -64,7 +64,7 @@ public class HudPosHelper {
 
 	public void setRelativePos(double relativePos) {
 		this.relativePos = relativePos;
-		this.requiresUpdate = true;
+		requiresUpdate = true;
 	}
 	
 	public boolean requiresUpdate() {
@@ -75,14 +75,14 @@ public class HudPosHelper {
 	 * Don't call this unless you know what you're doing.
 	 */
 	void setUpdated() {
-		this.requiresUpdate = false;
+		requiresUpdate = false;
 	}
 	
 	public void reset() {
-		this.anchor = null;
-		this.offset = 0;
-		this.relativePos = 0;
-		this.requiresUpdate = true;
+		anchor = null;
+		offset = 0;
+		relativePos = 0;
+		requiresUpdate = true;
 	}
 	
 	public int calculateScreenPos(int screenDimension, int elementDimension, int defaultPos) {
@@ -93,14 +93,14 @@ public class HudPosHelper {
 		int negativeAnchorPos = (int) (screenDimension * relativePos + offset);
 		
 		switch(anchor) {
-			case MINIMUM:
-				return negativeAnchorPos;
-			case CENTER:
-				return negativeAnchorPos - (int) (elementDimension / 2F);
-			case MAXIMUM:
-				return negativeAnchorPos - elementDimension;
-			default:
-				throw new UnsupportedOperationException("Unexpected anchor value");
+		case MINIMUM:
+			return negativeAnchorPos;
+		case CENTER:
+			return negativeAnchorPos - (int) (elementDimension / 2F);
+		case MAXIMUM:
+			return negativeAnchorPos - elementDimension;
+		default:
+			throw new UnsupportedOperationException("Unexpected anchor value");
 		}
 	}
 	

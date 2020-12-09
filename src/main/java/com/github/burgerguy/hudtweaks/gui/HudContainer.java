@@ -32,6 +32,9 @@ public enum HudContainer {
 		
 		HudElement air = new AirElement();
 		addElement(air.getIdentifier(), air);
+		
+		HudElement statusEffects = new StatusEffectsElement();
+		addElement(statusEffects.getIdentifier(), statusEffects);
 	}
 
 	public static HudElement getElement(String identifier) {

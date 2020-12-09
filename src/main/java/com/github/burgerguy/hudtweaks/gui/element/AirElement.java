@@ -35,7 +35,7 @@ public class AirElement extends HudElement {
 				LivingEntity livingEntity = (LivingEntity) ridingEntity;
 				if (livingEntity.isLiving()) {
 					int ridingHeartCount = MathHelper.clamp((int) (livingEntity.getMaxHealth() + 0.5F) / 2, 0, 30);
-					return ((int)Math.ceil((double)ridingHeartCount / 10.0D) - 1) * 10;
+					return ((int)Math.ceil(ridingHeartCount / 10.0D) - 1) * 10;
 				}
 			}
 		}
@@ -44,7 +44,7 @@ public class AirElement extends HudElement {
 
 	@Override
 	public Point calculateDefaultCoords(MinecraftClient client) {
-		return new Point((client.getWindow().getScaledWidth() / 2) + 10, client.getWindow().getScaledHeight() - 49 - getRidingHealthOffset(client));
+		return new Point(client.getWindow().getScaledWidth() / 2 + 10, client.getWindow().getScaledHeight() - 49 - getRidingHealthOffset(client));
 	}
 	
 }

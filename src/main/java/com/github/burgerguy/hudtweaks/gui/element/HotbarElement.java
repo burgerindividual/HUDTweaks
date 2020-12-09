@@ -17,7 +17,7 @@ public class HotbarElement extends HudElement {
 	}
 	
 	private int getAttackIndicatorOffset(MinecraftClient client) {
-		return (client != null && client.options.attackIndicator.equals(AttackIndicator.HOTBAR)) ? 24 : 0;
+		return client != null && client.options.attackIndicator.equals(AttackIndicator.HOTBAR) ? 24 : 0;
 	}
 	
 	private int getOffhandOffset(MinecraftClient client) {
@@ -42,7 +42,7 @@ public class HotbarElement extends HudElement {
 
 	@Override
 	public Point calculateDefaultCoords(MinecraftClient client) {
-		return new Point((client.getWindow().getScaledWidth() / 2) - 91 - getOffhandOffset(client), client.getWindow().getScaledHeight() - 24);
+		return new Point(client.getWindow().getScaledWidth() / 2 - 91 - getOffhandOffset(client), client.getWindow().getScaledHeight() - 24);
 	}
 	
 }

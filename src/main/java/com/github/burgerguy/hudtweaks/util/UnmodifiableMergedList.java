@@ -15,16 +15,18 @@ public class UnmodifiableMergedList<T> extends AbstractList<T> {
 	@SafeVarargs
 	public UnmodifiableMergedList(List<T>... lists) {
 		this.lists = lists.clone();
-		this.size = Arrays.stream(lists).mapToInt(list -> list.size()).sum();
+		this.size = Arrays.stream(lists).mapToInt(List::size).sum();
 	}
 	
 	@Override
 	public T get(int index) {
-		for (List<T> list : lists)
-			if (index < list.size())
+		for (List<T> list : lists) {
+			if (index < list.size()) {
 				return list.get(index);
-			else
+			} else {
 				index -= list.size();
+			}
+		}
 		throw new IndexOutOfBoundsException("index");
 	}
 	

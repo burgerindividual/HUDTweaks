@@ -27,7 +27,7 @@ public class ExperienceBarElement extends HudElement {
 
 	@Override
 	public Point calculateDefaultCoords(MinecraftClient client) {
-		return new Point((client.getWindow().getScaledWidth() / 2) - 91, client.getWindow().getScaledHeight() - 36);
+		return new Point(client.getWindow().getScaledWidth() / 2 - 91, client.getWindow().getScaledHeight() - 36);
 	}
 	
 }

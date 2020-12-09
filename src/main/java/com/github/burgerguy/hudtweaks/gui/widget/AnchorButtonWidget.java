@@ -39,79 +39,79 @@ public class AnchorButtonWidget extends AbstractButtonWidget {
 			RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 			RenderSystem.enableBlend();
 			RenderSystem.defaultBlendFunc();
-			DrawableHelper.drawTexture(matrixStack, this.x, this.y, currentAnchor.ordinal() * this.width, this.isHovered() ? this.height : 0, this.width, this.height, 96, 32);
+			DrawableHelper.drawTexture(matrixStack, x, y, currentAnchor.ordinal() * width, isHovered() ? height : 0, width, height, 96, 32);
 		}
 	}
 	
 	@Override
 	public void onClick(double mouseX, double mouseY) {
 		cycleAnchor();
-		this.onClick.accept(convertAnchor());
+		onClick.accept(convertAnchor());
 	}
 	
 	private void cycleAnchor() {
 		switch(currentAnchor) {
-			case TOP:
-				this.currentAnchor = DisplayedAnchor.CENTER;
-				break;
-			case BOTTOM:
-				this.currentAnchor = DisplayedAnchor.DEFAULT;
-				break;
-			case LEFT:
-				this.currentAnchor = DisplayedAnchor.CENTER;
-				break;
-			case RIGHT:
-				this.currentAnchor = DisplayedAnchor.DEFAULT;
-				break;
-			case CENTER:
-				this.currentAnchor = isXAnchor ? DisplayedAnchor.RIGHT : DisplayedAnchor.BOTTOM;
-				break;
-			case DEFAULT:
-				this.currentAnchor = isXAnchor ? DisplayedAnchor.LEFT : DisplayedAnchor.TOP;
-				break;
-			default:
-				Util.LOGGER.error("Unexpected anchor type recieved: " + currentAnchor.toString());
-				break;
+		case TOP:
+			currentAnchor = DisplayedAnchor.CENTER;
+			break;
+		case BOTTOM:
+			currentAnchor = DisplayedAnchor.DEFAULT;
+			break;
+		case LEFT:
+			currentAnchor = DisplayedAnchor.CENTER;
+			break;
+		case RIGHT:
+			currentAnchor = DisplayedAnchor.DEFAULT;
+			break;
+		case CENTER:
+			currentAnchor = isXAnchor ? DisplayedAnchor.RIGHT : DisplayedAnchor.BOTTOM;
+			break;
+		case DEFAULT:
+			currentAnchor = isXAnchor ? DisplayedAnchor.LEFT : DisplayedAnchor.TOP;
+			break;
+		default:
+			Util.LOGGER.error("Unexpected anchor type recieved: " + currentAnchor.toString());
+			break;
 		}
 	}
 	
 	public void setAnchor(Anchor anchor) {
 		switch(anchor) {
-			case MINIMUM:
-				this.currentAnchor = isXAnchor ? DisplayedAnchor.LEFT : DisplayedAnchor.TOP;
-				break;
-			case MAXIMUM:
-				this.currentAnchor = isXAnchor ? DisplayedAnchor.RIGHT : DisplayedAnchor.BOTTOM;
-				break;
-			case CENTER:
-				this.currentAnchor = DisplayedAnchor.CENTER;
-				break;
-			case DEFAULT:
-				this.currentAnchor = DisplayedAnchor.DEFAULT;
-				break;
-			default:
-				Util.LOGGER.error("Unexpected anchor type recieved: " + anchor.toString());
-				break;
+		case MINIMUM:
+			currentAnchor = isXAnchor ? DisplayedAnchor.LEFT : DisplayedAnchor.TOP;
+			break;
+		case MAXIMUM:
+			currentAnchor = isXAnchor ? DisplayedAnchor.RIGHT : DisplayedAnchor.BOTTOM;
+			break;
+		case CENTER:
+			currentAnchor = DisplayedAnchor.CENTER;
+			break;
+		case DEFAULT:
+			currentAnchor = DisplayedAnchor.DEFAULT;
+			break;
+		default:
+			Util.LOGGER.error("Unexpected anchor type recieved: " + anchor.toString());
+			break;
 		}
 	}
 	
 	private Anchor convertAnchor() {
 		switch(currentAnchor) {
-			case TOP:
-				return Anchor.MINIMUM;
-			case BOTTOM:
-				return Anchor.MAXIMUM;
-			case LEFT:
-				return Anchor.MINIMUM;
-			case RIGHT:
-				return Anchor.MAXIMUM;
-			case CENTER:
-				return Anchor.CENTER;
-			case DEFAULT:
-				return Anchor.DEFAULT;
-			default:
-				Util.LOGGER.error("Unexpected anchor type recieved: " + currentAnchor.toString());
-				return null;
+		case TOP:
+			return Anchor.MINIMUM;
+		case BOTTOM:
+			return Anchor.MAXIMUM;
+		case LEFT:
+			return Anchor.MINIMUM;
+		case RIGHT:
+			return Anchor.MAXIMUM;
+		case CENTER:
+			return Anchor.CENTER;
+		case DEFAULT:
+			return Anchor.DEFAULT;
+		default:
+			Util.LOGGER.error("Unexpected anchor type recieved: " + currentAnchor.toString());
+			return null;
 		}
 	}
 	

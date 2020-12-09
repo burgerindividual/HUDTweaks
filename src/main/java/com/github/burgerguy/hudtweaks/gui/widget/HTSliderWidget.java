@@ -13,35 +13,37 @@ public abstract class HTSliderWidget extends SliderWidget implements ValueUpdata
 
 	public HTSliderWidget(int x, int y, int width, int height, double value) {
 		super(x, y, width, height, LiteralText.EMPTY, value);
-		this.setAlpha(0.8F);
-		this.updateMessage();
+		setAlpha(0.8F);
+		updateMessage();
 	}
 	
 	@Override
 	public void renderButton(MatrixStack matrixStack, int mouseX, int mouseY, float delta) {
 		MinecraftClient minecraftClient = MinecraftClient.getInstance();
 		TextRenderer textRenderer = minecraftClient.textRenderer;
-		int x1 = this.x;
-		int y1 = this.y;
-		int x2 = this.x + this.width;
-		int y2 = this.y + this.height;
+		int x1 = x;
+		int y1 = y;
+		int x2 = x + width;
+		int y2 = y + height;
 		DrawableHelper.fill(matrixStack, x1,     y1,     x2,     y1 + 1, 0xFF000000);
 		DrawableHelper.fill(matrixStack, x1,     y2,     x2,     y2 - 1, 0xFF000000);
 		DrawableHelper.fill(matrixStack, x1,     y1 + 1, x1 + 1, y2 - 1, 0xFF000000);
 		DrawableHelper.fill(matrixStack, x2,     y1 + 1, x2 - 1, y2 - 1, 0xFF000000);
-		this.renderBg(matrixStack, minecraftClient, mouseX, mouseY);
-		int j = this.active ? 0x00FFFFFF : 0x00A0A0A0;
-		drawCenteredText(matrixStack, textRenderer, this.getMessage(), this.x + this.width / 2, this.y + (this.height - 8) / 2, j | MathHelper.ceil(this.alpha * 255.0F) << 24);
-		if (!this.active) DrawableHelper.fill(matrixStack, x1, y1, x2, y2, 0x50303030);
+		renderBg(matrixStack, minecraftClient, mouseX, mouseY);
+		int j = active ? 0x00FFFFFF : 0x00A0A0A0;
+		drawCenteredText(matrixStack, textRenderer, getMessage(), x + width / 2, y + (height - 8) / 2, j | MathHelper.ceil(alpha * 255.0F) << 24);
+		if (!active) {
+			DrawableHelper.fill(matrixStack, x1, y1, x2, y2, 0x50303030);
+		}
 	}
 	
 	@Override
 	protected void renderBg(MatrixStack matrixStack, MinecraftClient client, int mouseX, int mouseY) {
-		int x1 = this.x + (int) (this.value * (double) (this.width - HANDLE_WIDTH));
-		int y1 = this.y;
+		int x1 = x + (int) (value * (width - HANDLE_WIDTH));
+		int y1 = y;
 		int x2 = x1 + HANDLE_WIDTH;
-		int y2 = y1 + this.height;
-		int color = this.isHovered() && this.active ? 0xFFFFFFFF : 0xFF000000;
+		int y2 = y1 + height;
+		int color = isHovered() && active ? 0xFFFFFFFF : 0xFF000000;
 		DrawableHelper.fill(matrixStack, x1,     y1,     x2,     y1 + 1, color);
 		DrawableHelper.fill(matrixStack, x1,     y2,     x2,     y2 - 1, color);
 		DrawableHelper.fill(matrixStack, x1,     y1 + 1, x1 + 1, y2 - 1, color);
@@ -51,7 +53,7 @@ public abstract class HTSliderWidget extends SliderWidget implements ValueUpdata
 	
 	@Override
 	public void onClick(double mouseX, double mouseY) {
-		this.setValueFromMouse(mouseX);
+		setValueFromMouse(mouseX);
 	}
 	
 	@Override
@@ -59,7 +61,7 @@ public abstract class HTSliderWidget extends SliderWidget implements ValueUpdata
 		boolean bl = keyCode == 263;
 		if (bl || keyCode == 262) {
 			double f = bl ? -1.0 : 1.0;
-			this.setValue(this.value + f / (this.width - HANDLE_WIDTH));
+			setValue(value + f / (width - HANDLE_WIDTH));
 			return true;
 		}
 		
@@ -67,22 +69,22 @@ public abstract class HTSliderWidget extends SliderWidget implements ValueUpdata
 	}
 	
 	protected void setValueFromMouse(double mouseX) {
-		this.setValue((mouseX - (double) (this.x + (HANDLE_WIDTH / 2.0D - 1.0D))) / (double) (this.width - HANDLE_WIDTH));
+		setValue((mouseX - (x + (HANDLE_WIDTH / 2.0D - 1.0D))) / (width - HANDLE_WIDTH));
 	}
 	
 	public void setValue(double newValue) {
-		double oldValue = this.value;
-		this.value = MathHelper.clamp(newValue, 0.0D, 1.0D);
-		if (oldValue != this.value) {
-			this.applyValue();
+		double oldValue = value;
+		value = MathHelper.clamp(newValue, 0.0D, 1.0D);
+		if (oldValue != value) {
+			applyValue();
 		}
 		
-		this.updateMessage();
+		updateMessage();
 	}
 	
 	@Override
 	protected void onDrag(double mouseX, double mouseY, double deltaX, double deltaY) {
-		this.setValueFromMouse(mouseX);
+		setValueFromMouse(mouseX);
 	}
 	
 }

@@ -10,6 +10,7 @@ import com.github.burgerguy.hudtweaks.util.gui.MatrixCache.UpdateEvent;
 import com.google.gson.JsonElement;
 
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.resource.language.I18n;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.math.MathHelper;
@@ -42,9 +43,9 @@ public class HealthElement extends HudElement {
 			int heartsInTopRow = MathHelper.ceil(client.player.getAttributeValue(EntityAttributes.GENERIC_MAX_HEALTH) / 2.0D) % 10;
 			int absorption = MathHelper.ceil(client.player.getAbsorptionAmount());
 			if (heartsInTopRow == 0) {
-				return (absorption > 0) ? 0 : 2;
+				return absorption > 0 ? 0 : 2;
 			} else {
-				return (heartsInTopRow + absorption > 10) ? 0 : 2;
+				return heartsInTopRow + absorption > 10 ? 0 : 2;
 			}
 		}
 	}
@@ -53,14 +54,15 @@ public class HealthElement extends HudElement {
 	public int getHeight(MinecraftClient client) {
 		if (client == null || client.player == null) {
 			return 9 + getHeartJumpDistance(client);
-		} else {
+		}
+		else {
 			return getRawHeight(client) + 9 + getHeartJumpDistance(client); // +9 because of the base heart height
 		}
 	}
 
 	@Override
 	public Point calculateDefaultCoords(MinecraftClient client) {
-		return new Point((client.getWindow().getScaledWidth() / 2) - 91, client.getWindow().getScaledHeight() - 39 - (flipped || client == null || client.player == null ? 0 : getRawHeight(client)) - getHeartJumpDistance(client));
+		return new Point(client.getWindow().getScaledWidth() / 2 - 91, client.getWindow().getScaledHeight() - 39 - (flipped || client == null || client.player == null ? 0 : getRawHeight(client)) - getHeartJumpDistance(client));
 	}
 	
 	public boolean isFlipped() {
@@ -80,11 +82,11 @@ public class HealthElement extends HudElement {
 	@Override
 	public void fillSidebar(SidebarWidget sidebar) {
 		super.fillSidebar(sidebar);
-		sidebar.addDrawable(new HTButtonWidget(4, 207, sidebar.width - 8, 14, new TranslatableText("hudtweaks.options.health.style.display", this.flipped ? "Flipped" : "Normal")) {
+		sidebar.addDrawable(new HTButtonWidget(4, 207, sidebar.width - 8, 14, new TranslatableText("hudtweaks.options.health.style.display", flipped ? I18n.translate("hudtweaks.options.health.style.flipped.display") : I18n.translate("hudtweaks.options.health.style.normal.display"))) {
 			@Override
 			public void onPress() {
-				HealthElement.this.flipped = !HealthElement.this.flipped;
-				this.setMessage(new TranslatableText("hudtweaks.options.health.style.display", HealthElement.this.flipped ? "Flipped" : "Normal"));
+				flipped = !flipped;
+				setMessage(new TranslatableText("hudtweaks.options.health.style.display", flipped ? I18n.translate("hudtweaks.options.health.style.flipped.display") : I18n.translate("hudtweaks.options.health.style.normal.display")));
 				MatrixCache.queueUpdate(HealthElement.this);
 			}
 		});

@@ -36,6 +36,6 @@ public class ArmorElement extends HudElement {
 			int healthRows = MathHelper.ceil((maxHealth + absorption) / 2.0D / 10.0D);
 			offsetHeight = (healthRows - 1) * Math.max(10 - (healthRows - 2), 3) + 10;
 		}
-		return new Point((client.getWindow().getScaledWidth() / 2) - 91, client.getWindow().getScaledHeight() - 39 - offsetHeight);
+		return new Point(client.getWindow().getScaledWidth() / 2 - 91, client.getWindow().getScaledHeight() - 39 - offsetHeight);
 	}
 }

@@ -7,9 +7,9 @@ import org.lwjgl.glfw.GLFW;
 import com.github.burgerguy.hudtweaks.gui.HudPosHelper.Anchor;
 import com.github.burgerguy.hudtweaks.gui.widget.AnchorButtonWidget;
 import com.github.burgerguy.hudtweaks.gui.widget.HTLabelWidget;
+import com.github.burgerguy.hudtweaks.gui.widget.HTSliderWidget;
 import com.github.burgerguy.hudtweaks.gui.widget.NumberFieldWidget;
 import com.github.burgerguy.hudtweaks.gui.widget.SidebarWidget;
-import com.github.burgerguy.hudtweaks.gui.widget.HTSliderWidget;
 import com.github.burgerguy.hudtweaks.util.Util;
 import com.github.burgerguy.hudtweaks.util.gui.MatrixCache.UpdateEvent;
 import com.google.gson.JsonElement;
@@ -40,8 +40,8 @@ public abstract class HudElement {
 	public HudElement(String identifier, UpdateEvent... updateEvents) {
 		this.identifier = identifier;
 		this.updateEvents = updateEvents;
-		this.xPosHelper = new HudPosHelper();
-		this.yPosHelper = new HudPosHelper();
+		xPosHelper = new HudPosHelper();
+		yPosHelper = new HudPosHelper();
 	}
 	
 	public String getIdentifier() {
@@ -67,7 +67,9 @@ public abstract class HudElement {
 	
 	public boolean shouldUpdateOnEvent(UpdateEvent event) {
 		for (UpdateEvent e : updateEvents) {
-			if (event.equals(e)) return true;
+			if (event.equals(e)) {
+				return true;
+			}
 		}
 		return false;
 	}
@@ -81,14 +83,14 @@ public abstract class HudElement {
 		xPosHelper.setUpdated();
 	}
 	
-	public Matrix4f calculateMatrix(MinecraftClient client) {		
+	public Matrix4f calculateMatrix(MinecraftClient client) {
 		Point defaultCoords = calculateDefaultCoords(client);
-		int calculatedX = xPosHelper.calculateScreenPos(client.getWindow().getScaledWidth(), this.getWidth(client), defaultCoords.x);
-		int calculatedY = yPosHelper.calculateScreenPos(client.getWindow().getScaledHeight(), this.getHeight(client), defaultCoords.y);
+		int calculatedX = xPosHelper.calculateScreenPos(client.getWindow().getScaledWidth(), getWidth(client), defaultCoords.x);
+		int calculatedY = yPosHelper.calculateScreenPos(client.getWindow().getScaledHeight(), getHeight(client), defaultCoords.y);
 		
 		Matrix4f matrix = Matrix4f.translate(calculatedX - defaultCoords.x,
-											 calculatedY - defaultCoords.y,
-											 0);
+				calculatedY - defaultCoords.y,
+				0);
 		
 		setUpdated();
 		return matrix;
@@ -121,7 +123,7 @@ public abstract class HudElement {
 		HTSliderWidget xRelativeSlider = new HTSliderWidget(4, 70, sidebar.width - 8, 14, HudElement.this.getXPosHelper().getRelativePos()) {
 			@Override
 			protected void updateMessage() {
-				this.setMessage(new TranslatableText("hudtweaks.options.relative_pos.display", Util.RELATIVE_POS_FORMATTER.format(this.value)));
+				setMessage(new TranslatableText("hudtweaks.options.relative_pos.display", Util.RELATIVE_POS_FORMATTER.format(value)));
 			}
 			
 			@Override
@@ -133,7 +135,7 @@ public abstract class HudElement {
 			public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
 				boolean bl = keyCode == 263;
 				if (bl || keyCode == 262) {
-					this.setValue(this.value + (bl ? -0.001 : 0.001));
+					setValue(value + (bl ? -0.001 : 0.001));
 					return true;
 				}
 				return false;
@@ -141,15 +143,15 @@ public abstract class HudElement {
 
 			@Override
 			public void updateValue() {
-				this.value = MathHelper.clamp(HudElement.this.getXPosHelper().getRelativePos(), 0.0D, 1.0D);
-				this.updateMessage();
+				value = MathHelper.clamp(HudElement.this.getXPosHelper().getRelativePos(), 0.0D, 1.0D);
+				updateMessage();
 			}
 		};
 		
 		HTSliderWidget yRelativeSlider = new HTSliderWidget(4, 153, sidebar.width - 8, 14, HudElement.this.getYPosHelper().getRelativePos()) {
 			@Override
 			protected void updateMessage() {
-				this.setMessage(new TranslatableText("hudtweaks.options.relative_pos.display", Util.RELATIVE_POS_FORMATTER.format(this.value)));
+				setMessage(new TranslatableText("hudtweaks.options.relative_pos.display", Util.RELATIVE_POS_FORMATTER.format(value)));
 			}
 			
 			@Override
@@ -161,7 +163,7 @@ public abstract class HudElement {
 			public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
 				boolean bl = keyCode == 263;
 				if (bl || keyCode == 262) {
-					this.setValue(this.value + (bl ? -0.001 : 0.001));
+					setValue(value + (bl ? -0.001 : 0.001));
 					return true;
 				}
 				return false;
@@ -169,8 +171,8 @@ public abstract class HudElement {
 
 			@Override
 			public void updateValue() {
-				this.value = MathHelper.clamp(HudElement.this.getYPosHelper().getRelativePos(), 0.0D, 1.0D);
-				this.updateMessage();
+				value = MathHelper.clamp(HudElement.this.getYPosHelper().getRelativePos(), 0.0D, 1.0D);
+				updateMessage();
 			}
 		};
 		
@@ -190,7 +192,7 @@ public abstract class HudElement {
 		NumberFieldWidget xOffsetField = new NumberFieldWidget(MinecraftClient.getInstance().textRenderer, 43, 89, sidebar.width - 47, 14, new TranslatableText("hudtweaks.options.offset.name")) {
 			@Override
 			public void updateValue() {
-				this.setText(Double.toString(HudElement.this.getXPosHelper().getOffset()));
+				setText(Double.toString(HudElement.this.getXPosHelper().getOffset()));
 			}
 		};
 		xOffsetField.setText(Double.toString(HudElement.this.getXPosHelper().getOffset()));
@@ -207,7 +209,7 @@ public abstract class HudElement {
 		NumberFieldWidget yOffsetField = new NumberFieldWidget(MinecraftClient.getInstance().textRenderer, 43, 172, sidebar.width - 47, 14, new TranslatableText("hudtweaks.options.offset.name")) {
 			@Override
 			public void updateValue() {
-				this.setText(Double.toString(HudElement.this.getYPosHelper().getOffset()));
+				setText(Double.toString(HudElement.this.getYPosHelper().getOffset()));
 			}
 		};
 		yOffsetField.setText(Double.toString(HudElement.this.getYPosHelper().getOffset()));
@@ -244,7 +246,7 @@ public abstract class HudElement {
 		private static final int OUTLINE_COLOR_SELECTED = 0xFF0000FF;
 		
 		private final HTOptionsScreen optionsScreen;
-//		private byte clickedState;
+		//		private byte clickedState;
 		
 		private HudElementWidget(HTOptionsScreen optionsScreen) {
 			this.optionsScreen = optionsScreen;
@@ -255,8 +257,8 @@ public abstract class HudElement {
 			MinecraftClient client = MinecraftClient.getInstance();
 			
 			Point defaultCoords = calculateDefaultCoords(client);
-			int elementWidth = HudElement.this.getWidth(client);
-			int elementHeight = HudElement.this.getHeight(client);
+			int elementWidth = getWidth(client);
+			int elementHeight = getHeight(client);
 			
 			int x1 = xPosHelper.calculateScreenPos(client.getWindow().getScaledWidth(), elementWidth, defaultCoords.x);
 			int y1 = yPosHelper.calculateScreenPos(client.getWindow().getScaledHeight(), elementHeight, defaultCoords.y);
@@ -274,35 +276,39 @@ public abstract class HudElement {
 		public boolean mouseClicked(double mouseX, double mouseY, int button) {
 			if (button == GLFW.GLFW_MOUSE_BUTTON_LEFT) {
 				if (isMouseOver(mouseX, mouseY)) {
-//					switch (clickedState) {
-//						case 0:
-//							this.clickedState = 1;
-//							break;
-//						case 1:
-//							clickedState = 2;
-//							break;
-//					}
+					//					switch (clickedState) {
+					//						case 0:
+					//							this.clickedState = 1;
+					//							break;
+					//						case 1:
+					//							clickedState = 2;
+					//							break;
+					//					}
 					return true;
 				}
 			}
-//			this.clickedState = 0;
+			//			this.clickedState = 0;
 			return false;
 		}
 		
 		@Override
 		public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
-//			if (clickedState == 2) {
-				if (Screen.hasShiftDown()) {
-					if (!xPosHelper.getAnchor().equals(Anchor.DEFAULT)) xPosHelper.setRelativePos(MathHelper.clamp(xPosHelper.getRelativePos() + (deltaX / optionsScreen.width), 0.0D, 1.0D));
-					if (!yPosHelper.getAnchor().equals(Anchor.DEFAULT)) yPosHelper.setRelativePos(MathHelper.clamp(yPosHelper.getRelativePos() + (deltaY / optionsScreen.height), 0.0D, 1.0D));
-				} else {
-					xPosHelper.setOffset(xPosHelper.getOffset() + deltaX);
-					yPosHelper.setOffset(yPosHelper.getOffset() + deltaY);
+			//			if (clickedState == 2) {
+			if (Screen.hasShiftDown()) {
+				if (!xPosHelper.getAnchor().equals(Anchor.DEFAULT)) {
+					xPosHelper.setRelativePos(MathHelper.clamp(xPosHelper.getRelativePos() + deltaX / optionsScreen.width, 0.0D, 1.0D));
 				}
-				optionsScreen.updateSidebarValues();
-				return true;
-//			}
-//			return false;
+				if (!yPosHelper.getAnchor().equals(Anchor.DEFAULT)) {
+					yPosHelper.setRelativePos(MathHelper.clamp(yPosHelper.getRelativePos() + deltaY / optionsScreen.height, 0.0D, 1.0D));
+				}
+			} else {
+				xPosHelper.setOffset(xPosHelper.getOffset() + deltaX);
+				yPosHelper.setOffset(yPosHelper.getOffset() + deltaY);
+			}
+			optionsScreen.updateSidebarValues();
+			return true;
+			//			}
+			//			return false;
 		}
 		
 		@Override
@@ -311,8 +317,8 @@ public abstract class HudElement {
 			
 			Point defaultCoords = calculateDefaultCoords(client);
 			// i don't think we can cache these because they might change in multiplayer
-			int elementWidth = HudElement.this.getWidth(client);
-			int elementHeight = HudElement.this.getHeight(client);
+			int elementWidth = getWidth(client);
+			int elementHeight = getHeight(client);
 			
 			int x1 = xPosHelper.calculateScreenPos(client.getWindow().getScaledWidth(), elementWidth, defaultCoords.x);
 			int y1 = yPosHelper.calculateScreenPos(client.getWindow().getScaledHeight(), elementHeight, defaultCoords.y);

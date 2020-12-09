@@ -26,7 +26,7 @@ public class HungerElement extends HudElement {
 
 	@Override
 	public Point calculateDefaultCoords(MinecraftClient client) {
-		return new Point((client.getWindow().getScaledWidth() / 2) + 10, client.getWindow().getScaledHeight() - 39 - 1); // the -1 is for the possible jump distance of the food
+		return new Point(client.getWindow().getScaledWidth() / 2 + 10, client.getWindow().getScaledHeight() - 39 - 1); // the -1 is for the possible jump distance of the food
 	}
 	
 }

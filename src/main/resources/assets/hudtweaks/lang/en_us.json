@@ -7,5 +7,10 @@
 	"hudtweaks.options.offset.name": "Offset",
 	"hudtweaks.options.x_pos.display": "X Pos",
 	"hudtweaks.options.y_pos.display": "Y Pos",
-	"hudtweaks.options.health.style.display": "Style: %s"
+	"hudtweaks.options.health.style.display": "Style: %s",
+	"hudtweaks.options.health.style.flipped.display": "Flipped",
+	"hudtweaks.options.health.style.normal.display": "Normal",
+	"hudtweaks.options.statuseffects.style.display": "Style: %s",
+	"hudtweaks.options.statuseffects.style.vertical.display": "Vertical",
+	"hudtweaks.options.statuseffects.style.horizontal.display": "Horizontal"
 }

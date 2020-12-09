@@ -28,7 +28,7 @@ public class HTOptionsScreen extends Screen {
 		super(new TranslatableText("hudtweaks.options"));
 		this.prevScreen = prevScreen;
 		
-		this.sidebar = new SidebarWidget(this, SIDEBAR_WIDTH, SIDEBAR_COLOR);
+		sidebar = new SidebarWidget(this, SIDEBAR_WIDTH, SIDEBAR_COLOR);
 	}
 	
 	@Override
@@ -38,27 +38,25 @@ public class HTOptionsScreen extends Screen {
 		isOpen = true;
 
 		for (HudElement element : HudContainer.getElements()) {
-			this.children.add(element.createWidget(this));
+			children.add(element.createWidget(this));
 		}
 		
 		// This makes sure that the smallest elements get selected first if there are multiple on top of eachother.
 		// We also want normal elements to be the first to be selected.
-		this.children.sort((e1, e2) -> {
+		children.sort((e1, e2) -> {
 			boolean isHudElement1 = e1 instanceof HudElementWidget;
 			boolean isHudElement2 = e2 instanceof HudElementWidget;
 			if (isHudElement1 && !isHudElement2) {
 				return 1;
-			} else if (!isHudElement1 && isHudElement2) {
+			} else if (!isHudElement1 && isHudElement2 || (!isHudElement1 || !isHudElement2)) {
 				return -1;
-			} else if (isHudElement1 && isHudElement2) {
+			} else {
 				HudElement he1 = ((HudElementWidget) e1).getParent();
 				HudElement he2 = ((HudElementWidget) e2).getParent();
 				return Integer.compare(
-										he1.getWidth(this.client) * he1.getHeight(this.client),
-										he2.getWidth(this.client) * he2.getHeight(this.client)
-									  );
-			} else {
-				return -1;
+						he1.getWidth(client) * he1.getHeight(client),
+						he2.getWidth(client) * he2.getHeight(client)
+						);
 			}
 		});
 		
@@ -70,19 +68,19 @@ public class HTOptionsScreen extends Screen {
 	public void render(MatrixStack matrixStack, int mouseX, int mouseY, float delta) {
 		super.renderBackground(matrixStack);
 		
-		for (Element element : this.children) {
+		for (Element element : children) {
 			if (element instanceof Drawable && !(element instanceof AbstractButtonWidget)) {
 				((Drawable) element).render(matrixStack, mouseX, mouseY, delta);
 			}
-		}	
+		}
 		
 		super.render(matrixStack, mouseX, mouseY, delta);
 	}
 	
 	@Override
 	public void renderBackground(MatrixStack matrixStack, int vOffset) {
-		if (this.client.world == null) {
-			this.renderBackgroundTexture(vOffset);
+		if (client.world == null) {
+			renderBackgroundTexture(vOffset);
 		}
 	}
 	
@@ -90,7 +88,7 @@ public class HTOptionsScreen extends Screen {
 	public boolean mouseClicked(double mouseX, double mouseY, int button) {
 		boolean clickedOnElement = super.mouseClicked(mouseX, mouseY, button);
 		if (!clickedOnElement) {
-			this.setFocused(null);
+			setFocused(null);
 		}
 		return clickedOnElement;
 	}
@@ -98,10 +96,10 @@ public class HTOptionsScreen extends Screen {
 	@Override
 	public void onClose() {
 		ConfigHelper.trySaveConfig();
-		if (this.client.world == null) {
-			this.client.openScreen(this.prevScreen);
+		if (client.world == null) {
+			client.openScreen(prevScreen);
 		} else {
-			this.client.openScreen(null);
+			client.openScreen(null);
 		}
 		isOpen = false;
 	}
@@ -109,14 +107,14 @@ public class HTOptionsScreen extends Screen {
 	@Override
 	public void setFocused(Element focused) {
 		if (focused instanceof HudElementWidget && !focused.equals(focusedHudElement)) {
-			this.focusedHudElement = (HudElementWidget) focused;
-			this.sidebar.clearDrawables();
-			((HudElementWidget) focused).getParent().fillSidebar(this.sidebar);
+			focusedHudElement = (HudElementWidget) focused;
+			sidebar.clearDrawables();
+			((HudElementWidget) focused).getParent().fillSidebar(sidebar);
 		}
 		
 		if (focused == null) {
-			this.focusedHudElement = null;
-			this.sidebar.clearDrawables();
+			focusedHudElement = null;
+			sidebar.clearDrawables();
 		}
 		
 		super.setFocused(focused);
@@ -124,7 +122,7 @@ public class HTOptionsScreen extends Screen {
 	
 	@Override
 	public void tick() {
-		for (Element element : this.children()) {
+		for (Element element : children()) {
 			if (element instanceof TickableElement) {
 				((TickableElement) element).tick();
 			}
@@ -135,12 +133,14 @@ public class HTOptionsScreen extends Screen {
 	}
 	
 	public boolean isHudElementFocused(HudElementWidget element) {// TODO: allow changing focus of elements with arrows, make tab only change focus for sidebar
-		if (element == null || this.focusedHudElement == null) return false;
-		return this.focusedHudElement.equals(element);
+		if (element == null || focusedHudElement == null) {
+			return false;
+		}
+		return focusedHudElement.equals(element);
 	}
 	
 	public void updateSidebarValues() {
-		this.sidebar.updateValues();
+		sidebar.updateValues();
 	}
 	
 	public static boolean isOpen() {

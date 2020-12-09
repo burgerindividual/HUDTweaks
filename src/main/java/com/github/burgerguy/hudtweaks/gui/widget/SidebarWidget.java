@@ -55,17 +55,9 @@ public class SidebarWidget extends AbstractParentElement implements Drawable, Ti
 		}
 	}
 	
-	@SuppressWarnings("unused")
-	private void addGlobalDrawable(Drawable drawable) {
-		globalDrawables.add(drawable);
-		if (drawable instanceof Element) {
-			globalElements.add((Element) drawable);
-		}
-	}
-	
 	public void clearDrawables() {
-		this.drawables.clear();
-		this.elements.clear();
+		drawables.clear();
+		elements.clear();
 	}
 
 	@Override
@@ -88,12 +80,12 @@ public class SidebarWidget extends AbstractParentElement implements Drawable, Ti
 	
 	@Override
 	public boolean mouseClicked(double mouseX, double mouseY, int button) {
-		Iterator<? extends Element> iterator = this.children().iterator();
+		Iterator<? extends Element> iterator = children().iterator();
 		
 		Element currentElement;
 		do {
 			if (!iterator.hasNext()) {
-				this.setFocused(null);
+				setFocused(null);
 				if (button == GLFW.GLFW_MOUSE_BUTTON_LEFT) {
 					if (isMouseOver(mouseX, mouseY)) {
 						return true;
@@ -105,9 +97,9 @@ public class SidebarWidget extends AbstractParentElement implements Drawable, Ti
 			currentElement = iterator.next();
 		} while (!currentElement.mouseClicked(mouseX, mouseY, button));
 		
-		this.setFocused(currentElement);
+		setFocused(currentElement);
 		if (button == 0) {
-			this.setDragging(true);
+			setDragging(true);
 		}
 		
 		return true;
