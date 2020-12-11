@@ -2,51 +2,87 @@ package com.github.burgerguy.hudtweaks.gui;
 
 import com.google.gson.annotations.SerializedName;
 
+import net.minecraft.client.MinecraftClient;
+
 public class HudPosHelper {
+	
+	/**
+	 * The type of positioning to use. Defaults to DEFAULT, which keeps
+	 * the position in the unmodified spot. RELATIVE allows you to
+	 * position it anywhere on the screen with a relative screen pos and
+	 * offset, and BOUND allows you to bind it to a different element.
+	 */
+	protected PosType posType = PosType.DEFAULT;
+	
+	/**
+	 * The element that this pos helper calculates its relative coords
+	 * against.
+	 */
+	protected transient RelativeElementSupplier relativeElementSupplier;
+	@SerializedName(value = "relativeTo")
+	/**
+	 * The identifier of the element. This is only used for serialization
+	 * and deserialization.
+	 */
+	protected String relativeElementIdentifier;
+	
 	/**
 	 * The anchor point for calculation. Defaults to DEFAULT, which
 	 * keeps the position in the unmodified spot.
 	 */
-	private Anchor anchor = Anchor.DEFAULT;
-	
-	/**
-	 * The offset from the anchor point.
-	 */
-	private double offset;
+	protected double anchorPos;
 	
 	/**
 	 * The relative position of the element from 0 to 1 on the screen,
 	 * with 1 being the far side and 0 being the close side.
 	 */
-	private double relativePos;
+	protected double relativePos;
+	
+	/**
+	 * The offset from the anchor point.
+	 */
+	protected double offset;
 	
 	/**
 	 * Set to true if any of the properties have been changed. This
 	 * signals that the entire HudElement needs to be recalculated.
 	 */
-	private transient boolean requiresUpdate;
+	protected transient boolean requiresUpdate;
 	
 	public HudPosHelper() {
 	}
 	
-	public Anchor getAnchor() {
-		return anchor;
+	public PosType getPosType() {
+		return posType;
 	}
-
-	public void setAnchor(Anchor type) {
-		anchor = type;
+	
+	public void setPosType(PosType posType) {
+		this.posType = posType;
 		requiresUpdate = true;
 	}
 	
-	public enum Anchor {
-		@SerializedName(value = "minimum", alternate = "MINIMUM")
-		MINIMUM,
-		@SerializedName(value = "maximum", alternate = "MAXIMUM")
-		MAXIMUM,
-		@SerializedName(value = "center", alternate = "CENTER")
-		CENTER,
+	public enum PosType {
 		@SerializedName(value = "default", alternate = "DEFAULT")
-		DEFAULT
+		/**
+		 * Keeps the position in the unmodified spot, but allows for offset.
+		 */
+		DEFAULT,
+		
+		@SerializedName(value = "relative", alternate = "RELATIVE")
+		/**
+		 * Allows positioning anywhere relative to a bound element with a
+		 * relative pos and offset. The bound element can also be the screen.
+		 */
+		RELATIVE
+	}
+	
+	public double getAnchorPos() {
+		return anchorPos;
+	}
+
+	public void setAnchorPos(double anchorPos) {
+		this.anchorPos = anchorPos;
+		if (posType.equals(PosType.RELATIVE)) requiresUpdate = true;
 	}
 
 	public double getOffset() {
@@ -64,7 +100,17 @@ public class HudPosHelper {
 
 	public void setRelativePos(double relativePos) {
 		this.relativePos = relativePos;
-		requiresUpdate = true;
+		if (posType.equals(PosType.RELATIVE)) requiresUpdate = true;
+	}
+	
+	public void setRelativeTo(RelativeElementSupplier relativeElementSupplier) {
+		relativeElementIdentifier = relativeElementSupplier.getIdentifier();
+		this.relativeElementSupplier = relativeElementSupplier;
+		if (posType.equals(PosType.RELATIVE)) requiresUpdate = true;
+	}
+	
+	public String getRelativeElementIdentifier() {
+		return relativeElementIdentifier;
 	}
 	
 	public boolean requiresUpdate() {
@@ -78,29 +124,14 @@ public class HudPosHelper {
 		requiresUpdate = false;
 	}
 	
-	public void reset() {
-		anchor = null;
-		offset = 0;
-		relativePos = 0;
-		requiresUpdate = true;
-	}
-	
-	public int calculateScreenPos(int screenDimension, int elementDimension, int defaultPos) {
-		if (anchor.equals(Anchor.DEFAULT)) {
+	public int calculateScreenPos(int thisElementDimension, int defaultPos, MinecraftClient client) {
+		switch(posType) {
+		case DEFAULT:
 			return (int) (defaultPos + offset);
-		}
-		
-		int negativeAnchorPos = (int) (screenDimension * relativePos + offset);
-		
-		switch(anchor) {
-		case MINIMUM:
-			return negativeAnchorPos;
-		case CENTER:
-			return negativeAnchorPos - (int) (elementDimension / 2F);
-		case MAXIMUM:
-			return negativeAnchorPos - elementDimension;
+		case RELATIVE:
+			return (int) ((relativeElementSupplier.getDimension(client) * relativePos + offset + relativeElementSupplier.getPosition(client)) - (thisElementDimension * anchorPos));
 		default:
-			throw new UnsupportedOperationException("Unexpected anchor value");
+			throw new UnsupportedOperationException("how");
 		}
 	}
 	

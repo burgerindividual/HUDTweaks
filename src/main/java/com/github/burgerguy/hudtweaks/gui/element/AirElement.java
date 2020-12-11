@@ -1,7 +1,5 @@
 package com.github.burgerguy.hudtweaks.gui.element;
 
-import java.awt.Point;
-
 import com.github.burgerguy.hudtweaks.gui.HudElement;
 import com.github.burgerguy.hudtweaks.util.gui.MatrixCache.UpdateEvent;
 
@@ -43,8 +41,13 @@ public class AirElement extends HudElement {
 	}
 
 	@Override
-	public Point calculateDefaultCoords(MinecraftClient client) {
-		return new Point(client.getWindow().getScaledWidth() / 2 + 10, client.getWindow().getScaledHeight() - 49 - getRidingHealthOffset(client));
+	public int getDefaultX(MinecraftClient client) {
+		return client.getWindow().getScaledWidth() / 2 + 10;
+	}
+
+	@Override
+	public int getDefaultY(MinecraftClient client) {
+		return client.getWindow().getScaledHeight() - 49 - getRidingHealthOffset(client);
 	}
 	
 }

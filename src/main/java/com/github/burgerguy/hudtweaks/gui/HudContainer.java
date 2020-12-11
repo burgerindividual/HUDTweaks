@@ -9,12 +9,29 @@ import com.github.burgerguy.hudtweaks.gui.element.*;
 import com.github.burgerguy.hudtweaks.util.Util;
 import com.google.gson.JsonElement;
 
+import net.minecraft.client.MinecraftClient;
+
 public enum HudContainer {
 	;
 	
 	private static Map<String, HudElement> elementMap = new HashMap<>();
 	
+	public static final RelativeElementSupplier SCREEN_ELEMENT_SUPPLIER_X;
+	public static final RelativeElementSupplier SCREEN_ELEMENT_SUPPLIER_Y;
+	
 	static {
+		SCREEN_ELEMENT_SUPPLIER_X = new RelativeElementSupplier() {
+			@Override public String getIdentifier() { return "screen"; }
+			@Override public int getPosition(MinecraftClient client) { return 0; }
+			@Override public int getDimension(MinecraftClient client) { return client.getWindow().getScaledWidth(); }
+		};
+		
+		SCREEN_ELEMENT_SUPPLIER_Y = new RelativeElementSupplier() {
+			@Override public String getIdentifier() { return "screen"; }
+			@Override public int getPosition(MinecraftClient client) { return 0; }
+			@Override public int getDimension(MinecraftClient client) { return client.getWindow().getScaledHeight(); }
+		};
+		
 		HudElement hotbar = new HotbarElement();
 		addElement(hotbar.getIdentifier(), hotbar);
 		

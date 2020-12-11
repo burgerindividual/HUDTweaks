@@ -16,10 +16,15 @@ import com.google.gson.JsonParser;
 public enum Util {
 	;
 	
-	public static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
+	public static final Gson GSON;
 	public static final JsonParser JSON_PARSER = new JsonParser();
 	public static final Logger LOGGER = LogManager.getLogger("HUDTweaks");
 	
-	public static final NumberFormat RELATIVE_POS_FORMATTER = new DecimalFormat("#.000");
+	public static final NumberFormat RELATIVE_POS_FORMATTER = new DecimalFormat("%##0.0");
+	public static final NumberFormat ANCHOR_POS_FORMATTER = new DecimalFormat("%##0.0");
 	public static final NumberFormat OFFSET_FORMATTER = new DecimalFormat("#####");
+	
+	static {
+		GSON = new GsonBuilder().setPrettyPrinting().create();
+	}
 }

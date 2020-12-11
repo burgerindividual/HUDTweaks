@@ -1,7 +1,5 @@
 package com.github.burgerguy.hudtweaks.gui.element;
 
-import java.awt.Point;
-
 import com.github.burgerguy.hudtweaks.gui.HudElement;
 import com.github.burgerguy.hudtweaks.util.gui.MatrixCache.UpdateEvent;
 
@@ -26,7 +24,12 @@ public class ArmorElement extends HudElement {
 	}
 
 	@Override
-	public Point calculateDefaultCoords(MinecraftClient client) {
+	public int getDefaultX(MinecraftClient client) {
+		return client.getWindow().getScaledWidth() / 2 - 91;
+	}
+
+	@Override
+	public int getDefaultY(MinecraftClient client) {
 		int offsetHeight;
 		if (client == null || client.player == null) {
 			offsetHeight = 10;
@@ -36,6 +39,6 @@ public class ArmorElement extends HudElement {
 			int healthRows = MathHelper.ceil((maxHealth + absorption) / 2.0D / 10.0D);
 			offsetHeight = (healthRows - 1) * Math.max(10 - (healthRows - 2), 3) + 10;
 		}
-		return new Point(client.getWindow().getScaledWidth() / 2 - 91, client.getWindow().getScaledHeight() - 39 - offsetHeight);
+		return client.getWindow().getScaledHeight() - 39 - offsetHeight;
 	}
 }

@@ -1,7 +1,5 @@
 package com.github.burgerguy.hudtweaks.gui.element;
 
-import java.awt.Point;
-
 import com.github.burgerguy.hudtweaks.gui.HudElement;
 import com.github.burgerguy.hudtweaks.util.gui.MatrixCache.UpdateEvent;
 
@@ -41,8 +39,13 @@ public class HotbarElement extends HudElement {
 	}
 
 	@Override
-	public Point calculateDefaultCoords(MinecraftClient client) {
-		return new Point(client.getWindow().getScaledWidth() / 2 - 91 - getOffhandOffset(client), client.getWindow().getScaledHeight() - 24);
+	public int getDefaultX(MinecraftClient client) {
+		return client.getWindow().getScaledWidth() / 2 - 91 - getOffhandOffset(client);
+	}
+
+	@Override
+	public int getDefaultY(MinecraftClient client) {
+		return client.getWindow().getScaledHeight() - 24;
 	}
 	
 }

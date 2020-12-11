@@ -1,8 +1,10 @@
 {
 	"hudtweaks.options": "HUDTweaks Config",
+	"hudtweaks.options.pos_type.display": "Pos Type: %s",
+	"hudtweaks.options.pos_type.default": "Default",
+	"hudtweaks.options.pos_type.relative": "Relative",
 	"hudtweaks.options.relative_pos.display": "Relative Pos: %s",
-	"hudtweaks.options.anchor_type.display": "Anchor Type:",
-	"hudtweaks.options.anchor_type.name": "Anchor Type",
+	"hudtweaks.options.anchor_pos.display": "Anchor Pos: %s",
 	"hudtweaks.options.offset.display": "Offset:",
 	"hudtweaks.options.offset.name": "Offset",
 	"hudtweaks.options.x_pos.display": "X Pos",

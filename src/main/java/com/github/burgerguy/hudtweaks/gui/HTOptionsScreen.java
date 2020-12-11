@@ -14,7 +14,7 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.TranslatableText;
 
 public class HTOptionsScreen extends Screen {
-	private static final int SIDEBAR_WIDTH = 108;
+	private static final int SIDEBAR_WIDTH = 116;
 	private static final int SIDEBAR_COLOR = 0x60424242;
 	
 	private static boolean isOpen = false;
@@ -38,7 +38,10 @@ public class HTOptionsScreen extends Screen {
 		isOpen = true;
 
 		for (HudElement element : HudContainer.getElements()) {
-			children.add(element.createWidget(this));
+			Element widget = element.createWidget(this);
+			if (widget != null) {
+				children.add(widget);
+			}
 		}
 		
 		// This makes sure that the smallest elements get selected first if there are multiple on top of eachother.

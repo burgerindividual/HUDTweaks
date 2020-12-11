@@ -1,7 +1,5 @@
 package com.github.burgerguy.hudtweaks.gui.element;
 
-import java.awt.Point;
-
 import com.github.burgerguy.hudtweaks.gui.HudElement;
 import com.github.burgerguy.hudtweaks.gui.widget.HTButtonWidget;
 import com.github.burgerguy.hudtweaks.gui.widget.SidebarWidget;
@@ -59,10 +57,15 @@ public class HealthElement extends HudElement {
 			return getRawHeight(client) + 9 + getHeartJumpDistance(client); // +9 because of the base heart height
 		}
 	}
+	
+	@Override
+	public int getDefaultX(MinecraftClient client) {
+		return client.getWindow().getScaledWidth() / 2 - 91;
+	}
 
 	@Override
-	public Point calculateDefaultCoords(MinecraftClient client) {
-		return new Point(client.getWindow().getScaledWidth() / 2 - 91, client.getWindow().getScaledHeight() - 39 - (flipped || client == null || client.player == null ? 0 : getRawHeight(client)) - getHeartJumpDistance(client));
+	public int getDefaultY(MinecraftClient client) {
+		return client.getWindow().getScaledHeight() - 39 - (flipped || client == null || client.player == null ? 0 : getRawHeight(client)) - getHeartJumpDistance(client);
 	}
 	
 	public boolean isFlipped() {
@@ -82,7 +85,7 @@ public class HealthElement extends HudElement {
 	@Override
 	public void fillSidebar(SidebarWidget sidebar) {
 		super.fillSidebar(sidebar);
-		sidebar.addDrawable(new HTButtonWidget(4, 207, sidebar.width - 8, 14, new TranslatableText("hudtweaks.options.health.style.display", flipped ? I18n.translate("hudtweaks.options.health.style.flipped.display") : I18n.translate("hudtweaks.options.health.style.normal.display"))) {
+		sidebar.addDrawable(new HTButtonWidget(4, 172, sidebar.width - 8, 14, new TranslatableText("hudtweaks.options.health.style.display", flipped ? I18n.translate("hudtweaks.options.health.style.flipped.display") : I18n.translate("hudtweaks.options.health.style.normal.display"))) {
 			@Override
 			public void onPress() {
 				flipped = !flipped;
@@ -90,6 +93,5 @@ public class HealthElement extends HudElement {
 				MatrixCache.queueUpdate(HealthElement.this);
 			}
 		});
-	}
-	
+	}	
 }

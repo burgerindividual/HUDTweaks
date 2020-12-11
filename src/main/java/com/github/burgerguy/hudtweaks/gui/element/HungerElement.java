@@ -1,7 +1,5 @@
 package com.github.burgerguy.hudtweaks.gui.element;
 
-import java.awt.Point;
-
 import com.github.burgerguy.hudtweaks.gui.HudElement;
 import com.github.burgerguy.hudtweaks.util.gui.MatrixCache.UpdateEvent;
 
@@ -25,8 +23,14 @@ public class HungerElement extends HudElement {
 	}
 
 	@Override
-	public Point calculateDefaultCoords(MinecraftClient client) {
-		return new Point(client.getWindow().getScaledWidth() / 2 + 10, client.getWindow().getScaledHeight() - 39 - 1); // the -1 is for the possible jump distance of the food
+	public int getDefaultX(MinecraftClient client) {
+		// TODO Auto-generated method stub
+		return client.getWindow().getScaledWidth() / 2 + 10;
+	}
+
+	@Override
+	public int getDefaultY(MinecraftClient client) {
+		return client.getWindow().getScaledHeight() - 39 - 1;  // the -1 is for the possible jump distance of the food
 	}
 	
 }

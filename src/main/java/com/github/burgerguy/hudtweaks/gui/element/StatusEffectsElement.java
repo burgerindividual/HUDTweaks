@@ -1,7 +1,5 @@
 package com.github.burgerguy.hudtweaks.gui.element;
 
-import java.awt.Point;
-
 import com.github.burgerguy.hudtweaks.gui.HudElement;
 import com.github.burgerguy.hudtweaks.gui.widget.HTButtonWidget;
 import com.github.burgerguy.hudtweaks.gui.widget.SidebarWidget;
@@ -20,6 +18,7 @@ public class StatusEffectsElement extends HudElement {
 		super("statuseffects", UpdateEvent.ON_SCREEN_BOUNDS_CHANGE, UpdateEvent.ON_STATUS_EFFECTS_CHANGE);
 	}
 
+	// FIXME
 	@Override
 	public int getWidth(MinecraftClient client) {
 		return 5;
@@ -30,9 +29,15 @@ public class StatusEffectsElement extends HudElement {
 		return 5;
 	}
 
+
 	@Override
-	public Point calculateDefaultCoords(MinecraftClient client) {
-		return new Point(0, 0);
+	public int getDefaultX(MinecraftClient client) {
+		return 0;
+	}
+
+	@Override
+	public int getDefaultY(MinecraftClient client) {
+		return 0;
 	}
 	
 	public boolean isVertical() {
@@ -52,7 +57,7 @@ public class StatusEffectsElement extends HudElement {
 	@Override
 	public void fillSidebar(SidebarWidget sidebar) {
 		super.fillSidebar(sidebar);
-		sidebar.addDrawable(new HTButtonWidget(4, 207, sidebar.width - 8, 14, new TranslatableText("hudtweaks.options.statuseffects.style.display", vertical ? I18n.translate("hudtweaks.options.statuseffects.style.vertical.display") : I18n.translate("hudtweaks.options.statuseffects.style.horizontal.display"))) {
+		sidebar.addDrawable(new HTButtonWidget(4, 172, sidebar.width - 8, 14, new TranslatableText("hudtweaks.options.statuseffects.style.display", vertical ? I18n.translate("hudtweaks.options.statuseffects.style.vertical.display") : I18n.translate("hudtweaks.options.statuseffects.style.horizontal.display"))) {
 			@Override
 			public void onPress() {
 				vertical = !vertical;
@@ -61,5 +66,4 @@ public class StatusEffectsElement extends HudElement {
 			}
 		});
 	}
-
 }
