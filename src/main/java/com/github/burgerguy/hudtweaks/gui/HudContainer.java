@@ -7,6 +7,7 @@ import java.util.Map.Entry;
 
 import com.github.burgerguy.hudtweaks.gui.element.*;
 import com.github.burgerguy.hudtweaks.util.Util;
+import com.github.burgerguy.hudtweaks.util.gui.MatrixCache;
 import com.google.gson.JsonElement;
 
 import net.minecraft.client.MinecraftClient;
@@ -14,19 +15,21 @@ import net.minecraft.client.MinecraftClient;
 public enum HudContainer {
 	;
 	
-	private static Map<String, HudElement> elementMap = new HashMap<>();
+	private static final Map<String, HudElement> elementMap = new HashMap<>();
+	private static transient final MatrixCache matrixCache = new MatrixCache();
+	private static transient final RelativeParentCache relativeParentCache = new RelativeParentCache();
 	
-	public static final RelativeElementSupplier SCREEN_ELEMENT_SUPPLIER_X;
-	public static final RelativeElementSupplier SCREEN_ELEMENT_SUPPLIER_Y;
+	public static final RelativeParent SCREEN_RELATIVE_PARENT_X;
+	public static final RelativeParent SCREEN_RELATIVE_PARENT_Y;
 	
 	static {
-		SCREEN_ELEMENT_SUPPLIER_X = new RelativeElementSupplier() {
+		SCREEN_RELATIVE_PARENT_X = new RelativeParent() {
 			@Override public String getIdentifier() { return "screen"; }
 			@Override public int getPosition(MinecraftClient client) { return 0; }
 			@Override public int getDimension(MinecraftClient client) { return client.getWindow().getScaledWidth(); }
 		};
 		
-		SCREEN_ELEMENT_SUPPLIER_Y = new RelativeElementSupplier() {
+		SCREEN_RELATIVE_PARENT_Y = new RelativeParent() {
 			@Override public String getIdentifier() { return "screen"; }
 			@Override public int getPosition(MinecraftClient client) { return 0; }
 			@Override public int getDimension(MinecraftClient client) { return client.getWindow().getScaledHeight(); }
@@ -75,6 +78,14 @@ public enum HudContainer {
 	 */
 	public static Map<String, HudElement> getElementMap() {
 		return elementMap;
+	}
+	
+	public static MatrixCache getMatrixCache() {
+		return matrixCache;
+	}
+	
+	public static RelativeParentCache getRelativeParentCache() {
+		return relativeParentCache;
 	}
 	
 	public static void updateFromJson(JsonElement json) {

@@ -1,5 +1,6 @@
 package com.github.burgerguy.hudtweaks.gui;
 
+import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
 
 import net.minecraft.client.MinecraftClient;
@@ -14,17 +15,13 @@ public class HudPosHelper {
 	 */
 	protected PosType posType = PosType.DEFAULT;
 	
-	/**
-	 * The element that this pos helper calculates its relative coords
-	 * against.
-	 */
-	protected transient RelativeElementSupplier relativeElementSupplier;
+	@JsonAdapter(RelativeParentSerializer.class)
 	@SerializedName(value = "relativeTo")
 	/**
-	 * The identifier of the element. This is only used for serialization
-	 * and deserialization.
+	 * The relative data supplier that this pos helper calculates its
+	 * final coords with.
 	 */
-	protected String relativeElementIdentifier;
+	protected RelativeParent relativeParent;
 	
 	/**
 	 * The anchor point for calculation. Defaults to DEFAULT, which
@@ -103,14 +100,13 @@ public class HudPosHelper {
 		if (posType.equals(PosType.RELATIVE)) requiresUpdate = true;
 	}
 	
-	public void setRelativeTo(RelativeElementSupplier relativeElementSupplier) {
-		relativeElementIdentifier = relativeElementSupplier.getIdentifier();
-		this.relativeElementSupplier = relativeElementSupplier;
+	public void setRelativeTo(RelativeParent relativeParent) {
+		this.relativeParent = relativeParent;
 		if (posType.equals(PosType.RELATIVE)) requiresUpdate = true;
 	}
 	
-	public String getRelativeElementIdentifier() {
-		return relativeElementIdentifier;
+	public String getRelativeToIdentifier() {
+		return relativeParent.getIdentifier();
 	}
 	
 	public boolean requiresUpdate() {
@@ -129,7 +125,7 @@ public class HudPosHelper {
 		case DEFAULT:
 			return (int) (defaultPos + offset);
 		case RELATIVE:
-			return (int) ((relativeElementSupplier.getDimension(client) * relativePos + offset + relativeElementSupplier.getPosition(client)) - (thisElementDimension * anchorPos));
+			return (int) ((relativeParent.getDimension(client) * relativePos + offset + relativeParent.getPosition(client)) - (thisElementDimension * anchorPos));
 		default:
 			throw new UnsupportedOperationException("how");
 		}

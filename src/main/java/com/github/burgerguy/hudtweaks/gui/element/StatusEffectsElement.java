@@ -1,9 +1,9 @@
 package com.github.burgerguy.hudtweaks.gui.element;
 
+import com.github.burgerguy.hudtweaks.gui.HudContainer;
 import com.github.burgerguy.hudtweaks.gui.HudElement;
 import com.github.burgerguy.hudtweaks.gui.widget.HTButtonWidget;
 import com.github.burgerguy.hudtweaks.gui.widget.SidebarWidget;
-import com.github.burgerguy.hudtweaks.util.gui.MatrixCache;
 import com.github.burgerguy.hudtweaks.util.gui.MatrixCache.UpdateEvent;
 import com.google.gson.JsonElement;
 
@@ -62,7 +62,7 @@ public class StatusEffectsElement extends HudElement {
 			public void onPress() {
 				vertical = !vertical;
 				setMessage(new TranslatableText("hudtweaks.options.statuseffects.style.display", vertical ? I18n.translate("hudtweaks.options.statuseffects.style.vertical.display") : I18n.translate("hudtweaks.options.statuseffects.style.horizontal.display")));
-				MatrixCache.queueUpdate(StatusEffectsElement.this);
+				HudContainer.getMatrixCache().queueUpdate(StatusEffectsElement.this);
 			}
 		});
 	}

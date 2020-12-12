@@ -2,11 +2,11 @@ package com.github.burgerguy.hudtweaks.gui;
 
 import net.minecraft.client.MinecraftClient;
 
-public class RelativeHudElementSupplier implements RelativeElementSupplier {
+public class RelativeHudElementParent implements RelativeParent {
 	private final HudElement element;
 	private final boolean useX;
 	
-	public RelativeHudElementSupplier(HudElement element, boolean useX) { // TODO: figure out when to update
+	public RelativeHudElementParent(HudElement element, boolean useX) { // TODO: figure out when to update
 		this.element = element;
 		this.useX = useX;
 	}

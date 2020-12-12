@@ -11,39 +11,37 @@ import com.github.burgerguy.hudtweaks.gui.HudElement;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.math.Matrix4f;
 
-public enum MatrixCache {
-	;
+public class MatrixCache {	
+	private final Map<String, Matrix4f> matrixMap = new HashMap<>();
+	private final Queue<HudElement> updateQueue = new ArrayDeque<>();
 	
-	private static Map<String, Matrix4f> matrixMap = new HashMap<>();
-	private static Queue<HudElement> updateQueue = new ArrayDeque<>();
-	
-	public static void calculateMatrix(HudElement element, MinecraftClient client) {
+	public void calculateMatrix(HudElement element, MinecraftClient client) {
 		matrixMap.put(element.getIdentifier(), element.calculateMatrix(client));
 		updateQueue.remove(element);
 	}
 	
-	public static void calculateMatrix(String identifier, MinecraftClient client) {
+	public void calculateMatrix(String identifier, MinecraftClient client) {
 		calculateMatrix(HudContainer.getElement(identifier), client);
 	}
 	
-	public static void calculateAllMatricies(MinecraftClient client) {
+	public void calculateAllMatricies(MinecraftClient client) {
 		for(HudElement element : HudContainer.getElements()) {
 			calculateMatrix(element, client);
 		}
 	}
 	
-	public static Matrix4f getMatrix(String identifier) {
+	public Matrix4f getMatrix(String identifier) {
 		return matrixMap.get(identifier);
 	}
 	
-	public static void calculateQueued(MinecraftClient client) {
+	public void calculateQueued(MinecraftClient client) {
 		while(!updateQueue.isEmpty()) {
 			HudElement element = updateQueue.poll();
 			matrixMap.put(element.getIdentifier(), element.calculateMatrix(client));
 		}
 	}
 	
-	public static void queueUpdate(HudElement element) {
+	public void queueUpdate(HudElement element) {
 		updateQueue.add(element);
 	}
 	

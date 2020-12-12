@@ -1,9 +1,9 @@
 package com.github.burgerguy.hudtweaks.gui.element;
 
+import com.github.burgerguy.hudtweaks.gui.HudContainer;
 import com.github.burgerguy.hudtweaks.gui.HudElement;
 import com.github.burgerguy.hudtweaks.gui.widget.HTButtonWidget;
 import com.github.burgerguy.hudtweaks.gui.widget.SidebarWidget;
-import com.github.burgerguy.hudtweaks.util.gui.MatrixCache;
 import com.github.burgerguy.hudtweaks.util.gui.MatrixCache.UpdateEvent;
 import com.google.gson.JsonElement;
 
@@ -90,7 +90,7 @@ public class HealthElement extends HudElement {
 			public void onPress() {
 				flipped = !flipped;
 				setMessage(new TranslatableText("hudtweaks.options.health.style.display", flipped ? I18n.translate("hudtweaks.options.health.style.flipped.display") : I18n.translate("hudtweaks.options.health.style.normal.display")));
-				MatrixCache.queueUpdate(HealthElement.this);
+				HudContainer.getMatrixCache().queueUpdate(HealthElement.this);
 			}
 		});
 	}	

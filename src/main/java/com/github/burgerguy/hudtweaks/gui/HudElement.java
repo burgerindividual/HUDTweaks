@@ -39,8 +39,8 @@ public abstract class HudElement {
 		this.updateEvents = updateEvents;
 		xPosHelper = new HudPosHelper();
 		yPosHelper = new HudPosHelper();
-		xPosHelper.setRelativeTo(HudContainer.SCREEN_ELEMENT_SUPPLIER_X);
-		yPosHelper.setRelativeTo(HudContainer.SCREEN_ELEMENT_SUPPLIER_Y);
+		xPosHelper.setRelativeTo(HudContainer.SCREEN_RELATIVE_PARENT_X);
+		yPosHelper.setRelativeTo(HudContainer.SCREEN_RELATIVE_PARENT_Y);
 	}
 	
 	public String getIdentifier() {
@@ -105,9 +105,9 @@ public abstract class HudElement {
 		JsonObject xPosJson = elementJson.get("xPos").getAsJsonObject();
 		HudElement relativeElement = HudContainer.getElement(xPosJson.get("relativeTo").getAsString());
 		if (relativeElement != null) {
-			xPosHelper.setRelativeTo(new RelativeHudElementSupplier(relativeElement, true));
+			xPosHelper.setRelativeTo(HudContainer.getRelativeParentCache().getOrCreate(relativeElement, true));
 		} else {
-			xPosHelper.setRelativeTo(HudContainer.SCREEN_ELEMENT_SUPPLIER_X);
+			xPosHelper.setRelativeTo(HudContainer.SCREEN_RELATIVE_PARENT_X);
 		}
 		xPosHelper.setPosType(Util.GSON.fromJson(xPosJson.get("posType"), HudPosHelper.PosType.class));
 		xPosHelper.setAnchorPos(xPosJson.get("anchorPos").getAsDouble());
@@ -117,9 +117,9 @@ public abstract class HudElement {
 		JsonObject yPosJson = elementJson.get("yPos").getAsJsonObject();
 		relativeElement = HudContainer.getElement(yPosJson.get("relativeTo").getAsString());
 		if (relativeElement != null) {
-			yPosHelper.setRelativeTo(new RelativeHudElementSupplier(relativeElement, false));
+			yPosHelper.setRelativeTo(HudContainer.getRelativeParentCache().getOrCreate(relativeElement, false));
 		} else {
-			yPosHelper.setRelativeTo(HudContainer.SCREEN_ELEMENT_SUPPLIER_Y);
+			yPosHelper.setRelativeTo(HudContainer.SCREEN_RELATIVE_PARENT_Y);
 		}
 		yPosHelper.setPosType(Util.GSON.fromJson(yPosJson.get("posType"), HudPosHelper.PosType.class));
 		yPosHelper.setAnchorPos(yPosJson.get("anchorPos").getAsDouble());
@@ -245,19 +245,6 @@ public abstract class HudElement {
 			}
 		};
 		
-//		AnchorButtonWidget xAnchorButton = new AnchorButtonWidget(sidebar.width - 20, 50, true, HudElement.this.getXPosHelper().getAnchor(), a -> {
-//			HudElement.this.getXPosHelper().setAnchor(a);
-//			xRelativeSlider.active = !a.equals(Anchor.DEFAULT);
-//		});
-//		
-//		AnchorButtonWidget yAnchorButton = new AnchorButtonWidget(sidebar.width - 20, 133, false, HudElement.this.getYPosHelper().getAnchor(), a -> {
-//			HudElement.this.getYPosHelper().setAnchor(a);
-//			yRelativeSlider.active = !a.equals(Anchor.DEFAULT);
-//		});
-//		
-//		xRelativeSlider.active = !HudElement.this.getXPosHelper().getAnchor().equals(Anchor.DEFAULT);
-//		yRelativeSlider.active = !HudElement.this.getYPosHelper().getAnchor().equals(Anchor.DEFAULT);
-		
 		NumberFieldWidget xOffsetField = new NumberFieldWidget(MinecraftClient.getInstance().textRenderer, 43, 54, sidebar.width - 47, 14, new TranslatableText("hudtweaks.options.offset.name")) {
 			@Override
 			public void updateValue() {
@@ -313,7 +300,6 @@ public abstract class HudElement {
 		private static final int OUTLINE_COLOR_SELECTED = 0xFF0000FF;
 		
 		private final HTOptionsScreen optionsScreen;
-		//		private byte clickedState;
 		
 		private HudElementWidget(HTOptionsScreen optionsScreen) {
 			this.optionsScreen = optionsScreen;
@@ -342,24 +328,14 @@ public abstract class HudElement {
 		public boolean mouseClicked(double mouseX, double mouseY, int button) {
 			if (button == GLFW.GLFW_MOUSE_BUTTON_LEFT) {
 				if (isMouseOver(mouseX, mouseY)) {
-					//					switch (clickedState) {
-					//						case 0:
-					//							this.clickedState = 1;
-					//							break;
-					//						case 1:
-					//							clickedState = 2;
-					//							break;
-					//					}
 					return true;
 				}
 			}
-			//			this.clickedState = 0;
 			return false;
 		}
 		
 		@Override
 		public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
-			//			if (clickedState == 2) {
 			if (Screen.hasShiftDown()) {
 				if (!xPosHelper.getPosType().equals(PosType.DEFAULT)) {
 					xPosHelper.setRelativePos(MathHelper.clamp(xPosHelper.getRelativePos() + deltaX / optionsScreen.width, 0.0D, 1.0D));
@@ -373,8 +349,6 @@ public abstract class HudElement {
 			}
 			optionsScreen.updateSidebarValues();
 			return true;
-			//			}
-			//			return false;
 		}
 		
 		@Override

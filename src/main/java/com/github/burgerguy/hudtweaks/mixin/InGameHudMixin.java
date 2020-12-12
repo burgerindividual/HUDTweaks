@@ -21,7 +21,6 @@ import com.github.burgerguy.hudtweaks.gui.HudContainer;
 import com.github.burgerguy.hudtweaks.gui.HudElement;
 import com.github.burgerguy.hudtweaks.gui.element.HealthElement;
 import com.github.burgerguy.hudtweaks.gui.element.StatusEffectsElement;
-import com.github.burgerguy.hudtweaks.util.gui.MatrixCache;
 import com.github.burgerguy.hudtweaks.util.gui.MatrixCache.UpdateEvent;
 import com.mojang.blaze3d.systems.RenderSystem;
 
@@ -87,7 +86,7 @@ public abstract class InGameHudMixin extends DrawableHelper {
 		for (int i = 0; i < updatableElements.length; i++) {
 			HudElement element = updatableElements[i];
 			if (element != null && element.requiresUpdate()) {
-				MatrixCache.calculateMatrix(element, client);
+				HudContainer.getMatrixCache().calculateMatrix(element, client);
 				updatableElements[i] = null;
 			}
 		}
@@ -118,7 +117,7 @@ public abstract class InGameHudMixin extends DrawableHelper {
 			fireUpdateEvent(UpdateEvent.ON_STATUS_EFFECTS_CHANGE);
 		}
 		
-		MatrixCache.calculateQueued(client);
+		HudContainer.getMatrixCache().calculateQueued(client);
 	}
 	
 	@Unique
@@ -128,7 +127,7 @@ public abstract class InGameHudMixin extends DrawableHelper {
 		for (int i = 0; i < updatableElements.length; i++) {
 			HudElement element = updatableElements[i];
 			if (element != null && element.shouldUpdateOnEvent(event)) {
-				MatrixCache.calculateMatrix(element, client);
+				HudContainer.getMatrixCache().calculateMatrix(element, client);
 				updatableElements[i] = null;
 			}
 		}
@@ -138,7 +137,7 @@ public abstract class InGameHudMixin extends DrawableHelper {
 	
 	@Inject(method = "renderHotbar", at = @At(value = "HEAD"))
 	private void renderHotbarHead(float tickDelta, MatrixStack matrixStack, CallbackInfo callbackInfo) {
-		Matrix4f hotbarMatrix = MatrixCache.getMatrix("hotbar");
+		Matrix4f hotbarMatrix = HudContainer.getMatrixCache().getMatrix("hotbar");
 		if (hotbarMatrix != null) {
 			multipliedMatrix = true;
 			RenderSystem.pushMatrix();
@@ -178,7 +177,7 @@ public abstract class InGameHudMixin extends DrawableHelper {
 			at = @At(value = "INVOKE_STRING", target = "Lnet/minecraft/util/profiler/Profiler;push(Ljava/lang/String;)V",
 			args = "ldc=armor"))
 	private void renderArmor(MatrixStack matrixStack, CallbackInfo callbackInfo) {
-		Matrix4f armorMatrix = MatrixCache.getMatrix("armor");
+		Matrix4f armorMatrix = HudContainer.getMatrixCache().getMatrix("armor");
 		if (armorMatrix != null) {
 			multipliedMatrix = true;
 			matrixStack.push();
@@ -195,7 +194,7 @@ public abstract class InGameHudMixin extends DrawableHelper {
 			multipliedMatrix = false;
 		}
 		
-		Matrix4f healthMatrix = MatrixCache.getMatrix("health");
+		Matrix4f healthMatrix = HudContainer.getMatrixCache().getMatrix("health");
 		if (healthMatrix != null) {
 			multipliedMatrix = true;
 			matrixStack.push();
@@ -237,7 +236,7 @@ public abstract class InGameHudMixin extends DrawableHelper {
 			fireUpdateEvent(UpdateEvent.ON_RIDING_HEALTH_ROWS_CHANGE);
 		}
 		
-		Matrix4f hungerMatrix = MatrixCache.getMatrix("hunger");
+		Matrix4f hungerMatrix = HudContainer.getMatrixCache().getMatrix("hunger");
 		if (hungerMatrix != null) {
 			multipliedMatrix = true;
 			matrixStack.push();
@@ -254,7 +253,7 @@ public abstract class InGameHudMixin extends DrawableHelper {
 			multipliedMatrix = false;
 		}
 		
-		Matrix4f airMatrix = MatrixCache.getMatrix("air");
+		Matrix4f airMatrix = HudContainer.getMatrixCache().getMatrix("air");
 		if (airMatrix != null) {
 			multipliedMatrix = true;
 			matrixStack.push();
@@ -272,27 +271,27 @@ public abstract class InGameHudMixin extends DrawableHelper {
 	
 	//	@Inject(method = "renderMountHealth", at = @At(value = "HEAD"))
 	//	private void renderMountHealthHead(MatrixStack matrixStack, CallbackInfo callbackInfo) {
-	//		if (MatrixCache.mountTransform != null) {
+	//		if (HudContainer.getMatrixCache().mountTransform != null) {
 	//			tempMatrix = matrixStack.peek().getModel();
-	//			tempMatrix.multiply(MatrixCache.mountTransform);
-	//		} else if (MatrixCache.foodTransform != null) {
+	//			tempMatrix.multiply(HudContainer.getMatrixCache().mountTransform);
+	//		} else if (HudContainer.getMatrixCache().foodTransform != null) {
 	//			tempMatrix = matrixStack.peek().getModel();
-	//			tempMatrix.multiply(MatrixCache.foodTransform);
+	//			tempMatrix.multiply(HudContainer.getMatrixCache().foodTransform);
 	//		}
 	//	}
 	//
 	//	@Inject(method = "renderMountHealth", at = @At(value = "RETURN"))
 	//	private void renderMountHealthReturn(MatrixStack matrixStack, CallbackInfo callbackInfo) {
-	//		if (MatrixCache.mountTransform != null) {
+	//		if (HudContainer.getMatrixCache().mountTransform != null) {
 	//			tempMatrix.multiply(HudTweaksOptions.mountTransform.getInverse());
-	//		} else if (MatrixCache.foodTransform != null) {
+	//		} else if (HudContainer.getMatrixCache().foodTransform != null) {
 	//			tempMatrix.multiply(HudTweaksOptions.foodTransform.getInverse());
 	//		}
 	//	}
 	//
 	@Inject(method = "renderExperienceBar", at = @At(value = "HEAD"))
 	public void renderExperienceBarHead(MatrixStack matrixStack, int x, CallbackInfo callbackInfo) {
-		Matrix4f expBarMatrix = MatrixCache.getMatrix("expbar");
+		Matrix4f expBarMatrix = HudContainer.getMatrixCache().getMatrix("expbar");
 		if (expBarMatrix != null) {
 			multipliedMatrix = true;
 			matrixStack.push();
@@ -310,27 +309,27 @@ public abstract class InGameHudMixin extends DrawableHelper {
 	//
 	//	@Inject(method = "renderMountJumpBar", at = @At(value = "HEAD"))
 	//	public void renderMountJumpBarHead(MatrixStack matrixStack, int x, CallbackInfo callbackInfo) {
-	//		if (MatrixCache.expBarTransform != null) {
+	//		if (HudContainer.getMatrixCache().expBarTransform != null) {
 	//			tempMatrix = matrixStack.peek().getModel();
-	//			tempMatrix.multiply(MatrixCache.expBarTransform);
-	//		} else if (MatrixCache.jumpBarTransform != null) {
+	//			tempMatrix.multiply(HudContainer.getMatrixCache().expBarTransform);
+	//		} else if (HudContainer.getMatrixCache().jumpBarTransform != null) {
 	//			tempMatrix = matrixStack.peek().getModel();
-	//			tempMatrix.multiply(MatrixCache.jumpBarTransform);
+	//			tempMatrix.multiply(HudContainer.getMatrixCache().jumpBarTransform);
 	//		}
 	//	}
 	//
 	//	@Inject(method = "renderMountJumpBar", at = @At(value = "RETURN"))
 	//	public void renderMountJumpBarReturn(MatrixStack matrixStack, int x, CallbackInfo callbackInfo) {
-	//		if (MatrixCache.expBarTransform != null) {
+	//		if (HudContainer.getMatrixCache().expBarTransform != null) {
 	//			tempMatrix.multiply(HudTweaksOptions.expBarTransform.getInverse());
-	//		} else if (MatrixCache.jumpBarTransform != null) {
+	//		} else if (HudContainer.getMatrixCache().jumpBarTransform != null) {
 	//			tempMatrix.multiply(HudTweaksOptions.jumpBarTransform.getInverse());
 	//		}
 	//	}
 	//
 	@Inject(method = "renderStatusEffectOverlay", at = @At(value = "HEAD"))
 	private void renderStatusEffectOverlayHead(MatrixStack matrixStack, CallbackInfo callbackInfo) {
-		Matrix4f statusEffectsMatrix = MatrixCache.getMatrix("statuseffects");
+		Matrix4f statusEffectsMatrix = HudContainer.getMatrixCache().getMatrix("statuseffects");
 		if (statusEffectsMatrix != null) {
 			multipliedMatrix = true;
 			matrixStack.push();
