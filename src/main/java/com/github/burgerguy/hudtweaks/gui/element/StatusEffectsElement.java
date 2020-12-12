@@ -1,6 +1,5 @@
 package com.github.burgerguy.hudtweaks.gui.element;
 
-import com.github.burgerguy.hudtweaks.gui.HudContainer;
 import com.github.burgerguy.hudtweaks.gui.HudElement;
 import com.github.burgerguy.hudtweaks.gui.widget.HTButtonWidget;
 import com.github.burgerguy.hudtweaks.gui.widget.SidebarWidget;
@@ -10,9 +9,11 @@ import com.google.gson.JsonElement;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.text.TranslatableText;
+import net.minecraft.util.math.Matrix4f;
 
 public class StatusEffectsElement extends HudElement {
 	private boolean vertical;
+	private transient boolean requiresUpdate;
 
 	public StatusEffectsElement() {
 		super("statuseffects", UpdateEvent.ON_SCREEN_BOUNDS_CHANGE, UpdateEvent.ON_STATUS_EFFECTS_CHANGE);
@@ -40,6 +41,17 @@ public class StatusEffectsElement extends HudElement {
 		return 0;
 	}
 	
+	@Override
+	public boolean requiresUpdate() {
+		return requiresUpdate || super.requiresUpdate();
+	}
+	
+	@Override
+	public Matrix4f calculateMatrix(MinecraftClient client) {
+		requiresUpdate = false;
+		return super.calculateMatrix(client);
+	}
+	
 	public boolean isVertical() {
 		return vertical;
 	}
@@ -57,12 +69,12 @@ public class StatusEffectsElement extends HudElement {
 	@Override
 	public void fillSidebar(SidebarWidget sidebar) {
 		super.fillSidebar(sidebar);
-		sidebar.addDrawable(new HTButtonWidget(4, 172, sidebar.width - 8, 14, new TranslatableText("hudtweaks.options.statuseffects.style.display", vertical ? I18n.translate("hudtweaks.options.statuseffects.style.vertical.display") : I18n.translate("hudtweaks.options.statuseffects.style.horizontal.display"))) {
+		sidebar.addDrawable(new HTButtonWidget(4, 225, sidebar.width - 8, 14, new TranslatableText("hudtweaks.options.statuseffects.style.display", vertical ? I18n.translate("hudtweaks.options.statuseffects.style.vertical.display") : I18n.translate("hudtweaks.options.statuseffects.style.horizontal.display"))) {
 			@Override
 			public void onPress() {
 				vertical = !vertical;
 				setMessage(new TranslatableText("hudtweaks.options.statuseffects.style.display", vertical ? I18n.translate("hudtweaks.options.statuseffects.style.vertical.display") : I18n.translate("hudtweaks.options.statuseffects.style.horizontal.display")));
-				HudContainer.getMatrixCache().queueUpdate(StatusEffectsElement.this);
+				requiresUpdate = true;
 			}
 		});
 	}

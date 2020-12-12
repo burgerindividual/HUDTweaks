@@ -23,14 +23,14 @@ public abstract class HTButtonWidget extends AbstractPressableButtonWidget {
 		int y1 = y;
 		int x2 = x + width;
 		int y2 = y + height;
-		int color = isHovered() ? 0xFFFFFFFF : 0xFF000000;
+		int color = isHovered() && active ? 0xFFFFFFFF : 0xFF000000;
 		DrawableHelper.fill(matrixStack, x1,     y1,     x2,     y1 + 1, color);
 		DrawableHelper.fill(matrixStack, x1,     y2,     x2,     y2 - 1, color);
 		DrawableHelper.fill(matrixStack, x1,     y1 + 1, x1 + 1, y2 - 1, color);
 		DrawableHelper.fill(matrixStack, x2,     y1 + 1, x2 - 1, y2 - 1, color);
 		renderBg(matrixStack, minecraftClient, mouseX, mouseY);
 		int j = active ? 0x00FFFFFF : 0x00A0A0A0;
-		drawCenteredText(matrixStack, textRenderer, getMessage(), x + width / 2, y + (height - 8) / 2, j | MathHelper.ceil(alpha * 255.0F) << 24);
+		drawCenteredString(matrixStack, textRenderer, textRenderer.trimToWidth(getMessage(), width).getString(), x + width / 2, y + (height - 8) / 2, j | MathHelper.ceil(alpha * 255.0F) << 24);
 		if (!active) {
 			DrawableHelper.fill(matrixStack, x1, y1, x2, y2, 0x50303030);
 		}

@@ -71,18 +71,16 @@ public abstract class InGameHudMixin extends DrawableHelper {
 		int scaledHeight = client.getWindow().getScaledHeight();
 		
 		if (HTOptionsScreen.isOpen()) {
+			// super janky way to dim background
 			super.fillGradient(matrixStack, 0, 0, scaledWidth, scaledHeight, -1072689136, -804253680);
 		}
 		
 		client.getProfiler().push("fireHudTweaksEvents");
 		client.getProfiler().push("createUpdatableElementsArray");
 		updatableElements = HudContainer.getElements().toArray(new HudElement[HudContainer.getElements().size()]);
-		client.getProfiler().pop();
-		client.getProfiler().pop();
-		
-		fireUpdateEvent(UpdateEvent.ON_RENDER);
 		
 		// this will update everything on the first render, as they will all have requiresUpdate true by default
+		client.getProfiler().swap("manualUpdates");
 		for (int i = 0; i < updatableElements.length; i++) {
 			HudElement element = updatableElements[i];
 			if (element != null && element.requiresUpdate()) {
@@ -90,6 +88,10 @@ public abstract class InGameHudMixin extends DrawableHelper {
 				updatableElements[i] = null;
 			}
 		}
+		client.getProfiler().pop();
+		client.getProfiler().pop();
+		
+		fireUpdateEvent(UpdateEvent.ON_RENDER);
 		
 		if (scaledWidth != lastWidth || scaledHeight != lastHeight) {
 			lastWidth = scaledWidth;
@@ -116,8 +118,6 @@ public abstract class InGameHudMixin extends DrawableHelper {
 			lastStatusEffects = statusEffects;
 			fireUpdateEvent(UpdateEvent.ON_STATUS_EFFECTS_CHANGE);
 		}
-		
-		HudContainer.getMatrixCache().calculateQueued(client);
 	}
 	
 	@Unique

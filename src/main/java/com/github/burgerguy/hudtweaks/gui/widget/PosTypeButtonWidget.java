@@ -2,7 +2,7 @@ package com.github.burgerguy.hudtweaks.gui.widget;
 
 import java.util.function.Consumer;
 
-import com.github.burgerguy.hudtweaks.gui.HudPosHelper.PosType;
+import com.github.burgerguy.hudtweaks.util.gui.HudPosHelper.PosType;
 
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.text.Text;
@@ -21,7 +21,7 @@ public class PosTypeButtonWidget extends HTButtonWidget {
 	@Override
 	public void onPress() {
 		PosType[] values = PosType.values();
-		int newOrdinal = posType.ordinal();
+		int newOrdinal = posType.ordinal() + 1;
 		if (newOrdinal < values.length) {
 			setType(values[newOrdinal]);
 		} else {

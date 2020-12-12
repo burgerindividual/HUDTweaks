@@ -24,7 +24,6 @@ public class HungerElement extends HudElement {
 
 	@Override
 	public int getDefaultX(MinecraftClient client) {
-		// TODO Auto-generated method stub
 		return client.getWindow().getScaledWidth() / 2 + 10;
 	}
 

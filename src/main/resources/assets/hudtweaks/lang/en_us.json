@@ -3,6 +3,7 @@
 	"hudtweaks.options.pos_type.display": "Pos Type: %s",
 	"hudtweaks.options.pos_type.default": "Default",
 	"hudtweaks.options.pos_type.relative": "Relative",
+	"hudtweaks.options.relative_to.display": "Relative To: %s",
 	"hudtweaks.options.relative_pos.display": "Relative Pos: %s",
 	"hudtweaks.options.anchor_pos.display": "Anchor Pos: %s",
 	"hudtweaks.options.offset.display": "Offset:",

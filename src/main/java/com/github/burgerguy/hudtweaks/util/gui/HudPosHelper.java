@@ -1,5 +1,7 @@
-package com.github.burgerguy.hudtweaks.gui;
+package com.github.burgerguy.hudtweaks.util.gui;
 
+import com.github.burgerguy.hudtweaks.gui.RelativeParent;
+import com.github.burgerguy.hudtweaks.util.json.RelativeParentSerializer;
 import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
 
@@ -18,8 +20,8 @@ public class HudPosHelper {
 	@JsonAdapter(RelativeParentSerializer.class)
 	@SerializedName(value = "relativeTo")
 	/**
-	 * The relative data supplier that this pos helper calculates its
-	 * final coords with.
+	 * The relative parent that this pos helper calculates its final
+	 * coords with.
 	 */
 	protected RelativeParent relativeParent;
 	
@@ -100,13 +102,13 @@ public class HudPosHelper {
 		if (posType.equals(PosType.RELATIVE)) requiresUpdate = true;
 	}
 	
-	public void setRelativeTo(RelativeParent relativeParent) {
+	public void setRelativeParent(RelativeParent relativeParent) {
 		this.relativeParent = relativeParent;
 		if (posType.equals(PosType.RELATIVE)) requiresUpdate = true;
 	}
 	
-	public String getRelativeParentIdentifier() {
-		return relativeParent.getIdentifier();
+	public RelativeParent getRelativeParent() {
+		return relativeParent;
 	}
 	
 	public boolean requiresUpdate() {
@@ -116,7 +118,7 @@ public class HudPosHelper {
 	/**
 	 * Don't call this unless you know what you're doing.
 	 */
-	void setUpdated() {
+	public void setUpdated() {
 		requiresUpdate = false;
 	}
 	

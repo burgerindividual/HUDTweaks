@@ -4,11 +4,11 @@ import net.minecraft.client.MinecraftClient;
 
 public class RelativeHudElementParent implements RelativeParent {
 	private final HudElement element;
-	private final boolean useX;
+	private final boolean isX;
 	
-	public RelativeHudElementParent(HudElement element, boolean useX) { // TODO: figure out when to update
+	public RelativeHudElementParent(HudElement element, boolean isX) { // TODO: figure out when to update
 		this.element = element;
-		this.useX = useX;
+		this.isX = isX;
 	}
 	
 	@Override
@@ -18,7 +18,7 @@ public class RelativeHudElementParent implements RelativeParent {
 
 	@Override
 	public int getPosition(MinecraftClient client) {
-		if (useX) {
+		if (isX) {
 			return element.getXPosHelper().calculateScreenPos(element.getWidth(client), element.getDefaultX(client), client);
 		} else {
 			return element.getYPosHelper().calculateScreenPos(element.getHeight(client), element.getDefaultY(client), client);
@@ -27,6 +27,6 @@ public class RelativeHudElementParent implements RelativeParent {
 
 	@Override
 	public int getDimension(MinecraftClient client) {
-		return useX ? element.getWidth(client) : element.getHeight(client);
+		return isX ? element.getWidth(client) : element.getHeight(client);
 	}
 }

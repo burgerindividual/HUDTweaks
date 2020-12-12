@@ -1,6 +1,5 @@
 package com.github.burgerguy.hudtweaks.gui.element;
 
-import com.github.burgerguy.hudtweaks.gui.HudContainer;
 import com.github.burgerguy.hudtweaks.gui.HudElement;
 import com.github.burgerguy.hudtweaks.gui.widget.HTButtonWidget;
 import com.github.burgerguy.hudtweaks.gui.widget.SidebarWidget;
@@ -12,9 +11,11 @@ import net.minecraft.client.resource.language.I18n;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Matrix4f;
 
 public class HealthElement extends HudElement {
 	private boolean flipped;
+	private transient boolean requiresUpdate;
 
 	public HealthElement() {
 		super("health", UpdateEvent.ON_SCREEN_BOUNDS_CHANGE, UpdateEvent.ON_HEALTH_ROWS_CHANGE);
@@ -68,6 +69,17 @@ public class HealthElement extends HudElement {
 		return client.getWindow().getScaledHeight() - 39 - (flipped || client == null || client.player == null ? 0 : getRawHeight(client)) - getHeartJumpDistance(client);
 	}
 	
+	@Override
+	public boolean requiresUpdate() {
+		return requiresUpdate || super.requiresUpdate();
+	}
+	
+	@Override
+	public Matrix4f calculateMatrix(MinecraftClient client) {
+		requiresUpdate = false;
+		return super.calculateMatrix(client);
+	}
+	
 	public boolean isFlipped() {
 		return flipped;
 	}
@@ -85,12 +97,12 @@ public class HealthElement extends HudElement {
 	@Override
 	public void fillSidebar(SidebarWidget sidebar) {
 		super.fillSidebar(sidebar);
-		sidebar.addDrawable(new HTButtonWidget(4, 172, sidebar.width - 8, 14, new TranslatableText("hudtweaks.options.health.style.display", flipped ? I18n.translate("hudtweaks.options.health.style.flipped.display") : I18n.translate("hudtweaks.options.health.style.normal.display"))) {
+		sidebar.addDrawable(new HTButtonWidget(4, 225, sidebar.width - 8, 14, new TranslatableText("hudtweaks.options.health.style.display", flipped ? I18n.translate("hudtweaks.options.health.style.flipped.display") : I18n.translate("hudtweaks.options.health.style.normal.display"))) {
 			@Override
 			public void onPress() {
 				flipped = !flipped;
 				setMessage(new TranslatableText("hudtweaks.options.health.style.display", flipped ? I18n.translate("hudtweaks.options.health.style.flipped.display") : I18n.translate("hudtweaks.options.health.style.normal.display")));
-				HudContainer.getMatrixCache().queueUpdate(HealthElement.this);
+				requiresUpdate = true;
 			}
 		});
 	}	

@@ -12,6 +12,8 @@ import org.apache.logging.log4j.Level;
 
 import com.github.burgerguy.hudtweaks.gui.HudContainer;
 import com.github.burgerguy.hudtweaks.util.Util;
+import com.google.gson.JsonIOException;
+import com.google.gson.JsonParseException;
 
 import net.fabricmc.loader.api.FabricLoader;
 
@@ -28,8 +30,12 @@ public enum ConfigHelper {
 			Util.LOGGER.log(Level.INFO, "Loading config file...");
 			try (BufferedReader reader = new BufferedReader(new FileReader(configFile.toFile()))) {
 				HudContainer.updateFromJson(Util.JSON_PARSER.parse(reader));
-			} catch (IOException e) {	// TODO: implement cases for different types of exceptions
+			} catch (JsonIOException e) {
+				Util.LOGGER.error("Unable to read config file", e);
+			} catch (JsonParseException e) {
 				Util.LOGGER.error("Config file invalid", e);
+			} catch (IOException e) {
+				Util.LOGGER.error("Error loading config file", e);
 			}
 		} else {
 			Util.LOGGER.log(Level.INFO, "Config file not found");
@@ -47,8 +53,10 @@ public enum ConfigHelper {
 		Util.LOGGER.log(Level.INFO, "Saving config file...");
 		try (BufferedWriter writer = new BufferedWriter(new FileWriter(configFile.toFile()))) {
 			Util.GSON.toJson(HudContainer.getElementMap(), writer);
+		} catch (JsonIOException e) {
+			Util.LOGGER.error("Unable to write to config file", e);
 		} catch (IOException e) {
-			Util.LOGGER.error("Error saving config", e);
+			Util.LOGGER.error("Error saving config file", e);
 		}
 	}
 	
