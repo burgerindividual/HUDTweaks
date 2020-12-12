@@ -105,7 +105,7 @@ public class HudPosHelper {
 		if (posType.equals(PosType.RELATIVE)) requiresUpdate = true;
 	}
 	
-	public String getRelativeToIdentifier() {
+	public String getRelativeParentIdentifier() {
 		return relativeParent.getIdentifier();
 	}
 	
