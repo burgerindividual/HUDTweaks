@@ -1,6 +1,5 @@
-package com.github.burgerguy.hudtweaks.util.gui;
+package com.github.burgerguy.hudtweaks.gui;
 
-import com.github.burgerguy.hudtweaks.gui.RelativeParent;
 import com.github.burgerguy.hudtweaks.util.json.RelativeParentSerializer;
 import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
@@ -118,7 +117,7 @@ public class HudPosHelper {
 	/**
 	 * Don't call this unless you know what you're doing.
 	 */
-	public void setUpdated() {
+	void setUpdated() {
 		requiresUpdate = false;
 	}
 	

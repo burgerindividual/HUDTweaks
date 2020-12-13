@@ -5,6 +5,7 @@ import java.util.Set;
 
 import org.lwjgl.glfw.GLFW;
 
+import com.github.burgerguy.hudtweaks.gui.HudPosHelper.PosType;
 import com.github.burgerguy.hudtweaks.gui.widget.HTLabelWidget;
 import com.github.burgerguy.hudtweaks.gui.widget.HTSliderWidget;
 import com.github.burgerguy.hudtweaks.gui.widget.NumberFieldWidget;
@@ -12,8 +13,6 @@ import com.github.burgerguy.hudtweaks.gui.widget.PosTypeButtonWidget;
 import com.github.burgerguy.hudtweaks.gui.widget.RelativeParentButtonWidget;
 import com.github.burgerguy.hudtweaks.gui.widget.SidebarWidget;
 import com.github.burgerguy.hudtweaks.util.Util;
-import com.github.burgerguy.hudtweaks.util.gui.HudPosHelper;
-import com.github.burgerguy.hudtweaks.util.gui.HudPosHelper.PosType;
 import com.github.burgerguy.hudtweaks.util.gui.MatrixCache.UpdateEvent;
 import com.github.burgerguy.hudtweaks.util.gui.RelativeParentCache;
 import com.google.common.collect.Sets;

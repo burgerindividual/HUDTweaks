@@ -39,7 +39,8 @@ public class MatrixCache {
 		ON_SCREEN_BOUNDS_CHANGE,
 		ON_RIDING_HEALTH_ROWS_CHANGE,
 		ON_OFFHAND_STATUS_CHANGE,
-		ON_STATUS_EFFECTS_CHANGE
+		ON_STATUS_EFFECTS_CHANGE,
+		ON_HOTBAR_ATTACK_INDICATOR_CHANGE
 		// TODO: add update events for exp/jump bar switch, food/ridable health switch, etc.
 	}
 }

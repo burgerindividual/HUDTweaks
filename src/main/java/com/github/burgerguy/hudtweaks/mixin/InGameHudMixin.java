@@ -27,6 +27,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.hud.InGameHud;
+import net.minecraft.client.options.AttackIndicator;
 import net.minecraft.client.texture.StatusEffectSpriteManager;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
@@ -61,6 +62,8 @@ public abstract class InGameHudMixin extends DrawableHelper {
 	private boolean lastOffhandStatus;
 	@Unique
 	private StatusEffect[] lastStatusEffects;
+	@Unique
+	private AttackIndicator lastIndicator;
 	
 	@Unique
 	private boolean multipliedMatrix;
@@ -117,6 +120,14 @@ public abstract class InGameHudMixin extends DrawableHelper {
 		if (lastStatusEffects == null || !Arrays.deepEquals(lastStatusEffects, statusEffects)) {
 			lastStatusEffects = statusEffects;
 			fireUpdateEvent(UpdateEvent.ON_STATUS_EFFECTS_CHANGE);
+		}
+		
+		AttackIndicator currentIndicator = client.options.attackIndicator;
+		if (lastIndicator == null ||
+			(!currentIndicator.equals(lastIndicator) &&
+			(currentIndicator.equals(AttackIndicator.HOTBAR) || lastIndicator.equals(AttackIndicator.HOTBAR)))) {
+			lastIndicator = currentIndicator;
+			fireUpdateEvent(UpdateEvent.ON_HOTBAR_ATTACK_INDICATOR_CHANGE);
 		}
 	}
 	
