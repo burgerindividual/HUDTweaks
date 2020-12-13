@@ -17,7 +17,7 @@ public class RelativeParentButtonWidget extends HTButtonWidget {
 	private int currentIndex;
 	
 	public RelativeParentButtonWidget(int x, int y, int width, int height, boolean isX, RelativeParent relativeParent,
-			String thisElementIdentifier, Consumer<RelativeParent> onClick) {
+			String thisElementIdentifier, Consumer<RelativeParent> onClick) {  // FIXME check for infinite loop
 		super(x, y, width, height, createMessage(relativeParent));
 		innerMap = HudContainer.getRelativeParentCache().getColumn(isX);
 		innerMap.remove(thisElementIdentifier);
@@ -41,7 +41,7 @@ public class RelativeParentButtonWidget extends HTButtonWidget {
 	}
 	
 	private static Text createMessage(RelativeParent relativeParent) {
-		return new TranslatableText("hudtweaks.options.relative_to.display", relativeParent.getIdentifier());
+		return new TranslatableText("hudtweaks.options.parent.display", relativeParent.getIdentifier());
 	}
 	
 	public void setMessage(RelativeParent relativeParent) {

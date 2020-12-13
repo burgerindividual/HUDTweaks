@@ -1,12 +1,16 @@
 package com.github.burgerguy.hudtweaks.gui;
 
+import java.util.Set;
+
+import com.github.burgerguy.hudtweaks.util.gui.MatrixCache.UpdateEvent;
+
 import net.minecraft.client.MinecraftClient;
 
 public class RelativeHudElementParent implements RelativeParent {
 	private final HudElement element;
 	private final boolean isX;
 	
-	public RelativeHudElementParent(HudElement element, boolean isX) { // TODO: figure out when to update
+	public RelativeHudElementParent(HudElement element, boolean isX) {
 		this.element = element;
 		this.isX = isX;
 	}
@@ -28,5 +32,10 @@ public class RelativeHudElementParent implements RelativeParent {
 	@Override
 	public int getDimension(MinecraftClient client) {
 		return isX ? element.getWidth(client) : element.getHeight(client);
+	}
+
+	@Override
+	public Set<UpdateEvent> getUpdateEvents() {
+		return element.getUpdateEvents();
 	}
 }

@@ -1,13 +1,16 @@
 package com.github.burgerguy.hudtweaks.util.gui;
 
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 
 import com.github.burgerguy.hudtweaks.gui.HudContainer;
 import com.github.burgerguy.hudtweaks.gui.HudElement;
 import com.github.burgerguy.hudtweaks.gui.RelativeHudElementParent;
 import com.github.burgerguy.hudtweaks.gui.RelativeParent;
 import com.github.burgerguy.hudtweaks.util.Util;
+import com.github.burgerguy.hudtweaks.util.gui.MatrixCache.UpdateEvent;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 
@@ -22,12 +25,14 @@ public class RelativeParentCache {
 			@Override public String getIdentifier() { return SCREEN_IDENTIFIER; }
 			@Override public int getPosition(MinecraftClient client) { return 0; }
 			@Override public int getDimension(MinecraftClient client) { return client.getWindow().getScaledWidth(); }
+			@Override public Set<UpdateEvent> getUpdateEvents() { return Collections.singleton(UpdateEvent.ON_SCREEN_BOUNDS_CHANGE); }
 		});
 		
 		add(SCREEN_IDENTIFIER, false, new RelativeParent() {
 			@Override public String getIdentifier() { return SCREEN_IDENTIFIER; }
 			@Override public int getPosition(MinecraftClient client) { return 0; }
 			@Override public int getDimension(MinecraftClient client) { return client.getWindow().getScaledHeight(); }
+			@Override public Set<UpdateEvent> getUpdateEvents() { return Collections.singleton(UpdateEvent.ON_SCREEN_BOUNDS_CHANGE); }
 		});
 	}
 	

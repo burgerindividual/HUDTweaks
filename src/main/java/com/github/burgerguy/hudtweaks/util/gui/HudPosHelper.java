@@ -18,7 +18,7 @@ public class HudPosHelper {
 	protected PosType posType = PosType.DEFAULT;
 	
 	@JsonAdapter(RelativeParentSerializer.class)
-	@SerializedName(value = "relativeTo")
+	@SerializedName(value = "parent")
 	/**
 	 * The relative parent that this pos helper calculates its final
 	 * coords with.

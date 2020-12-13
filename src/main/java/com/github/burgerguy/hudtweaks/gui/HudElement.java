@@ -1,5 +1,8 @@
 package com.github.burgerguy.hudtweaks.gui;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.lwjgl.glfw.GLFW;
 
 import com.github.burgerguy.hudtweaks.gui.widget.HTLabelWidget;
@@ -13,6 +16,7 @@ import com.github.burgerguy.hudtweaks.util.gui.HudPosHelper;
 import com.github.burgerguy.hudtweaks.util.gui.HudPosHelper.PosType;
 import com.github.burgerguy.hudtweaks.util.gui.MatrixCache.UpdateEvent;
 import com.github.burgerguy.hudtweaks.util.gui.RelativeParentCache;
+import com.google.common.collect.Sets;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.SerializedName;
@@ -30,7 +34,7 @@ import net.minecraft.util.math.Matrix4f;
 
 public abstract class HudElement {
 	private transient final String identifier;
-	private transient final UpdateEvent[] updateEvents;
+	private transient final Set<UpdateEvent> updateEvents = new HashSet<>();
 	
 	@SerializedName(value = "xPos")
 	protected final HudPosHelper xPosHelper;
@@ -40,7 +44,9 @@ public abstract class HudElement {
 	
 	public HudElement(String identifier, UpdateEvent... updateEvents) {
 		this.identifier = identifier;
-		this.updateEvents = updateEvents;
+		for (UpdateEvent event : updateEvents) {
+			this.updateEvents.add(event);
+		}
 		xPosHelper = new HudPosHelper();
 		yPosHelper = new HudPosHelper();
 		xPosHelper.setRelativeParent(HudContainer.getRelativeParentCache().getOrCreate(RelativeParentCache.SCREEN_IDENTIFIER, true));
@@ -68,12 +74,16 @@ public abstract class HudElement {
 	public abstract int getDefaultY(MinecraftClient client);
 	
 	public boolean shouldUpdateOnEvent(UpdateEvent event) {
-		for (UpdateEvent e : updateEvents) {
+		for (UpdateEvent e : getUpdateEvents()) {
 			if (event.equals(e)) {
 				return true;
 			}
 		}
 		return false;
+	}
+	
+	public Set<UpdateEvent> getUpdateEvents() {
+		return Sets.union(updateEvents, Sets.union(xPosHelper.getRelativeParent().getUpdateEvents(), yPosHelper.getRelativeParent().getUpdateEvents()));
 	}
 	
 	public boolean requiresUpdate() {
@@ -107,14 +117,14 @@ public abstract class HudElement {
 		JsonObject elementJson = json.getAsJsonObject();
 		
 		JsonObject xPosJson = elementJson.get("xPos").getAsJsonObject();
-		xPosHelper.setRelativeParent(getRelativeParent(xPosJson.get("relativeTo"), true));
+		xPosHelper.setRelativeParent(getRelativeParent(xPosJson.get("parent"), true));
 		xPosHelper.setPosType(Util.GSON.fromJson(xPosJson.get("posType"), HudPosHelper.PosType.class));
 		xPosHelper.setAnchorPos(xPosJson.get("anchorPos").getAsDouble());
 		xPosHelper.setOffset(xPosJson.get("offset").getAsDouble());
 		xPosHelper.setRelativePos(xPosJson.get("relativePos").getAsDouble());
 		
 		JsonObject yPosJson = elementJson.get("yPos").getAsJsonObject();
-		yPosHelper.setRelativeParent(getRelativeParent(yPosJson.get("relativeTo"), false));
+		yPosHelper.setRelativeParent(getRelativeParent(yPosJson.get("parent"), false));
 		yPosHelper.setPosType(Util.GSON.fromJson(yPosJson.get("posType"), HudPosHelper.PosType.class));
 		yPosHelper.setAnchorPos(yPosJson.get("anchorPos").getAsDouble());
 		yPosHelper.setOffset(yPosJson.get("offset").getAsDouble());
