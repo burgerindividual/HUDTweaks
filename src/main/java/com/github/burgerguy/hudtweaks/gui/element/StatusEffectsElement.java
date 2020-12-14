@@ -9,14 +9,12 @@ import com.google.gson.JsonElement;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.text.TranslatableText;
-import net.minecraft.util.math.Matrix4f;
 
 public class StatusEffectsElement extends HudElement {
 	private boolean vertical;
-	private transient boolean requiresUpdate;
 
 	public StatusEffectsElement() {
-		super("statuseffects", UpdateEvent.ON_SCREEN_BOUNDS_CHANGE, UpdateEvent.ON_STATUS_EFFECTS_CHANGE);
+		super("statuseffects", UpdateEvent.ON_STATUS_EFFECTS_CHANGE);
 	}
 
 	// FIXME
@@ -39,17 +37,6 @@ public class StatusEffectsElement extends HudElement {
 	@Override
 	public int getDefaultY(MinecraftClient client) {
 		return 0;
-	}
-	
-	@Override
-	public boolean requiresUpdate() {
-		return requiresUpdate || super.requiresUpdate();
-	}
-	
-	@Override
-	public Matrix4f calculateMatrix(MinecraftClient client) {
-		requiresUpdate = false;
-		return super.calculateMatrix(client);
 	}
 	
 	public boolean isVertical() {

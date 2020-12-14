@@ -11,14 +11,12 @@ import net.minecraft.client.resource.language.I18n;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Matrix4f;
 
 public class HealthElement extends HudElement {
 	private boolean flipped;
-	private transient boolean requiresUpdate;
 
 	public HealthElement() {
-		super("health", UpdateEvent.ON_SCREEN_BOUNDS_CHANGE, UpdateEvent.ON_HEALTH_ROWS_CHANGE);
+		super("health", UpdateEvent.ON_HEALTH_ROWS_CHANGE);
 	}
 
 	@Override
@@ -67,17 +65,6 @@ public class HealthElement extends HudElement {
 	@Override
 	public int getDefaultY(MinecraftClient client) {
 		return client.getWindow().getScaledHeight() - 39 - (flipped || client == null || client.player == null ? 0 : getRawHeight(client)) - getHeartJumpDistance(client);
-	}
-	
-	@Override
-	public boolean requiresUpdate() {
-		return requiresUpdate || super.requiresUpdate();
-	}
-	
-	@Override
-	public Matrix4f calculateMatrix(MinecraftClient client) {
-		requiresUpdate = false;
-		return super.calculateMatrix(client);
 	}
 	
 	public boolean isFlipped() {

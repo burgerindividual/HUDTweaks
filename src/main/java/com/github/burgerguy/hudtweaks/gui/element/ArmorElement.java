@@ -10,7 +10,7 @@ import net.minecraft.util.math.MathHelper;
 public class ArmorElement extends HudElement {
 
 	public ArmorElement() {
-		super("armor", UpdateEvent.ON_SCREEN_BOUNDS_CHANGE, UpdateEvent.ON_HEALTH_ROWS_CHANGE);
+		super("armor", UpdateEvent.ON_HEALTH_ROWS_CHANGE);
 	}
 
 	@Override

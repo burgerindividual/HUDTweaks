@@ -1,7 +1,6 @@
 package com.github.burgerguy.hudtweaks.gui.element;
 
 import com.github.burgerguy.hudtweaks.gui.HudElement;
-import com.github.burgerguy.hudtweaks.util.gui.MatrixCache.UpdateEvent;
 
 import net.minecraft.client.MinecraftClient;
 
@@ -9,7 +8,7 @@ public class HungerElement extends HudElement {
 	// TODO: add force display option somewhere, maybe not in here
 
 	public HungerElement() {
-		super("hunger", UpdateEvent.ON_SCREEN_BOUNDS_CHANGE);
+		super("hunger");
 	}
 
 	@Override

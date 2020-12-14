@@ -81,16 +81,6 @@ public abstract class InGameHudMixin extends DrawableHelper {
 		client.getProfiler().push("fireHudTweaksEvents");
 		client.getProfiler().push("createUpdatableElementsArray");
 		updatableElements = HudContainer.getElements().toArray(new HudElement[HudContainer.getElements().size()]);
-		
-		// this will update everything on the first render, as they will all have requiresUpdate true by default
-		client.getProfiler().swap("manualUpdates");
-		for (int i = 0; i < updatableElements.length; i++) {
-			HudElement element = updatableElements[i];
-			if (element != null && element.requiresUpdate()) {
-				HudContainer.getMatrixCache().calculateMatrix(element, client);
-				updatableElements[i] = null;
-			}
-		}
 		client.getProfiler().pop();
 		client.getProfiler().pop();
 		
@@ -135,13 +125,9 @@ public abstract class InGameHudMixin extends DrawableHelper {
 	private void fireUpdateEvent(UpdateEvent event) {
 		client.getProfiler().push("fireHudTweaksEvents");
 		client.getProfiler().push(event.toString());
-		for (int i = 0; i < updatableElements.length; i++) {
-			HudElement element = updatableElements[i];
-			if (element != null && element.shouldUpdateOnEvent(event)) {
-				HudContainer.getMatrixCache().calculateMatrix(element, client);
-				updatableElements[i] = null;
-			}
-		}
+		HudContainer.getScreenRoot().updateX(event, client);
+		HudContainer.getScreenRoot().updateY(event, client);
+		HudContainer.getMatrixCache().createAllMatricies(client);
 		client.getProfiler().pop();
 		client.getProfiler().pop();
 	}

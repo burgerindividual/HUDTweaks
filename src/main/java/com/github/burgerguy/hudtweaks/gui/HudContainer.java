@@ -8,15 +8,15 @@ import java.util.Map.Entry;
 import com.github.burgerguy.hudtweaks.gui.element.*;
 import com.github.burgerguy.hudtweaks.util.Util;
 import com.github.burgerguy.hudtweaks.util.gui.MatrixCache;
-import com.github.burgerguy.hudtweaks.util.gui.RelativeParentCache;
+import com.github.burgerguy.hudtweaks.util.gui.RelativeTreeRootScreen;
 import com.google.gson.JsonElement;
 
 public enum HudContainer {
 	;
 	
-	private static final Map<String, HudElement> elementMap = new HashMap<>();
-	private static transient final MatrixCache matrixCache = new MatrixCache();
-	private static transient final RelativeParentCache relativeParentCache = new RelativeParentCache();
+	private static final Map<String, HudElement> ELEMENT_MAP = new HashMap<>();
+	private static transient final MatrixCache MATRIX_CACHE = new MatrixCache();
+	private static transient final RelativeTreeRootScreen SCREEN_ROOT = new RelativeTreeRootScreen();
 	
 	static {
 		HudElement hotbar = new HotbarElement();
@@ -39,24 +39,19 @@ public enum HudContainer {
 		
 		HudElement statusEffects = new StatusEffectsElement();
 		addElement(statusEffects.getIdentifier(), statusEffects);
-		
-		for(HudElement element : getElements()) {
-			relativeParentCache.getOrCreate(element, true);
-			relativeParentCache.getOrCreate(element, false);
-		}
 	}
 
 	public static HudElement getElement(String identifier) {
-		return elementMap.get(identifier);
+		return ELEMENT_MAP.get(identifier);
 	}
 	
 	public static Collection<HudElement> getElements() {
-		return elementMap.values();
+		return ELEMENT_MAP.values();
 	}
 	
 	public static void addElement(String identifier, HudElement element) {
 		if (!identifier.equals("screen")) {
-			elementMap.put(identifier, element);
+			ELEMENT_MAP.put(identifier, element);
 		} else {
 			Util.LOGGER.error("Failed to add element: identifier \"screen\" is reserved");
 		}
@@ -64,7 +59,7 @@ public enum HudContainer {
 	
 	public static void addElementIfAbsent(String identifier, HudElement element) {
 		if (!identifier.equals("screen")) {
-			elementMap.putIfAbsent(identifier, element);
+			ELEMENT_MAP.putIfAbsent(identifier, element);
 		} else {
 			Util.LOGGER.error("Failed to add element: identifier \"screen\" is reserved");
 		}
@@ -74,15 +69,15 @@ public enum HudContainer {
 	 * Only use for saving config.
 	 */
 	public static Map<String, HudElement> getElementMap() {
-		return elementMap;
+		return ELEMENT_MAP;
 	}
 	
 	public static MatrixCache getMatrixCache() {
-		return matrixCache;
+		return MATRIX_CACHE;
 	}
 	
-	public static RelativeParentCache getRelativeParentCache() {
-		return relativeParentCache;
+	public static RelativeTreeRootScreen getScreenRoot() {
+		return SCREEN_ROOT;
 	}
 	
 	public static void updateFromJson(JsonElement json) {

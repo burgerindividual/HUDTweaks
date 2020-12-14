@@ -1,21 +1,19 @@
 package com.github.burgerguy.hudtweaks.gui;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import org.lwjgl.glfw.GLFW;
 
-import com.github.burgerguy.hudtweaks.gui.HudPosHelper.PosType;
 import com.github.burgerguy.hudtweaks.gui.widget.HTLabelWidget;
 import com.github.burgerguy.hudtweaks.gui.widget.HTSliderWidget;
 import com.github.burgerguy.hudtweaks.gui.widget.NumberFieldWidget;
 import com.github.burgerguy.hudtweaks.gui.widget.PosTypeButtonWidget;
-import com.github.burgerguy.hudtweaks.gui.widget.RelativeParentButtonWidget;
 import com.github.burgerguy.hudtweaks.gui.widget.SidebarWidget;
+import com.github.burgerguy.hudtweaks.gui.widget.XAxisParentButtonWidget;
+import com.github.burgerguy.hudtweaks.gui.widget.YAxisParentButtonWidget;
 import com.github.burgerguy.hudtweaks.util.Util;
 import com.github.burgerguy.hudtweaks.util.gui.MatrixCache.UpdateEvent;
-import com.github.burgerguy.hudtweaks.util.gui.RelativeParentCache;
-import com.google.common.collect.Sets;
+import com.github.burgerguy.hudtweaks.util.gui.RelativeTreeNode;
+import com.github.burgerguy.hudtweaks.util.gui.XAxisNode;
+import com.github.burgerguy.hudtweaks.util.gui.YAxisNode;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.SerializedName;
@@ -31,77 +29,101 @@ import net.minecraft.text.TranslatableText;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Matrix4f;
 
-public abstract class HudElement {
-	private transient final String identifier;
-	private transient final Set<UpdateEvent> updateEvents = new HashSet<>();
+public abstract class HudElement extends RelativeTreeNode {	
+	// These are all marked as transient so we can manually add them in our custom serializer
+	public transient PosType xPosType = PosType.DEFAULT;
+	public transient PosType yPosType = PosType.DEFAULT;
+	public transient double xAnchorPos;
+	public transient double yAnchorPos;
+	public transient double xRelativePos;
+	public transient double yRelativePos;
+	public transient double xOffset;
+	public transient double yOffset;
 	
-	@SerializedName(value = "xPos")
-	protected final HudPosHelper xPosHelper;
-	@SerializedName(value = "yPos")
-	protected final HudPosHelper yPosHelper;
-	// TODO: add rotation and scale. the anchor points of these should be retrieved from the HudPosHelpers
+	protected transient int cachedX;
+	protected transient int cachedY;
+	protected transient int cachedWidth;
+	protected transient int cachedHeight;
+	protected transient int cachedDefaultX;
+	protected transient int cachedDefaultY;
+	// TODO: add rotation and scale using the already existing anchor points.
 	
 	public HudElement(String identifier, UpdateEvent... updateEvents) {
-		this.identifier = identifier;
-		for (UpdateEvent event : updateEvents) {
-			this.updateEvents.add(event);
-		}
-		xPosHelper = new HudPosHelper();
-		yPosHelper = new HudPosHelper();
-		xPosHelper.setRelativeParent(HudContainer.getRelativeParentCache().getOrCreate(RelativeParentCache.SCREEN_IDENTIFIER, true));
-		yPosHelper.setRelativeParent(HudContainer.getRelativeParentCache().getOrCreate(RelativeParentCache.SCREEN_IDENTIFIER, false));
+		super(identifier, updateEvents);
 	}
 	
-	public String getIdentifier() {
-		return identifier;
+	public enum PosType {
+		@SerializedName(value = "default", alternate = "DEFAULT")
+		/**
+		 * Keeps the position in the unmodified spot, but allows for offset.
+		 */
+		DEFAULT,
+		
+		@SerializedName(value = "relative", alternate = "RELATIVE")
+		/**
+		 * Allows positioning anywhere relative to a bound element with a
+		 * relative pos and offset. The bound element can also be the screen.
+		 */
+		RELATIVE
 	}
 	
-	public HudPosHelper getXPosHelper() {
-		return xPosHelper;
-	}
-	
-	public HudPosHelper getYPosHelper() {
-		return yPosHelper;
-	}
-	
+	@Override
 	public abstract int getWidth(MinecraftClient client);
 
+	@Override
 	public abstract int getHeight(MinecraftClient client);
 
 	public abstract int getDefaultX(MinecraftClient client);
 	
 	public abstract int getDefaultY(MinecraftClient client);
 	
-	public boolean shouldUpdateOnEvent(UpdateEvent event) {
-		for (UpdateEvent e : getUpdateEvents()) {
-			if (event.equals(e)) {
-				return true;
-			}
+	@Override
+	public int getX(MinecraftClient client) {
+		updateSelfX(client);
+		return cachedX;
+	}
+	
+	@Override
+	public int getY(MinecraftClient client) {
+		updateSelfY(client);
+		return cachedY;
+	}
+	
+	@Override
+	public void updateSelfX(MinecraftClient client) {
+		switch(xPosType) {
+		case DEFAULT:
+			cachedX = (int) (getDefaultX(client) + xOffset);
+			break;
+		case RELATIVE:
+			cachedX = (int) ((getXParent().getWidth(client) * xRelativePos + xOffset + getXParent().getX(client)) - (getWidth(client) * xAnchorPos));
+			break;
+		default:
+			throw new UnsupportedOperationException("how");
 		}
-		return false;
 	}
 	
-	public Set<UpdateEvent> getUpdateEvents() {
-		return Sets.union(updateEvents, Sets.union(xPosHelper.getRelativeParent().getUpdateEvents(), yPosHelper.getRelativeParent().getUpdateEvents()));
-	}
-	
-	public boolean requiresUpdate() {
-		return xPosHelper.requiresUpdate() || yPosHelper.requiresUpdate();
+	@Override
+	public void updateSelfY(MinecraftClient client) {
+		switch(yPosType) {
+		case DEFAULT:
+			cachedY = (int) (getDefaultY(client) + yOffset);
+			break;
+		case RELATIVE:
+			cachedY = (int) ((getYParent().getHeight(client) * yRelativePos + yOffset + getYParent().getY(client)) - (getHeight(client) * yAnchorPos));
+			break;
+		default:
+			throw new UnsupportedOperationException("how");
+		}
 	}
 	
 	private void setUpdated() {
-		yPosHelper.setUpdated();
-		xPosHelper.setUpdated();
+		requiresUpdate = false; // TODO: have x and y
 	}
 	
-	public Matrix4f calculateMatrix(MinecraftClient client) {
-		int defaultX = getDefaultX(client);
-		int defaultY = getDefaultY(client);
-		int calculatedX = xPosHelper.calculateScreenPos(getWidth(client), defaultX, client);
-		int calculatedY = yPosHelper.calculateScreenPos(getHeight(client), defaultY, client);
-		
-		Matrix4f matrix = Matrix4f.translate(calculatedX - defaultX,
-				calculatedY - defaultY,
+	public Matrix4f createMatrix(MinecraftClient client) {
+		Matrix4f matrix = Matrix4f.translate(getX(client) - getDefaultY(client),
+				getY(client) - getDefaultY(client),
 				0);
 		
 		setUpdated();
@@ -116,33 +138,32 @@ public abstract class HudElement {
 		JsonObject elementJson = json.getAsJsonObject();
 		
 		JsonObject xPosJson = elementJson.get("xPos").getAsJsonObject();
-		xPosHelper.setRelativeParent(getRelativeParent(xPosJson.get("parent"), true));
-		xPosHelper.setPosType(Util.GSON.fromJson(xPosJson.get("posType"), HudPosHelper.PosType.class));
-		xPosHelper.setAnchorPos(xPosJson.get("anchorPos").getAsDouble());
-		xPosHelper.setOffset(xPosJson.get("offset").getAsDouble());
-		xPosHelper.setRelativePos(xPosJson.get("relativePos").getAsDouble());
-		
-		JsonObject yPosJson = elementJson.get("yPos").getAsJsonObject();
-		yPosHelper.setRelativeParent(getRelativeParent(yPosJson.get("parent"), false));
-		yPosHelper.setPosType(Util.GSON.fromJson(yPosJson.get("posType"), HudPosHelper.PosType.class));
-		yPosHelper.setAnchorPos(yPosJson.get("anchorPos").getAsDouble());
-		yPosHelper.setOffset(yPosJson.get("offset").getAsDouble());
-		yPosHelper.setRelativePos(yPosJson.get("relativePos").getAsDouble());
-	}
-	
-	private RelativeParent getRelativeParent(JsonElement jsonElement, boolean isX) {
-		if (jsonElement != null && jsonElement.isJsonPrimitive() && jsonElement.getAsJsonPrimitive().isString()) {
-			String relativeParentIdentifier = jsonElement.getAsString();
-			RelativeParent parent = HudContainer.getRelativeParentCache().getOrCreate(relativeParentIdentifier, isX);
-			if(parent != null) {
-				return parent;
-			} else {
-				return HudContainer.getRelativeParentCache().getOrCreate(RelativeParentCache.SCREEN_IDENTIFIER, isX);
+		JsonElement parentIdentifier = xPosJson.get("parent");
+		if (parentIdentifier != null && parentIdentifier.isJsonPrimitive() && parentIdentifier.getAsJsonPrimitive().isString()) {
+			String relativeParentIdentifier = parentIdentifier.getAsString();
+			XAxisNode parentNode = HudContainer.getElement(relativeParentIdentifier);
+			if(parentNode != null) {
+				moveXUnder(parentNode);
 			}
 		}
+		xPosType = Util.GSON.fromJson(xPosJson.get("posType"), PosType.class);
+		xAnchorPos = xPosJson.get("anchorPos").getAsDouble();
+		xOffset = xPosJson.get("offset").getAsDouble();
+		xRelativePos = xPosJson.get("relativePos").getAsDouble();
 		
-		Util.LOGGER.warn("No relative parent assigned for element " + identifier + ", falling back to screen...");
-		return HudContainer.getRelativeParentCache().getOrCreate(RelativeParentCache.SCREEN_IDENTIFIER, isX);
+		JsonObject yPosJson = elementJson.get("yPos").getAsJsonObject();
+		parentIdentifier = yPosJson.get("parent");
+		if (parentIdentifier != null && parentIdentifier.isJsonPrimitive() && parentIdentifier.getAsJsonPrimitive().isString()) {
+			String relativeParentIdentifier = parentIdentifier.getAsString();
+			YAxisNode parentNode = HudContainer.getElement(relativeParentIdentifier);
+			if(parentNode != null) {
+				moveYUnder(parentNode);
+			}
+		}
+		yPosType = Util.GSON.fromJson(yPosJson.get("posType"), PosType.class);
+		yAnchorPos = yPosJson.get("anchorPos").getAsDouble();
+		yOffset = yPosJson.get("offset").getAsDouble();
+		yRelativePos = yPosJson.get("relativePos").getAsDouble();
 	}
 	
 	/**
@@ -151,18 +172,14 @@ public abstract class HudElement {
 	 */
 	@SuppressWarnings("resource")
 	public void fillSidebar(SidebarWidget sidebar) {
-		RelativeParentButtonWidget xRelativeParentButton = new RelativeParentButtonWidget(4, 35, sidebar.width - 8, 14, true, getXPosHelper().getRelativeParent(), identifier, p -> {
-			getXPosHelper().setRelativeParent(p);
-		});
+		XAxisParentButtonWidget xRelativeParentButton = new XAxisParentButtonWidget(4, 35, sidebar.width - 8, 14, getXParent(), this, p -> moveXUnder(p));
 		
-		RelativeParentButtonWidget yRelativeParentButton = new RelativeParentButtonWidget(4, 143, sidebar.width - 8, 14, false, getYPosHelper().getRelativeParent(), identifier, p -> {
-			getYPosHelper().setRelativeParent(p);
-		});
+		YAxisParentButtonWidget yRelativeParentButton = new YAxisParentButtonWidget(4, 143, sidebar.width - 8, 14, getYParent(), this, p -> moveYUnder(p));
 		
-		xRelativeParentButton.active = !getXPosHelper().getPosType().equals(PosType.DEFAULT);
-		yRelativeParentButton.active = !getYPosHelper().getPosType().equals(PosType.DEFAULT);
+		xRelativeParentButton.active = !xPosType.equals(PosType.DEFAULT);
+		yRelativeParentButton.active = !yPosType.equals(PosType.DEFAULT);
 		
-		HTSliderWidget xRelativeSlider = new HTSliderWidget(4, 54, sidebar.width - 8, 14, getXPosHelper().getRelativePos()) {
+		HTSliderWidget xRelativeSlider = new HTSliderWidget(4, 54, sidebar.width - 8, 14, xRelativePos) {
 			@Override
 			protected void updateMessage() {
 				setMessage(new TranslatableText("hudtweaks.options.relative_pos.display", Util.RELATIVE_POS_FORMATTER.format(value)));
@@ -170,7 +187,7 @@ public abstract class HudElement {
 			
 			@Override
 			public void applyValue() {
-				getXPosHelper().setRelativePos(value);
+				xAnchorPos = value;
 			}
 			
 			@Override
@@ -185,12 +202,12 @@ public abstract class HudElement {
 
 			@Override
 			public void updateValue() {
-				value = MathHelper.clamp(getXPosHelper().getRelativePos(), 0.0D, 1.0D);
+				value = MathHelper.clamp(xRelativePos, 0.0D, 1.0D);
 				updateMessage();
 			}
 		};
 		
-		HTSliderWidget yRelativeSlider = new HTSliderWidget(4, 162, sidebar.width - 8, 14, getYPosHelper().getRelativePos()) {
+		HTSliderWidget yRelativeSlider = new HTSliderWidget(4, 162, sidebar.width - 8, 14, yRelativePos) {
 			@Override
 			protected void updateMessage() {
 				setMessage(new TranslatableText("hudtweaks.options.relative_pos.display", Util.RELATIVE_POS_FORMATTER.format(value)));
@@ -198,7 +215,7 @@ public abstract class HudElement {
 			
 			@Override
 			public void applyValue() {
-				getYPosHelper().setRelativePos(value);
+				yAnchorPos = value;
 			}
 			
 			@Override
@@ -213,15 +230,15 @@ public abstract class HudElement {
 
 			@Override
 			public void updateValue() {
-				value = MathHelper.clamp(getYPosHelper().getRelativePos(), 0.0D, 1.0D);
+				value = MathHelper.clamp(yRelativePos, 0.0D, 1.0D);
 				updateMessage();
 			}
 		};
 		
-		xRelativeSlider.active = !getXPosHelper().getPosType().equals(PosType.DEFAULT);
-		yRelativeSlider.active = !getYPosHelper().getPosType().equals(PosType.DEFAULT);
+		xRelativeSlider.active = !xPosType.equals(PosType.DEFAULT);
+		yRelativeSlider.active = !yPosType.equals(PosType.DEFAULT);
 		
-		HTSliderWidget xAnchorSlider = new HTSliderWidget(4, 73, sidebar.width - 8, 14, getXPosHelper().getAnchorPos()) {
+		HTSliderWidget xAnchorSlider = new HTSliderWidget(4, 73, sidebar.width - 8, 14, xAnchorPos) {
 			@Override
 			protected void updateMessage() {
 				setMessage(new TranslatableText("hudtweaks.options.anchor_pos.display", Util.ANCHOR_POS_FORMATTER.format(value)));
@@ -229,7 +246,7 @@ public abstract class HudElement {
 			
 			@Override
 			public void applyValue() {
-				getXPosHelper().setAnchorPos(value);
+				xAnchorPos = value;
 			}
 			
 			@Override
@@ -244,12 +261,12 @@ public abstract class HudElement {
 
 			@Override
 			public void updateValue() {
-				value = MathHelper.clamp(getXPosHelper().getAnchorPos(), 0.0D, 1.0D);
+				value = MathHelper.clamp(xAnchorPos, 0.0D, 1.0D);
 				updateMessage();
 			}
 		};
 		
-		HTSliderWidget yAnchorSlider = new HTSliderWidget(4, 181, sidebar.width - 8, 14, getYPosHelper().getAnchorPos()) {
+		HTSliderWidget yAnchorSlider = new HTSliderWidget(4, 181, sidebar.width - 8, 14, yAnchorPos) {
 			@Override
 			protected void updateMessage() {
 				setMessage(new TranslatableText("hudtweaks.options.anchor_pos.display", Util.ANCHOR_POS_FORMATTER.format(value)));
@@ -257,7 +274,7 @@ public abstract class HudElement {
 			
 			@Override
 			public void applyValue() {
-				getYPosHelper().setAnchorPos(value);
+				yAnchorPos = value;
 			}
 			
 			@Override
@@ -272,23 +289,23 @@ public abstract class HudElement {
 
 			@Override
 			public void updateValue() {
-				value = MathHelper.clamp(getYPosHelper().getAnchorPos(), 0.0D, 1.0D);
+				value = MathHelper.clamp(yAnchorPos, 0.0D, 1.0D);
 				updateMessage();
 			}
 		};
 		
-		xAnchorSlider.active = !getXPosHelper().getPosType().equals(PosType.DEFAULT);
-		yAnchorSlider.active = !getYPosHelper().getPosType().equals(PosType.DEFAULT);
+		xAnchorSlider.active = !xPosType.equals(PosType.DEFAULT);
+		yAnchorSlider.active = !yPosType.equals(PosType.DEFAULT);
 		
-		PosTypeButtonWidget xPosTypeButton = new PosTypeButtonWidget(4, 16, sidebar.width - 8, 14,  getXPosHelper().getPosType(), t -> {
-			getXPosHelper().setPosType(t);
+		PosTypeButtonWidget xPosTypeButton = new PosTypeButtonWidget(4, 16, sidebar.width - 8, 14,  xPosType, t -> {
+			xPosType = t;
 			xAnchorSlider.active = !t.equals(PosType.DEFAULT);
 			xRelativeSlider.active = !t.equals(PosType.DEFAULT);
 			xRelativeParentButton.active = !t.equals(PosType.DEFAULT);
 		});
 		
-		PosTypeButtonWidget yPosTypeButton = new PosTypeButtonWidget(4, 124, sidebar.width - 8, 14,  getYPosHelper().getPosType(), t -> {
-			getYPosHelper().setPosType(t);
+		PosTypeButtonWidget yPosTypeButton = new PosTypeButtonWidget(4, 124, sidebar.width - 8, 14,  yPosType, t -> {
+			yPosType = t;
 			yAnchorSlider.active = !t.equals(PosType.DEFAULT);
 			yRelativeSlider.active = !t.equals(PosType.DEFAULT);
 			yRelativeParentButton.active = !t.equals(PosType.DEFAULT);
@@ -297,16 +314,16 @@ public abstract class HudElement {
 		NumberFieldWidget xOffsetField = new NumberFieldWidget(MinecraftClient.getInstance().textRenderer, 43, 92, sidebar.width - 47, 14, new TranslatableText("hudtweaks.options.offset.name")) {
 			@Override
 			public void updateValue() {
-				setText(Double.toString(getXPosHelper().getOffset()));
+				setText(Double.toString(xOffset));
 			}
 		};
-		xOffsetField.setText(Double.toString(getXPosHelper().getOffset()));
+		xOffsetField.setText(Double.toString(xOffset));
 		xOffsetField.setChangedListener(s -> {
 			if (s.equals("")) {
-				getXPosHelper().setOffset(0.0D);
+				xOffset = 0.0D;
 			} else {
 				try {
-					getXPosHelper().setOffset(Double.parseDouble(s));
+					xOffset = Double.parseDouble(s);
 				} catch(NumberFormatException ignored) {}
 			}
 		});
@@ -314,16 +331,16 @@ public abstract class HudElement {
 		NumberFieldWidget yOffsetField = new NumberFieldWidget(MinecraftClient.getInstance().textRenderer, 43, 200, sidebar.width - 47, 14, new TranslatableText("hudtweaks.options.offset.name")) {
 			@Override
 			public void updateValue() {
-				setText(Double.toString(getYPosHelper().getOffset()));
+				setText(Double.toString(yOffset));
 			}
 		};
-		yOffsetField.setText(Double.toString(getYPosHelper().getOffset()));
+		yOffsetField.setText(Double.toString(yOffset));
 		yOffsetField.setChangedListener(s -> {
 			if (s.equals("")) {
-				getYPosHelper().setOffset(0.0D);
+				yOffset = 0.0D;
 			} else {
 				try {
-					getYPosHelper().setOffset(Double.parseDouble(s));
+					yOffset = Double.parseDouble(s);
 				} catch(NumberFormatException ignored) {}
 			}
 		});
@@ -362,13 +379,10 @@ public abstract class HudElement {
 		public void render(MatrixStack matrixStack, int mouseX, int mouseY, float delta) {
 			MinecraftClient client = MinecraftClient.getInstance();
 			
-			int elementWidth = getWidth(client);
-			int elementHeight = getHeight(client);
-			
-			int x1 = xPosHelper.calculateScreenPos(elementWidth, getDefaultX(client), client);
-			int y1 = yPosHelper.calculateScreenPos(elementHeight, getDefaultY(client), client);
-			int x2 = x1 + elementWidth;
-			int y2 = y1 + elementHeight;
+			int x1 = getX(client);
+			int y1 = getY(client);
+			int x2 = x1 + getWidth(client);
+			int y2 = y1 + getHeight(client);
 			
 			int color = optionsScreen.isHudElementFocused(this) ? OUTLINE_COLOR_SELECTED : OUTLINE_COLOR_NORMAL;
 			DrawableHelper.fill(matrixStack, x1 - 1, y1 - 1, x2 + 1, y1,     color);
@@ -390,15 +404,15 @@ public abstract class HudElement {
 		@Override
 		public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
 			if (Screen.hasShiftDown()) {
-				if (!xPosHelper.getPosType().equals(PosType.DEFAULT)) {
-					xPosHelper.setRelativePos(MathHelper.clamp(xPosHelper.getRelativePos() + deltaX / optionsScreen.width, 0.0D, 1.0D));
+				if (!xPosType.equals(PosType.DEFAULT)) {
+					xRelativePos = MathHelper.clamp(xRelativePos + deltaX / optionsScreen.width, 0.0D, 1.0D);
 				}
-				if (!yPosHelper.getPosType().equals(PosType.DEFAULT)) {
-					yPosHelper.setRelativePos(MathHelper.clamp(yPosHelper.getRelativePos() + deltaY / optionsScreen.height, 0.0D, 1.0D));
+				if (!yPosType.equals(PosType.DEFAULT)) {
+					yRelativePos = MathHelper.clamp(yRelativePos + deltaY / optionsScreen.height, 0.0D, 1.0D);
 				}
 			} else {
-				xPosHelper.setOffset(xPosHelper.getOffset() + deltaX);
-				yPosHelper.setOffset(yPosHelper.getOffset() + deltaY);
+				xOffset += deltaX;
+				yOffset += deltaY;
 			}
 			optionsScreen.updateSidebarValues();
 			return true;
@@ -408,14 +422,10 @@ public abstract class HudElement {
 		public boolean isMouseOver(double mouseX, double mouseY) {
 			MinecraftClient client = MinecraftClient.getInstance();
 			
-			// i don't think we can cache these because they might change in multiplayer
-			int elementWidth = getWidth(client);
-			int elementHeight = getHeight(client);
-			
-			int x1 = xPosHelper.calculateScreenPos(elementWidth, getDefaultX(client), client);
-			int y1 = yPosHelper.calculateScreenPos(elementHeight, getDefaultY(client), client);
-			int x2 = x1 + elementWidth;
-			int y2 = y1 + elementHeight;
+			int x1 = getX(client);
+			int y1 = getY(client);
+			int x2 = x1 + getWidth(client);
+			int y2 = y1 + getHeight(client);
 			return mouseX >= x1 && mouseX <= x2 && mouseY >= y1 && mouseY <= y2;
 		}
 		

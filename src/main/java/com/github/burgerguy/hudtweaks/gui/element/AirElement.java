@@ -12,7 +12,7 @@ import net.minecraft.util.math.MathHelper;
 public class AirElement extends HudElement {
 
 	public AirElement() {
-		super("air", UpdateEvent.ON_SCREEN_BOUNDS_CHANGE, UpdateEvent.ON_RIDING_HEALTH_ROWS_CHANGE);
+		super("air", UpdateEvent.ON_RIDING_HEALTH_ROWS_CHANGE);
 	}
 
 	@Override
