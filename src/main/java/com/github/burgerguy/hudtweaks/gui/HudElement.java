@@ -40,6 +40,7 @@ public abstract class HudElement extends RelativeTreeNode {
 	public transient double xOffset;
 	public transient double yOffset;
 	
+	 // FIXME
 	protected transient int cachedX;
 	protected transient int cachedY;
 	protected transient int cachedWidth;
@@ -68,10 +69,10 @@ public abstract class HudElement extends RelativeTreeNode {
 	}
 	
 	@Override
-	public abstract int getWidth(MinecraftClient client);
+	public abstract int getWidth(MinecraftClient client); // FIXME
 
 	@Override
-	public abstract int getHeight(MinecraftClient client);
+	public abstract int getHeight(MinecraftClient client); // FIXME
 
 	public abstract int getDefaultX(MinecraftClient client);
 	
@@ -79,18 +80,18 @@ public abstract class HudElement extends RelativeTreeNode {
 	
 	@Override
 	public int getX(MinecraftClient client) {
-		updateSelfX(client);
+		updateSelfX(client); // FIXME
 		return cachedX;
 	}
 	
 	@Override
 	public int getY(MinecraftClient client) {
-		updateSelfY(client);
+		updateSelfY(client); // FIXME
 		return cachedY;
 	}
 	
 	@Override
-	public void updateSelfX(MinecraftClient client) {
+	public void updateSelfX(MinecraftClient client) { // FIXME
 		switch(xPosType) {
 		case DEFAULT:
 			cachedX = (int) (getDefaultX(client) + xOffset);
@@ -104,7 +105,7 @@ public abstract class HudElement extends RelativeTreeNode {
 	}
 	
 	@Override
-	public void updateSelfY(MinecraftClient client) {
+	public void updateSelfY(MinecraftClient client) { // FIXME
 		switch(yPosType) {
 		case DEFAULT:
 			cachedY = (int) (getDefaultY(client) + yOffset);
