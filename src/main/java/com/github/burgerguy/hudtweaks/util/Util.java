@@ -6,6 +6,8 @@ import java.text.NumberFormat;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.github.burgerguy.hudtweaks.gui.HudElement;
+import com.github.burgerguy.hudtweaks.util.json.HudElementSerializer;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParser;
@@ -25,6 +27,6 @@ public enum Util {
 	public static final NumberFormat OFFSET_FORMATTER = new DecimalFormat("#####");
 	
 	static {
-		GSON = new GsonBuilder().setPrettyPrinting().create();
+		GSON = new GsonBuilder().setPrettyPrinting().registerTypeHierarchyAdapter(HudElement.class, new HudElementSerializer()).create();
 	}
 }
