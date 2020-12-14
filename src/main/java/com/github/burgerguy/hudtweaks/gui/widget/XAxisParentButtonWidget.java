@@ -5,7 +5,6 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 import com.github.burgerguy.hudtweaks.gui.HudContainer;
-import com.github.burgerguy.hudtweaks.util.gui.RelativeTreeRootScreen;
 import com.github.burgerguy.hudtweaks.util.gui.XAxisNode;
 
 import net.minecraft.text.Text;
@@ -14,14 +13,12 @@ import net.minecraft.text.TranslatableText;
 public class XAxisParentButtonWidget extends HTButtonWidget {
 	private final Consumer<XAxisNode> onClick;
 	
-	private final Map<String, XAxisNode> innerMap;
+	private final Map<String, XAxisNode> innerMap = new LinkedHashMap<>();
 	private final String[] keyHelper;
 	private int currentIndex;
 	
 	public XAxisParentButtonWidget(int x, int y, int width, int height, XAxisNode currentParentNode, XAxisNode thisNode, Consumer<XAxisNode> onClick) {
 		super(x, y, width, height, createMessage(currentParentNode));
-		innerMap = new LinkedHashMap<>();
-		innerMap.put(RelativeTreeRootScreen.IDENTIFIER, HudContainer.getScreenRoot());
 		recurseAddNode(HudContainer.getScreenRoot(), thisNode);
 		keyHelper = innerMap.keySet().toArray(new String[innerMap.size()]);
 		for (; currentIndex < keyHelper.length; currentIndex++) {
@@ -34,9 +31,9 @@ public class XAxisParentButtonWidget extends HTButtonWidget {
 	
 	
 	private void recurseAddNode(XAxisNode node, XAxisNode exclude) {
-		for (XAxisNode child : node.getXChildren()) {
-			if (!child.equals(exclude)) {
-				innerMap.put(child.getIdentifier(), child);
+		if (!node.equals(exclude)) {
+			innerMap.put(node.getIdentifier(), node);
+			for (XAxisNode child : node.getXChildren()) {
 				recurseAddNode(child, exclude);
 			}
 		}
