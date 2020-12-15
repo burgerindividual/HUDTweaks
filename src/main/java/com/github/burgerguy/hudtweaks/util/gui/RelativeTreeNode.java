@@ -76,42 +76,56 @@ public abstract class RelativeTreeNode implements XAxisNode, YAxisNode {
 	}
 
 	@Override
-	public void updateX(UpdateEvent event, MinecraftClient client, boolean parentUpdated) {
+	public void updateX(UpdateEvent event, MinecraftClient client, boolean parentUpdated, Set<XAxisNode> excludedElements, Set<XAxisNode> updatedElements) {
 		boolean selfUpdated = false;
-		if (requiresUpdate || parentUpdated) {
-			updateSelfX(client);
-			selfUpdated = true;
-		} else {
-			for (UpdateEvent e : updateEvents) {
-				if (event.equals(e)) {
-					updateSelfX(client);
-					selfUpdated = true;
+		if (!excludedElements.contains(this)) {
+			if (requiresUpdate || parentUpdated) {
+				updateSelfX(client);
+				selfUpdated = true;
+			} else {
+				for (UpdateEvent e : updateEvents) {
+					if (event.equals(e)) {
+						updateSelfX(client);
+						selfUpdated = true;
+					}
 				}
+			}
+			
+			if (selfUpdated) {
+				excludedElements.add(this);
+				updatedElements.add(this);
 			}
 		}
 		
 		for (XAxisNode child : xChildren) {
-			child.updateX(event, client, selfUpdated);
+			child.updateX(event, client, selfUpdated, excludedElements, updatedElements);
 		}
 	}
 	
 	@Override
-	public void updateY(UpdateEvent event, MinecraftClient client, boolean parentUpdated) {
+	public void updateY(UpdateEvent event, MinecraftClient client, boolean parentUpdated, Set<YAxisNode> excludedElements, Set<YAxisNode> updatedElements) {
 		boolean selfUpdated = false;
-		if (requiresUpdate || parentUpdated) {
-			updateSelfY(client);
-			selfUpdated = true;
-		} else {
-			for (UpdateEvent e : updateEvents) {
-				if (event.equals(e)) {
-					updateSelfY(client);
-					selfUpdated = true;
+		if (!excludedElements.contains(this)) {
+			if (requiresUpdate || parentUpdated) {
+				updateSelfY(client);
+				selfUpdated = true;
+			} else {
+				for (UpdateEvent e : updateEvents) {
+					if (event.equals(e)) {
+						updateSelfY(client);
+						selfUpdated = true;
+					}
 				}
+			}
+			
+			if (selfUpdated) {
+				excludedElements.add(this);
+				updatedElements.add(this);
 			}
 		}
 		
 		for (YAxisNode child : yChildren) {
-			child.updateY(event, client, selfUpdated);
+			child.updateY(event, client, selfUpdated, excludedElements, updatedElements);
 		}
 	}
 	

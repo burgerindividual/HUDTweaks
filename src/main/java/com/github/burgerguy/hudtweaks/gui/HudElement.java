@@ -142,7 +142,6 @@ public abstract class HudElement extends RelativeTreeNode {
 	
 	public Matrix4f createMatrix(MinecraftClient client) {
 		Matrix4f matrix = Matrix4f.translate(getX(client) - getDefaultX(client), getY(client) - getDefaultY(client), 0);
-		
 		setUpdated();
 		return matrix;
 	}
