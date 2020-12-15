@@ -16,5 +16,5 @@ public interface XAxisNode {
 	public int getX(MinecraftClient client);
 	public int getWidth(MinecraftClient client);
 	
-	public void updateX(UpdateEvent event, MinecraftClient client);
+	public void updateX(UpdateEvent event, MinecraftClient client, boolean parentUpdated);
 }

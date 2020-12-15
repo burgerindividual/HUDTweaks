@@ -16,12 +16,12 @@ public class AirElement extends HudElement {
 	}
 
 	@Override
-	public int getWidth(MinecraftClient client) {
+	public int calculateWidth(MinecraftClient client) {
 		return 81;
 	}
 
 	@Override
-	public int getHeight(MinecraftClient client) {
+	public int calculateHeight(MinecraftClient client) {
 		return 9;
 	}
 	
@@ -41,12 +41,12 @@ public class AirElement extends HudElement {
 	}
 
 	@Override
-	public int getDefaultX(MinecraftClient client) {
+	public int calculateDefaultX(MinecraftClient client) {
 		return client.getWindow().getScaledWidth() / 2 + 10;
 	}
 
 	@Override
-	public int getDefaultY(MinecraftClient client) {
+	public int calculateDefaultY(MinecraftClient client) {
 		return client.getWindow().getScaledHeight() - 49 - getRidingHealthOffset(client);
 	}
 	

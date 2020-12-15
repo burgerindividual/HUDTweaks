@@ -19,23 +19,23 @@ public class StatusEffectsElement extends HudElement {
 
 	// FIXME
 	@Override
-	public int getWidth(MinecraftClient client) {
+	public int calculateWidth(MinecraftClient client) {
 		return 5;
 	}
 
 	@Override
-	public int getHeight(MinecraftClient client) {
+	public int calculateHeight(MinecraftClient client) {
 		return 5;
 	}
 
 
 	@Override
-	public int getDefaultX(MinecraftClient client) {
+	public int calculateDefaultX(MinecraftClient client) {
 		return 0;
 	}
 
 	@Override
-	public int getDefaultY(MinecraftClient client) {
+	public int calculateDefaultY(MinecraftClient client) {
 		return 0;
 	}
 	

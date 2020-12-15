@@ -125,8 +125,8 @@ public abstract class InGameHudMixin extends DrawableHelper {
 	private void fireUpdateEvent(UpdateEvent event) {
 		client.getProfiler().push("fireHudTweaksEvents");
 		client.getProfiler().push(event.toString());
-		HudContainer.getScreenRoot().updateX(event, client);
-		HudContainer.getScreenRoot().updateY(event, client);
+		HudContainer.getScreenRoot().updateX(event, client, false);
+		HudContainer.getScreenRoot().updateY(event, client, false);
 		HudContainer.getMatrixCache().createAllMatricies(client);
 		client.getProfiler().pop();
 		client.getProfiler().pop();

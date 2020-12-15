@@ -69,29 +69,45 @@ public abstract class HudElement extends RelativeTreeNode {
 	}
 	
 	@Override
-	public abstract int getWidth(MinecraftClient client); // FIXME
+	public int getWidth(MinecraftClient client) {
+		return cachedWidth;
+	}
 
 	@Override
-	public abstract int getHeight(MinecraftClient client); // FIXME
+	public int getHeight(MinecraftClient client) {
+		return cachedHeight;
+	}
 
-	public abstract int getDefaultX(MinecraftClient client);
+	public int getDefaultX(MinecraftClient client) {
+		return cachedDefaultX;
+	}
 	
-	public abstract int getDefaultY(MinecraftClient client);
+	public int getDefaultY(MinecraftClient client) {
+		return cachedDefaultY;
+	}
+	
+	public abstract int calculateWidth(MinecraftClient client);
+	
+	public abstract int calculateHeight(MinecraftClient client);
+	
+	public abstract int calculateDefaultX(MinecraftClient client);
+	
+	public abstract int calculateDefaultY(MinecraftClient client);
 	
 	@Override
 	public int getX(MinecraftClient client) {
-		updateSelfX(client); // FIXME
 		return cachedX;
 	}
 	
 	@Override
 	public int getY(MinecraftClient client) {
-		updateSelfY(client); // FIXME
 		return cachedY;
 	}
 	
 	@Override
-	public void updateSelfX(MinecraftClient client) { // FIXME
+	public void updateSelfX(MinecraftClient client) {
+		cachedWidth = calculateWidth(client);
+		cachedDefaultX = calculateDefaultX(client);
 		switch(xPosType) {
 		case DEFAULT:
 			cachedX = (int) (getDefaultX(client) + xOffset);
@@ -105,7 +121,9 @@ public abstract class HudElement extends RelativeTreeNode {
 	}
 	
 	@Override
-	public void updateSelfY(MinecraftClient client) { // FIXME
+	public void updateSelfY(MinecraftClient client) {
+		cachedHeight = calculateHeight(client);
+		cachedDefaultY = calculateDefaultY(client);
 		switch(yPosType) {
 		case DEFAULT:
 			cachedY = (int) (getDefaultY(client) + yOffset);
@@ -123,9 +141,7 @@ public abstract class HudElement extends RelativeTreeNode {
 	}
 	
 	public Matrix4f createMatrix(MinecraftClient client) {
-		Matrix4f matrix = Matrix4f.translate(getX(client) - getDefaultY(client),
-				getY(client) - getDefaultY(client),
-				0);
+		Matrix4f matrix = Matrix4f.translate(getX(client) - getDefaultX(client), getY(client) - getDefaultY(client), 0);
 		
 		setUpdated();
 		return matrix;
@@ -188,7 +204,8 @@ public abstract class HudElement extends RelativeTreeNode {
 			
 			@Override
 			public void applyValue() {
-				xAnchorPos = value;
+				xRelativePos = value;
+				requiresUpdate = true;
 			}
 			
 			@Override
@@ -216,7 +233,8 @@ public abstract class HudElement extends RelativeTreeNode {
 			
 			@Override
 			public void applyValue() {
-				yAnchorPos = value;
+				yRelativePos = value;
+				requiresUpdate = true;
 			}
 			
 			@Override
@@ -248,6 +266,7 @@ public abstract class HudElement extends RelativeTreeNode {
 			@Override
 			public void applyValue() {
 				xAnchorPos = value;
+				requiresUpdate = true;
 			}
 			
 			@Override
@@ -276,6 +295,7 @@ public abstract class HudElement extends RelativeTreeNode {
 			@Override
 			public void applyValue() {
 				yAnchorPos = value;
+				requiresUpdate = true;
 			}
 			
 			@Override
@@ -300,6 +320,7 @@ public abstract class HudElement extends RelativeTreeNode {
 		
 		PosTypeButtonWidget xPosTypeButton = new PosTypeButtonWidget(4, 16, sidebar.width - 8, 14,  xPosType, t -> {
 			xPosType = t;
+			requiresUpdate = true;
 			xAnchorSlider.active = !t.equals(PosType.DEFAULT);
 			xRelativeSlider.active = !t.equals(PosType.DEFAULT);
 			xRelativeParentButton.active = !t.equals(PosType.DEFAULT);
@@ -307,6 +328,7 @@ public abstract class HudElement extends RelativeTreeNode {
 		
 		PosTypeButtonWidget yPosTypeButton = new PosTypeButtonWidget(4, 124, sidebar.width - 8, 14,  yPosType, t -> {
 			yPosType = t;
+			requiresUpdate = true;
 			yAnchorSlider.active = !t.equals(PosType.DEFAULT);
 			yRelativeSlider.active = !t.equals(PosType.DEFAULT);
 			yRelativeParentButton.active = !t.equals(PosType.DEFAULT);
@@ -322,9 +344,11 @@ public abstract class HudElement extends RelativeTreeNode {
 		xOffsetField.setChangedListener(s -> {
 			if (s.equals("")) {
 				xOffset = 0.0D;
+				requiresUpdate = true;
 			} else {
 				try {
 					xOffset = Double.parseDouble(s);
+					requiresUpdate = true;
 				} catch(NumberFormatException ignored) {}
 			}
 		});
@@ -332,16 +356,18 @@ public abstract class HudElement extends RelativeTreeNode {
 		NumberFieldWidget yOffsetField = new NumberFieldWidget(MinecraftClient.getInstance().textRenderer, 43, 200, sidebar.width - 47, 14, new TranslatableText("hudtweaks.options.offset.name")) {
 			@Override
 			public void updateValue() {
-				setText(Double.toString(yOffset));
+				setText(Util.OFFSET_FORMATTER.format(yOffset));
 			}
 		};
-		yOffsetField.setText(Double.toString(yOffset));
+		yOffsetField.setText(Util.OFFSET_FORMATTER.format(yOffset));
 		yOffsetField.setChangedListener(s -> {
 			if (s.equals("")) {
 				yOffset = 0.0D;
+				requiresUpdate = true;
 			} else {
 				try {
 					yOffset = Double.parseDouble(s);
+					requiresUpdate = true;
 				} catch(NumberFormatException ignored) {}
 			}
 		});
@@ -415,6 +441,7 @@ public abstract class HudElement extends RelativeTreeNode {
 				xOffset += deltaX;
 				yOffset += deltaY;
 			}
+			requiresUpdate = true;
 			optionsScreen.updateSidebarValues();
 			return true;
 		}

@@ -74,42 +74,44 @@ public abstract class RelativeTreeNode implements XAxisNode, YAxisNode {
 		yParent = newYParent;
 		requiresUpdate = true;
 	}
-	
-	public boolean requiresUpdate() {
-		return requiresUpdate;
-	}
 
 	@Override
-	public void updateX(UpdateEvent event, MinecraftClient client) {
-		if (requiresUpdate()) {
+	public void updateX(UpdateEvent event, MinecraftClient client, boolean parentUpdated) {
+		boolean selfUpdated = false;
+		if (requiresUpdate || parentUpdated) {
 			updateSelfX(client);
+			selfUpdated = true;
 		} else {
 			for (UpdateEvent e : updateEvents) {
 				if (event.equals(e)) {
 					updateSelfX(client);
+					selfUpdated = true;
 				}
 			}
 		}
 		
 		for (XAxisNode child : xChildren) {
-			child.updateX(event, client);
+			child.updateX(event, client, selfUpdated);
 		}
 	}
 	
 	@Override
-	public void updateY(UpdateEvent event, MinecraftClient client) {
-		if (requiresUpdate()) {
+	public void updateY(UpdateEvent event, MinecraftClient client, boolean parentUpdated) {
+		boolean selfUpdated = false;
+		if (requiresUpdate || parentUpdated) {
 			updateSelfY(client);
+			selfUpdated = true;
 		} else {
 			for (UpdateEvent e : updateEvents) {
 				if (event.equals(e)) {
 					updateSelfY(client);
+					selfUpdated = true;
 				}
 			}
 		}
 		
 		for (YAxisNode child : yChildren) {
-			child.updateY(event, client);
+			child.updateY(event, client, selfUpdated);
 		}
 	}
 	

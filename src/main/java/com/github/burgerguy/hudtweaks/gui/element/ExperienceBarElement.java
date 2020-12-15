@@ -12,23 +12,23 @@ public class ExperienceBarElement extends HudElement {
 	}
 
 	@Override
-	public int getWidth(MinecraftClient client) {
+	public int calculateWidth(MinecraftClient client) {
 		return 182;
 	}
 
 	@Override
-	public int getHeight(MinecraftClient client) {
+	public int calculateHeight(MinecraftClient client) {
 		// TODO: is this right?
 		return 12;
 	}
 
 	@Override
-	public int getDefaultX(MinecraftClient client) {
+	public int calculateDefaultX(MinecraftClient client) {
 		return client.getWindow().getScaledWidth() / 2 - 91;
 	}
 
 	@Override
-	public int getDefaultY(MinecraftClient client) {
+	public int calculateDefaultY(MinecraftClient client) {
 		return client.getWindow().getScaledHeight() - 36;
 	}
 	

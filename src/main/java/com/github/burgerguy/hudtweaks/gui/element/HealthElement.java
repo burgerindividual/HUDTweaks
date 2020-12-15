@@ -20,7 +20,7 @@ public class HealthElement extends HudElement {
 	}
 
 	@Override
-	public int getWidth(MinecraftClient client) {
+	public int calculateWidth(MinecraftClient client) {
 		return 81;
 	}
 	
@@ -48,7 +48,7 @@ public class HealthElement extends HudElement {
 	}
 
 	@Override
-	public int getHeight(MinecraftClient client) {
+	public int calculateHeight(MinecraftClient client) {
 		if (client == null || client.player == null) {
 			return 9 + getHeartJumpDistance(client);
 		}
@@ -58,12 +58,12 @@ public class HealthElement extends HudElement {
 	}
 	
 	@Override
-	public int getDefaultX(MinecraftClient client) {
+	public int calculateDefaultX(MinecraftClient client) {
 		return client.getWindow().getScaledWidth() / 2 - 91;
 	}
 
 	@Override
-	public int getDefaultY(MinecraftClient client) {
+	public int calculateDefaultY(MinecraftClient client) {
 		return client.getWindow().getScaledHeight() - 39 - (flipped || client == null || client.player == null ? 0 : getRawHeight(client)) - getHeartJumpDistance(client);
 	}
 	

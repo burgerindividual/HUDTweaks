@@ -12,22 +12,22 @@ public class HungerElement extends HudElement {
 	}
 
 	@Override
-	public int getWidth(MinecraftClient client) {
+	public int calculateWidth(MinecraftClient client) {
 		return 81;
 	}
 
 	@Override
-	public int getHeight(MinecraftClient client) {
+	public int calculateHeight(MinecraftClient client) {
 		return 9 + 2; // the +2 is for the possible jump distance of the food
 	}
 
 	@Override
-	public int getDefaultX(MinecraftClient client) {
+	public int calculateDefaultX(MinecraftClient client) {
 		return client.getWindow().getScaledWidth() / 2 + 10;
 	}
 
 	@Override
-	public int getDefaultY(MinecraftClient client) {
+	public int calculateDefaultY(MinecraftClient client) {
 		return client.getWindow().getScaledHeight() - 39 - 1;  // the -1 is for the possible jump distance of the food
 	}
 	
