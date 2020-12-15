@@ -2,8 +2,10 @@ package com.github.burgerguy.hudtweaks.mixin;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Final;
@@ -22,6 +24,9 @@ import com.github.burgerguy.hudtweaks.gui.HudElement;
 import com.github.burgerguy.hudtweaks.gui.element.HealthElement;
 import com.github.burgerguy.hudtweaks.gui.element.StatusEffectsElement;
 import com.github.burgerguy.hudtweaks.util.gui.MatrixCache.UpdateEvent;
+import com.google.common.collect.Sets;
+import com.github.burgerguy.hudtweaks.util.gui.XAxisNode;
+import com.github.burgerguy.hudtweaks.util.gui.YAxisNode;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.MinecraftClient;
@@ -44,12 +49,16 @@ public abstract class InGameHudMixin extends DrawableHelper {
 	@Shadow
 	private MinecraftClient client;
 	
+	// the excludedElements sets are used to stop redundant updating
 	@Unique
-	/**
-	 * Elements that haven't had their matricies updated this frame and
-	 * are still ready to be updated.
-	 */
-	private HudElement[] updatableElements;
+	private final Set<XAxisNode> excludedElementsX = new HashSet<>();
+	@Unique
+	private final Set<YAxisNode> excludedElementsY = new HashSet<>();
+	// the updatedElements sets are used to see what matricies should be updated after an event
+	@Unique
+	private final Set<XAxisNode> updatedElementsX = new HashSet<>();
+	@Unique
+	private final Set<YAxisNode> updatedElementsY = new HashSet<>();
 	@Unique
 	private int lastWidth;
 	@Unique
@@ -78,11 +87,8 @@ public abstract class InGameHudMixin extends DrawableHelper {
 			super.fillGradient(matrixStack, 0, 0, scaledWidth, scaledHeight, -1072689136, -804253680);
 		}
 		
-		client.getProfiler().push("fireHudTweaksEvents");
-		client.getProfiler().push("createUpdatableElementsArray");
-		updatableElements = HudContainer.getElements().toArray(new HudElement[HudContainer.getElements().size()]);
-		client.getProfiler().pop();
-		client.getProfiler().pop();
+		excludedElementsX.clear();
+		excludedElementsY.clear();
 		
 		fireUpdateEvent(UpdateEvent.ON_RENDER);
 		
@@ -125,9 +131,16 @@ public abstract class InGameHudMixin extends DrawableHelper {
 	private void fireUpdateEvent(UpdateEvent event) {
 		client.getProfiler().push("fireHudTweaksEvents");
 		client.getProfiler().push(event.toString());
-		HudContainer.getScreenRoot().updateX(event, client, false);
-		HudContainer.getScreenRoot().updateY(event, client, false);
-		HudContainer.getMatrixCache().createAllMatricies(client);
+		updatedElementsX.clear();
+		updatedElementsY.clear();
+		HudContainer.getScreenRoot().updateX(event, client, false, excludedElementsX, updatedElementsX);
+		HudContainer.getScreenRoot().updateY(event, client, false, excludedElementsY, updatedElementsY);
+		for (Object element : Sets.union(updatedElementsX, updatedElementsY)) {
+			if (element instanceof HudElement) {
+				HudElement hudElement = (HudElement) element;
+				HudContainer.getMatrixCache().putMatrix(hudElement.getIdentifier(), hudElement.createMatrix(client));
+			}
+		}
 		client.getProfiler().pop();
 		client.getProfiler().pop();
 	}

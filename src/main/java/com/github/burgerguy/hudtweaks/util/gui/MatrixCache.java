@@ -3,21 +3,10 @@ package com.github.burgerguy.hudtweaks.util.gui;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.github.burgerguy.hudtweaks.gui.HudContainer;
-import com.github.burgerguy.hudtweaks.gui.HudElement;
-
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.math.Matrix4f;
 
 public class MatrixCache {
-	// TODO: MAYBE turn this into ElementCache, have w/h/x/y, make calculateOrGet
 	private final Map<String, Matrix4f> matrixMap = new HashMap<>();
-	
-	public void createAllMatricies(MinecraftClient client) {
-		for (HudElement element : HudContainer.getElements()) {
-			putMatrix(element.getIdentifier(), element.createMatrix(client));
-		}
-	}
 	
 	public Matrix4f getMatrix(String identifier) {
 		return matrixMap.get(identifier);
@@ -28,7 +17,7 @@ public class MatrixCache {
 	}
 	
 	/**
-	 * Each HudElement can have multiple update events, which determines if the matrix should be updated.
+	 * Each HudElement can have multiple update events which determine if the matrix should be updated.
 	 * TODO: figure out a way to make these not hardcoded, and make the checks not in InGameHudMixin.
 	 */
 	public enum UpdateEvent {
