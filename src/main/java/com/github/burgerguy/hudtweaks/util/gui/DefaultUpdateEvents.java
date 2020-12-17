@@ -154,7 +154,7 @@ public enum DefaultUpdateEvents {
 			}
 		},
 		new UpdateEvent() {
-			private AttackIndicator lastIndicator; // FIXME: figure out how to keep this for both x and y queries
+			private AttackIndicator lastIndicator;
 			
 			@Override
 			public String getIdentifier() {
