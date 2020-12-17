@@ -9,6 +9,7 @@ import com.github.burgerguy.hudtweaks.gui.element.*;
 import com.github.burgerguy.hudtweaks.util.Util;
 import com.github.burgerguy.hudtweaks.util.gui.MatrixCache;
 import com.github.burgerguy.hudtweaks.util.gui.RelativeTreeRootScreen;
+import com.github.burgerguy.hudtweaks.util.gui.UpdateEventRegistry;
 import com.google.gson.JsonElement;
 
 public enum HudContainer {
@@ -16,6 +17,7 @@ public enum HudContainer {
 	
 	private static final Map<String, HudElement> ELEMENT_MAP = new HashMap<>();
 	private static transient final MatrixCache MATRIX_CACHE = new MatrixCache();
+	private static transient final UpdateEventRegistry EVENT_REGISTRY = new UpdateEventRegistry();
 	private static transient final RelativeTreeRootScreen SCREEN_ROOT = new RelativeTreeRootScreen();
 	
 	static {
@@ -78,6 +80,10 @@ public enum HudContainer {
 	
 	public static RelativeTreeRootScreen getScreenRoot() {
 		return SCREEN_ROOT;
+	}
+	
+	public static UpdateEventRegistry getEventRegistry() {
+		return EVENT_REGISTRY;
 	}
 	
 	public static void updateFromJson(JsonElement json) {

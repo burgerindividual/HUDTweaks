@@ -3,7 +3,6 @@ package com.github.burgerguy.hudtweaks.gui.element;
 import com.github.burgerguy.hudtweaks.gui.HudElement;
 import com.github.burgerguy.hudtweaks.gui.widget.HTButtonWidget;
 import com.github.burgerguy.hudtweaks.gui.widget.SidebarWidget;
-import com.github.burgerguy.hudtweaks.util.gui.MatrixCache.UpdateEvent;
 import com.google.gson.JsonElement;
 
 import net.minecraft.client.MinecraftClient;
@@ -16,7 +15,7 @@ public class HealthElement extends HudElement {
 	private boolean flipped;
 
 	public HealthElement() {
-		super("health", UpdateEvent.ON_HEALTH_ROWS_CHANGE);
+		super("health", "onHealthRowsChange");
 	}
 
 	@Override

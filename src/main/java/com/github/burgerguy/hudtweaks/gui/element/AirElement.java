@@ -1,7 +1,6 @@
 package com.github.burgerguy.hudtweaks.gui.element;
 
 import com.github.burgerguy.hudtweaks.gui.HudElement;
-import com.github.burgerguy.hudtweaks.util.gui.MatrixCache.UpdateEvent;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
@@ -12,7 +11,7 @@ import net.minecraft.util.math.MathHelper;
 public class AirElement extends HudElement {
 
 	public AirElement() {
-		super("air", UpdateEvent.ON_RIDING_HEALTH_ROWS_CHANGE);
+		super("air", "onRidingHealthRowsChange");
 	}
 
 	@Override

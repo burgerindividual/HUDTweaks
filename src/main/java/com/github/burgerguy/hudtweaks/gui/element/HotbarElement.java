@@ -1,7 +1,6 @@
 package com.github.burgerguy.hudtweaks.gui.element;
 
 import com.github.burgerguy.hudtweaks.gui.HudElement;
-import com.github.burgerguy.hudtweaks.util.gui.MatrixCache.UpdateEvent;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.options.AttackIndicator;
@@ -11,7 +10,7 @@ import net.minecraft.entity.player.PlayerEntity;
 public class HotbarElement extends HudElement {
 
 	public HotbarElement() {
-		super("hotbar", UpdateEvent.ON_OFFHAND_STATUS_CHANGE, UpdateEvent.ON_HOTBAR_ATTACK_INDICATOR_CHANGE);
+		super("hotbar", "onOffhandStatusChange", "onHotbarAttackIndicatorChange");
 	}
 	
 	private int getAttackIndicatorOffset(MinecraftClient client) {

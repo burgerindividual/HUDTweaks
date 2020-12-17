@@ -10,7 +10,6 @@ import com.github.burgerguy.hudtweaks.gui.widget.SidebarWidget;
 import com.github.burgerguy.hudtweaks.gui.widget.XAxisParentButtonWidget;
 import com.github.burgerguy.hudtweaks.gui.widget.YAxisParentButtonWidget;
 import com.github.burgerguy.hudtweaks.util.Util;
-import com.github.burgerguy.hudtweaks.util.gui.MatrixCache.UpdateEvent;
 import com.github.burgerguy.hudtweaks.util.gui.RelativeTreeNode;
 import com.github.burgerguy.hudtweaks.util.gui.XAxisNode;
 import com.github.burgerguy.hudtweaks.util.gui.YAxisNode;
@@ -49,7 +48,7 @@ public abstract class HudElement extends RelativeTreeNode {
 	protected transient int cachedDefaultY;
 	// TODO: add rotation and scale using the already existing anchor points.
 	
-	public HudElement(String identifier, UpdateEvent... updateEvents) {
+	public HudElement(String identifier, String... updateEvents) {
 		super(identifier, updateEvents);
 	}
 	

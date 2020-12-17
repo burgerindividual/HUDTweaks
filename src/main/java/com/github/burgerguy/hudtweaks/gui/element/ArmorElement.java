@@ -1,7 +1,6 @@
 package com.github.burgerguy.hudtweaks.gui.element;
 
 import com.github.burgerguy.hudtweaks.gui.HudElement;
-import com.github.burgerguy.hudtweaks.util.gui.MatrixCache.UpdateEvent;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.attribute.EntityAttributes;
@@ -10,7 +9,7 @@ import net.minecraft.util.math.MathHelper;
 public class ArmorElement extends HudElement {
 
 	public ArmorElement() {
-		super("armor", UpdateEvent.ON_HEALTH_ROWS_CHANGE);
+		super("armor", "onHealthRowsChange");
 	}
 
 	@Override

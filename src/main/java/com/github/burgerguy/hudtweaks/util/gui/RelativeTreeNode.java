@@ -4,7 +4,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.github.burgerguy.hudtweaks.gui.HudContainer;
-import com.github.burgerguy.hudtweaks.util.gui.MatrixCache.UpdateEvent;
 
 import net.minecraft.client.MinecraftClient;
 
@@ -18,10 +17,13 @@ public abstract class RelativeTreeNode implements XAxisNode, YAxisNode {
 	
 	protected transient boolean requiresUpdate;
 	
-	public RelativeTreeNode(String identifier, UpdateEvent... updateEvents) {
+	public RelativeTreeNode(String identifier, String... updateEvents) {
 		this.identifier = identifier;
-		for (UpdateEvent event : updateEvents) {
-			this.updateEvents.add(event);
+		for (String eventIdentifier : updateEvents) {
+			UpdateEvent event = HudContainer.getEventRegistry().get(eventIdentifier);
+			if (event != null) {
+				this.updateEvents.add(event);
+			}
 		}
 		
 		moveXUnder(HudContainer.getScreenRoot());
@@ -76,56 +78,48 @@ public abstract class RelativeTreeNode implements XAxisNode, YAxisNode {
 	}
 
 	@Override
-	public void updateX(UpdateEvent event, MinecraftClient client, boolean parentUpdated, Set<XAxisNode> excludedElements, Set<XAxisNode> updatedElements) {
+	public void updateX(MinecraftClient client, boolean parentUpdated, Set<XAxisNode> updatedElements) {
 		boolean selfUpdated = false;
-		if (!excludedElements.contains(this)) {
-			if (requiresUpdate || parentUpdated) {
-				updateSelfX(client);
-				selfUpdated = true;
-			} else {
-				for (UpdateEvent e : updateEvents) {
-					if (event.equals(e)) {
-						updateSelfX(client);
-						selfUpdated = true;
-					}
+		if (requiresUpdate || parentUpdated) {
+			updateSelfX(client);
+			selfUpdated = true;
+			updatedElements.add(this);
+		} else {
+			for (UpdateEvent event : updateEvents) {
+				if (event.shouldUpdate(client)) {
+					updateSelfX(client);
+					selfUpdated = true;
+					updatedElements.add(this);
+					break;
 				}
-			}
-			
-			if (selfUpdated) {
-				excludedElements.add(this);
-				updatedElements.add(this);
 			}
 		}
 		
 		for (XAxisNode child : xChildren) {
-			child.updateX(event, client, selfUpdated, excludedElements, updatedElements);
+			child.updateX(client, selfUpdated, updatedElements);
 		}
 	}
 	
 	@Override
-	public void updateY(UpdateEvent event, MinecraftClient client, boolean parentUpdated, Set<YAxisNode> excludedElements, Set<YAxisNode> updatedElements) {
+	public void updateY(MinecraftClient client, boolean parentUpdated, Set<YAxisNode> updatedElements) {
 		boolean selfUpdated = false;
-		if (!excludedElements.contains(this)) {
-			if (requiresUpdate || parentUpdated) {
-				updateSelfY(client);
-				selfUpdated = true;
-			} else {
-				for (UpdateEvent e : updateEvents) {
-					if (event.equals(e)) {
-						updateSelfY(client);
-						selfUpdated = true;
-					}
+		if (requiresUpdate || parentUpdated) {
+			updateSelfY(client);
+			selfUpdated = true;
+			updatedElements.add(this);
+		} else {
+			for (UpdateEvent event : updateEvents) {
+				if (event.shouldUpdate(client)) {
+					updateSelfY(client);
+					selfUpdated = true;
+					updatedElements.add(this);
+					break;
 				}
-			}
-			
-			if (selfUpdated) {
-				excludedElements.add(this);
-				updatedElements.add(this);
 			}
 		}
 		
 		for (YAxisNode child : yChildren) {
-			child.updateY(event, client, selfUpdated, excludedElements, updatedElements);
+			child.updateY(client, selfUpdated, updatedElements);
 		}
 	}
 	

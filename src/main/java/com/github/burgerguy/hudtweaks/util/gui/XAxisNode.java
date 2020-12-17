@@ -2,8 +2,6 @@ package com.github.burgerguy.hudtweaks.util.gui;
 
 import java.util.Set;
 
-import com.github.burgerguy.hudtweaks.util.gui.MatrixCache.UpdateEvent;
-
 import net.minecraft.client.MinecraftClient;
 
 public interface XAxisNode {	
@@ -16,5 +14,5 @@ public interface XAxisNode {
 	public int getX(MinecraftClient client);
 	public int getWidth(MinecraftClient client);
 	
-	public void updateX(UpdateEvent event, MinecraftClient client, boolean parentUpdated, Set<XAxisNode> excludedElements, Set<XAxisNode> updatedElements);
+	public void updateX(MinecraftClient client, boolean parentUpdated, Set<XAxisNode> updatedElements);
 }

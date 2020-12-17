@@ -1,14 +1,12 @@
 package com.github.burgerguy.hudtweaks.util.gui;
 
-import com.github.burgerguy.hudtweaks.util.gui.MatrixCache.UpdateEvent;
-
 import net.minecraft.client.MinecraftClient;
 
 public final class RelativeTreeRootScreen extends RelativeTreeNode {
 	public static final String IDENTIFIER = "screen";
 
 	public RelativeTreeRootScreen() {
-		super(IDENTIFIER, UpdateEvent.ON_SCREEN_BOUNDS_CHANGE);
+		super(IDENTIFIER, "onScreenBoundsChange");
 		xParent = null;
 		yParent = null;
 	}
