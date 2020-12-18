@@ -62,7 +62,7 @@ public abstract class InGameHudMixin extends DrawableHelper {
 		
 		if (HTOptionsScreen.isOpen()) {
 			// super janky way to dim background
-			super.fillGradient(matrixStack, 0, 0, scaledWidth, scaledHeight, -1072689136, -804253680);
+			super.fillGradient(matrixStack, 0, 0, scaledWidth, scaledHeight, 0xC0101010, 0xD0101010);
 		}
 		
 		client.getProfiler().push("fireHudTweaksEvents");
@@ -77,6 +77,7 @@ public abstract class InGameHudMixin extends DrawableHelper {
 		}
 		
 		for (Object element : Sets.union(updatedElementsX, updatedElementsY)) {
+			// something something instanceof bad something something
 			if (element instanceof HudElement) {
 				HudElement hudElement = (HudElement) element;
 				HudContainer.getMatrixCache().putMatrix(hudElement.getIdentifier(), hudElement.createMatrix(client));
