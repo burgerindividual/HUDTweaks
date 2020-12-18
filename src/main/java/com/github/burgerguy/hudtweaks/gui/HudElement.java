@@ -429,11 +429,13 @@ public abstract class HudElement extends RelativeTreeNode {
 		@Override
 		public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
 			if (Screen.hasShiftDown()) {
+				MinecraftClient client = MinecraftClient.getInstance();
+				
 				if (!xPosType.equals(PosType.DEFAULT)) {
-					xRelativePos = MathHelper.clamp(xRelativePos + deltaX / optionsScreen.width, 0.0D, 1.0D);
+					xRelativePos = MathHelper.clamp(xRelativePos + deltaX / HudElement.this.getXParent().getWidth(client), 0.0D, 1.0D);
 				}
 				if (!yPosType.equals(PosType.DEFAULT)) {
-					yRelativePos = MathHelper.clamp(yRelativePos + deltaY / optionsScreen.height, 0.0D, 1.0D);
+					yRelativePos = MathHelper.clamp(yRelativePos + deltaY / HudElement.this.getYParent().getHeight(client), 0.0D, 1.0D);
 				}
 			} else {
 				xOffset += deltaX;
