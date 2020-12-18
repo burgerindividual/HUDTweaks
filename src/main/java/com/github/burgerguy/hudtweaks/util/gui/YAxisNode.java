@@ -14,5 +14,5 @@ public interface YAxisNode {
 	public int getY(MinecraftClient client);
 	public int getHeight(MinecraftClient client);
 	
-	public void updateY(MinecraftClient client, boolean parentUpdated, Set<YAxisNode> updatedElements);
+	public void tryUpdateY(UpdateEvent event, MinecraftClient client, boolean parentUpdated, Set<YAxisNode> updatedElementsY);
 }

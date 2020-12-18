@@ -78,48 +78,69 @@ public abstract class RelativeTreeNode implements XAxisNode, YAxisNode {
 	}
 
 	@Override
-	public void updateX(MinecraftClient client, boolean parentUpdated, Set<XAxisNode> updatedElements) {
+	public void tryUpdateX(UpdateEvent event, MinecraftClient client, boolean parentUpdated, Set<XAxisNode> updatedElementsX) {
 		boolean selfUpdated = false;
-		if (requiresUpdate || parentUpdated) {
-			updateSelfX(client);
-			selfUpdated = true;
-			updatedElements.add(this);
-		} else {
-			for (UpdateEvent event : updateEvents) {
-				if (event.shouldUpdate(client)) {
+		if (!updatedElementsX.contains(this)) {
+			if (parentUpdated) {
+				updateSelfX(client);
+				updatedElementsX.add(this);
+				selfUpdated = true;
+			} else {
+				if (updateEvents.contains(event)) {
 					updateSelfX(client);
+					updatedElementsX.add(this);
 					selfUpdated = true;
-					updatedElements.add(this);
-					break;
 				}
 			}
 		}
 		
 		for (XAxisNode child : xChildren) {
-			child.updateX(client, selfUpdated, updatedElements);
+			child.tryUpdateX(event, client, selfUpdated, updatedElementsX);
 		}
 	}
 	
 	@Override
-	public void updateY(MinecraftClient client, boolean parentUpdated, Set<YAxisNode> updatedElements) {
+	public void tryUpdateY(UpdateEvent event, MinecraftClient client, boolean parentUpdated, Set<YAxisNode> updatedElementsY) {
 		boolean selfUpdated = false;
-		if (requiresUpdate || parentUpdated) {
-			updateSelfY(client);
-			selfUpdated = true;
-			updatedElements.add(this);
-		} else {
-			for (UpdateEvent event : updateEvents) {
-				if (event.shouldUpdate(client)) {
+		if (!updatedElementsY.contains(this)) {
+			if (parentUpdated) {
+				updateSelfY(client);
+				updatedElementsY.add(this);
+				selfUpdated = true;
+			} else {
+				if (updateEvents.contains(event)) {
 					updateSelfY(client);
+					updatedElementsY.add(this);
 					selfUpdated = true;
-					updatedElements.add(this);
-					break;
 				}
 			}
 		}
 		
 		for (YAxisNode child : yChildren) {
-			child.updateY(client, selfUpdated, updatedElements);
+			child.tryUpdateY(event, client, selfUpdated, updatedElementsY);
+		}
+	}
+	
+	public void tryManualUpdate(MinecraftClient client, boolean parentUpdated, Set<XAxisNode> updatedElementsX, Set<YAxisNode> updatedElementsY) {
+		boolean selfUpdated = false;
+		if (requiresUpdate || parentUpdated) {
+			updateSelfX(client);
+			updatedElementsX.add(this);
+			updateSelfY(client);
+			updatedElementsY.add(this);
+			selfUpdated = true;
+		}
+		
+		for (XAxisNode child : xChildren) {
+			if (child instanceof RelativeTreeNode) {
+				((RelativeTreeNode) child).tryManualUpdate(client, selfUpdated, updatedElementsX, updatedElementsY);
+			}
+		}
+		
+		for (YAxisNode child : yChildren) {
+			if (child instanceof RelativeTreeNode) {
+				((RelativeTreeNode) child).tryManualUpdate(client, selfUpdated, updatedElementsX, updatedElementsY);
+			}
 		}
 	}
 	

@@ -1,5 +1,6 @@
 package com.github.burgerguy.hudtweaks.util.gui;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,5 +19,9 @@ public class UpdateEventRegistry {
 	
 	public UpdateEvent get(String identifier) {
 		return registeredEventMap.get(identifier);
+	}
+	
+	public Collection<UpdateEvent> getAllEvents() {
+		return registeredEventMap.values();
 	}
 }

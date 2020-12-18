@@ -22,6 +22,7 @@ import com.github.burgerguy.hudtweaks.gui.HudContainer;
 import com.github.burgerguy.hudtweaks.gui.HudElement;
 import com.github.burgerguy.hudtweaks.gui.element.HealthElement;
 import com.github.burgerguy.hudtweaks.gui.element.StatusEffectsElement;
+import com.github.burgerguy.hudtweaks.util.gui.UpdateEvent;
 import com.github.burgerguy.hudtweaks.util.gui.XAxisNode;
 import com.github.burgerguy.hudtweaks.util.gui.YAxisNode;
 import com.google.common.collect.Sets;
@@ -67,8 +68,14 @@ public abstract class InGameHudMixin extends DrawableHelper {
 		client.getProfiler().push("fireHudTweaksEvents");
 		updatedElementsX.clear();
 		updatedElementsY.clear();
-		HudContainer.getScreenRoot().updateX(client, false, updatedElementsX);
-		HudContainer.getScreenRoot().updateY(client, false, updatedElementsY);
+		HudContainer.getScreenRoot().tryManualUpdate(client, false, updatedElementsX, updatedElementsY);
+		for (UpdateEvent event : HudContainer.getEventRegistry().getAllEvents()) {
+			if (event.shouldUpdate(client)) {
+				HudContainer.getScreenRoot().tryUpdateX(event, client, false, updatedElementsX);
+				HudContainer.getScreenRoot().tryUpdateY(event, client, false, updatedElementsY);
+			}
+		}
+		
 		for (Object element : Sets.union(updatedElementsX, updatedElementsY)) {
 			if (element instanceof HudElement) {
 				HudElement hudElement = (HudElement) element;
