@@ -1,6 +1,6 @@
 package com.github.burgerguy.hudtweaks;
 
-import com.github.burgerguy.hudtweaks.api.HudInitializer;
+import com.github.burgerguy.hudtweaks.api.HudTweaksApi;
 import com.github.burgerguy.hudtweaks.config.ConfigHelper;
 import com.github.burgerguy.hudtweaks.gui.HudContainer;
 import com.github.burgerguy.hudtweaks.gui.HudElement;
@@ -15,15 +15,15 @@ public class HudTweaksMod implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		ConfigHelper.tryLoadConfig();
-		FabricLoader.getInstance().getEntrypointContainers("hudtweaks", HudInitializer.class).forEach(e -> {
-			HudInitializer hudInitializer = e.getEntrypoint();
-			hudInitializer.onInitialize();
+		FabricLoader.getInstance().getEntrypointContainers("hudtweaks", HudTweaksApi.class).forEach(e -> {
+			HudTweaksApi apiImpl = e.getEntrypoint();
+			apiImpl.onInitialize();
 			
-			for (UpdateEvent event : hudInitializer.getCustomEvents()) {
+			for (UpdateEvent event : apiImpl.getCustomEvents()) {
 				HudContainer.getEventRegistry().put(event);
 			}
 			
-			for (HudElement element : hudInitializer.getCustomElements()) {
+			for (HudElement element : apiImpl.getCustomElements()) {
 				HudContainer.addElement(element.getIdentifier(), element);
 			}
 		});

@@ -6,7 +6,7 @@ import java.util.Set;
 
 import com.github.burgerguy.hudtweaks.util.gui.UpdateEvent;
 
-public interface HudInitializer {
+public interface HudTweaksApi {
 	
 	/**
 	 * Used for manipulating already existing things in the HudContainer.
@@ -24,7 +24,7 @@ public interface HudInitializer {
 	}
 	
 	/**
-	 * Each of the CustomHudElements must have a RenderStatusUpdater so it
+	 * Each of the CustomHudElements must have a MatrixUpdater so it
 	 * can update the matricies before and after the render of the
 	 * element.
 	 */
