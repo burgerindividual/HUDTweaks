@@ -19,6 +19,6 @@
 	},
 	"custom": {
 		"modmenu:api": true,
-		"modmenu:parent": "lithium"
+		"modmenu:parent": "hudtweaks"
 	}
 }
