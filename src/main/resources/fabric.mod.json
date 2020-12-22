@@ -1,36 +1,37 @@
 {
-  "schemaVersion": 1,
-  "id": "hudtweaks",
-  "version": "0.1-alpha",
-
-  "name": "HUDTweaks",
-  "description": "Adds better HUD configuration.",
-  "authors": [
-    "burgerdude"
-  ],
-  "contact": {
-    "homepage": "N/A",
-    "sources": "https://github.com/burgerguy/HUDTweaks",
-    "issues": "https://github.com/burgerguy/HUDTweaks/issues"
-  },
-
-  "license": "MIT",
-  "icon": "assets/hudtweaks/icon.png",
-
-  "environment": "client",
-  "entrypoints": {
- 	"client": [ "com.github.burgerguy.hudtweaks.HudTweaksMod" ],
-    "modmenu": [ "com.github.burgerguy.hudtweaks.ModMenuApiImpl" ]
-  },
-  "mixins": [
-    "hudtweaks.mixins.json"
-  ],
-  "accessWidener": "hudtweaks.accesswidener",
-  "depends": {
-    "fabricloader": ">=0.7.4",
-    "minecraft": ">=1.16"
-  },
-  "recommends": {
-    "modmenu": "*"
-  }
+	"schemaVersion": 1,
+	"id": "hudtweaks",
+	"version": "${version}",
+	"name": "HUDTweaks",
+	"description": "Adds better HUD configuration.",
+	"authors": [
+		"burgerdude"
+	],
+	"contact": {
+		"homepage": "N/A",
+		"sources": "https://github.com/burgerguy/HUDTweaks",
+		"issues": "https://github.com/burgerguy/HUDTweaks/issues"
+	},
+	"license": "MIT",
+	"icon": "assets/hudtweaks/icon.png",
+	"environment": "client",
+	"entrypoints": {
+		"client": [
+			"com.github.burgerguy.hudtweaks.HudTweaksMod"
+		],
+		"modmenu": [
+			"com.github.burgerguy.hudtweaks.ModMenuApiImpl"
+		]
+	},
+	"mixins": [
+		"hudtweaks.mixins.json"
+	],
+	"accessWidener": "hudtweaks.accesswidener",
+	"depends": {
+		"fabricloader": ">=0.7.4",
+		"minecraft": ">=1.16"
+	},
+	"recommends": {
+		"modmenu": "*"
+	}
 }

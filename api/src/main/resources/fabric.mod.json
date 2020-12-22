@@ -1,0 +1,24 @@
+{
+	"schemaVersion": 1,
+	"id": "hudtweaks-api",
+	"version": "${version}",
+	"name": "HUDTweaks API",
+	"description": "Adds better HUD configuration.",
+	"authors": [
+		"burgerdude"
+	],
+	"contact": {
+		"homepage": "N/A",
+		"sources": "https://github.com/burgerguy/HUDTweaks",
+		"issues": "https://github.com/burgerguy/HUDTweaks/issues"
+	},
+	"license": "MIT",
+	"environment": "client",
+	"depends": {
+		"minecraft": ">=1.16"
+	},
+	"custom": {
+		"modmenu:api": true,
+		"modmenu:parent": "lithium"
+	}
+}
