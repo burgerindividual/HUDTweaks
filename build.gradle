@@ -62,7 +62,7 @@ allprojects {
 }
 
 dependencies {
-	modImplementation project(":HUDTweaks-api")
+	implementation project(":HUDTweaks-api")
 	
 	afterEvaluate {
 		include project(":HUDTweaks-api")
