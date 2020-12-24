@@ -62,10 +62,10 @@ allprojects {
 }
 
 dependencies {
-	implementation project(":HUDTweaks-api")
+	implementation project(":HUDTweaks-apihelper")
 	
 	afterEvaluate {
-		include project(":HUDTweaks-api")
+		include project(":HUDTweaks-apihelper")
 	}
 	
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
@@ -73,7 +73,7 @@ dependencies {
 	modImplementation "io.github.prospector:modmenu:${project.modmenu_version}"
 }
 
-remapJar.dependsOn(project(":HUDTweaks-api").tasks.remapJar)
+remapJar.dependsOn(project(":HUDTweaks-apihelper").tasks.remapJar)
 
 publishing {
 	publications {

@@ -1,9 +1,8 @@
 {
 	"schemaVersion": 1,
-	"id": "hudtweaks-api",
+	"id": "hudtweaks-apihelper",
 	"version": "${version}",
-	"name": "HUDTweaks API",
-	"description": "Adds better HUD configuration.",
+	"name": "HUDTweaks API Helper",
 	"authors": [
 		"burgerdude"
 	],

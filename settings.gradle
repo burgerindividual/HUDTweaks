@@ -11,5 +11,5 @@ pluginManagement {
 
 rootProject.name = "HUDTweaks"
 
-include "HUDTweaks-api"
-project(":HUDTweaks-api").projectDir = file("api")
+include "HUDTweaks-apihelper"
+project(":HUDTweaks-apihelper").projectDir = file("apihelper")

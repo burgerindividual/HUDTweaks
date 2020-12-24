@@ -3,7 +3,7 @@ plugins {
 	id 'maven-publish'
 }
 
-group = project.maven_group + ".HUDTweaks"
+group = project.maven_group + "." + rootProject.name
 
 publishing {
 	publications {
