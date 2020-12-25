@@ -15,5 +15,10 @@
 	"hudtweaks.options.health.style.normal.display": "Normal",
 	"hudtweaks.options.statuseffects.style.display": "Style: %s",
 	"hudtweaks.options.statuseffects.style.vertical.display": "Vertical",
-	"hudtweaks.options.statuseffects.style.horizontal.display": "Horizontal"
+	"hudtweaks.options.statuseffects.style.horizontal.display": "Horizontal",
+	"hudtweaks.options.scale.display": "Scale",
+	"hudtweaks.options.x_scale.name": "X Scale",
+	"hudtweaks.options.y_scale.name": "Y Scale",
+	"hudtweaks.options.x_scale.display": "X Scale:",
+	"hudtweaks.options.y_scale.display": "Y Scale:"
 }

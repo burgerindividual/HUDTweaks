@@ -359,10 +359,10 @@ public abstract class HudElement extends RelativeTreeNode {
 		NumberFieldWidget yOffsetField = new NumberFieldWidget(MinecraftClient.getInstance().textRenderer, 43, 200, sidebar.width - 47, 14, new TranslatableText("hudtweaks.options.offset.name")) {
 			@Override
 			public void updateValue() {
-				setText(Util.OFFSET_FORMATTER.format(yOffset));
+				setText(Util.NUM_FIELD_FORMATTER.format(yOffset));
 			}
 		};
-		yOffsetField.setText(Util.OFFSET_FORMATTER.format(yOffset));
+		yOffsetField.setText(Util.NUM_FIELD_FORMATTER.format(yOffset));
 		yOffsetField.setChangedListener(s -> {
 			if (s.equals("")) {
 				yOffset = 0.0D;
@@ -371,6 +371,49 @@ public abstract class HudElement extends RelativeTreeNode {
 				try {
 					yOffset = Double.parseDouble(s);
 					requiresUpdate = true;
+				} catch(NumberFormatException ignored) {}
+			}
+		});
+		
+		
+		NumberFieldWidget xScaleField = new NumberFieldWidget(MinecraftClient.getInstance().textRenderer, 48, 233, sidebar.width - 52, 14, new TranslatableText("hudtweaks.options.x_scale.name")) {
+			@Override
+			public void updateValue() {
+				setText(Util.NUM_FIELD_FORMATTER.format(xScale));
+			}
+		};
+		xScaleField.setText(Util.NUM_FIELD_FORMATTER.format(xScale));
+		xScaleField.setChangedListener(s -> {
+			if (s.equals("")) {
+				xScale = 0.0D;
+				requiresUpdate = true;
+			} else {
+				try {
+					double value = Double.parseDouble(s);
+					double lastValue = xScale;
+					xScale = value < 0.0D ? 0.0D : value;
+					if (xScale != lastValue) requiresUpdate = true;
+				} catch(NumberFormatException ignored) {}
+			}
+		});
+		
+		NumberFieldWidget yScaleField = new NumberFieldWidget(MinecraftClient.getInstance().textRenderer, 48, 251, sidebar.width - 52, 14, new TranslatableText("hudtweaks.options.y_scale.name")) {
+			@Override
+			public void updateValue() {
+				setText(Util.NUM_FIELD_FORMATTER.format(yScale));
+			}
+		};
+		yScaleField.setText(Util.NUM_FIELD_FORMATTER.format(yScale));
+		yScaleField.setChangedListener(s -> {
+			if (s.equals("")) {
+				yScale = 0.0D;
+				requiresUpdate = true;
+			} else {
+				try {
+					double value = Double.parseDouble(s);
+					double lastValue = yScale;
+					yScale = value < 0.0D ? 0.0D : value;
+					if (yScale != lastValue) requiresUpdate = true;
 				} catch(NumberFormatException ignored) {}
 			}
 		});
@@ -385,10 +428,15 @@ public abstract class HudElement extends RelativeTreeNode {
 		sidebar.addDrawable(yRelativeSlider);
 		sidebar.addDrawable(yAnchorSlider);
 		sidebar.addDrawable(yOffsetField);
+		sidebar.addDrawable(xScaleField);
+		sidebar.addDrawable(yScaleField);
 		sidebar.addDrawable(new HTLabelWidget(I18n.translate("hudtweaks.options.offset.display"), 5, 95, 0xCCFFFFFF, false));
 		sidebar.addDrawable(new HTLabelWidget(I18n.translate("hudtweaks.options.offset.display"), 5, 203, 0xCCFFFFFF, false));
 		sidebar.addDrawable(new HTLabelWidget(I18n.translate("hudtweaks.options.x_pos.display"), 5, 5, 0xCCB0B0B0, false));
 		sidebar.addDrawable(new HTLabelWidget(I18n.translate("hudtweaks.options.y_pos.display"), 5, 113, 0xCCB0B0B0, false));
+		sidebar.addDrawable(new HTLabelWidget(I18n.translate("hudtweaks.options.scale.display"), 5, 223, 0xCCB0B0B0, false));
+		sidebar.addDrawable(new HTLabelWidget(I18n.translate("hudtweaks.options.x_scale.display"), 5, 236, 0xCCFFFFFF, false));
+		sidebar.addDrawable(new HTLabelWidget(I18n.translate("hudtweaks.options.y_scale.display"), 5, 254, 0xCCFFFFFF, false));
 	}
 	
 	public HudElementWidget createWidget(HTOptionsScreen optionsScreen) {

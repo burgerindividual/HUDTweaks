@@ -32,7 +32,7 @@ public enum Util {
 	
 	public static final NumberFormat RELATIVE_POS_FORMATTER = new DecimalFormat("%##0.0");
 	public static final NumberFormat ANCHOR_POS_FORMATTER = new DecimalFormat("%##0.0");
-	public static final NumberFormat OFFSET_FORMATTER = new DecimalFormat("####0.0");
+	public static final NumberFormat NUM_FIELD_FORMATTER = new DecimalFormat("####0.0");
 	
 	static {
 		GSON = new GsonBuilder().setPrettyPrinting().registerTypeHierarchyAdapter(HudElement.class, new HudElementSerializer()).create();
