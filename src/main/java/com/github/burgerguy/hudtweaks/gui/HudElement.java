@@ -37,8 +37,8 @@ public abstract class HudElement extends RelativeTreeNode {
 	public transient double yRelativePos;
 	public transient double xOffset;
 	public transient double yOffset;
-	public transient double xScale = .5F;
-	public transient double yScale = .5F;
+	public transient double xScale = 1.0D;
+	public transient double yScale = 1.0D;
 	
 	protected transient double cachedWidth;
 	protected transient double cachedHeight;
@@ -181,6 +181,9 @@ public abstract class HudElement extends RelativeTreeNode {
 		yAnchorPos = yPosJson.get("anchorPos").getAsDouble();
 		yOffset = yPosJson.get("offset").getAsDouble();
 		yRelativePos = yPosJson.get("relativePos").getAsDouble();
+		
+		xScale = elementJson.get("xScale").getAsDouble();
+		yScale = elementJson.get("yScale").getAsDouble();
 	}
 	
 	/**

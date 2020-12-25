@@ -79,7 +79,7 @@ public class SidebarWidget extends AbstractParentElement implements Drawable, Ti
 	}
 	
 	@Override
-	public boolean mouseClicked(double mouseX, double mouseY, int button) {
+	public boolean mouseClicked(double mouseX, double mouseY, int button) {		
 		Iterator<? extends Element> iterator = children().iterator();
 		
 		Element currentElement;
@@ -97,6 +97,10 @@ public class SidebarWidget extends AbstractParentElement implements Drawable, Ti
 			currentElement = iterator.next();
 		} while (!currentElement.mouseClicked(mouseX, mouseY, button));
 		
+		Element lastFocused = getFocused();
+		if (lastFocused != null) {
+			while (lastFocused.changeFocus(true)); // fixes focusing bug with text fields
+		}
 		setFocused(currentElement);
 		if (button == 0) {
 			setDragging(true);
@@ -130,7 +134,5 @@ public class SidebarWidget extends AbstractParentElement implements Drawable, Ti
 			}
 		}
 	}
-	
-	
 	
 }

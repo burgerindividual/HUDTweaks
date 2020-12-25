@@ -16,8 +16,6 @@ public interface TextFieldAccessor {
 	public TextRenderer getTextRenderer();
 	@Accessor("focusedTicks")
 	public int getFocusedTicks();
-	@Accessor("focused")
-	public boolean getFocused();
 	@Accessor("editable")
 	public boolean getEditable();
 	@Accessor("firstCharacterIndex")

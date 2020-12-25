@@ -37,8 +37,8 @@ public class HTTextFieldWidget extends TextFieldWidget {
 			String string = accessor.getTextRenderer().trimToWidth(getText().substring(accessor.getFirstCharacterIndex()), getInnerWidth());
 			boolean bl = k >= 0 && k <= string.length();
 			boolean bl2 = isFocused() && accessor.getFocusedTicks() / 6 % 2 == 0 && bl;
-			int m = accessor.getFocused() ? x + 4 : x;
-			int n = accessor.getFocused() ? y + (height - 8) / 2 : y;
+			int m = accessor.callHasBorder() ? x + 4 : x;
+			int n = accessor.callHasBorder() ? y + (height - 8) / 2 : y;
 			int o = m;
 			if (l > string.length()) {
 				l = string.length();

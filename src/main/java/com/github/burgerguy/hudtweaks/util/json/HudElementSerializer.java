@@ -12,7 +12,7 @@ import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 
 public class HudElementSerializer implements JsonSerializer<HudElement> {
-	private static final Gson INNER_GSON = new GsonBuilder().setPrettyPrinting().create();
+	private static final Gson DEFAULT_GSON = new GsonBuilder().setPrettyPrinting().create();
 
 	@Override
 	public JsonElement serialize(HudElement element, Type typeOfSrc, JsonSerializationContext context) {
@@ -28,9 +28,11 @@ public class HudElementSerializer implements JsonSerializer<HudElement> {
 		yPosObject.add("anchorPos", context.serialize(element.yAnchorPos));
 		yPosObject.add("relativePos", context.serialize(element.yRelativePos));
 		yPosObject.add("offset", context.serialize(element.yOffset));
-		JsonObject baseObject = INNER_GSON.toJsonTree(element, TypeToken.of(Object.class).getType()).getAsJsonObject();
+		JsonObject baseObject = DEFAULT_GSON.toJsonTree(element, TypeToken.of(Object.class).getType()).getAsJsonObject();
 		baseObject.add("xPos", xPosObject);
 		baseObject.add("yPos", yPosObject);
+		baseObject.add("xScale", context.serialize(element.xScale));
+		baseObject.add("yScale", context.serialize(element.yScale));
 		return baseObject;
 	}
 	
