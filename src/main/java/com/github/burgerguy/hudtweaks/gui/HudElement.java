@@ -19,7 +19,6 @@ import com.google.gson.annotations.SerializedName;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.Drawable;
-import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.resource.language.I18n;
@@ -29,7 +28,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Matrix4f;
 
 public abstract class HudElement extends RelativeTreeNode {	
-	// These are all marked as transient so we can manually add them in our custom serializer
+	// These are all marked as public transient so we can manually add them in our custom serializer
 	public transient PosType xPosType = PosType.DEFAULT;
 	public transient PosType yPosType = PosType.DEFAULT;
 	public transient double xAnchorPos;
@@ -38,15 +37,16 @@ public abstract class HudElement extends RelativeTreeNode {
 	public transient double yRelativePos;
 	public transient double xOffset;
 	public transient double yOffset;
+	public transient double xScale = .5F;
+	public transient double yScale = .5F;
 	
-	 // FIXME
-	protected transient int cachedX;
-	protected transient int cachedY;
-	protected transient int cachedWidth;
-	protected transient int cachedHeight;
-	protected transient int cachedDefaultX;
-	protected transient int cachedDefaultY;
-	// TODO: add rotation and scale using the already existing anchor points.
+	protected transient double cachedWidth;
+	protected transient double cachedHeight;
+	protected transient double cachedDefaultX;
+	protected transient double cachedDefaultY;
+	protected transient double cachedX;
+	protected transient double cachedY;
+	// TODO: add rotation using the already existing anchor points.
 	
 	public HudElement(String identifier, String... updateEvents) {
 		super(identifier, updateEvents);
@@ -68,51 +68,51 @@ public abstract class HudElement extends RelativeTreeNode {
 	}
 	
 	@Override
-	public int getWidth(MinecraftClient client) {
+	public double getWidth(MinecraftClient client) {
 		return cachedWidth;
 	}
 
 	@Override
-	public int getHeight(MinecraftClient client) {
+	public double getHeight(MinecraftClient client) {
 		return cachedHeight;
 	}
 
-	public int getDefaultX(MinecraftClient client) {
+	public double getDefaultX(MinecraftClient client) {
 		return cachedDefaultX;
 	}
 	
-	public int getDefaultY(MinecraftClient client) {
+	public double getDefaultY(MinecraftClient client) {
 		return cachedDefaultY;
 	}
 	
-	public abstract int calculateWidth(MinecraftClient client);
+	protected abstract double calculateWidth(MinecraftClient client);
 	
-	public abstract int calculateHeight(MinecraftClient client);
+	protected abstract double calculateHeight(MinecraftClient client);
 	
-	public abstract int calculateDefaultX(MinecraftClient client);
+	protected abstract double calculateDefaultX(MinecraftClient client);
 	
-	public abstract int calculateDefaultY(MinecraftClient client);
+	protected abstract double calculateDefaultY(MinecraftClient client);
 	
 	@Override
-	public int getX(MinecraftClient client) {
+	public double getX(MinecraftClient client) {
 		return cachedX;
 	}
 	
 	@Override
-	public int getY(MinecraftClient client) {
+	public double getY(MinecraftClient client) {
 		return cachedY;
 	}
 	
 	@Override
 	public void updateSelfX(MinecraftClient client) {
-		cachedWidth = calculateWidth(client);
+		cachedWidth = calculateWidth(client) * xScale;
 		cachedDefaultX = calculateDefaultX(client);
 		switch(xPosType) {
 		case DEFAULT:
-			cachedX = (int) (getDefaultX(client) + xOffset);
+			cachedX = getDefaultX(client) + xOffset;
 			break;
 		case RELATIVE:
-			cachedX = (int) ((getXParent().getWidth(client) * xRelativePos + xOffset + getXParent().getX(client)) - (getWidth(client) * xAnchorPos));
+			cachedX = (getXParent().getWidth(client) * xRelativePos + xOffset + getXParent().getX(client)) - (getWidth(client) * xAnchorPos);
 			break;
 		default:
 			throw new UnsupportedOperationException("how");
@@ -121,14 +121,14 @@ public abstract class HudElement extends RelativeTreeNode {
 	
 	@Override
 	public void updateSelfY(MinecraftClient client) {
-		cachedHeight = calculateHeight(client);
+		cachedHeight = calculateHeight(client) * yScale;
 		cachedDefaultY = calculateDefaultY(client);
 		switch(yPosType) {
 		case DEFAULT:
-			cachedY = (int) (getDefaultY(client) + yOffset);
+			cachedY = getDefaultY(client) + yOffset;
 			break;
 		case RELATIVE:
-			cachedY = (int) ((getYParent().getHeight(client) * yRelativePos + yOffset + getYParent().getY(client)) - (getHeight(client) * yAnchorPos));
+			cachedY = (getYParent().getHeight(client) * yRelativePos + yOffset + getYParent().getY(client)) - (getHeight(client) * yAnchorPos);
 			break;
 		default:
 			throw new UnsupportedOperationException("how");
@@ -136,11 +136,13 @@ public abstract class HudElement extends RelativeTreeNode {
 	}
 	
 	private void setUpdated() {
-		requiresUpdate = false; // TODO: have x and y
+		requiresUpdate = false;
 	}
 	
 	public Matrix4f createMatrix(MinecraftClient client) {
-		Matrix4f matrix = Matrix4f.translate(getX(client) - getDefaultX(client), getY(client) - getDefaultY(client), 0);
+		Matrix4f matrix = Matrix4f.scale((float) xScale, (float) yScale, 1);
+		matrix.multiply(Matrix4f.translate((float) ((getX(client) * (1 / xScale)) - getDefaultX(client)),
+				(float) ((getY(client) * (1 / yScale)) - getDefaultY(client)), 1));
 		setUpdated();
 		return matrix;
 	}
@@ -404,16 +406,16 @@ public abstract class HudElement extends RelativeTreeNode {
 		public void render(MatrixStack matrixStack, int mouseX, int mouseY, float delta) {
 			MinecraftClient client = MinecraftClient.getInstance();
 			
-			int x1 = getX(client);
-			int y1 = getY(client);
-			int x2 = x1 + getWidth(client);
-			int y2 = y1 + getHeight(client);
+			double x1 = getX(client);
+			double y1 = getY(client);
+			double x2 = x1 + getWidth(client);
+			double y2 = y1 + getHeight(client);
 			
 			int color = optionsScreen.isHudElementFocused(this) ? OUTLINE_COLOR_SELECTED : OUTLINE_COLOR_NORMAL;
-			DrawableHelper.fill(matrixStack, x1 - 1, y1 - 1, x2 + 1, y1,     color);
-			DrawableHelper.fill(matrixStack, x1 - 1, y2,     x2 + 1, y2 + 1, color);
-			DrawableHelper.fill(matrixStack, x1 - 1, y1,     x1,     y2,     color);
-			DrawableHelper.fill(matrixStack, x2,     y1,     x2 + 1, y2,     color);
+			Util.drawFillColor(matrixStack, x1 - 1, y1 - 1, x2 + 1, y1,     color);
+			Util.drawFillColor(matrixStack, x1 - 1, y2,     x2 + 1, y2 + 1, color);
+			Util.drawFillColor(matrixStack, x1 - 1, y1,     x1,     y2,     color);
+			Util.drawFillColor(matrixStack, x2,     y1,     x2 + 1, y2,     color);
 		}
 		
 		@Override
@@ -432,10 +434,10 @@ public abstract class HudElement extends RelativeTreeNode {
 				MinecraftClient client = MinecraftClient.getInstance();
 				
 				if (!xPosType.equals(PosType.DEFAULT)) {
-					xRelativePos = MathHelper.clamp(xRelativePos + deltaX / HudElement.this.getXParent().getWidth(client), 0.0D, 1.0D);
+					xRelativePos = MathHelper.clamp(xRelativePos + deltaX / getXParent().getWidth(client), 0.0D, 1.0D);
 				}
 				if (!yPosType.equals(PosType.DEFAULT)) {
-					yRelativePos = MathHelper.clamp(yRelativePos + deltaY / HudElement.this.getYParent().getHeight(client), 0.0D, 1.0D);
+					yRelativePos = MathHelper.clamp(yRelativePos + deltaY / getYParent().getHeight(client), 0.0D, 1.0D);
 				}
 			} else {
 				xOffset += deltaX;
@@ -450,10 +452,10 @@ public abstract class HudElement extends RelativeTreeNode {
 		public boolean isMouseOver(double mouseX, double mouseY) {
 			MinecraftClient client = MinecraftClient.getInstance();
 			
-			int x1 = getX(client);
-			int y1 = getY(client);
-			int x2 = x1 + getWidth(client);
-			int y2 = y1 + getHeight(client);
+			double x1 = getX(client);
+			double y1 = getY(client);
+			double x2 = x1 + getWidth(client);
+			double y2 = y1 + getHeight(client);
 			return mouseX >= x1 && mouseX <= x2 && mouseY >= y1 && mouseY <= y2;
 		}
 		

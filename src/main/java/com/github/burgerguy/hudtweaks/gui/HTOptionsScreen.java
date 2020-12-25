@@ -56,7 +56,7 @@ public class HTOptionsScreen extends Screen {
 			} else {
 				HudElement he1 = ((HudElementWidget) e1).getParent();
 				HudElement he2 = ((HudElementWidget) e2).getParent();
-				return Integer.compare(
+				return Double.compare(
 						he1.getWidth(client) * he1.getHeight(client),
 						he2.getWidth(client) * he2.getHeight(client)
 						);

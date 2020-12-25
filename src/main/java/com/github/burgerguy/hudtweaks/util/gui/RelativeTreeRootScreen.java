@@ -12,22 +12,22 @@ public final class RelativeTreeRootScreen extends RelativeTreeNode {
 	}
 
 	@Override
-	public int getX(MinecraftClient client) {
+	public double getX(MinecraftClient client) {
 		return 0;
 	}
 
 	@Override
-	public int getWidth(MinecraftClient client) {
+	public double getWidth(MinecraftClient client) {
 		return client.getWindow().getScaledWidth();
 	}
 
 	@Override
-	public int getY(MinecraftClient client) {
+	public double getY(MinecraftClient client) {
 		return 0;
 	}
 
 	@Override
-	public int getHeight(MinecraftClient client) {
+	public double getHeight(MinecraftClient client) {
 		return client.getWindow().getScaledHeight();
 	}
 	
