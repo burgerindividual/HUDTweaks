@@ -88,14 +88,6 @@ public abstract class InGameHudMixin extends DrawableHelper {
 		HudContainer.getMatrixCache().tryPopMatrix("hotbar", null);
 	}
 	
-	//	@Inject(method = "renderHotbarItem", at = @At(value = "HEAD"))
-	//	private void renderHotbarItemHead(CallbackInfo callbackInfo) {
-	//	}
-	//
-	//	@Inject(method = "renderHotbarItem", at = @At(value = "RETURN"))
-	//	private void renderHotbarItemReturn(CallbackInfo callbackInfo) {
-	//	}
-	
 	@Inject(method = "renderStatusBars",
 			at = @At(value = "INVOKE_STRING", target = "Lnet/minecraft/util/profiler/Profiler;push(Ljava/lang/String;)V",
 			args = "ldc=armor"))

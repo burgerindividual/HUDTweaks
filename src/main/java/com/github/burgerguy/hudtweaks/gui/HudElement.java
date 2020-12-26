@@ -447,7 +447,7 @@ public abstract class HudElement extends RelativeTreeNode {
 		private static final int OUTLINE_COLOR_NORMAL = 0xFFFF0000;
 		private static final int OUTLINE_COLOR_SELECTED = 0xFF0000FF;
 		
-		private final HTOptionsScreen optionsScreen;
+		private final HTOptionsScreen optionsScreen; // TODO: figure out a way to not require this
 		
 		private HudElementWidget(HTOptionsScreen optionsScreen) {
 			this.optionsScreen = optionsScreen;

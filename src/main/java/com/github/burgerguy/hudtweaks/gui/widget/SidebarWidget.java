@@ -1,18 +1,18 @@
 package com.github.burgerguy.hudtweaks.gui.widget;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.lwjgl.glfw.GLFW;
 
-import com.github.burgerguy.hudtweaks.gui.HTOptionsScreen;
 import com.github.burgerguy.hudtweaks.util.UnmodifiableMergedList;
+import com.github.burgerguy.hudtweaks.util.Util;
 
 import net.minecraft.client.gui.AbstractParentElement;
 import net.minecraft.client.gui.Drawable;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.Element;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.TickableElement;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.util.math.MatrixStack;
@@ -23,13 +23,13 @@ public class SidebarWidget extends AbstractParentElement implements Drawable, Ti
 	private final List<Element> elements = new ArrayList<>();
 	private final List<Drawable> drawables = new ArrayList<>();
 	
-	private final HTOptionsScreen optionsScreen;
+	private final Screen parentScreen;
 	public int width;
 	public int color;
 
 	
-	public SidebarWidget(HTOptionsScreen optionsScreen, int width, int color) {
-		this.optionsScreen = optionsScreen;
+	public SidebarWidget(Screen parentScreen, int width, int color) {
+		this.parentScreen = parentScreen;
 		this.width = width;
 		this.color = color;
 	}
@@ -59,6 +59,18 @@ public class SidebarWidget extends AbstractParentElement implements Drawable, Ti
 		drawables.clear();
 		elements.clear();
 	}
+	
+	public void addGlobalDrawable(Drawable drawable) {
+		globalDrawables.add(drawable);
+		if (drawable instanceof Element) {
+			globalElements.add((Element) drawable);
+		}
+	}
+	
+	public void clearGlobalDrawables() {
+		globalDrawables.clear();
+		globalElements.clear();
+	}
 
 	@Override
 	public List<? extends Element> children() {
@@ -67,7 +79,7 @@ public class SidebarWidget extends AbstractParentElement implements Drawable, Ti
 
 	@Override
 	public void render(MatrixStack matrixStack, int mouseX, int mouseY, float delta) {
-		DrawableHelper.fill(matrixStack, 0, 0, width, optionsScreen.height, color);
+		DrawableHelper.fill(matrixStack, 0, 0, width, parentScreen.height, color);
 		
 		for (Drawable drawable : globalDrawables) {
 			drawable.render(matrixStack, mouseX, mouseY, delta);
@@ -79,39 +91,22 @@ public class SidebarWidget extends AbstractParentElement implements Drawable, Ti
 	}
 	
 	@Override
-	public boolean mouseClicked(double mouseX, double mouseY, int button) {		
-		Iterator<? extends Element> iterator = children().iterator();
-		
-		Element currentElement;
-		do {
-			if (!iterator.hasNext()) {
-				setFocused(null);
-				if (button == GLFW.GLFW_MOUSE_BUTTON_LEFT) {
-					if (isMouseOver(mouseX, mouseY)) {
-						return true;
-					}
+	public boolean mouseClicked(double mouseX, double mouseY, int button) {
+		boolean patchedClicked = Util.patchedMouseClicked(mouseX, mouseY, button, this);
+		if (!patchedClicked) {
+			if (button == GLFW.GLFW_MOUSE_BUTTON_LEFT) {
+				if (isMouseOver(mouseX, mouseY)) {
+					return true;
 				}
-				return false;
 			}
-			
-			currentElement = iterator.next();
-		} while (!currentElement.mouseClicked(mouseX, mouseY, button));
-		
-		Element lastFocused = getFocused();
-		if (lastFocused != null) {
-			while (lastFocused.changeFocus(true)); // fixes focusing bug with text fields
+			return false;
 		}
-		setFocused(currentElement);
-		if (button == 0) {
-			setDragging(true);
-		}
-		
 		return true;
 	}
 	
 	@Override
 	public boolean isMouseOver(double mouseX, double mouseY) {
-		return mouseX >= 0 && mouseX <= width && mouseY >= 0 && mouseY <= optionsScreen.height;
+		return mouseX >= 0 && mouseX <= width && mouseY >= 0 && mouseY <= parentScreen.height;
 	}
 
 	@Override

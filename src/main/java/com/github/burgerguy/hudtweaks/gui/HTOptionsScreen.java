@@ -3,6 +3,7 @@ package com.github.burgerguy.hudtweaks.gui;
 import com.github.burgerguy.hudtweaks.config.ConfigHelper;
 import com.github.burgerguy.hudtweaks.gui.HudElement.HudElementWidget;
 import com.github.burgerguy.hudtweaks.gui.widget.SidebarWidget;
+import com.github.burgerguy.hudtweaks.util.Util;
 
 import net.minecraft.client.gui.Drawable;
 import net.minecraft.client.gui.Element;
@@ -63,15 +64,17 @@ public class HTOptionsScreen extends Screen {
 			}
 		});
 		
-		// This is added last to make sure it's selected as a last resort.
-		this.addChild(sidebar);
+		// this is added to the start of the list so it is selected before anything else
+		children.add(0, sidebar);
 	}
 	
 	@Override
 	public void render(MatrixStack matrixStack, int mouseX, int mouseY, float delta) {
 		super.renderBackground(matrixStack);
 		
-		for (Element element : children) {
+		// reverse order
+		for (int i = children.size() - 1; i >= 0; i--) {
+			Element element = children.get(i);
 			if (element instanceof Drawable && !(element instanceof AbstractButtonWidget)) {
 				((Drawable) element).render(matrixStack, mouseX, mouseY, delta);
 			}
@@ -89,11 +92,7 @@ public class HTOptionsScreen extends Screen {
 	
 	@Override
 	public boolean mouseClicked(double mouseX, double mouseY, int button) {
-		boolean clickedOnElement = super.mouseClicked(mouseX, mouseY, button);
-		if (!clickedOnElement) {
-			setFocused(null);
-		}
-		return clickedOnElement;
+		return Util.patchedMouseClicked(mouseX, mouseY, button, this);
 	}
 	
 	@Override
