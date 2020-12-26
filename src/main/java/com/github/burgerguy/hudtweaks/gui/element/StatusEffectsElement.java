@@ -7,35 +7,62 @@ import com.google.gson.JsonElement;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.resource.language.I18n;
+import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.text.TranslatableText;
 
 public class StatusEffectsElement extends HudElement {
 	private boolean vertical;
-
+	
 	public StatusEffectsElement() {
 		super("statuseffects", "onStatusEffectsChange");
 	}
-
-	// FIXME
+	
 	@Override
 	protected double calculateWidth(MinecraftClient client) {
-		return 5;
+		return vertical ? getRawHeight(client) : getRawWidth(client);
 	}
-
+	
 	@Override
 	protected double calculateHeight(MinecraftClient client) {
-		return 5;
+		return vertical ? getRawWidth(client) : getRawHeight(client);
 	}
-
-
+	
+	private int getRawWidth(MinecraftClient client) {
+		int beneficial = 0;
+		int other = 0;
+		for (StatusEffectInstance effect : client.player.getStatusEffects()) {
+			if (effect.getEffectType().isBeneficial()) {
+				beneficial++;
+			} else {
+				other++;
+			}
+		}
+		return Math.max(beneficial, other) * 25 - 1;
+	}
+	
+	private int getRawHeight(MinecraftClient client) {
+		boolean hasBeneficial = false;
+		boolean hasOther = false;
+		for (StatusEffectInstance effect : client.player.getStatusEffects()) {
+			if (effect.getEffectType().isBeneficial()) {
+				hasBeneficial = true;
+			} else {
+				hasOther = true;
+			}
+			
+			if (hasBeneficial && hasOther) return 50;
+		}
+		return 24;
+	}
+	
 	@Override
 	protected double calculateDefaultX(MinecraftClient client) {
-		return 0;
+		return client.getWindow().getScaledWidth() - calculateWidth(client) - 1;
 	}
-
+	
 	@Override
 	protected double calculateDefaultY(MinecraftClient client) {
-		return 0;
+		return client.isDemo() ? 16 : 1;
 	}
 	
 	public boolean isVertical() {
