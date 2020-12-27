@@ -37,7 +37,7 @@ public class StatusEffectsElement extends HudElement {
 				other++;
 			}
 		}
-		return Math.max(beneficial, other) * 25 - 1;
+		return Math.max(Math.max(beneficial, other), 1) * 25 - 1; // atleast show area for 1
 	}
 	
 	private int getRawHeight(MinecraftClient client) {
@@ -55,14 +55,29 @@ public class StatusEffectsElement extends HudElement {
 		return 24;
 	}
 	
+	private int getNonBeneficialOffset(MinecraftClient client) {
+		boolean hasBeneficial = false;
+		boolean hasOther = false;
+		for (StatusEffectInstance effect : client.player.getStatusEffects()) {
+			if (effect.getEffectType().isBeneficial()) {
+				hasBeneficial = true;
+			} else {
+				hasOther = true;
+			}
+			
+			if (!hasBeneficial && hasOther) return 26;
+		}
+		return 0;
+	}
+	
 	@Override
 	protected double calculateDefaultX(MinecraftClient client) {
-		return client.getWindow().getScaledWidth() - calculateWidth(client) - 1;
+		return client.getWindow().getScaledWidth() - calculateWidth(client) - 1 - (vertical ? getNonBeneficialOffset(client) : 0);
 	}
 	
 	@Override
 	protected double calculateDefaultY(MinecraftClient client) {
-		return client.isDemo() ? 16 : 1;
+		return (client.isDemo() ? 16 : 1) + (vertical ? 0 : getNonBeneficialOffset(client));
 	}
 	
 	public boolean isVertical() {
