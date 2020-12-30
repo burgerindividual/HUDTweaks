@@ -71,6 +71,10 @@ dependencies {
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 	
 	modImplementation "io.github.prospector:modmenu:${project.modmenu_version}"
+	
+	modRuntime ("com.github.SuperCoder7979:databreaker:master-SNAPSHOT") {
+		exclude module: "fabric-loader"
+	}
 }
 
 remapJar.dependsOn(project(":HUDTweaks-apihelper").tasks.remapJar)

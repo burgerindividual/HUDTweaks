@@ -26,26 +26,11 @@ public class SidebarWidget extends AbstractParentElement implements Drawable, Ti
 	private final Screen parentScreen;
 	public int width;
 	public int color;
-
 	
 	public SidebarWidget(Screen parentScreen, int width, int color) {
 		this.parentScreen = parentScreen;
 		this.width = width;
 		this.color = color;
-	}
-	
-	public void updateValues() {
-		for (Drawable drawable : globalDrawables) {
-			if (drawable instanceof ValueUpdatable) {
-				((ValueUpdatable) drawable).updateValue();
-			}
-		}
-		
-		for (Drawable drawable : drawables) {
-			if (drawable instanceof ValueUpdatable) {
-				((ValueUpdatable) drawable).updateValue();
-			}
-		}
 	}
 	
 	public void addDrawable(Drawable drawable) {
@@ -76,16 +61,30 @@ public class SidebarWidget extends AbstractParentElement implements Drawable, Ti
 	public List<? extends Element> children() {
 		return new UnmodifiableMergedList<>(globalElements, elements);
 	}
-
+	
+	public void updateValues() {
+		for (Drawable drawable : globalDrawables) {
+			if (drawable instanceof ValueUpdatable) {
+				((ValueUpdatable) drawable).updateValue();
+			}
+		}
+		
+		for (Drawable drawable : drawables) {
+			if (drawable instanceof ValueUpdatable) {
+				((ValueUpdatable) drawable).updateValue();
+			}
+		}
+	}
+	
 	@Override
 	public void render(MatrixStack matrixStack, int mouseX, int mouseY, float delta) {
 		DrawableHelper.fill(matrixStack, 0, 0, width, parentScreen.height, color);
 		
-		for (Drawable drawable : globalDrawables) {
+		for (Drawable drawable : drawables) {
 			drawable.render(matrixStack, mouseX, mouseY, delta);
 		}
 		
-		for (Drawable drawable : drawables) {
+		for (Drawable drawable : globalDrawables) {
 			drawable.render(matrixStack, mouseX, mouseY, delta);
 		}
 	}

@@ -20,5 +20,7 @@
 	"hudtweaks.options.x_scale.name": "X Scale",
 	"hudtweaks.options.y_scale.name": "Y Scale",
 	"hudtweaks.options.x_scale.display": "X Scale:",
-	"hudtweaks.options.y_scale.display": "Y Scale:"
+	"hudtweaks.options.y_scale.display": "Y Scale:",
+	"hudtweaks.options.next_element.name": "Next Element",
+	"hudtweaks.options.previous_element.name": "Previous Element"
 }

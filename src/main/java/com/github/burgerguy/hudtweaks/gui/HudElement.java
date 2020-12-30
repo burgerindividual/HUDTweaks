@@ -510,6 +510,13 @@ public abstract class HudElement extends RelativeTreeNode {
 			return mouseX >= x1 && mouseX <= x2 && mouseY >= y1 && mouseY <= y2;
 		}
 		
+		private boolean focusTest;
+		
+		@Override
+		public boolean changeFocus(boolean lookForward) {
+			return focusTest = !focusTest;
+		}
+		
 		public HudElement getParent() {
 			return HudElement.this;
 		}

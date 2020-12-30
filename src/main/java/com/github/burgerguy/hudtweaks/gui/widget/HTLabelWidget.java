@@ -9,9 +9,9 @@ import net.minecraft.client.util.math.MatrixStack;
 public class HTLabelWidget implements Drawable {
 	private final int x;
 	private final int y;
-	private final int color;
 	private final boolean centered;
-	private final String text;
+	public int color;
+	public String text;
 	
 	public HTLabelWidget(String text, int x, int y, int color, boolean centered) {
 		this.x = x;

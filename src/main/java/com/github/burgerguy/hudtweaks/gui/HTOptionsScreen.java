@@ -1,10 +1,19 @@
 package com.github.burgerguy.hudtweaks.gui;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.function.Supplier;
+
 import com.github.burgerguy.hudtweaks.config.ConfigHelper;
 import com.github.burgerguy.hudtweaks.gui.HudElement.HudElementWidget;
+import com.github.burgerguy.hudtweaks.gui.widget.ArrowButtonWidget;
+import com.github.burgerguy.hudtweaks.gui.widget.ElementLabelWidget;
 import com.github.burgerguy.hudtweaks.gui.widget.SidebarWidget;
 import com.github.burgerguy.hudtweaks.util.Util;
 
+import io.netty.util.BooleanSupplier;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.Drawable;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.Screen;
@@ -22,6 +31,7 @@ public class HTOptionsScreen extends Screen {
 	
 	private final Screen prevScreen;
 	private final SidebarWidget sidebar;
+	private ElementLabelWidget elementLabel;
 	
 	private HudElementWidget focusedHudElement;
 	
@@ -32,9 +42,24 @@ public class HTOptionsScreen extends Screen {
 		sidebar = new SidebarWidget(this, SIDEBAR_WIDTH, SIDEBAR_COLOR);
 	}
 	
+	// overridden to stop defocusing
+	public void init(MinecraftClient client, int width, int height) {
+		this.client = client;
+		this.itemRenderer = client.getItemRenderer();
+		this.textRenderer = client.textRenderer;
+		this.width = width;
+		this.height = height;
+		this.buttons.clear();
+		this.children.clear();
+		this.init();
+	}
+	
 	@Override
 	protected void init() {
 		super.init();
+		
+		// normal drawables are cleared 
+		sidebar.clearGlobalDrawables();
 		
 		isOpen = true;
 
@@ -66,6 +91,17 @@ public class HTOptionsScreen extends Screen {
 		
 		// this is added to the start of the list so it is selected before anything else
 		children.add(0, sidebar);
+		
+		elementLabel = new ElementLabelWidget(sidebar.width / 2, height - 17, sidebar.width - 42);
+		ArrowButtonWidget leftArrow = new ArrowButtonWidget(5, height - 21, true, new TranslatableText("hudtweaks.options.previous_element.name"), b -> {
+			changeHudElementFocus(false);
+		});
+		ArrowButtonWidget rightArrow = new ArrowButtonWidget(sidebar.width - 21, height - 21, false, new TranslatableText("hudtweaks.options.next_element.name"), b -> {
+			changeHudElementFocus(true);
+		});
+		sidebar.addGlobalDrawable(elementLabel);
+		sidebar.addGlobalDrawable(leftArrow);
+		sidebar.addGlobalDrawable(rightArrow);
 	}
 	
 	@Override
@@ -112,14 +148,60 @@ public class HTOptionsScreen extends Screen {
 			focusedHudElement = (HudElementWidget) focused;
 			sidebar.clearDrawables();
 			((HudElementWidget) focused).getParent().fillSidebar(sidebar);
+			elementLabel.setHudElement(focusedHudElement.getParent());
 		}
 		
 		if (focused == null) {
 			focusedHudElement = null;
 			sidebar.clearDrawables();
+			elementLabel.setHudElement(null);
 		}
 		
 		super.setFocused(focused);
+	}
+	
+	private final List<HudElementWidget> tempHudElements = new ArrayList<>();
+	
+	private void changeHudElementFocus(boolean lookForwards) {		
+		tempHudElements.clear();
+		for (Element element : this.children()) {
+			if (element instanceof HudElementWidget) {
+				tempHudElements.add((HudElementWidget) element);
+			}
+		}
+		
+		int newIdx = 0;
+		if (focusedHudElement != null) {
+			int curIdx;
+			if (focusedHudElement != null && (curIdx = tempHudElements.indexOf(focusedHudElement)) >= 0) {
+				newIdx = curIdx + (lookForwards ? 1 : 0);
+			}
+		} else {
+			if (lookForwards) {
+				newIdx = 0;
+			} else {
+				newIdx = tempHudElements.size();
+			}
+		}
+		
+		ListIterator<HudElementWidget> listIterator = tempHudElements.listIterator(newIdx);
+		BooleanSupplier hasNearbySupplier = lookForwards ? listIterator::hasNext : listIterator::hasPrevious;
+		Supplier<HudElementWidget> elementSupplier = lookForwards ? listIterator::next : listIterator::previous;
+		
+		HudElementWidget currentElement = null;
+		do {
+			try {
+				if (!hasNearbySupplier.get()) {
+					return; // keep focus if none nearby
+				}
+			} catch (Exception ignored) {
+				return;
+			}
+			
+			currentElement = elementSupplier.get();
+		} while (!currentElement.changeFocus(lookForwards));
+		
+		this.setFocused(currentElement);
 	}
 	
 	@Override
