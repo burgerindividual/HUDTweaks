@@ -33,7 +33,7 @@ public class HTOptionsScreen extends Screen {
 	private final SidebarWidget sidebar;
 	private ElementLabelWidget elementLabel;
 	
-	private HudElementWidget focusedHudElement;
+	private HudElementWidget lastFocusedHudElement;
 	
 	public HTOptionsScreen(Screen prevScreen) {
 		super(new TranslatableText("hudtweaks.options"));
@@ -58,13 +58,13 @@ public class HTOptionsScreen extends Screen {
 	protected void init() {
 		super.init();
 		
-		// normal drawables are cleared 
+		// normal drawables are cleared already when setFocused(null) is invoked by the super
 		sidebar.clearGlobalDrawables();
 		
 		isOpen = true;
 
 		for (HudElement element : HudContainer.getElements()) {
-			Element widget = element.createWidget(this);
+			Element widget = element.createWidget(sidebar::updateValues);
 			if (widget != null) {
 				children.add(widget);
 			}
@@ -72,6 +72,7 @@ public class HTOptionsScreen extends Screen {
 		
 		// This makes sure that the smallest elements get selected first if there are multiple on top of eachother.
 		// We also want normal elements to be the first to be selected.
+		// TODO: This doesn't work with the new scale stuff. Instead, do these checks on click.
 		children.sort((e1, e2) -> {
 			boolean isHudElement1 = e1 instanceof HudElementWidget;
 			boolean isHudElement2 = e2 instanceof HudElementWidget;
@@ -144,15 +145,15 @@ public class HTOptionsScreen extends Screen {
 	
 	@Override
 	public void setFocused(Element focused) {
-		if (focused instanceof HudElementWidget && !focused.equals(focusedHudElement)) {
-			focusedHudElement = (HudElementWidget) focused;
+		if (focused instanceof HudElementWidget && !focused.equals(lastFocusedHudElement)) {
+			lastFocusedHudElement = (HudElementWidget) focused;
 			sidebar.clearDrawables();
 			((HudElementWidget) focused).getParent().fillSidebar(sidebar);
-			elementLabel.setHudElement(focusedHudElement.getParent());
+			elementLabel.setHudElement(lastFocusedHudElement.getParent());
 		}
 		
 		if (focused == null) {
-			focusedHudElement = null;
+			lastFocusedHudElement = null;
 			sidebar.clearDrawables();
 			elementLabel.setHudElement(null);
 		}
@@ -171,11 +172,9 @@ public class HTOptionsScreen extends Screen {
 		}
 		
 		int newIdx = 0;
-		if (focusedHudElement != null) {
-			int curIdx;
-			if (focusedHudElement != null && (curIdx = tempHudElements.indexOf(focusedHudElement)) >= 0) {
-				newIdx = curIdx + (lookForwards ? 1 : 0);
-			}
+		int curIdx;
+		if (lastFocusedHudElement != null && (curIdx = tempHudElements.indexOf(lastFocusedHudElement)) >= 0) {
+			newIdx = curIdx + (lookForwards ? 1 : 0);
 		} else {
 			if (lookForwards) {
 				newIdx = 0;
@@ -214,17 +213,6 @@ public class HTOptionsScreen extends Screen {
 				((TextFieldWidget) element).tick();
 			}
 		}
-	}
-	
-	public boolean isHudElementFocused(HudElementWidget element) {// TODO: allow changing focus of elements with arrows, make tab only change focus for sidebar
-		if (element == null || focusedHudElement == null) {
-			return false;
-		}
-		return focusedHudElement.equals(element);
-	}
-	
-	public void updateSidebarValues() {
-		sidebar.updateValues();
 	}
 	
 	public static boolean isOpen() {

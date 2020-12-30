@@ -27,18 +27,18 @@ import net.minecraft.text.TranslatableText;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Matrix4f;
 
-public abstract class HudElement extends RelativeTreeNode {	
-	// These are all marked as public transient so we can manually add them in our custom serializer
-	public transient PosType xPosType = PosType.DEFAULT;
-	public transient PosType yPosType = PosType.DEFAULT;
-	public transient double xAnchorPos;
-	public transient double yAnchorPos;
-	public transient double xRelativePos;
-	public transient double yRelativePos;
-	public transient double xOffset;
-	public transient double yOffset;
-	public transient double xScale = 1.0D;
-	public transient double yScale = 1.0D;
+public abstract class HudElement extends RelativeTreeNode {
+	// These are all marked as transient so we can manually add them in our custom serializer
+	protected transient PosType xPosType = PosType.DEFAULT;
+	protected transient PosType yPosType = PosType.DEFAULT;
+	protected transient double xAnchorPos;
+	protected transient double yAnchorPos;
+	protected transient double xRelativePos;
+	protected transient double yRelativePos;
+	protected transient double xOffset;
+	protected transient double yOffset;
+	protected transient double xScale = 1.0D;
+	protected transient double yScale = 1.0D;
 	
 	protected transient double cachedWidth;
 	protected transient double cachedHeight;
@@ -67,6 +67,14 @@ public abstract class HudElement extends RelativeTreeNode {
 		RELATIVE
 	}
 	
+	protected abstract double calculateWidth(MinecraftClient client);
+	
+	protected abstract double calculateHeight(MinecraftClient client);
+	
+	protected abstract double calculateDefaultX(MinecraftClient client);
+	
+	protected abstract double calculateDefaultY(MinecraftClient client);
+	
 	@Override
 	public double getWidth(MinecraftClient client) {
 		return cachedWidth;
@@ -84,14 +92,6 @@ public abstract class HudElement extends RelativeTreeNode {
 	public double getDefaultY(MinecraftClient client) {
 		return cachedDefaultY;
 	}
-	
-	protected abstract double calculateWidth(MinecraftClient client);
-	
-	protected abstract double calculateHeight(MinecraftClient client);
-	
-	protected abstract double calculateDefaultX(MinecraftClient client);
-	
-	protected abstract double calculateDefaultY(MinecraftClient client);
 	
 	@Override
 	public double getX(MinecraftClient client) {
@@ -135,16 +135,52 @@ public abstract class HudElement extends RelativeTreeNode {
 		}
 	}
 	
-	private void setUpdated() {
-		requiresUpdate = false;
-	}
-	
 	public Matrix4f createMatrix(MinecraftClient client) {
 		Matrix4f matrix = Matrix4f.scale((float) xScale, (float) yScale, 1);
 		matrix.multiply(Matrix4f.translate((float) ((getX(client) * (1 / xScale)) - getDefaultX(client)),
 				(float) ((getY(client) * (1 / yScale)) - getDefaultY(client)), 1));
 		setUpdated();
 		return matrix;
+	}
+	
+	public PosType getXPosType() {
+		return xPosType;
+	}
+	
+	public PosType getYPosType() {
+		return yPosType;
+	}
+	
+	public double getXAnchorPos() {
+		return xAnchorPos;
+	}
+	
+	public double getYAnchorPos() {
+		return yAnchorPos;
+	}
+	
+	public double getXRelativePos() {
+		return xRelativePos;
+	}
+	
+	public double getYRelativePos() {
+		return yRelativePos;
+	}
+	
+	public double getXOffset() {
+		return xOffset;
+	}
+	
+	public double getYOffset() {
+		return yOffset;
+	}
+	
+	public double getXScale() {
+		return xScale;
+	}
+	
+	public double getYScale() {
+		return yScale;
 	}
 	
 	/**
@@ -208,7 +244,7 @@ public abstract class HudElement extends RelativeTreeNode {
 			@Override
 			public void applyValue() {
 				xRelativePos = value;
-				requiresUpdate = true;
+				setRequiresUpdate();
 			}
 			
 			@Override
@@ -237,7 +273,7 @@ public abstract class HudElement extends RelativeTreeNode {
 			@Override
 			public void applyValue() {
 				yRelativePos = value;
-				requiresUpdate = true;
+				setRequiresUpdate();
 			}
 			
 			@Override
@@ -269,7 +305,7 @@ public abstract class HudElement extends RelativeTreeNode {
 			@Override
 			public void applyValue() {
 				xAnchorPos = value;
-				requiresUpdate = true;
+				setRequiresUpdate();
 			}
 			
 			@Override
@@ -298,7 +334,7 @@ public abstract class HudElement extends RelativeTreeNode {
 			@Override
 			public void applyValue() {
 				yAnchorPos = value;
-				requiresUpdate = true;
+				setRequiresUpdate();
 			}
 			
 			@Override
@@ -323,7 +359,7 @@ public abstract class HudElement extends RelativeTreeNode {
 		
 		PosTypeButtonWidget xPosTypeButton = new PosTypeButtonWidget(4, 16, sidebar.width - 8, 14,  xPosType, t -> {
 			xPosType = t;
-			requiresUpdate = true;
+			setRequiresUpdate();
 			xAnchorSlider.active = !t.equals(PosType.DEFAULT);
 			xRelativeSlider.active = !t.equals(PosType.DEFAULT);
 			xRelativeParentButton.active = !t.equals(PosType.DEFAULT);
@@ -331,7 +367,7 @@ public abstract class HudElement extends RelativeTreeNode {
 		
 		PosTypeButtonWidget yPosTypeButton = new PosTypeButtonWidget(4, 124, sidebar.width - 8, 14,  yPosType, t -> {
 			yPosType = t;
-			requiresUpdate = true;
+			setRequiresUpdate();
 			yAnchorSlider.active = !t.equals(PosType.DEFAULT);
 			yRelativeSlider.active = !t.equals(PosType.DEFAULT);
 			yRelativeParentButton.active = !t.equals(PosType.DEFAULT);
@@ -347,11 +383,11 @@ public abstract class HudElement extends RelativeTreeNode {
 		xOffsetField.setChangedListener(s -> {
 			if (s.equals("")) {
 				xOffset = 0.0D;
-				requiresUpdate = true;
+				setRequiresUpdate();
 			} else {
 				try {
 					xOffset = Double.parseDouble(s);
-					requiresUpdate = true;
+					setRequiresUpdate();
 				} catch(NumberFormatException ignored) {}
 			}
 		});
@@ -366,11 +402,11 @@ public abstract class HudElement extends RelativeTreeNode {
 		yOffsetField.setChangedListener(s -> {
 			if (s.equals("")) {
 				yOffset = 0.0D;
-				requiresUpdate = true;
+				setRequiresUpdate();
 			} else {
 				try {
 					yOffset = Double.parseDouble(s);
-					requiresUpdate = true;
+					setRequiresUpdate();
 				} catch(NumberFormatException ignored) {}
 			}
 		});
@@ -386,13 +422,13 @@ public abstract class HudElement extends RelativeTreeNode {
 		xScaleField.setChangedListener(s -> {
 			if (s.equals("")) {
 				xScale = 0.0D;
-				requiresUpdate = true;
+				setRequiresUpdate();
 			} else {
 				try {
 					double value = Double.parseDouble(s);
 					double lastValue = xScale;
 					xScale = value < 0.0D ? 0.0D : value;
-					if (xScale != lastValue) requiresUpdate = true;
+					if (xScale != lastValue) setRequiresUpdate();
 				} catch(NumberFormatException ignored) {}
 			}
 		});
@@ -407,13 +443,13 @@ public abstract class HudElement extends RelativeTreeNode {
 		yScaleField.setChangedListener(s -> {
 			if (s.equals("")) {
 				yScale = 0.0D;
-				requiresUpdate = true;
+				setRequiresUpdate();
 			} else {
 				try {
 					double value = Double.parseDouble(s);
 					double lastValue = yScale;
 					yScale = value < 0.0D ? 0.0D : value;
-					if (yScale != lastValue) requiresUpdate = true;
+					if (yScale != lastValue) setRequiresUpdate();
 				} catch(NumberFormatException ignored) {}
 			}
 		});
@@ -439,18 +475,19 @@ public abstract class HudElement extends RelativeTreeNode {
 		sidebar.addDrawable(new HTLabelWidget(I18n.translate("hudtweaks.options.y_scale.display"), 5, 254, 0xCCFFFFFF, false));
 	}
 	
-	public HudElementWidget createWidget(HTOptionsScreen optionsScreen) {
-		return new HudElementWidget(optionsScreen);
+	public HudElementWidget createWidget(Runnable valueUpdater) {
+		return new HudElementWidget(valueUpdater);
 	}
 	
 	public class HudElementWidget implements Drawable, Element {
 		private static final int OUTLINE_COLOR_NORMAL = 0xFFFF0000;
 		private static final int OUTLINE_COLOR_SELECTED = 0xFF0000FF;
 		
-		private final HTOptionsScreen optionsScreen; // TODO: figure out a way to not require this
+		private final Runnable valueUpdater;
+		private boolean focused;
 		
-		private HudElementWidget(HTOptionsScreen optionsScreen) {
-			this.optionsScreen = optionsScreen;
+		private HudElementWidget(Runnable valueUpdater) {
+			this.valueUpdater = valueUpdater;
 		}
 
 		@Override
@@ -462,7 +499,7 @@ public abstract class HudElement extends RelativeTreeNode {
 			double x2 = x1 + getWidth(client);
 			double y2 = y1 + getHeight(client);
 			
-			int color = optionsScreen.isHudElementFocused(this) ? OUTLINE_COLOR_SELECTED : OUTLINE_COLOR_NORMAL;
+			int color = focused ? OUTLINE_COLOR_SELECTED : OUTLINE_COLOR_NORMAL;
 			Util.drawFillColor(matrixStack, x1 - 1, y1 - 1, x2 + 1, y1,     color);
 			Util.drawFillColor(matrixStack, x1 - 1, y2,     x2 + 1, y2 + 1, color);
 			Util.drawFillColor(matrixStack, x1 - 1, y1,     x1,     y2,     color);
@@ -472,9 +509,7 @@ public abstract class HudElement extends RelativeTreeNode {
 		@Override
 		public boolean mouseClicked(double mouseX, double mouseY, int button) {
 			if (button == GLFW.GLFW_MOUSE_BUTTON_LEFT) {
-				if (isMouseOver(mouseX, mouseY)) {
-					return true;
-				}
+				return focused = isMouseOver(mouseX, mouseY);
 			}
 			return false;
 		}
@@ -494,8 +529,8 @@ public abstract class HudElement extends RelativeTreeNode {
 				xOffset += deltaX;
 				yOffset += deltaY;
 			}
-			requiresUpdate = true;
-			optionsScreen.updateSidebarValues();
+			setRequiresUpdate();
+			if (valueUpdater != null) valueUpdater.run();
 			return true;
 		}
 		
@@ -510,11 +545,9 @@ public abstract class HudElement extends RelativeTreeNode {
 			return mouseX >= x1 && mouseX <= x2 && mouseY >= y1 && mouseY <= y2;
 		}
 		
-		private boolean focusTest;
-		
 		@Override
 		public boolean changeFocus(boolean lookForward) {
-			return focusTest = !focusTest;
+			return focused = !focused;
 		}
 		
 		public HudElement getParent() {

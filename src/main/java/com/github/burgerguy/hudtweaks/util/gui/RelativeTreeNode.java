@@ -15,7 +15,7 @@ public abstract class RelativeTreeNode implements XAxisNode, YAxisNode {
 	protected transient final Set<XAxisNode> xChildren = new HashSet<>();
 	protected transient final Set<YAxisNode> yChildren = new HashSet<>();
 	
-	protected transient boolean requiresUpdate;
+	private transient boolean requiresUpdate;
 	
 	public RelativeTreeNode(String identifier, String... updateEvents) {
 		this.identifier = identifier;
@@ -142,6 +142,14 @@ public abstract class RelativeTreeNode implements XAxisNode, YAxisNode {
 				((RelativeTreeNode) child).tryManualUpdate(client, selfUpdated, updatedElementsX, updatedElementsY);
 			}
 		}
+	}
+	
+	public void setRequiresUpdate() {
+		requiresUpdate = true;
+	}
+	
+	protected void setUpdated() {
+		requiresUpdate = false;
 	}
 	
 	public abstract void updateSelfX(MinecraftClient client);

@@ -102,7 +102,7 @@ public class StatusEffectsElement extends HudElement {
 			public void onPress() {
 				vertical = !vertical;
 				setMessage(new TranslatableText("hudtweaks.options.statuseffects.style.display", vertical ? I18n.translate("hudtweaks.options.statuseffects.style.vertical.display") : I18n.translate("hudtweaks.options.statuseffects.style.horizontal.display")));
-				requiresUpdate = true;
+				setRequiresUpdate();
 			}
 		});
 	}

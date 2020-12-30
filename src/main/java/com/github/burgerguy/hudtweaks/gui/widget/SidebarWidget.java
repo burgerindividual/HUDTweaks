@@ -63,13 +63,13 @@ public class SidebarWidget extends AbstractParentElement implements Drawable, Ti
 	}
 	
 	public void updateValues() {
-		for (Drawable drawable : globalDrawables) {
+		for (Drawable drawable : drawables) {
 			if (drawable instanceof ValueUpdatable) {
 				((ValueUpdatable) drawable).updateValue();
 			}
 		}
 		
-		for (Drawable drawable : drawables) {
+		for (Drawable drawable : globalDrawables) {
 			if (drawable instanceof ValueUpdatable) {
 				((ValueUpdatable) drawable).updateValue();
 			}
@@ -110,7 +110,7 @@ public class SidebarWidget extends AbstractParentElement implements Drawable, Ti
 
 	@Override
 	public void tick() {
-		for (Drawable drawable : globalDrawables) {
+		for (Drawable drawable : drawables) {
 			if (drawable instanceof TickableElement) {
 				((TickableElement) drawable).tick();
 			}
@@ -119,7 +119,7 @@ public class SidebarWidget extends AbstractParentElement implements Drawable, Ti
 			}
 		}
 		
-		for (Drawable drawable : drawables) {
+		for (Drawable drawable : globalDrawables) {
 			if (drawable instanceof TickableElement) {
 				((TickableElement) drawable).tick();
 			}

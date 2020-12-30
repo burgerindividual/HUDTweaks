@@ -88,7 +88,7 @@ public class HealthElement extends HudElement {
 			public void onPress() {
 				flipped = !flipped;
 				setMessage(new TranslatableText("hudtweaks.options.health.style.display", flipped ? I18n.translate("hudtweaks.options.health.style.flipped.display") : I18n.translate("hudtweaks.options.health.style.normal.display")));
-				requiresUpdate = true;
+				setRequiresUpdate();
 			}
 		});
 	}	
