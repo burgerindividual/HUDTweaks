@@ -4,7 +4,7 @@
 
 This mod is a **work in progress**. There are still plenty of bugs left to fix and plenty of features left to add. If you want to report a bug or request a feature, please do so [here](/../../issues).
 
-![Mod Image](https://i.imgur.com/R1qvmeC.png)
+![Mod Image](https://imgur.com/a/hQ55Lcb)
 
 ------
 #### Known bugs:
