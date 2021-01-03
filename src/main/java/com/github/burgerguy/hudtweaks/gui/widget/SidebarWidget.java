@@ -6,7 +6,6 @@ import java.util.List;
 import org.lwjgl.glfw.GLFW;
 
 import com.github.burgerguy.hudtweaks.util.UnmodifiableMergedList;
-import com.github.burgerguy.hudtweaks.util.Util;
 
 import net.minecraft.client.gui.AbstractParentElement;
 import net.minecraft.client.gui.Drawable;
@@ -41,6 +40,11 @@ public class SidebarWidget extends AbstractParentElement implements Drawable, Ti
 	}
 	
 	public void clearDrawables() {
+		Element focused = getFocused();
+		if (focused != null && elements.contains(focused)) {
+			while (focused.changeFocus(true));
+			setFocused(null);
+		}
 		drawables.clear();
 		elements.clear();
 	}
@@ -53,6 +57,11 @@ public class SidebarWidget extends AbstractParentElement implements Drawable, Ti
 	}
 	
 	public void clearGlobalDrawables() {
+		Element focused = getFocused();
+		if (focused != null && globalElements.contains(focused)) {
+			while (focused.changeFocus(true));
+			setFocused(null);
+		}
 		globalDrawables.clear();
 		globalElements.clear();
 	}
@@ -91,16 +100,35 @@ public class SidebarWidget extends AbstractParentElement implements Drawable, Ti
 	
 	@Override
 	public boolean mouseClicked(double mouseX, double mouseY, int button) {
-		boolean patchedClicked = Util.patchedMouseClicked(mouseX, mouseY, button, this);
-		if (!patchedClicked) {
+		Element clickedElement = null;
+		
+		for (Element element : children()) {
+			if (element.mouseClicked(mouseX, mouseY, button)) {
+				clickedElement = element;
+				break;
+			}
+		}
+		
+		Element lastFocused = getFocused();
+		if (lastFocused != null && !lastFocused.equals(clickedElement)) {
+			while (lastFocused.changeFocus(true)); // removes focus from the previous element
+		}
+		setFocused(clickedElement); // sets the parent's focused element (can be set to null)
+		
+		if (clickedElement != null) {
+			if (button == 0) {
+				setDragging(true);
+			}
+			
+			return true;
+		} else {
 			if (button == GLFW.GLFW_MOUSE_BUTTON_LEFT) {
 				if (isMouseOver(mouseX, mouseY)) {
-					return true;
+					return true; // we want the hud element focus to remain, even if empty space is clicked on the sidebar
 				}
 			}
 			return false;
 		}
-		return true;
 	}
 	
 	@Override

@@ -13,8 +13,6 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParser;
 import com.mojang.blaze3d.systems.RenderSystem;
 
-import net.minecraft.client.gui.AbstractParentElement;
-import net.minecraft.client.gui.Element;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.BufferRenderer;
 import net.minecraft.client.render.Tessellator;
@@ -74,30 +72,4 @@ public enum Util {
 		RenderSystem.disableBlend();
 	}
 	
-	public static boolean patchedMouseClicked(double mouseX, double mouseY, int button, AbstractParentElement thisElement) {
-		Element clickedElement = null;
-		
-		for (Element element : thisElement.children()) {
-			if (element.mouseClicked(mouseX, mouseY, button)) {
-				clickedElement = element;
-				break;
-			}
-		}
-		
-		Element lastFocused = thisElement.getFocused();
-		if (lastFocused != null && !lastFocused.equals(clickedElement)) {
-			while (lastFocused.changeFocus(true)); // removes focus from a specific element
-		}
-		thisElement.setFocused(clickedElement); // sets the parent's focused element (can be set to null)
-		
-		if (clickedElement != null) {
-			if (button == 0) {
-				thisElement.setDragging(true);
-			}
-			
-			return true;
-		} else {
-			return false;
-		}
-	}
 }

@@ -1,6 +1,5 @@
 package com.github.burgerguy.hudtweaks.gui;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.function.Supplier;
@@ -10,7 +9,6 @@ import com.github.burgerguy.hudtweaks.gui.HudElement.HudElementWidget;
 import com.github.burgerguy.hudtweaks.gui.widget.ArrowButtonWidget;
 import com.github.burgerguy.hudtweaks.gui.widget.ElementLabelWidget;
 import com.github.burgerguy.hudtweaks.gui.widget.SidebarWidget;
-import com.github.burgerguy.hudtweaks.util.Util;
 
 import io.netty.util.BooleanSupplier;
 import net.minecraft.client.MinecraftClient;
@@ -33,7 +31,7 @@ public class HTOptionsScreen extends Screen {
 	private final SidebarWidget sidebar;
 	private ElementLabelWidget elementLabel;
 	
-	private HudElementWidget lastFocusedHudElement;
+	private HudElementWidget focusedHudElement;
 	
 	public HTOptionsScreen(Screen prevScreen) {
 		super(new TranslatableText("hudtweaks.options"));
@@ -129,7 +127,31 @@ public class HTOptionsScreen extends Screen {
 	
 	@Override
 	public boolean mouseClicked(double mouseX, double mouseY, int button) {
-		return Util.patchedMouseClicked(mouseX, mouseY, button, this);
+		Element clickedElement = null;
+		
+		for (Element element : children()) {
+			if (element.mouseClicked(mouseX, mouseY, button)) {
+				clickedElement = element;
+				break;
+			}
+		}
+		
+		// remove focus from the previous hud element if the clicked element can replace it
+		if (focusedHudElement != null && clickedElement instanceof HudElementWidget && !focusedHudElement.equals(clickedElement)) {
+			while (focusedHudElement.changeFocus(true));
+		}
+		
+		setFocused(clickedElement); // sets the parent's focused element (can be set to null)
+		
+		if (clickedElement != null) {			
+			if (button == 0) {
+				setDragging(true);
+			}
+			
+			return true;
+		} else {
+			return false;
+		}
 	}
 	
 	@Override
@@ -145,15 +167,15 @@ public class HTOptionsScreen extends Screen {
 	
 	@Override
 	public void setFocused(Element focused) {
-		if (focused instanceof HudElementWidget && !focused.equals(lastFocusedHudElement)) {
-			lastFocusedHudElement = (HudElementWidget) focused;
+		if (focused instanceof HudElementWidget && !focused.equals(focusedHudElement)) {
+			focusedHudElement = (HudElementWidget) focused;
 			sidebar.clearDrawables();
 			((HudElementWidget) focused).getParent().fillSidebar(sidebar);
-			elementLabel.setHudElement(lastFocusedHudElement.getParent());
+			elementLabel.setHudElement(focusedHudElement.getParent());
 		}
 		
 		if (focused == null) {
-			lastFocusedHudElement = null;
+			focusedHudElement = null;
 			sidebar.clearDrawables();
 			elementLabel.setHudElement(null);
 		}
@@ -161,33 +183,32 @@ public class HTOptionsScreen extends Screen {
 		super.setFocused(focused);
 	}
 	
-	private final List<HudElementWidget> tempHudElements = new ArrayList<>();
+	@Override
+	// when pressing tab and shift-tab, we only want it to change the sidebar.
+	public boolean changeFocus(boolean lookForwards) {
+		return sidebar.changeFocus(lookForwards);
+	}
 	
-	private void changeHudElementFocus(boolean lookForwards) {		
-		tempHudElements.clear();
-		for (Element element : this.children()) {
-			if (element instanceof HudElementWidget) {
-				tempHudElements.add((HudElementWidget) element);
-			}
-		}
+	private void changeHudElementFocus(boolean lookForwards) {
+		List<? extends Element> children = children();
 		
 		int newIdx = 0;
 		int curIdx;
-		if (lastFocusedHudElement != null && (curIdx = tempHudElements.indexOf(lastFocusedHudElement)) >= 0) {
+		if (focusedHudElement != null && (curIdx = children.indexOf(focusedHudElement)) >= 0) {
 			newIdx = curIdx + (lookForwards ? 1 : 0);
 		} else {
 			if (lookForwards) {
 				newIdx = 0;
 			} else {
-				newIdx = tempHudElements.size();
+				newIdx = children.size();
 			}
 		}
 		
-		ListIterator<HudElementWidget> listIterator = tempHudElements.listIterator(newIdx);
+		ListIterator<? extends Element> listIterator = children.listIterator(newIdx);
 		BooleanSupplier hasNearbySupplier = lookForwards ? listIterator::hasNext : listIterator::hasPrevious;
-		Supplier<HudElementWidget> elementSupplier = lookForwards ? listIterator::next : listIterator::previous;
+		Supplier<? extends Element> elementSupplier = lookForwards ? listIterator::next : listIterator::previous;
 		
-		HudElementWidget currentElement = null;
+		Element currentElement = null;
 		do {
 			try {
 				if (!hasNearbySupplier.get()) {
@@ -198,9 +219,14 @@ public class HTOptionsScreen extends Screen {
 			}
 			
 			currentElement = elementSupplier.get();
-		} while (!currentElement.changeFocus(lookForwards));
+		} while (!(currentElement instanceof HudElementWidget) || !currentElement.changeFocus(lookForwards));
 		
-		this.setFocused(currentElement);
+		// remove focus from the previous hud element
+		if (focusedHudElement != null) {
+			while (focusedHudElement.changeFocus(true));
+		}
+		
+		setFocused(currentElement);
 	}
 	
 	@Override
