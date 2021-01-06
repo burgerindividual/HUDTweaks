@@ -12,7 +12,7 @@ This mod is a **work in progress**. There are still plenty of bugs left to fix a
 
 #### Known missing features (will be added):
 * the rest of the built in hud elements
-* better focusing in the customization gui
+* ~~better focusing in the customization gui~~ (done)
 * dedicated customization gui button
 * hud config profiles, including built in ones
 * save/load button for config
