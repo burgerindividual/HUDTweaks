@@ -1,7 +1,5 @@
 package com.github.burgerguy.hudtweaks.util.gl;
 
-import java.io.IOException;
-
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.texture.NativeImage;
@@ -70,7 +68,7 @@ public class DashedBoxOutline implements AutoCloseable {
 	}
 
 	@Override
-	public void close() throws IOException {
+	public void close() {
 		if (texture != null) texture.close();
 	}
 }

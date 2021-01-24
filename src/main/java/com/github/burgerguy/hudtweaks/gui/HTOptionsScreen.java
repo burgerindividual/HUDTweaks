@@ -5,7 +5,6 @@ import java.util.ListIterator;
 import java.util.function.Supplier;
 
 import com.github.burgerguy.hudtweaks.config.ConfigHelper;
-import com.github.burgerguy.hudtweaks.gui.HudElement.HudElementWidget;
 import com.github.burgerguy.hudtweaks.gui.widget.ArrowButtonWidget;
 import com.github.burgerguy.hudtweaks.gui.widget.ElementLabelWidget;
 import com.github.burgerguy.hudtweaks.gui.widget.SidebarWidget;
@@ -69,23 +68,17 @@ public class HTOptionsScreen extends Screen {
 			}
 		}
 		
-		// This makes sure that the smallest elements get selected first if there are multiple on top of eachother.
-		// We also want normal elements to be the first to be selected.
+		// We want normal elements to be the first to be selected. If they're both HudElementWidgets, use their compareTos.
 		// TODO: This doesn't work with the new scale stuff. Instead, do these checks on click.
 		children.sort((e1, e2) -> {
 			boolean isHudElement1 = e1 instanceof HudElementWidget;
 			boolean isHudElement2 = e2 instanceof HudElementWidget;
 			if (isHudElement1 && !isHudElement2) {
 				return 1;
-			} else if (!isHudElement1 && isHudElement2 || (!isHudElement1 || !isHudElement2)) {
-				return -1;
+			} else if (isHudElement1 && isHudElement2) {
+				return ((HudElementWidget) e1).compareTo((HudElementWidget) e2);
 			} else {
-				HudElement he1 = ((HudElementWidget) e1).getParent();
-				HudElement he2 = ((HudElementWidget) e2).getParent();
-				return Double.compare(
-						he1.getWidth(client) * he1.getHeight(client),
-						he2.getWidth(client) * he2.getHeight(client)
-						);
+				return 0; 
 			}
 		});
 		
@@ -180,8 +173,9 @@ public class HTOptionsScreen extends Screen {
 		if (focused instanceof HudElementWidget && !focused.equals(focusedHudElement)) {
 			focusedHudElement = (HudElementWidget) focused;
 			sidebar.clearDrawables();
-			((HudElementWidget) focused).getParent().fillSidebar(sidebar);
-			elementLabel.setHudElement(focusedHudElement.getParent());
+			HudElement element = focusedHudElement.getElement();
+			element.fillSidebar(sidebar);
+			elementLabel.setHudElement(element);
 		}
 		
 		if (focused == null) {

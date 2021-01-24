@@ -51,7 +51,7 @@ public class AirElement extends HudElement {
 
 	@Override
 	protected boolean isVisible(MinecraftClient client) {
-		return true;
+		return false;
 	}
 	
 }

@@ -1,6 +1,6 @@
 package com.github.burgerguy.hudtweaks.gui;
 
-import org.lwjgl.glfw.GLFW;
+import org.jetbrains.annotations.Nullable;
 
 import com.github.burgerguy.hudtweaks.gui.widget.HTLabelWidget;
 import com.github.burgerguy.hudtweaks.gui.widget.HTSliderWidget;
@@ -10,19 +10,15 @@ import com.github.burgerguy.hudtweaks.gui.widget.SidebarWidget;
 import com.github.burgerguy.hudtweaks.gui.widget.XAxisParentButtonWidget;
 import com.github.burgerguy.hudtweaks.gui.widget.YAxisParentButtonWidget;
 import com.github.burgerguy.hudtweaks.util.Util;
-import com.github.burgerguy.hudtweaks.util.gl.DashedBoxOutline;
 import com.github.burgerguy.hudtweaks.util.gui.RelativeTreeNode;
 import com.github.burgerguy.hudtweaks.util.gui.XAxisNode;
 import com.github.burgerguy.hudtweaks.util.gui.YAxisNode;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.SerializedName;
+
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.Drawable;
-import net.minecraft.client.gui.Element;
-import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.resource.language.I18n;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Matrix4f;
@@ -47,6 +43,8 @@ public abstract class HudElement extends RelativeTreeNode {
 	protected transient double cachedX;
 	protected transient double cachedY;
 	// TODO: add rotation using the already existing anchor points.
+	
+	protected transient HudElementWidget widget;
 	
 	public HudElement(String identifier, String... updateEvents) {
 		super(identifier, updateEvents);
@@ -477,120 +475,13 @@ public abstract class HudElement extends RelativeTreeNode {
 		sidebar.addDrawable(new HTLabelWidget(I18n.translate("hudtweaks.options.y_scale.display"), 5, 254, 0xCCFFFFFF, false));
 	}
 	
-	public HudElementWidget createWidget(Runnable valueUpdater) {
-		return new HudElementWidget(valueUpdater);
+	@Nullable
+	public HudElementWidget getWidget() {
+		return widget;
 	}
 	
-	public class HudElementWidget implements Drawable, Element, AutoCloseable {
-		private static final int OUTLINE_COLOR_NORMAL = 0xFFFF0000;
-		private static final int OUTLINE_COLOR_SELECTED = 0xFF0000FF;
-		
-		private static final float TICKS_PER_SHIFT = (20.0F / 4.0F);
-		private static final byte PATTERN_LENGTH = 4;
-		private float tickCounter;
-		private final DashedBoxOutline dashedBoxOutline;
-		private int dashPattern = 0xC;
-		
-		private final Runnable valueUpdater;
-		private boolean focused;
-		
-		private HudElementWidget(Runnable valueUpdater) {
-			this.valueUpdater = valueUpdater;
-			this.dashedBoxOutline = new DashedBoxOutline();
-		}
-
-		@Override
-		public void render(MatrixStack matrixStack, int mouseX, int mouseY, float delta) {
-			MinecraftClient client = MinecraftClient.getInstance();
-			
-			if (isVisible(client)) {
-				double x1 = getX(client);
-				double y1 = getY(client);
-				double x2 = x1 + getWidth(client);
-				double y2 = y1 + getHeight(client);
-				
-				int color = focused ? OUTLINE_COLOR_SELECTED : OUTLINE_COLOR_NORMAL;
-				if (focused)
-				cyclePattern(delta, TICKS_PER_SHIFT);
-				dashedBoxOutline.draw(matrixStack, color, dashPattern, PATTERN_LENGTH, x1 - .5, y1 - .5, x2 + .5, y2 + .5, (float) client.getWindow().getScaleFactor());
-//				RenderSystem.lineWidth((float) client.getWindow().getScaleFactor());
-//				GLUtil.drawBoxOutline(matrixStack, x1 - .5, y1 - .5, x2 + .5, y2 + .5, color);
-//				Util.drawDottedLine(matrixStack, x1 - 1, y1 - 1, x2 + 1, y1,     1.0F, (short) 0xCCCC, color);
-//				Util.drawDottedLine(matrixStack, x1 - 1, y2,     x2 + 1, y2 + 1, 1.0F, (short) 0xCCCC, color);
-//				Util.drawDottedLine(matrixStack, x1 - 1, y1,     x1,     y2,     1.0F, (short) 0xCCCC, color);
-//				Util.drawDottedLine(matrixStack, x2,     y1,     x2 + 1, y2,     1.0F, (short) 0xCCCC, color);
-			}
-		}
-		
-		private void cyclePattern(float delta, float ticksPerShift) {
-			tickCounter += delta;
-			if (tickCounter >= ticksPerShift) {
-				tickCounter = 0;
-				dashPattern = ((1 << PATTERN_LENGTH) - 1) & ((dashPattern << (PATTERN_LENGTH - 1)) | (dashPattern >>> 1));
-			}
-		}
-		
-		private boolean isVisible(MinecraftClient client) {
-			boolean isChildVisible = false;
-			return getParent().isVisible(client) || isChildVisible;
-		}
-		
-		@Override
-		public boolean mouseClicked(double mouseX, double mouseY, int button) {
-			if (button == GLFW.GLFW_MOUSE_BUTTON_LEFT) {
-				return focused = isMouseOver(mouseX, mouseY);
-			}
-			return false;
-		}
-		
-		@Override
-		public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
-			if (Screen.hasShiftDown()) {
-				MinecraftClient client = MinecraftClient.getInstance();
-				
-				if (!xPosType.equals(PosType.DEFAULT)) {
-					xRelativePos = MathHelper.clamp(xRelativePos + deltaX / getXParent().getWidth(client), 0.0D, 1.0D);
-				}
-				if (!yPosType.equals(PosType.DEFAULT)) {
-					yRelativePos = MathHelper.clamp(yRelativePos + deltaY / getYParent().getHeight(client), 0.0D, 1.0D);
-				}
-			} else {
-				xOffset += deltaX;
-				yOffset += deltaY;
-			}
-			setRequiresUpdate();
-			if (valueUpdater != null) valueUpdater.run();
-			return true;
-		}
-		
-		@Override
-		public boolean isMouseOver(double mouseX, double mouseY) {
-			MinecraftClient client = MinecraftClient.getInstance();
-			
-			if (isVisible(client)) {
-				double x1 = getX(client);
-				double y1 = getY(client);
-				double x2 = x1 + getWidth(client);
-				double y2 = y1 + getHeight(client);
-				return mouseX >= x1 && mouseX <= x2 && mouseY >= y1 && mouseY <= y2;
-			} else {
-				return false;
-			}
-		}
-		
-		@Override
-		public boolean changeFocus(boolean lookForward) {
-			return focused = !focused;
-		}
-		
-		public HudElement getParent() {
-			return HudElement.this;
-		}
-
-		@Override
-		public void close() throws Exception {
-			dashedBoxOutline.close();
-		}
+	public HudElementWidget createWidget(@Nullable Runnable valueUpdater) {
+		return widget = new HudElementWidget(this, valueUpdater);
 	}
 	
 }
