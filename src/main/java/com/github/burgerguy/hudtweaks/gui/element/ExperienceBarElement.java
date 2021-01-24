@@ -32,4 +32,8 @@ public class ExperienceBarElement extends HudElement {
 		return client.getWindow().getScaledHeight() - 36;
 	}
 	
+	@Override
+	protected boolean isVisible(MinecraftClient client) {
+		return true;
+	}	
 }

@@ -9,6 +9,7 @@ import com.github.burgerguy.hudtweaks.gui.HudElement.HudElementWidget;
 import com.github.burgerguy.hudtweaks.gui.widget.ArrowButtonWidget;
 import com.github.burgerguy.hudtweaks.gui.widget.ElementLabelWidget;
 import com.github.burgerguy.hudtweaks.gui.widget.SidebarWidget;
+import com.github.burgerguy.hudtweaks.util.Util;
 
 import io.netty.util.BooleanSupplier;
 import net.minecraft.client.MinecraftClient;
@@ -157,6 +158,15 @@ public class HTOptionsScreen extends Screen {
 	@Override
 	public void onClose() {
 		ConfigHelper.trySaveConfig();
+		for(Element child : children) {
+			if (child instanceof AutoCloseable) {
+				try {
+					((AutoCloseable) child).close();
+				} catch (Exception e) {
+					Util.LOGGER.error("Error closing HUDTweaks options screen", e);
+				}
+			}
+		}
 		if (client.world == null) {
 			client.openScreen(prevScreen);
 		} else {

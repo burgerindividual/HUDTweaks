@@ -47,4 +47,8 @@ public class HotbarElement extends HudElement {
 		return client.getWindow().getScaledHeight() - 24;
 	}
 	
+	@Override
+	protected boolean isVisible(MinecraftClient client) {
+		return true;
+	}
 }

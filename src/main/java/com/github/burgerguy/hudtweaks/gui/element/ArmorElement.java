@@ -7,26 +7,26 @@ import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.util.math.MathHelper;
 
 public class ArmorElement extends HudElement {
-
+	
 	public ArmorElement() {
 		super("armor", "onHealthRowsChange");
 	}
-
+	
 	@Override
 	protected double calculateWidth(MinecraftClient client) {
 		return 81;
 	}
-
+	
 	@Override
 	protected double calculateHeight(MinecraftClient client) {
 		return 9;
 	}
-
+	
 	@Override
 	protected double calculateDefaultX(MinecraftClient client) {
 		return client.getWindow().getScaledWidth() / 2 - 91;
 	}
-
+	
 	@Override
 	protected double calculateDefaultY(MinecraftClient client) {
 		int offsetHeight;
@@ -39,5 +39,10 @@ public class ArmorElement extends HudElement {
 			offsetHeight = (healthRows - 1) * Math.max(10 - (healthRows - 2), 3) + 10;
 		}
 		return client.getWindow().getScaledHeight() - 39 - offsetHeight;
+	}
+	
+	@Override
+	protected boolean isVisible(MinecraftClient client) {
+		return true;
 	}
 }

@@ -48,5 +48,10 @@ public class AirElement extends HudElement {
 	protected double calculateDefaultY(MinecraftClient client) {
 		return client.getWindow().getScaledHeight() - 49 - getRidingHealthOffset(client);
 	}
+
+	@Override
+	protected boolean isVisible(MinecraftClient client) {
+		return true;
+	}
 	
 }

@@ -66,6 +66,11 @@ public class HealthElement extends HudElement {
 		return client.getWindow().getScaledHeight() - 39 - (flipped || client == null || client.player == null ? 0 : getRawHeight(client)) - getHeartJumpDistance(client);
 	}
 	
+	@Override
+	protected boolean isVisible(MinecraftClient client) {
+		return true;
+	}
+	
 	public boolean isFlipped() {
 		return flipped;
 	}
@@ -91,5 +96,5 @@ public class HealthElement extends HudElement {
 				setRequiresUpdate();
 			}
 		});
-	}	
+	}
 }
