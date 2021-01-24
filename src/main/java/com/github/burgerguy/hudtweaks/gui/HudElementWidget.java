@@ -140,7 +140,6 @@ public class HudElementWidget implements Drawable, Element, AutoCloseable, Compa
 	}
 	
 	// This makes sure that the smallest elements get selected first if there are multiple on top of eachother.
-	// We also want other types of elements to be the first to be selected.
 	@Override
 	public int compareTo(HudElementWidget other) {
 		MinecraftClient client = MinecraftClient.getInstance();
