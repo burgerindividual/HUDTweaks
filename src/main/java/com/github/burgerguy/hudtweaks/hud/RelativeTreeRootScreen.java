@@ -1,4 +1,4 @@
-package com.github.burgerguy.hudtweaks.util.gui;
+package com.github.burgerguy.hudtweaks.hud;
 
 import net.minecraft.client.MinecraftClient;
 

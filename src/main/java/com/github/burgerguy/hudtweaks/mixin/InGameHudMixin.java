@@ -18,13 +18,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import com.github.burgerguy.hudtweaks.gui.HTOptionsScreen;
-import com.github.burgerguy.hudtweaks.gui.HudContainer;
-import com.github.burgerguy.hudtweaks.gui.HudElement;
-import com.github.burgerguy.hudtweaks.gui.element.HealthElement;
-import com.github.burgerguy.hudtweaks.gui.element.StatusEffectsElement;
-import com.github.burgerguy.hudtweaks.util.gui.UpdateEvent;
-import com.github.burgerguy.hudtweaks.util.gui.XAxisNode;
-import com.github.burgerguy.hudtweaks.util.gui.YAxisNode;
+import com.github.burgerguy.hudtweaks.hud.HudContainer;
+import com.github.burgerguy.hudtweaks.hud.UpdateEvent;
+import com.github.burgerguy.hudtweaks.hud.XAxisNode;
+import com.github.burgerguy.hudtweaks.hud.YAxisNode;
+import com.github.burgerguy.hudtweaks.hud.element.HealthElement;
+import com.github.burgerguy.hudtweaks.hud.element.HudElement;
+import com.github.burgerguy.hudtweaks.hud.element.StatusEffectsElement;
 import com.google.common.collect.Sets;
 
 import net.minecraft.client.MinecraftClient;

@@ -1,15 +1,12 @@
-package com.github.burgerguy.hudtweaks.gui;
+package com.github.burgerguy.hudtweaks.hud;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import com.github.burgerguy.hudtweaks.gui.element.*;
+import com.github.burgerguy.hudtweaks.hud.element.*;
 import com.github.burgerguy.hudtweaks.util.Util;
-import com.github.burgerguy.hudtweaks.util.gui.MatrixCache;
-import com.github.burgerguy.hudtweaks.util.gui.RelativeTreeRootScreen;
-import com.github.burgerguy.hudtweaks.util.gui.UpdateEventRegistry;
 import com.google.gson.JsonElement;
 
 public enum HudContainer {

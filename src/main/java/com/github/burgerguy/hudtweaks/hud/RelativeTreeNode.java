@@ -1,9 +1,7 @@
-package com.github.burgerguy.hudtweaks.util.gui;
+package com.github.burgerguy.hudtweaks.hud;
 
 import java.util.HashSet;
 import java.util.Set;
-
-import com.github.burgerguy.hudtweaks.gui.HudContainer;
 
 import net.minecraft.client.MinecraftClient;
 

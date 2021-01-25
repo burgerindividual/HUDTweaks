@@ -4,8 +4,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 
-import com.github.burgerguy.hudtweaks.gui.HudContainer;
-import com.github.burgerguy.hudtweaks.util.gui.XAxisNode;
+import com.github.burgerguy.hudtweaks.hud.HudContainer;
+import com.github.burgerguy.hudtweaks.hud.XAxisNode;
 
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;

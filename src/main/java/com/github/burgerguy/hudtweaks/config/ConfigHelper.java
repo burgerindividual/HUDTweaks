@@ -10,7 +10,7 @@ import java.nio.file.Path;
 
 import org.apache.logging.log4j.Level;
 
-import com.github.burgerguy.hudtweaks.gui.HudContainer;
+import com.github.burgerguy.hudtweaks.hud.HudContainer;
 import com.github.burgerguy.hudtweaks.util.Util;
 import com.google.gson.JsonIOException;
 import com.google.gson.JsonParseException;

@@ -1,11 +1,10 @@
-package com.github.burgerguy.hudtweaks.util.gui;
+package com.github.burgerguy.hudtweaks.hud;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import org.jetbrains.annotations.Nullable;
 
-import com.github.burgerguy.hudtweaks.gui.HudContainer;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.util.math.MatrixStack;

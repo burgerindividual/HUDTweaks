@@ -1,4 +1,4 @@
-package com.github.burgerguy.hudtweaks.gui;
+package com.github.burgerguy.hudtweaks.hud.element;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -9,10 +9,11 @@ import com.github.burgerguy.hudtweaks.gui.widget.PosTypeButtonWidget;
 import com.github.burgerguy.hudtweaks.gui.widget.SidebarWidget;
 import com.github.burgerguy.hudtweaks.gui.widget.XAxisParentButtonWidget;
 import com.github.burgerguy.hudtweaks.gui.widget.YAxisParentButtonWidget;
+import com.github.burgerguy.hudtweaks.hud.HudContainer;
+import com.github.burgerguy.hudtweaks.hud.RelativeTreeNode;
+import com.github.burgerguy.hudtweaks.hud.XAxisNode;
+import com.github.burgerguy.hudtweaks.hud.YAxisNode;
 import com.github.burgerguy.hudtweaks.util.Util;
-import com.github.burgerguy.hudtweaks.util.gui.RelativeTreeNode;
-import com.github.burgerguy.hudtweaks.util.gui.XAxisNode;
-import com.github.burgerguy.hudtweaks.util.gui.YAxisNode;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.SerializedName;

@@ -1,6 +1,5 @@
-package com.github.burgerguy.hudtweaks.gui.element;
+package com.github.burgerguy.hudtweaks.hud.element;
 
-import com.github.burgerguy.hudtweaks.gui.HudElement;
 import com.github.burgerguy.hudtweaks.gui.widget.HTButtonWidget;
 import com.github.burgerguy.hudtweaks.gui.widget.SidebarWidget;
 import com.google.gson.JsonElement;

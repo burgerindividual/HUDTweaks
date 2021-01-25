@@ -2,9 +2,9 @@ package com.github.burgerguy.hudtweaks;
 
 import com.github.burgerguy.hudtweaks.api.HudTweaksApi;
 import com.github.burgerguy.hudtweaks.config.ConfigHelper;
-import com.github.burgerguy.hudtweaks.gui.HudContainer;
-import com.github.burgerguy.hudtweaks.gui.HudElement;
-import com.github.burgerguy.hudtweaks.util.gui.UpdateEvent;
+import com.github.burgerguy.hudtweaks.hud.HudContainer;
+import com.github.burgerguy.hudtweaks.hud.UpdateEvent;
+import com.github.burgerguy.hudtweaks.hud.element.HudElement;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.loader.api.FabricLoader;

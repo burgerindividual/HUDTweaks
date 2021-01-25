@@ -5,7 +5,8 @@ import java.text.NumberFormat;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import com.github.burgerguy.hudtweaks.gui.HudElement;
+
+import com.github.burgerguy.hudtweaks.hud.element.HudElement;
 import com.github.burgerguy.hudtweaks.util.json.HudElementSerializer;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

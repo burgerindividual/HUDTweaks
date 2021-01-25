@@ -2,7 +2,7 @@ package com.github.burgerguy.hudtweaks.gui.widget;
 
 import org.jetbrains.annotations.Nullable;
 
-import com.github.burgerguy.hudtweaks.gui.HudElement;
+import com.github.burgerguy.hudtweaks.hud.element.HudElement;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;

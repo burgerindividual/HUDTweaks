@@ -1,9 +1,9 @@
-package com.github.burgerguy.hudtweaks.gui;
+package com.github.burgerguy.hudtweaks.hud.element;
 
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
-import com.github.burgerguy.hudtweaks.gui.HudElement.PosType;
+import com.github.burgerguy.hudtweaks.hud.element.HudElement.PosType;
 import com.github.burgerguy.hudtweaks.util.gl.DashedBoxOutline;
 import com.github.burgerguy.hudtweaks.util.gl.GLUtil;
 import com.google.common.collect.Sets;

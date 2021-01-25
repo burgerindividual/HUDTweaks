@@ -8,6 +8,9 @@ import com.github.burgerguy.hudtweaks.config.ConfigHelper;
 import com.github.burgerguy.hudtweaks.gui.widget.ArrowButtonWidget;
 import com.github.burgerguy.hudtweaks.gui.widget.ElementLabelWidget;
 import com.github.burgerguy.hudtweaks.gui.widget.SidebarWidget;
+import com.github.burgerguy.hudtweaks.hud.HudContainer;
+import com.github.burgerguy.hudtweaks.hud.element.HudElement;
+import com.github.burgerguy.hudtweaks.hud.element.HudElementWidget;
 import com.github.burgerguy.hudtweaks.util.Util;
 
 import io.netty.util.BooleanSupplier;

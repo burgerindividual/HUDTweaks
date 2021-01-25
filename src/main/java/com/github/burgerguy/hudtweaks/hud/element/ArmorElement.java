@@ -1,6 +1,4 @@
-package com.github.burgerguy.hudtweaks.gui.element;
-
-import com.github.burgerguy.hudtweaks.gui.HudElement;
+package com.github.burgerguy.hudtweaks.hud.element;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.attribute.EntityAttributes;

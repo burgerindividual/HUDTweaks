@@ -4,7 +4,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
 
-import com.github.burgerguy.hudtweaks.util.gui.UpdateEvent;
+import com.github.burgerguy.hudtweaks.hud.UpdateEvent;
 
 public interface HudTweaksApi {
 	

@@ -2,7 +2,7 @@ package com.github.burgerguy.hudtweaks.util.json;
 
 import java.lang.reflect.Type;
 
-import com.github.burgerguy.hudtweaks.gui.HudElement;
+import com.github.burgerguy.hudtweaks.hud.element.HudElement;
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
