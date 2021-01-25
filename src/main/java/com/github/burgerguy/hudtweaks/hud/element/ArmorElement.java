@@ -1,7 +1,9 @@
 package com.github.burgerguy.hudtweaks.hud.element;
 
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.attribute.EntityAttributes;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.MathHelper;
 
 public class ArmorElement extends HudElement {
@@ -41,6 +43,14 @@ public class ArmorElement extends HudElement {
 	
 	@Override
 	protected boolean isVisible(MinecraftClient client) {
-		return true;
+		if (!client.options.hudHidden && client.interactionManager.hasStatusBars()) {
+			Entity cameraEntity = client.getCameraEntity();
+			if (cameraEntity instanceof PlayerEntity) {
+				PlayerEntity playerEntity = (PlayerEntity) cameraEntity;
+				return playerEntity.getArmor() > 0;
+			}
+		}
+		
+		return false;
 	}
 }

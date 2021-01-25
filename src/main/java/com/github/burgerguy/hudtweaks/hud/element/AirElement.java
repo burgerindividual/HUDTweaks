@@ -25,9 +25,9 @@ public class AirElement extends HudElement {
 	
 	private int getRidingHealthOffset(MinecraftClient client) {
 		Entity cameraEntity = client.getCameraEntity();
-		if (cameraEntity != null && cameraEntity instanceof PlayerEntity) {
+		if (cameraEntity instanceof PlayerEntity) {
 			Entity ridingEntity = cameraEntity.getVehicle();
-			if (ridingEntity != null && ridingEntity instanceof LivingEntity) {
+			if (ridingEntity instanceof LivingEntity) {
 				LivingEntity livingEntity = (LivingEntity) ridingEntity;
 				if (livingEntity.isLiving()) {
 					int ridingHeartCount = MathHelper.clamp((int) (livingEntity.getMaxHealth() + 0.5F) / 2, 0, 30);
@@ -52,7 +52,7 @@ public class AirElement extends HudElement {
 	protected boolean isVisible(MinecraftClient client) {
 		if (!client.options.hudHidden && client.interactionManager.hasStatusBars()) {
 			Entity cameraEntity = client.getCameraEntity();
-			if (cameraEntity != null && cameraEntity instanceof PlayerEntity) {
+			if (cameraEntity instanceof PlayerEntity) {
 				PlayerEntity playerEntity = (PlayerEntity) cameraEntity;
 		        int maxAir = playerEntity.getMaxAir();
 		        int currentAir = Math.min(playerEntity.getAir(), maxAir);
