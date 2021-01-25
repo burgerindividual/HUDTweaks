@@ -46,6 +46,7 @@ public abstract class HudElement extends RelativeTreeNode {
 	// TODO: add rotation using the already existing anchor points.
 	
 	protected transient HudElementWidget widget;
+	protected transient boolean rendered = false;
 	
 	public HudElement(String identifier, String... updateEvents) {
 		super(identifier, updateEvents);
@@ -73,8 +74,6 @@ public abstract class HudElement extends RelativeTreeNode {
 	protected abstract double calculateDefaultX(MinecraftClient client);
 	
 	protected abstract double calculateDefaultY(MinecraftClient client);
-	
-	protected abstract boolean isVisible(MinecraftClient client);
 	
 	@Override
 	public double getWidth(MinecraftClient client) {
@@ -182,6 +181,14 @@ public abstract class HudElement extends RelativeTreeNode {
 	
 	public double getYScale() {
 		return yScale;
+	}
+	
+	public boolean isRendered() {
+		return rendered;
+	}
+	
+	public void setRendered(boolean rendered) {
+		this.rendered = rendered;
 	}
 	
 	/**

@@ -57,6 +57,11 @@ public abstract class InGameHudMixin extends DrawableHelper {
 			super.fillGradient(matrixStack, 0, 0, scaledWidth, scaledHeight, 0xC0101010, 0xD0101010);
 		}
 		
+		for (HudElement element : HudContainer.getElements()) {
+			// allows us to keep track of what has rendered this frame
+			element.setRendered(false);
+		}
+		
 		client.getProfiler().push("fireHudTweaksEvents");
 		updatedElementsX.clear();
 		updatedElementsY.clear();

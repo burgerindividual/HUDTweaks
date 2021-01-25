@@ -4,7 +4,6 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.tag.FluidTags;
 import net.minecraft.util.math.MathHelper;
 
 public class AirElement extends HudElement {
@@ -46,21 +45,5 @@ public class AirElement extends HudElement {
 	@Override
 	protected double calculateDefaultY(MinecraftClient client) {
 		return client.getWindow().getScaledHeight() - 49 - getRidingHealthOffset(client);
-	}
-
-	@Override
-	protected boolean isVisible(MinecraftClient client) {
-		if (!client.options.hudHidden && client.interactionManager.hasStatusBars()) {
-			Entity cameraEntity = client.getCameraEntity();
-			if (cameraEntity instanceof PlayerEntity) {
-				PlayerEntity playerEntity = (PlayerEntity) cameraEntity;
-		        int maxAir = playerEntity.getMaxAir();
-		        int currentAir = Math.min(playerEntity.getAir(), maxAir);
-		        return playerEntity.isSubmergedIn(FluidTags.WATER) || currentAir < maxAir;
-			}
-		}
-		
-		return false;
-	}
-	
+	}	
 }

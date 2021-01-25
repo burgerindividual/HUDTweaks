@@ -3,10 +3,11 @@ package com.github.burgerguy.hudtweaks.hud.element;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
+import com.github.burgerguy.hudtweaks.hud.XAxisNode;
+import com.github.burgerguy.hudtweaks.hud.YAxisNode;
 import com.github.burgerguy.hudtweaks.hud.element.HudElement.PosType;
 import com.github.burgerguy.hudtweaks.util.gl.DashedBoxOutline;
 import com.github.burgerguy.hudtweaks.util.gl.GLUtil;
-import com.google.common.collect.Sets;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.Drawable;
@@ -29,7 +30,7 @@ public class HudElementWidget implements Drawable, Element, AutoCloseable, Compa
 	private float tickCounter;
 	private boolean focused;
 	private boolean lastChildFocused;
-	private boolean lastElementVisible;
+	private boolean lastElementRendered;
 	
 	protected HudElementWidget(HudElement element, @Nullable Runnable valueUpdater) {
 		this.element = element;
@@ -42,7 +43,7 @@ public class HudElementWidget implements Drawable, Element, AutoCloseable, Compa
 		
 		boolean draw = false;
 		boolean dashed = false;
-		if ((lastElementVisible = element.isVisible(client))) {
+		if ((lastElementRendered = element.isRendered())) {
 			draw = true;
 		} else if (focused || (lastChildFocused = isChildFocused())) {
 			draw = true;
@@ -105,7 +106,7 @@ public class HudElementWidget implements Drawable, Element, AutoCloseable, Compa
 	public boolean isMouseOver(double mouseX, double mouseY) {
 		MinecraftClient client = MinecraftClient.getInstance();
 		
-		if (lastElementVisible || focused || lastChildFocused) {
+		if (lastElementRendered || focused || lastChildFocused) {
 			double x1 = element.getX(client);
 			double y1 = element.getY(client);
 			double x2 = x1 + element.getWidth(client);
@@ -122,9 +123,17 @@ public class HudElementWidget implements Drawable, Element, AutoCloseable, Compa
 	}
 	
 	private boolean isChildFocused() {
-		for(Object element : Sets.union(element.getXChildren(), element.getYChildren())) {
-			if (element instanceof HudElement && ((HudElement) element).getWidget().isFocused()) {
-				return true;
+		for(XAxisNode node : element.getXChildren()) {
+			if (node instanceof HudElement) {
+				HudElement element = ((HudElement) node);
+				return element.getWidget().isFocused() && element.getXPosType().equals(PosType.RELATIVE);
+			}
+		}
+		
+		for(YAxisNode node : element.getYChildren()) {
+			if (node instanceof HudElement) {
+				HudElement element = ((HudElement) node);
+				return element.getWidget().isFocused() && element.getYPosType().equals(PosType.RELATIVE);
 			}
 		}
 		

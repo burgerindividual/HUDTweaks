@@ -28,9 +28,4 @@ public class HungerElement extends HudElement {
 	protected double calculateDefaultY(MinecraftClient client) {
 		return client.getWindow().getScaledHeight() - 39 - 1;  // the -1 is for the possible jump distance of the food
 	}
-	
-	@Override
-	protected boolean isVisible(MinecraftClient client) {
-		return true;
-	}
 }

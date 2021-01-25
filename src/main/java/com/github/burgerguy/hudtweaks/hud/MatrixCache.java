@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.jetbrains.annotations.Nullable;
 
+import com.github.burgerguy.hudtweaks.util.gl.DrawTest;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.util.math.MatrixStack;
@@ -13,6 +14,8 @@ import net.minecraft.util.math.Matrix4f;
 public class MatrixCache {
 	private final Map<String, Matrix4f> matrixMap = new HashMap<>();
 	private final Map<String, Boolean> appliedMatrixMap = new HashMap<>();
+	
+	private DrawTest drawTest;
 	
 	public Matrix4f getMatrix(String identifier) {
 		return matrixMap.get(identifier);
@@ -23,7 +26,7 @@ public class MatrixCache {
 	}
 	
 	public void tryPushMatrix(String identifier, @Nullable MatrixStack matrixStack) {
-		Matrix4f matrix = HudContainer.getMatrixCache().getMatrix(identifier);
+		Matrix4f matrix = getMatrix(identifier);
 		if (matrix != null) {
 			appliedMatrixMap.put(identifier, true);
 			if (matrixStack != null) {
@@ -33,6 +36,9 @@ public class MatrixCache {
 				RenderSystem.pushMatrix();
 				RenderSystem.multMatrix(matrix);
 			}
+			
+			if (drawTest == null) drawTest = new DrawTest();
+			drawTest.start(HudContainer.getElement(identifier));
 		}
 	}
 	
@@ -44,6 +50,7 @@ public class MatrixCache {
 				RenderSystem.popMatrix();
 			}
 			appliedMatrixMap.put(identifier, false);
+			drawTest.end();
 		}
 	}
 }

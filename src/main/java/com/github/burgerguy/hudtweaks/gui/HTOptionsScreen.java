@@ -28,7 +28,7 @@ public class HTOptionsScreen extends Screen {
 	private static final int SIDEBAR_WIDTH = 116;
 	private static final int SIDEBAR_COLOR = 0x60424242;
 	
-	private static boolean isOpen = false;
+	private static int screensOpened = 0;
 	
 	private final Screen prevScreen;
 	private final SidebarWidget sidebar;
@@ -62,7 +62,7 @@ public class HTOptionsScreen extends Screen {
 		// normal drawables are cleared already when setFocused(null) is invoked by the super
 		sidebar.clearGlobalDrawables();
 		
-		isOpen = true;
+		screensOpened++;
 
 		for (HudElement element : HudContainer.getElements()) {
 			Element widget = element.createWidget(sidebar::updateValues);
@@ -98,6 +98,15 @@ public class HTOptionsScreen extends Screen {
 		sidebar.addGlobalDrawable(elementLabel);
 		sidebar.addGlobalDrawable(leftArrow);
 		sidebar.addGlobalDrawable(rightArrow);
+	}
+	
+	@Override
+	/**
+	 * This is done to prevent one screen from incrementing the counter more than once.
+	 */
+	public void resize(MinecraftClient client, int width, int height) {
+		screensOpened--;
+		this.init(client, width, height);
 	}
 	
 	@Override
@@ -168,7 +177,7 @@ public class HTOptionsScreen extends Screen {
 		} else {
 			client.openScreen(null);
 		}
-		isOpen = false;
+		screensOpened--;
 	}
 	
 	@Override
@@ -249,7 +258,7 @@ public class HTOptionsScreen extends Screen {
 	}
 	
 	public static boolean isOpen() {
-		return isOpen;
+		return screensOpened > 0;
 	}
 	
 }

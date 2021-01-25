@@ -29,9 +29,4 @@ public class ExperienceBarElement extends HudElement {
 	protected double calculateDefaultY(MinecraftClient client) {
 		return client.getWindow().getScaledHeight() - 36;
 	}
-	
-	@Override
-	protected boolean isVisible(MinecraftClient client) {
-		return true;
-	}	
 }

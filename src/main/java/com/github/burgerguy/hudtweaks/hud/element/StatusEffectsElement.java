@@ -79,11 +79,6 @@ public class StatusEffectsElement extends HudElement {
 		return (client.isDemo() ? 16 : 1) + (vertical ? 0 : getNonBeneficialOffset(client));
 	}
 	
-	@Override
-	protected boolean isVisible(MinecraftClient client) {
-		return true;
-	}
-	
 	public boolean isVertical() {
 		return vertical;
 	}
