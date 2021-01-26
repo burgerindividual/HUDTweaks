@@ -59,7 +59,7 @@ public abstract class InGameHudMixin extends DrawableHelper {
 		
 		for (HudElement element : HudContainer.getElements()) {
 			// allows us to keep track of what has rendered this frame
-			element.setRendered(false);
+			element.clearDrawTest();
 		}
 		
 		client.getProfiler().push("fireHudTweaksEvents");

@@ -5,7 +5,7 @@ import java.util.Map;
 
 import org.jetbrains.annotations.Nullable;
 
-import com.github.burgerguy.hudtweaks.util.gl.DrawTest;
+import com.github.burgerguy.hudtweaks.gui.HTOptionsScreen;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.util.math.MatrixStack;
@@ -15,7 +15,8 @@ public class MatrixCache {
 	private final Map<String, Matrix4f> matrixMap = new HashMap<>();
 	private final Map<String, Boolean> appliedMatrixMap = new HashMap<>();
 	
-	private DrawTest drawTest;
+	private boolean optionsScreenOpen;
+	private long t1;
 	
 	public Matrix4f getMatrix(String identifier) {
 		return matrixMap.get(identifier);
@@ -37,8 +38,8 @@ public class MatrixCache {
 				RenderSystem.multMatrix(matrix);
 			}
 			
-			if (drawTest == null) drawTest = new DrawTest();
-			drawTest.start(HudContainer.getElement(identifier));
+			t1 = System.nanoTime();
+			if (optionsScreenOpen = HTOptionsScreen.isOpen()) HudContainer.getElement(identifier).startDrawTest(); // we only care about visibility when HudElementWidgets have to be displayed
 		}
 	}
 	
@@ -50,7 +51,8 @@ public class MatrixCache {
 				RenderSystem.popMatrix();
 			}
 			appliedMatrixMap.put(identifier, false);
-			drawTest.end();
+			if (optionsScreenOpen) HudContainer.getElement(identifier).endDrawTest();
+			System.out.println(System.nanoTime() - t1);
 		}
 	}
 }

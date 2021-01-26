@@ -5,28 +5,31 @@ import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL33;
 import org.lwjgl.opengl.GL43;
 
-import com.github.burgerguy.hudtweaks.hud.element.HudElement;
-
-public class DrawTest {
+public class DrawTest implements AutoCloseable {
 	private static final int QUERY_TARGET = getQueryTarget();
 	private final int queryId;
-	
-	private HudElement elementToSet;
 	
 	public DrawTest() {
 		queryId = GL15.glGenQueries();
 	}
 	
-	public void start(HudElement elementToSet) {
-		this.elementToSet = elementToSet;
-		if (elementToSet != null) GL15.glBeginQuery(QUERY_TARGET, queryId);
+	public void start() {
+		GL15.glBeginQuery(QUERY_TARGET, queryId);
 	}
 	
 	public void end() {
-		if (elementToSet != null) {
-			GL15.glEndQuery(QUERY_TARGET);
-			elementToSet.setRendered(GL15.glGetQueryObjecti(queryId, GL15.GL_QUERY_RESULT) > 0);
+		GL15.glEndQuery(QUERY_TARGET);
+	}
+	
+	public Boolean tryGetResultAsync() {
+		if (GL15.glGetQueryObjecti(queryId, GL15.GL_QUERY_RESULT_AVAILABLE) == 1) {
+			return GL15.glGetQueryObjecti(queryId, GL15.GL_QUERY_RESULT) > 0;
 		}
+		return null;
+	}
+	
+	public boolean getResultSync() {
+		return GL15.glGetQueryObjecti(queryId, GL15.GL_QUERY_RESULT) > 0;
 	}
 	
 	private static int getQueryTarget() {
@@ -39,5 +42,10 @@ public class DrawTest {
 		}
 		
 		return queryTarget;
+	}
+
+	@Override
+	public void close() {
+		GL15.glDeleteQueries(queryId);
 	}
 }

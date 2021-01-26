@@ -14,6 +14,7 @@ import com.github.burgerguy.hudtweaks.hud.RelativeTreeNode;
 import com.github.burgerguy.hudtweaks.hud.XAxisNode;
 import com.github.burgerguy.hudtweaks.hud.YAxisNode;
 import com.github.burgerguy.hudtweaks.util.Util;
+import com.github.burgerguy.hudtweaks.util.gl.DrawTest;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.SerializedName;
@@ -46,10 +47,12 @@ public abstract class HudElement extends RelativeTreeNode {
 	// TODO: add rotation using the already existing anchor points.
 	
 	protected transient HudElementWidget widget;
-	protected transient boolean rendered = false;
+	protected transient DrawTest drawTest;
+	protected transient Boolean drawTestResult;
 	
 	public HudElement(String identifier, String... updateEvents) {
 		super(identifier, updateEvents);
+		
 	}
 	
 	public enum PosType {
@@ -183,12 +186,22 @@ public abstract class HudElement extends RelativeTreeNode {
 		return yScale;
 	}
 	
-	public boolean isRendered() {
-		return rendered;
+	public void startDrawTest() {
+		if (drawTest == null) drawTest = new DrawTest();
+		drawTest.start();
 	}
 	
-	public void setRendered(boolean rendered) {
-		this.rendered = rendered;
+	public void endDrawTest() {
+		drawTest.end();
+	}
+	
+	public void clearDrawTest() {
+		drawTestResult = null;
+	}
+	
+	public boolean isRendered() {
+		if (drawTestResult == null) drawTestResult = drawTest.getResultSync();
+		return drawTestResult;
 	}
 	
 	/**
