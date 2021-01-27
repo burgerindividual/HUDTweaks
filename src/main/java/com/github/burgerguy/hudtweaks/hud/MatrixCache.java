@@ -15,9 +15,6 @@ public class MatrixCache {
 	private final Map<String, Matrix4f> matrixMap = new HashMap<>();
 	private final Map<String, Boolean> appliedMatrixMap = new HashMap<>();
 	
-	private boolean optionsScreenOpen;
-	private long t1;
-	
 	public Matrix4f getMatrix(String identifier) {
 		return matrixMap.get(identifier);
 	}
@@ -38,8 +35,7 @@ public class MatrixCache {
 				RenderSystem.multMatrix(matrix);
 			}
 			
-			t1 = System.nanoTime();
-			if (optionsScreenOpen = HTOptionsScreen.isOpen()) HudContainer.getElement(identifier).startDrawTest(); // we only care about visibility when HudElementWidgets have to be displayed
+			if (HTOptionsScreen.isOpen()) HudContainer.getElement(identifier).startDrawTest(); // we only care about visibility when HudElementWidgets have to be displayed
 		}
 	}
 	
@@ -51,8 +47,8 @@ public class MatrixCache {
 				RenderSystem.popMatrix();
 			}
 			appliedMatrixMap.put(identifier, false);
-			if (optionsScreenOpen) HudContainer.getElement(identifier).endDrawTest();
-			System.out.println(System.nanoTime() - t1);
+			
+			HudContainer.getElement(identifier).endDrawTest(); // this won't error out if the draw test isn't active, so it's ok
 		}
 	}
 }

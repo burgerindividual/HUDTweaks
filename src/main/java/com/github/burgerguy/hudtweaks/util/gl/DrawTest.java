@@ -4,32 +4,56 @@ import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL33;
 import org.lwjgl.opengl.GL43;
+import org.lwjgl.system.MemoryUtil;
 
 public class DrawTest implements AutoCloseable {
 	private static final int QUERY_TARGET = getQueryTarget();
 	private final int queryId;
+	private boolean active;
+	
+	private final long pointer;
 	
 	public DrawTest() {
 		queryId = GL15.glGenQueries();
+		pointer = MemoryUtil.nmemAlloc(5); // use the first 4 bytes to store the result, use the last 1 byte to store the availability.
 	}
 	
 	public void start() {
-		GL15.glBeginQuery(QUERY_TARGET, queryId);
+		if (!active) {
+			active = true;
+			GL15.glBeginQuery(QUERY_TARGET, queryId);
+		}
 	}
 	
 	public void end() {
-		GL15.glEndQuery(QUERY_TARGET);
+		if (active) {
+			GL15.glEndQuery(QUERY_TARGET);
+			active = false;
+		}
 	}
 	
-	public Boolean tryGetResultAsync() {
-		if (GL15.glGetQueryObjecti(queryId, GL15.GL_QUERY_RESULT_AVAILABLE) == 1) {
-			return GL15.glGetQueryObjecti(queryId, GL15.GL_QUERY_RESULT) > 0;
-		}
-		return null;
+	public boolean isActive() {
+		return active;
+	}
+	
+	public boolean getAvailability() {
+		GL15.nglGetQueryObjectiv(queryId, GL15.GL_QUERY_RESULT_AVAILABLE, pointer + 4);
+		return MemoryUtil.memGetBoolean(pointer + 4);
 	}
 	
 	public boolean getResultSync() {
-		return GL15.glGetQueryObjecti(queryId, GL15.GL_QUERY_RESULT) > 0;
+		GL15.nglGetQueryObjectiv(queryId, GL15.GL_QUERY_RESULT, pointer);
+		return MemoryUtil.memGetInt(pointer) > 0;
+	}
+	
+	/**
+	 * @return null if the result is not available, otherwise return the result.
+	 */
+	public Boolean tryGetResultAsync() {
+		if (getAvailability()) {
+			return getResultSync();
+		}
+		return null;
 	}
 	
 	private static int getQueryTarget() {
@@ -47,5 +71,6 @@ public class DrawTest implements AutoCloseable {
 	@Override
 	public void close() {
 		GL15.glDeleteQueries(queryId);
+		MemoryUtil.nmemFree(pointer);
 	}
 }

@@ -192,7 +192,7 @@ public abstract class HudElement extends RelativeTreeNode {
 	}
 	
 	public void endDrawTest() {
-		drawTest.end();
+		if (drawTest != null) drawTest.end();
 	}
 	
 	public void clearDrawTest() {
