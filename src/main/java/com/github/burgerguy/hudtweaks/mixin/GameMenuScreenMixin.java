@@ -1,0 +1,38 @@
+package com.github.burgerguy.hudtweaks.mixin;
+
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import com.github.burgerguy.hudtweaks.gui.HTOptionsScreen;
+
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.screen.GameMenuScreen;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.widget.AbstractButtonWidget;
+import net.minecraft.client.gui.widget.AbstractPressableButtonWidget;
+import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
+
+@Mixin(GameMenuScreen.class)
+public abstract class GameMenuScreenMixin extends Screen {
+	private GameMenuScreenMixin() {
+		super(null);
+	}
+	
+	@SuppressWarnings("resource")
+	@Inject(method = "initWidgets", at = @At(value = "HEAD"))
+	private void initWidgets(CallbackInfo callbackInfo) {
+		Text text = new TranslatableText("hudtweaks.options");
+		int buttonWidth = MinecraftClient.getInstance().textRenderer.getWidth(text) + 14;
+		AbstractButtonWidget button = new AbstractPressableButtonWidget(width - buttonWidth, 0, buttonWidth, 20, text) {
+			@Override
+			public void onPress() {
+				client.openScreen(new HTOptionsScreen(null));
+			}
+		};
+		buttons.add(button);
+		addChild(button);
+	}
+}

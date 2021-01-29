@@ -6,7 +6,8 @@
   "mixins": [],
   "client": [
     "InGameHudMixin",
-    "TextFieldAccessor"
+    "TextFieldAccessor",
+    "GameMenuScreenMixin"
   ],
   "injectors": {
     "defaultRequire": 1
