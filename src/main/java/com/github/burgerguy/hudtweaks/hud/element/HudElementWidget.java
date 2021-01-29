@@ -126,14 +126,14 @@ public class HudElementWidget implements Drawable, Element, AutoCloseable, Compa
 		for(XAxisNode node : element.getXChildren()) {
 			if (node instanceof HudElement) {
 				HudElement element = ((HudElement) node);
-				return element.getWidget().isFocused() && element.getXPosType().equals(PosType.RELATIVE);
+				if (element.getWidget().isFocused() && element.getXPosType().equals(PosType.RELATIVE)) return true;
 			}
 		}
 		
 		for(YAxisNode node : element.getYChildren()) {
 			if (node instanceof HudElement) {
 				HudElement element = ((HudElement) node);
-				return element.getWidget().isFocused() && element.getYPosType().equals(PosType.RELATIVE);
+				if (element.getWidget().isFocused() && element.getYPosType().equals(PosType.RELATIVE)) return true;
 			}
 		}
 		
