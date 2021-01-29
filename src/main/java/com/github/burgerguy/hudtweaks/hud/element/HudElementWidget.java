@@ -76,10 +76,10 @@ public class HudElementWidget implements Drawable, Element, AutoCloseable, Compa
 	
 	@Override
 	public boolean mouseClicked(double mouseX, double mouseY, int button) {
-		if (button == GLFW.GLFW_MOUSE_BUTTON_LEFT) {
-			return focused = isMouseOver(mouseX, mouseY);
+		if (isMouseOver(mouseX, mouseY)) {
+			return focused = (button == GLFW.GLFW_MOUSE_BUTTON_LEFT);
 		}
-		return false;
+		return focused = false;
 	}
 	
 	@Override

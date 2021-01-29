@@ -3,8 +3,6 @@ package com.github.burgerguy.hudtweaks.gui.widget;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.lwjgl.glfw.GLFW;
-
 import com.github.burgerguy.hudtweaks.util.UnmodifiableMergedList;
 
 import net.minecraft.client.gui.AbstractParentElement;
@@ -122,12 +120,7 @@ public class SidebarWidget extends AbstractParentElement implements Drawable, Ti
 			
 			return true;
 		} else {
-			if (button == GLFW.GLFW_MOUSE_BUTTON_LEFT) {
-				if (isMouseOver(mouseX, mouseY)) {
-					return true; // we want the hud element focus to remain, even if empty space is clicked on the sidebar
-				}
-			}
-			return false;
+			return isMouseOver(mouseX, mouseY); // we want the hud element focus to remain, even if empty space is clicked on the sidebar
 		}
 	}
 	
