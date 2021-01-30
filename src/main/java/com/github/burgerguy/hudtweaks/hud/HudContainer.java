@@ -33,6 +33,9 @@ public enum HudContainer {
 		HudElement hunger = new HungerElement();
 		addElement(hunger.getIdentifier(), hunger);
 		
+		HudElement mountHealth = new MountHealthElement();
+		addElement(mountHealth.getIdentifier(), mountHealth);
+		
 		HudElement air = new AirElement();
 		addElement(air.getIdentifier(), air);
 		

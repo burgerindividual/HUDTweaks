@@ -142,6 +142,16 @@ public abstract class InGameHudMixin extends DrawableHelper {
 		HudContainer.getMatrixCache().tryPopMatrix("air", matrixStack);
 	}
 	
+	@Inject(method = "renderMountHealth", at = @At(value = "HEAD"))
+	private void renderMountHealthHead(MatrixStack matrixStack, CallbackInfo callbackInfo) {
+		HudContainer.getMatrixCache().tryPushMatrix("mountHealth", matrixStack);
+	}
+	
+	@Inject(method = "renderMountHealth", at = @At(value = "RETURN"))
+	private void renderMountHealthReturn(MatrixStack matrixStack, CallbackInfo callbackInfo) {
+		HudContainer.getMatrixCache().tryPopMatrix("mountHealth", matrixStack);
+	}
+	
 	//	@Inject(method = "renderMountHealth", at = @At(value = "HEAD"))
 	//	private void renderMountHealthHead(MatrixStack matrixStack, CallbackInfo callbackInfo) {
 	//		if (HudContainer.getMatrixCache().mountTransform != null) {

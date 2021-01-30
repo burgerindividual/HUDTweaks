@@ -18,6 +18,7 @@ import com.github.burgerguy.hudtweaks.util.gl.DrawTest;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.SerializedName;
+import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.resource.language.I18n;
@@ -49,10 +50,14 @@ public abstract class HudElement extends RelativeTreeNode {
 	protected transient HudElementWidget widget;
 	protected transient DrawTest drawTest;
 	protected transient Boolean drawTestResult;
+	protected transient boolean drawTestedOnce;
 	
 	public HudElement(String identifier, String... updateEvents) {
 		super(identifier, updateEvents);
-		
+		// we have to create the draw test here because
+		// it has to be on the render thread and it has
+		// to be after lwjgl has initialized
+		RenderSystem.recordRenderCall(() -> drawTest = new DrawTest());
 	}
 	
 	public enum PosType {
@@ -187,12 +192,12 @@ public abstract class HudElement extends RelativeTreeNode {
 	}
 	
 	public void startDrawTest() {
-		if (drawTest == null) drawTest = new DrawTest();
 		drawTest.start();
 	}
 	
 	public void endDrawTest() {
-		if (drawTest != null) drawTest.end();
+		drawTest.end();
+		drawTestedOnce = true;
 	}
 	
 	public void clearDrawTest() {
@@ -200,6 +205,7 @@ public abstract class HudElement extends RelativeTreeNode {
 	}
 	
 	public boolean isRendered() {
+		if (!drawTestedOnce) return false;
 		if (drawTestResult == null) drawTestResult = drawTest.getResultSync();
 		return drawTestResult;
 	}
