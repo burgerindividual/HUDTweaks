@@ -9,7 +9,7 @@ import net.minecraft.util.math.MathHelper;
 public class MountHealthElement extends HudElement {
 
 	public MountHealthElement() {
-		super("mountHealth", "onRidingHealthRowsChange");
+		super("mounthealth", "onRidingHealthRowsChange");
 	}
 
 	@Override

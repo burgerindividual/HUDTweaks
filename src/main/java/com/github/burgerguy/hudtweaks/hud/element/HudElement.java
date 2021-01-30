@@ -196,8 +196,7 @@ public abstract class HudElement extends RelativeTreeNode {
 	}
 	
 	public void endDrawTest() {
-		drawTest.end();
-		drawTestedOnce = true;
+		if (drawTest.end()) drawTestedOnce = true;
 	}
 	
 	public void clearDrawTest() {

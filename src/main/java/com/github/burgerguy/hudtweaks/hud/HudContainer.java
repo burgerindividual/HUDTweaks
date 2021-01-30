@@ -24,6 +24,9 @@ public enum HudContainer {
 		HudElement expBar = new ExperienceBarElement();
 		addElement(expBar.getIdentifier(), expBar);
 		
+		HudElement jumpBar = new JumpBarElement();
+		addElement(jumpBar.getIdentifier(), jumpBar);
+		
 		HudElement armor = new ArmorElement();
 		addElement(armor.getIdentifier(), armor);
 		

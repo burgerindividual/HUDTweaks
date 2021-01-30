@@ -144,12 +144,12 @@ public abstract class InGameHudMixin extends DrawableHelper {
 	
 	@Inject(method = "renderMountHealth", at = @At(value = "HEAD"))
 	private void renderMountHealthHead(MatrixStack matrixStack, CallbackInfo callbackInfo) {
-		HudContainer.getMatrixCache().tryPushMatrix("mountHealth", matrixStack);
+		HudContainer.getMatrixCache().tryPushMatrix("mounthealth", matrixStack);
 	}
 	
 	@Inject(method = "renderMountHealth", at = @At(value = "RETURN"))
 	private void renderMountHealthReturn(MatrixStack matrixStack, CallbackInfo callbackInfo) {
-		HudContainer.getMatrixCache().tryPopMatrix("mountHealth", matrixStack);
+		HudContainer.getMatrixCache().tryPopMatrix("mounthealth", matrixStack);
 	}
 	
 	//	@Inject(method = "renderMountHealth", at = @At(value = "HEAD"))
@@ -180,6 +180,16 @@ public abstract class InGameHudMixin extends DrawableHelper {
 	@Inject(method = "renderExperienceBar", at = @At(value = "RETURN"))
 	public void renderExperienceBarReturn(MatrixStack matrixStack, int x, CallbackInfo callbackInfo) {
 		HudContainer.getMatrixCache().tryPopMatrix("expbar", matrixStack);
+	}
+	
+	@Inject(method = "renderMountJumpBar", at = @At(value = "HEAD"))
+	public void renderMountJumpBarHead(MatrixStack matrixStack, int x, CallbackInfo callbackInfo) {
+		HudContainer.getMatrixCache().tryPushMatrix("jumpbar", matrixStack);
+	}
+	
+	@Inject(method = "renderMountJumpBar", at = @At(value = "RETURN"))
+	public void renderMountJumpBarReturn(MatrixStack matrixStack, int x, CallbackInfo callbackInfo) {
+		HudContainer.getMatrixCache().tryPopMatrix("jumpbar", matrixStack);
 	}
 	//
 	//	@Inject(method = "renderMountJumpBar", at = @At(value = "HEAD"))

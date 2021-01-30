@@ -18,18 +18,28 @@ public class DrawTest implements AutoCloseable {
 		pointer = MemoryUtil.nmemAlloc(5); // use the first 4 bytes to store the result, use the last 1 byte to store the availability.
 	}
 	
-	public void start() {
+	/**
+	 * @return true if the method was called inactive active.
+	 */
+	public boolean start() {
 		if (!active) {
 			active = true;
 			GL15.glBeginQuery(QUERY_TARGET, queryId);
+			return true;
 		}
+		return false;
 	}
 	
-	public void end() {
+	/**
+	 * @return true if the method was called while active.
+	 */
+	public boolean end() {
 		if (active) {
 			GL15.glEndQuery(QUERY_TARGET);
 			active = false;
+			return true;
 		}
+		return false;
 	}
 	
 	public boolean isActive() {
