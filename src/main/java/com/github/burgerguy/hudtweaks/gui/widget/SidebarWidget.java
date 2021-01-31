@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.github.burgerguy.hudtweaks.util.UnmodifiableMergedList;
+import com.mojang.blaze3d.systems.RenderSystem;
 
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.AbstractParentElement;
 import net.minecraft.client.gui.Drawable;
 import net.minecraft.client.gui.DrawableHelper;
@@ -15,6 +17,8 @@ import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.util.math.MatrixStack;
 
 public class SidebarWidget extends AbstractParentElement implements Drawable, TickableElement {
+	private static final int CUTOFF_FROM_BOTTOM = 25;
+	
 	private final List<Element> globalElements = new ArrayList<>();
 	private final List<Drawable> globalDrawables = new ArrayList<>();
 	private final List<Element> elements = new ArrayList<>();
@@ -87,9 +91,14 @@ public class SidebarWidget extends AbstractParentElement implements Drawable, Ti
 	public void render(MatrixStack matrixStack, int mouseX, int mouseY, float delta) {
 		DrawableHelper.fill(matrixStack, 0, 0, width, parentScreen.height, color);
 		
+		double scale = MinecraftClient.getInstance().getWindow().getScaleFactor();
+		int offset = (int) (CUTOFF_FROM_BOTTOM * scale);
+		int scaledWindowHeight = (int) (parentScreen.height * scale);
+		RenderSystem.enableScissor(0, offset, (int) (width * scale), scaledWindowHeight - offset);
 		for (Drawable drawable : drawables) {
 			drawable.render(matrixStack, mouseX, mouseY, delta);
 		}
+		RenderSystem.disableScissor();
 		
 		for (Drawable drawable : globalDrawables) {
 			drawable.render(matrixStack, mouseX, mouseY, delta);
