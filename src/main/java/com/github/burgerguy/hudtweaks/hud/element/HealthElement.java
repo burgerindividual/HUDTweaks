@@ -91,4 +91,9 @@ public class HealthElement extends HudElement {
 			}
 		});
 	}
+	
+	@Override
+	public int getSidebarOptionsHeight() {
+		return super.getSidebarOptionsHeight() + 25;
+	}
 }

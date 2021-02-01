@@ -2,8 +2,10 @@ package com.github.burgerguy.hudtweaks.gui.widget;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.IntSupplier;
 
 import com.github.burgerguy.hudtweaks.util.UnmodifiableMergedList;
+import com.github.burgerguy.hudtweaks.util.gl.GLUtil;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.MinecraftClient;
@@ -15,9 +17,14 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.TickableElement;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.util.math.MathHelper;
 
 public class SidebarWidget extends AbstractParentElement implements Drawable, TickableElement {
 	private static final int CUTOFF_FROM_BOTTOM = 25;
+	private static final int SCROLLBAR_WIDTH = 2;
+	private static final int SCROLLBAR_COLOR_1 = 0xFF0000FF; // 60A0A0A0
+	private static final int SCROLLBAR_COLOR_2 = 0xFFFF0000; // 605F5F5F
+	private static final int SCROLL_PIXEL_MULTIPLIER = 8;
 	
 	private final List<Element> globalElements = new ArrayList<>();
 	private final List<Drawable> globalDrawables = new ArrayList<>();
@@ -27,6 +34,8 @@ public class SidebarWidget extends AbstractParentElement implements Drawable, Ti
 	private final Screen parentScreen;
 	public int width;
 	public int color;
+	private IntSupplier optionsHeightSupplier;
+	private double scrolledDist;
 	
 	public SidebarWidget(Screen parentScreen, int width, int color) {
 		this.parentScreen = parentScreen;
@@ -67,7 +76,15 @@ public class SidebarWidget extends AbstractParentElement implements Drawable, Ti
 		globalDrawables.clear();
 		globalElements.clear();
 	}
-
+	
+	public void setSidebarOptionsHeightSupplier(IntSupplier optionsHeightSupplier) {
+		this.optionsHeightSupplier = optionsHeightSupplier;
+	}
+	
+	public void updateScrolledDist() {
+		scrolledDist = MathHelper.clamp(scrolledDist, 0, optionsHeightSupplier.getAsInt() - ((parentScreen.height - CUTOFF_FROM_BOTTOM) * MinecraftClient.getInstance().getWindow().getScaleFactor()));
+	}
+	
 	@Override
 	public List<? extends Element> children() {
 		return new UnmodifiableMergedList<>(globalElements, elements);
@@ -92,13 +109,36 @@ public class SidebarWidget extends AbstractParentElement implements Drawable, Ti
 		DrawableHelper.fill(matrixStack, 0, 0, width, parentScreen.height, color);
 		
 		double scale = MinecraftClient.getInstance().getWindow().getScaleFactor();
-		int offset = (int) (CUTOFF_FROM_BOTTOM * scale);
-		int scaledWindowHeight = (int) (parentScreen.height * scale);
-		RenderSystem.enableScissor(0, offset, (int) (width * scale), scaledWindowHeight - offset);
-		for (Drawable drawable : drawables) {
-			drawable.render(matrixStack, mouseX, mouseY, delta);
+		double optionsVisibleHeight = (parentScreen.height - CUTOFF_FROM_BOTTOM) * scale;
+		if (optionsVisibleHeight > 0) {
+			boolean scrollable = false;
+			boolean matrixPushed = false;
+			double cutoffOffset = CUTOFF_FROM_BOTTOM * scale;
+			if (optionsHeightSupplier != null) {
+				double optionsFullHeight = optionsHeightSupplier.getAsInt() * scale;
+				if (optionsVisibleHeight < optionsFullHeight) {
+					int x = width - 3;
+					GLUtil.drawFillColor(matrixStack, x, 0, x + SCROLLBAR_WIDTH, optionsVisibleHeight, SCROLLBAR_COLOR_1);
+					GLUtil.drawFillColor(matrixStack, x, scrolledDist / optionsFullHeight * optionsVisibleHeight, x + SCROLLBAR_WIDTH, (optionsVisibleHeight + scrolledDist) / optionsFullHeight * optionsVisibleHeight, SCROLLBAR_COLOR_2);
+					RenderSystem.enableScissor(0, (int) cutoffOffset, (int) (width * scale), (int) optionsVisibleHeight);
+					scrollable = true;
+					if (scrolledDist > 0) {
+						matrixStack.push();
+						matrixStack.translate(0, -scrolledDist, 0);
+						matrixPushed = true;
+					}
+				}
+			}
+			
+			for (Drawable drawable : drawables) {
+				drawable.render(matrixStack, mouseX, mouseY, delta);
+			}
+			
+			if (scrollable) {
+				if (matrixPushed) matrixStack.pop();
+				RenderSystem.disableScissor();
+			}
 		}
-		RenderSystem.disableScissor();
 		
 		for (Drawable drawable : globalDrawables) {
 			drawable.render(matrixStack, mouseX, mouseY, delta);
@@ -131,6 +171,15 @@ public class SidebarWidget extends AbstractParentElement implements Drawable, Ti
 		} else {
 			return isMouseOver(mouseX, mouseY); // we want the hud element focus to remain, even if empty space is clicked on the sidebar
 		}
+	}
+	
+	@Override
+	public boolean mouseScrolled(double mouseX, double mouseY, double amount) {
+		boolean childScrolled = super.mouseScrolled(mouseX, mouseY, amount);
+		if (!childScrolled) {
+			scrolledDist = MathHelper.clamp(scrolledDist - (amount * SCROLL_PIXEL_MULTIPLIER), 0, optionsHeightSupplier.getAsInt() - ((parentScreen.height - CUTOFF_FROM_BOTTOM) * MinecraftClient.getInstance().getWindow().getScaleFactor()));
+		}
+		return true;
 	}
 	
 	@Override

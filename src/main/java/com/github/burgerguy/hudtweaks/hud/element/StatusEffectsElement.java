@@ -105,4 +105,9 @@ public class StatusEffectsElement extends HudElement {
 			}
 		});
 	}
+	
+	@Override
+	public int getSidebarOptionsHeight() {
+		return super.getSidebarOptionsHeight() + 25;
+	}
 }

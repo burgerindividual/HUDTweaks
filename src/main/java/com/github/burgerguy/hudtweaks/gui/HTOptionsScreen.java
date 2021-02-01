@@ -61,6 +61,7 @@ public class HTOptionsScreen extends Screen {
 		
 		// normal drawables are cleared already when setFocused(null) is invoked by the super
 		sidebar.clearGlobalDrawables();
+		sidebar.updateScrolledDist();
 		
 		screensOpened++;
 
@@ -187,12 +188,14 @@ public class HTOptionsScreen extends Screen {
 			sidebar.clearDrawables();
 			HudElement element = focusedHudElement.getElement();
 			element.fillSidebar(sidebar);
+			sidebar.setSidebarOptionsHeightSupplier(() -> element.getSidebarOptionsHeight());
 			elementLabel.setHudElement(element);
 		}
 		
 		if (focused == null) {
 			focusedHudElement = null;
 			sidebar.clearDrawables();
+			sidebar.setSidebarOptionsHeightSupplier(() -> 0);
 			elementLabel.setHudElement(null);
 		}
 		

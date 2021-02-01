@@ -501,6 +501,17 @@ public abstract class HudElement extends RelativeTreeNode {
 		sidebar.addDrawable(new HTLabelWidget(I18n.translate("hudtweaks.options.y_scale.display"), 5, 254, 0xCCFFFFFF, false));
 	}
 	
+	/**
+	 * Override this when fillSidebar is overridden. It is recommended to
+	 * call super and then add to that value, rather than completely
+	 * overriding the value.
+	 * 
+	 * @return the height of all of the rendered items in fillSidebar
+	 */
+	public int getSidebarOptionsHeight() {
+		return 265;
+	}
+	
 	@Nullable
 	public HudElementWidget getWidget() {
 		return widget;
