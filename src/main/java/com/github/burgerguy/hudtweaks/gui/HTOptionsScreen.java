@@ -61,6 +61,7 @@ public class HTOptionsScreen extends Screen {
 		
 		// normal drawables are cleared already when setFocused(null) is invoked by the super
 		sidebar.clearGlobalDrawables();
+		// scrolledDist needs to be updated when screen is resized, and init is called on resize
 		sidebar.updateScrolledDist();
 		
 		screensOpened++;
@@ -195,7 +196,7 @@ public class HTOptionsScreen extends Screen {
 		if (focused == null) {
 			focusedHudElement = null;
 			sidebar.clearDrawables();
-			sidebar.setSidebarOptionsHeightSupplier(() -> 0);
+			sidebar.setSidebarOptionsHeightSupplier(null);
 			elementLabel.setHudElement(null);
 		}
 		
