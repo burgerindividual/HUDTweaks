@@ -24,6 +24,7 @@ import com.github.burgerguy.hudtweaks.hud.XAxisNode;
 import com.github.burgerguy.hudtweaks.hud.YAxisNode;
 import com.github.burgerguy.hudtweaks.hud.element.HealthElement;
 import com.github.burgerguy.hudtweaks.hud.element.HudElement;
+import com.github.burgerguy.hudtweaks.hud.element.HungerElement;
 import com.github.burgerguy.hudtweaks.hud.element.StatusEffectsElement;
 import com.google.common.collect.Sets;
 
@@ -119,6 +120,18 @@ public abstract class InGameHudMixin extends DrawableHelper {
 			return originalHealthPos + originalHealthPos - healthPos;
 		} else {
 			return healthPos;
+		}
+	}
+	
+	// this makes sure the aa will equal zero so the if (aa == 0) will pass
+	@ModifyVariable(method = "renderStatusBars",
+			index = 23,
+			at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/client/gui/hud/InGameHud;getHeartCount(Lnet/minecraft/entity/LivingEntity;)I"))
+	private int forceRenderHunger(int mountHealth) {
+		if (((HungerElement) HudContainer.getElement("hunger")).getForceDisplay()) {
+			return 0;
+		} else {
+			return mountHealth;
 		}
 	}
 	
