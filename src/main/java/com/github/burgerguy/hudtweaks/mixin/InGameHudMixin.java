@@ -125,7 +125,7 @@ public abstract class InGameHudMixin extends DrawableHelper {
 	
 	// this makes sure the aa will equal zero so the if (aa == 0) will pass
 	@ModifyVariable(method = "renderStatusBars",
-			index = 23,
+			ordinal = 11,
 			at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/client/gui/hud/InGameHud;getHeartCount(Lnet/minecraft/entity/LivingEntity;)I"))
 	private int forceRenderHunger(int mountHealth) {
 		if (((HungerElement) HudContainer.getElement("hunger")).getForceDisplay()) {
