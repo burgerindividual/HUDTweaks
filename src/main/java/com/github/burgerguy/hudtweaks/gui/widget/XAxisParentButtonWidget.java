@@ -41,8 +41,7 @@ public class XAxisParentButtonWidget extends HTButtonWidget {
 	
 	@Override
 	public void onPress() {
-		if (++currentIndex >= keyHelper.length)
-			currentIndex = 0;
+		if (++currentIndex >= keyHelper.length) currentIndex = 0;
 		XAxisNode newParentNode = innerMap.get(keyHelper[currentIndex]);
 		setMessage(newParentNode);
 		

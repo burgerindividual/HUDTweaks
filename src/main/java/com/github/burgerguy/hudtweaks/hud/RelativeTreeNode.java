@@ -3,6 +3,10 @@ package com.github.burgerguy.hudtweaks.hud;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.jetbrains.annotations.Nullable;
+
+import com.github.burgerguy.hudtweaks.util.Util;
+
 import net.minecraft.client.MinecraftClient;
 
 public abstract class RelativeTreeNode implements XAxisNode, YAxisNode {
@@ -76,20 +80,16 @@ public abstract class RelativeTreeNode implements XAxisNode, YAxisNode {
 	}
 
 	@Override
-	public void tryUpdateX(UpdateEvent event, MinecraftClient client, boolean parentUpdated, Set<XAxisNode> updatedElementsX) {
+	/**
+	 * Paassing null to the UpdateEvent will try a manual update.
+	 */
+	public void tryUpdateX(@Nullable UpdateEvent event, MinecraftClient client, boolean parentUpdated, Set<XAxisNode> updatedElementsX) {
 		boolean selfUpdated = false;
-		if (!updatedElementsX.contains(this)) {
-			if (parentUpdated) {
-				updateSelfX(client);
-				updatedElementsX.add(this);
-				selfUpdated = true;
-			} else {
-				if (updateEvents.contains(event)) {
-					updateSelfX(client);
-					updatedElementsX.add(this);
-					selfUpdated = true;
-				}
-			}
+		if (!updatedElementsX.contains(this) &&
+			(parentUpdated || requiresUpdate || Util.containsNotNull(updateEvents, event))) {
+			updateSelfX(client);
+			updatedElementsX.add(this);
+			selfUpdated = true;
 		}
 		
 		for (XAxisNode child : xChildren) {
@@ -98,47 +98,20 @@ public abstract class RelativeTreeNode implements XAxisNode, YAxisNode {
 	}
 	
 	@Override
-	public void tryUpdateY(UpdateEvent event, MinecraftClient client, boolean parentUpdated, Set<YAxisNode> updatedElementsY) {
+	/**
+	 * Paassing null to the UpdateEvent will try a manual update.
+	 */
+	public void tryUpdateY(@Nullable UpdateEvent event, MinecraftClient client, boolean parentUpdated, Set<YAxisNode> updatedElementsY) {
 		boolean selfUpdated = false;
-		if (!updatedElementsY.contains(this)) {
-			if (parentUpdated) {
-				updateSelfY(client);
-				updatedElementsY.add(this);
-				selfUpdated = true;
-			} else {
-				if (updateEvents.contains(event)) {
-					updateSelfY(client);
-					updatedElementsY.add(this);
-					selfUpdated = true;
-				}
-			}
-		}
-		
-		for (YAxisNode child : yChildren) {
-			child.tryUpdateY(event, client, selfUpdated, updatedElementsY);
-		}
-	}
-	
-	public void tryManualUpdate(MinecraftClient client, boolean parentUpdated, Set<XAxisNode> updatedElementsX, Set<YAxisNode> updatedElementsY) {
-		boolean selfUpdated = false;
-		if (requiresUpdate || parentUpdated) {
-			updateSelfX(client);
-			updatedElementsX.add(this);
+		if (!updatedElementsY.contains(this) &&
+			(parentUpdated || requiresUpdate || Util.containsNotNull(updateEvents, event))) {
 			updateSelfY(client);
 			updatedElementsY.add(this);
 			selfUpdated = true;
 		}
 		
-		for (XAxisNode child : xChildren) {
-			if (child instanceof RelativeTreeNode) {
-				((RelativeTreeNode) child).tryManualUpdate(client, selfUpdated, updatedElementsX, updatedElementsY);
-			}
-		}
-		
 		for (YAxisNode child : yChildren) {
-			if (child instanceof RelativeTreeNode) {
-				((RelativeTreeNode) child).tryManualUpdate(client, selfUpdated, updatedElementsX, updatedElementsY);
-			}
+			child.tryUpdateY(event, client, selfUpdated, updatedElementsY);
 		}
 	}
 	

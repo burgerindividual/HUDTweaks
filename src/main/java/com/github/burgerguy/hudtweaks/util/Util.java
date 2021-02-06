@@ -2,6 +2,7 @@ package com.github.burgerguy.hudtweaks.util;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -28,5 +29,13 @@ public enum Util {
 	
 	static {
 		GSON = new GsonBuilder().setPrettyPrinting().registerTypeHierarchyAdapter(HudElement.class, new HudElementSerializer()).create();
+	}
+	
+	public static <T> boolean containsNotNull(Set<T> set, T item) {
+		if (item == null) {
+			return false;
+		} else {
+			return set.contains(item);
+		}
 	}
 }

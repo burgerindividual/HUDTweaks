@@ -43,23 +43,11 @@ public class HTOptionsScreen extends Screen {
 		sidebar = new SidebarWidget(this, SIDEBAR_WIDTH, SIDEBAR_COLOR);
 	}
 	
-	// overridden to stop defocusing
-	public void init(MinecraftClient client, int width, int height) {
-		this.client = client;
-		this.itemRenderer = client.getItemRenderer();
-		this.textRenderer = client.textRenderer;
-		this.width = width;
-		this.height = height;
-		this.buttons.clear();
-		this.children.clear();
-		this.init();
-	}
-	
 	@Override
 	protected void init() {
 		super.init();
 		
-		// normal drawables are cleared already when setFocused(null) is invoked by the super
+		// normal drawables are cleared already when setFocused(null) is invoked before
 		sidebar.clearGlobalDrawables();
 		// scrolledDist needs to be updated when screen is resized, and init is called on resize
 		sidebar.updateScrolledDist();
@@ -197,7 +185,7 @@ public class HTOptionsScreen extends Screen {
 			focusedHudElement = null;
 			sidebar.clearDrawables();
 			sidebar.setSidebarOptionsHeightSupplier(null);
-			elementLabel.setHudElement(null);
+			if (elementLabel != null) elementLabel.setHudElement(null);
 		}
 		
 		super.setFocused(focused);
