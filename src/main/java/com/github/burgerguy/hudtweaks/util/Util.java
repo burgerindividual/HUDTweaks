@@ -38,4 +38,12 @@ public enum Util {
 			return set.contains(item);
 		}
 	}
+	
+	public static double minClamp(double value, double min, double max) {
+		if (value < min || max <= min) {
+			return min;
+		} else {
+			return value > max ? max : value;
+		}
+	}
 }

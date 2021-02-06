@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.function.IntSupplier;
 
 import com.github.burgerguy.hudtweaks.util.UnmodifiableMergedList;
+import com.github.burgerguy.hudtweaks.util.Util;
 import com.github.burgerguy.hudtweaks.util.gl.GLUtil;
 import com.github.burgerguy.hudtweaks.util.gui.ScrollableWrapperElement;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -18,7 +19,6 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.TickableElement;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.math.MathHelper;
 
 public class SidebarWidget extends AbstractParentElement implements Drawable, TickableElement {
 	private static final int CUTOFF_FROM_BOTTOM = 25;
@@ -85,7 +85,7 @@ public class SidebarWidget extends AbstractParentElement implements Drawable, Ti
 	
 	public void updateScrolledDist() {
 		if (optionsHeightSupplier != null) {
-			scrolledDist = MathHelper.clamp(scrolledDist, 0, optionsHeightSupplier.getAsInt() - parentScreen.height + CUTOFF_FROM_BOTTOM);
+			scrolledDist = Util.minClamp(scrolledDist, 0, optionsHeightSupplier.getAsInt() - parentScreen.height + CUTOFF_FROM_BOTTOM);
 		} else {
 			scrolledDist = 0;
 		}
@@ -136,7 +136,7 @@ public class SidebarWidget extends AbstractParentElement implements Drawable, Ti
 			}
 			
 			for (Drawable drawable : drawables) {
-				drawable.render(matrixStack, mouseX, (int)(mouseY + scrolledDist), delta);
+				drawable.render(matrixStack, mouseX, scrollable ? (int)(mouseY + scrolledDist) : mouseY, delta);
 			}
 			
 			if (scrollable) {
@@ -187,7 +187,7 @@ public class SidebarWidget extends AbstractParentElement implements Drawable, Ti
 			if (optionsHeightSupplier == null || mouseY > parentScreen.height - CUTOFF_FROM_BOTTOM) {
 				return false;
 			} else {
-				scrolledDist = MathHelper.clamp(scrolledDist - (amount * SCROLL_PIXEL_MULTIPLIER), 0, optionsHeightSupplier.getAsInt() - parentScreen.height + CUTOFF_FROM_BOTTOM);
+				scrolledDist = Util.minClamp(scrolledDist - (amount * SCROLL_PIXEL_MULTIPLIER), 0, optionsHeightSupplier.getAsInt() - parentScreen.height + CUTOFF_FROM_BOTTOM);
 				return true;
 			}
 		}
