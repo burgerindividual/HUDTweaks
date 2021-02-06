@@ -69,9 +69,9 @@ public class DrawTest implements AutoCloseable {
 		int queryTarget = GL15.GL_SAMPLES_PASSED;
 		if (GL.getCapabilities().OpenGL33) {
 			queryTarget = GL33.GL_ANY_SAMPLES_PASSED;
-//			if (GL.getCapabilities().OpenGL43) {
-//				queryTarget = GL43.GL_ANY_SAMPLES_PASSED_CONSERVATIVE;
-//			}
+			if (GL.getCapabilities().OpenGL43) {
+				queryTarget = GL43.GL_ANY_SAMPLES_PASSED_CONSERVATIVE;
+			}
 		}
 		
 		return queryTarget;
