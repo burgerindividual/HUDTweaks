@@ -17,7 +17,7 @@ public enum HudContainer {
 	private static transient final UpdateEventRegistry EVENT_REGISTRY = new UpdateEventRegistry();
 	private static transient final RelativeTreeRootScreen SCREEN_ROOT = new RelativeTreeRootScreen();
 	
-	static {
+	public static void init() {
 		HudElement hotbar = new HotbarElement();
 		addElement(hotbar.getIdentifier(), hotbar);
 		
