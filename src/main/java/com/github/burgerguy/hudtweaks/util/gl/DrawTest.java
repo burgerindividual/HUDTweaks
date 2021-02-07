@@ -3,6 +3,7 @@ package com.github.burgerguy.hudtweaks.util.gl;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL33;
+import org.lwjgl.opengl.GL43;
 import org.lwjgl.system.MemoryUtil;
 
 public class DrawTest implements AutoCloseable {
