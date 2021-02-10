@@ -9,13 +9,16 @@ This mod is a **work in progress**. There are still plenty of bugs left to fix a
 ------
 #### Known bugs:
 * customization gui when not in game is broken
+* element borders in customization gui doesn't show up on some hardware
 
 #### Known missing features (will be added):
-* the rest of the built in hud elements
+* add the rest of the built in hud elements
 * ~~better focusing in the customization gui~~ (done)
 * ~~dedicated customization gui button~~ (done)
 * hud config profiles, including built in ones
 * save/load button for config
+* finish mod api and documentation
+* complete disconnection from FAPI
 
 #### Possible features:
 * (eventually this will have things)
