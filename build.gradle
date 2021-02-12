@@ -1,5 +1,5 @@
 plugins {
-	id 'fabric-loom' version '0.5-SNAPSHOT'
+	id 'fabric-loom' version '0.6-SNAPSHOT'
 	id 'maven-publish'
 }
 
@@ -8,10 +8,14 @@ repositories {
 		name = "JitPack"
 		url = "https://jitpack.io"
 	}
+	maven {
+		name = "TerraformersMC"
+		url = "https://maven.terraformersmc.com/"
+	}
 }
 
 minecraft {
-    accessWidener = file("src/main/resources/hudtweaks.accesswidener")
+    //accessWidener = file("src/main/resources/hudtweaks.accesswidener")
 }
 
 group = project.maven_group
@@ -68,9 +72,9 @@ dependencies {
 		include project(":HUDTweaks-apihelper")
 	}
 	
-	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+	modCompile "net.fabricmc.fabric-api:fabric-resource-loader-v0:${project.resource_loader_version}"
 	
-	modImplementation "io.github.prospector:modmenu:${project.modmenu_version}"
+	modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
 	
 	modRuntime ("com.github.SuperCoder7979:databreaker:master-SNAPSHOT") {
 		exclude module: "fabric-loader"
