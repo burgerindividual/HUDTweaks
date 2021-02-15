@@ -167,26 +167,6 @@ public abstract class InGameHudMixin extends DrawableHelper {
 		HudContainer.getMatrixCache().tryPopMatrix("mounthealth", matrixStack);
 	}
 	
-	//	@Inject(method = "renderMountHealth", at = @At(value = "HEAD"))
-	//	private void renderMountHealthHead(MatrixStack matrixStack, CallbackInfo callbackInfo) {
-	//		if (HudContainer.getMatrixCache().mountTransform != null) {
-	//			tempMatrix = matrixStack.peek().getModel();
-	//			tempMatrix.multiply(HudContainer.getMatrixCache().mountTransform);
-	//		} else if (HudContainer.getMatrixCache().foodTransform != null) {
-	//			tempMatrix = matrixStack.peek().getModel();
-	//			tempMatrix.multiply(HudContainer.getMatrixCache().foodTransform);
-	//		}
-	//	}
-	//
-	//	@Inject(method = "renderMountHealth", at = @At(value = "RETURN"))
-	//	private void renderMountHealthReturn(MatrixStack matrixStack, CallbackInfo callbackInfo) {
-	//		if (HudContainer.getMatrixCache().mountTransform != null) {
-	//			tempMatrix.multiply(HudTweaksOptions.mountTransform.getInverse());
-	//		} else if (HudContainer.getMatrixCache().foodTransform != null) {
-	//			tempMatrix.multiply(HudTweaksOptions.foodTransform.getInverse());
-	//		}
-	//	}
-	//
 	@Inject(method = "renderExperienceBar", at = @At(value = "HEAD"))
 	public void renderExperienceBarHead(MatrixStack matrixStack, int x, CallbackInfo callbackInfo) {
 		HudContainer.getMatrixCache().tryPushMatrix("expbar", matrixStack);

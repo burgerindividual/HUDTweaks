@@ -32,6 +32,7 @@ allprojects {
 	dependencies {
 		minecraft "com.mojang:minecraft:${project.minecraft_version}"
 		mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
+		// included because it otherwise doesn't compile
 		modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 	}
 	
@@ -72,7 +73,7 @@ dependencies {
 		include project(":HUDTweaks-apihelper")
 	}
 	
-	modCompile "net.fabricmc.fabric-api:fabric-resource-loader-v0:${project.resource_loader_version}"
+	include "net.fabricmc.fabric-api:fabric-resource-loader-v0:${project.resource_loader_version}"
 	
 	modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
 	
