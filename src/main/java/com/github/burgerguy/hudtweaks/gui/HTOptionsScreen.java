@@ -125,9 +125,10 @@ public class HTOptionsScreen extends Screen {
 			super.render(matrixStack, mouseX, mouseY, delta);
 		} else {
 			Text text = new TranslatableText("hudtweaks.options.no_world_prompt");
-			int textHeight = StringUtils.countMatches(text.getString(), '\n') * textRenderer.fontHeight;
+			List<OrderedText> wrappedLines = textRenderer.wrapLines(text, width);
+			int textHeight = wrappedLines.size() * textRenderer.fontHeight;
 			int drawYOffset = 0;
-			for(OrderedText line : ((Iterable<OrderedText>)() -> textRenderer.wrapLines(text, width).iterator())) {
+			for(OrderedText line : wrappedLines) {
 				textRenderer.drawWithShadow(matrixStack, line, ((float) width / 2) - ((float) textRenderer.getWidth(line) / 2), ((float) height / 2) - ((float) textHeight / 2) + drawYOffset, 0xFFFFFFFF);
 				drawYOffset += textRenderer.fontHeight;
 			}
