@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.function.Supplier;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.github.burgerguy.hudtweaks.config.ConfigHelper;
 import com.github.burgerguy.hudtweaks.gui.widget.ArrowButtonWidget;
 import com.github.burgerguy.hudtweaks.gui.widget.ElementLabelWidget;
@@ -22,6 +24,8 @@ import net.minecraft.client.gui.screen.TickableElement;
 import net.minecraft.client.gui.widget.AbstractButtonWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.text.OrderedText;
+import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 
 public class HTOptionsScreen extends Screen {
@@ -35,6 +39,8 @@ public class HTOptionsScreen extends Screen {
 	private ElementLabelWidget elementLabel;
 	
 	private HudElementWidget focusedHudElement;
+	
+	private boolean worldExists = false;
 	
 	public HTOptionsScreen(Screen prevScreen) {
 		super(new TranslatableText("hudtweaks.options"));
@@ -53,41 +59,45 @@ public class HTOptionsScreen extends Screen {
 		sidebar.updateScrolledDist();
 		
 		screensOpened++;
-
-		for (HudElement element : HudContainer.getElements()) {
-			Element widget = element.createWidget(sidebar::updateValues);
-			if (widget != null) {
-				children.add(widget);
+		
+		worldExists = client.world != null;
+		
+		if (worldExists) {
+			for (HudElement element : HudContainer.getElements()) {
+				Element widget = element.createWidget(sidebar::updateValues);
+				if (widget != null) {
+					children.add(widget);
+				}
 			}
+			
+			// We want normal elements to be the first to be selected. If they're both HudElementWidgets, use their compareTos.
+			// TODO: This doesn't work with the new scale stuff. Instead, do these checks on click.
+			children.sort((e1, e2) -> {
+				boolean isHudElement1 = e1 instanceof HudElementWidget;
+				boolean isHudElement2 = e2 instanceof HudElementWidget;
+				if (isHudElement1 && !isHudElement2) {
+					return 1;
+				} else if (isHudElement1 && isHudElement2) {
+					return ((HudElementWidget) e1).compareTo((HudElementWidget) e2);
+				} else {
+					return 0; 
+				}
+			});
+			
+			// this is added to the start of the list so it is selected before anything else
+			children.add(0, sidebar);
+			
+			elementLabel = new ElementLabelWidget(sidebar.width / 2, height - 17, sidebar.width - 42);
+			ArrowButtonWidget leftArrow = new ArrowButtonWidget(5, height - 21, true, new TranslatableText("hudtweaks.options.previous_element.name"), b -> {
+				changeHudElementFocus(false);
+			});
+			ArrowButtonWidget rightArrow = new ArrowButtonWidget(sidebar.width - 21, height - 21, false, new TranslatableText("hudtweaks.options.next_element.name"), b -> {
+				changeHudElementFocus(true);
+			});
+			sidebar.addGlobalDrawable(elementLabel);
+			sidebar.addGlobalDrawable(leftArrow);
+			sidebar.addGlobalDrawable(rightArrow);
 		}
-		
-		// We want normal elements to be the first to be selected. If they're both HudElementWidgets, use their compareTos.
-		// TODO: This doesn't work with the new scale stuff. Instead, do these checks on click.
-		children.sort((e1, e2) -> {
-			boolean isHudElement1 = e1 instanceof HudElementWidget;
-			boolean isHudElement2 = e2 instanceof HudElementWidget;
-			if (isHudElement1 && !isHudElement2) {
-				return 1;
-			} else if (isHudElement1 && isHudElement2) {
-				return ((HudElementWidget) e1).compareTo((HudElementWidget) e2);
-			} else {
-				return 0; 
-			}
-		});
-		
-		// this is added to the start of the list so it is selected before anything else
-		children.add(0, sidebar);
-		
-		elementLabel = new ElementLabelWidget(sidebar.width / 2, height - 17, sidebar.width - 42);
-		ArrowButtonWidget leftArrow = new ArrowButtonWidget(5, height - 21, true, new TranslatableText("hudtweaks.options.previous_element.name"), b -> {
-			changeHudElementFocus(false);
-		});
-		ArrowButtonWidget rightArrow = new ArrowButtonWidget(sidebar.width - 21, height - 21, false, new TranslatableText("hudtweaks.options.next_element.name"), b -> {
-			changeHudElementFocus(true);
-		});
-		sidebar.addGlobalDrawable(elementLabel);
-		sidebar.addGlobalDrawable(leftArrow);
-		sidebar.addGlobalDrawable(rightArrow);
 	}
 	
 	@Override
@@ -103,20 +113,30 @@ public class HTOptionsScreen extends Screen {
 	public void render(MatrixStack matrixStack, int mouseX, int mouseY, float delta) {
 		super.renderBackground(matrixStack);
 		
-		// reverse order
-		for (int i = children.size() - 1; i >= 0; i--) {
-			Element element = children.get(i);
-			if (element instanceof Drawable && !(element instanceof AbstractButtonWidget)) {
-				((Drawable) element).render(matrixStack, mouseX, mouseY, delta);
+		if (worldExists) {
+			// reverse order
+			for (int i = children.size() - 1; i >= 0; i--) {
+				Element element = children.get(i);
+				if (element instanceof Drawable && !(element instanceof AbstractButtonWidget)) {
+					((Drawable) element).render(matrixStack, mouseX, mouseY, delta);
+				}
+			}
+			
+			super.render(matrixStack, mouseX, mouseY, delta);
+		} else {
+			Text text = new TranslatableText("hudtweaks.options.no_world_prompt");
+			int textHeight = StringUtils.countMatches(text.getString(), '\n') * textRenderer.fontHeight;
+			int drawYOffset = 0;
+			for(OrderedText line : ((Iterable<OrderedText>)() -> textRenderer.wrapLines(text, width).iterator())) {
+				textRenderer.drawWithShadow(matrixStack, line, ((float) width / 2) - ((float) textRenderer.getWidth(line) / 2), ((float) height / 2) - ((float) textHeight / 2) + drawYOffset, 0xFFFFFFFF);
+				drawYOffset += textRenderer.fontHeight;
 			}
 		}
-		
-		super.render(matrixStack, mouseX, mouseY, delta);
 	}
 	
 	@Override
 	public void renderBackground(MatrixStack matrixStack, int vOffset) {
-		if (client.world == null) {
+		if (!worldExists) {
 			renderBackgroundTexture(vOffset);
 		}
 	}

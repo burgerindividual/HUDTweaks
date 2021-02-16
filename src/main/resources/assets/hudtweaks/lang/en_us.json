@@ -26,5 +26,6 @@
 	"hudtweaks.options.y_scale.display": "Y Scale:",
 	"hudtweaks.options.next_element.name": "Next Element",
 	"hudtweaks.options.previous_element.name": "Previous Element",
-	"hudtweaks.options.current_element.blank.display": "None Selected"
+	"hudtweaks.options.current_element.blank.display": "None Selected",
+	"hudtweaks.options.no_world_prompt": "This configuration screen is only available in game.\nPlease enter a game before opening."
 }
