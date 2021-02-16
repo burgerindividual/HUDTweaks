@@ -9,7 +9,7 @@ This mod is a **work in progress**. There are still plenty of bugs left to fix a
 ------
 #### Known bugs:
 * ~~customization gui when not in game is broken~~ (fixed)
-* element borders in customization gui doesn't show up on some hardware
+* ~~element borders in customization gui doesn't show up on some hardware~~ (i guess it just works now?)
 
 #### Known missing features (will be added):
 * add the rest of the built in hud elements
