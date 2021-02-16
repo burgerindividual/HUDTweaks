@@ -52,11 +52,11 @@ public class HungerElement extends HudElement {
 	@Override
 	public void fillSidebar(SidebarWidget sidebar) {
 		super.fillSidebar(sidebar);
-		sidebar.addDrawable(new HTButtonWidget(4, 276, sidebar.width - 8, 14, new TranslatableText("hudtweaks.options.hunger.forceDisplay.display", forceDisplay ? I18n.translate("hudtweaks.options.hunger.forceDisplay.on.display") : I18n.translate("hudtweaks.options.hunger.forceDisplay.off.display"))) {
+		sidebar.addDrawable(new HTButtonWidget(4, 276, sidebar.width - 8, 14, new TranslatableText("hudtweaks.options.forceDisplay.display", forceDisplay ? I18n.translate("hudtweaks.options.forceDisplay.on.display") : I18n.translate("hudtweaks.options.forceDisplay.off.display"))) {
 			@Override
 			public void onPress() {
 				forceDisplay = !forceDisplay;
-				setMessage(new TranslatableText("hudtweaks.options.hunger.forceDisplay.display", forceDisplay ? I18n.translate("hudtweaks.options.hunger.forceDisplay.on.display") : I18n.translate("hudtweaks.options.hunger.forceDisplay.off.display")));
+				setMessage(new TranslatableText("hudtweaks.options.forceDisplay.display", forceDisplay ? I18n.translate("hudtweaks.options.forceDisplay.on.display") : I18n.translate("hudtweaks.options.forceDisplay.off.display")));
 				setRequiresUpdate();
 			}
 		});

@@ -13,19 +13,19 @@ public class MatrixUpdater {
 	private Consumer<MatrixStack> onEndRender = NOOP_CONSUMER;
 	
 	/**
-	 * @param matrixStack If null, uses the RenderSystem matrix stack.
+	 * @param matrices If null, uses the RenderSystem matrix stack.
 	 */
-	public void onStartRender(@Nullable MatrixStack matrixStack) {
-		onStartRender.accept(matrixStack);
+	public void onStartRender(@Nullable MatrixStack matrices) {
+		onStartRender.accept(matrices);
 	}
 	
 	/**
-	 * @param matrixStack If null, uses the RenderSystem matrix stack.
+	 * @param matrices If null, uses the RenderSystem matrix stack.
 	 *                    <b>The MatrixStack (or lack of) must be the same
 	 *                    you called onStartRender with.</b>
 	 */
-	public void onEndRender(@Nullable MatrixStack matrixStack) {
-		onEndRender.accept(matrixStack);
+	public void onEndRender(@Nullable MatrixStack matrices) {
+		onEndRender.accept(matrices);
 	}
 	
 	void fillRunnables(Consumer<MatrixStack> onStartRender, Consumer<MatrixStack> onEndRender) {
