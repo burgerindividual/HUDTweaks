@@ -27,6 +27,8 @@ public enum Util {
 	public static final NumberFormat ANCHOR_POS_FORMATTER = new DecimalFormat("%##0.0");
 	public static final NumberFormat NUM_FIELD_FORMATTER = new DecimalFormat("####0.0");
 	
+	public static boolean SHOULD_COMPENSATE_FOR_MODMENU_BUTTON = false;
+	
 	static {
 		GSON = new GsonBuilder().setPrettyPrinting().registerTypeHierarchyAdapter(HudElement.class, new HudElementSerializer()).create();
 	}
