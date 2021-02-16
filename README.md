@@ -8,7 +8,7 @@ This mod is a **work in progress**. There are still plenty of bugs left to fix a
 
 ------
 #### Known bugs:
-* customization gui when not in game is broken
+* ~~customization gui when not in game is broken~~ (fixed)
 * element borders in customization gui doesn't show up on some hardware
 
 #### Known missing features (will be added):
@@ -18,7 +18,7 @@ This mod is a **work in progress**. There are still plenty of bugs left to fix a
 * hud config profiles, including built in ones
 * save/load button for config
 * finish mod api and documentation
-* complete disconnection from FAPI
+* ~~complete disconnection from FAPI~~ (done, but had to JIJ resource loader)
 
 #### Possible features:
 * (eventually this will have things)
