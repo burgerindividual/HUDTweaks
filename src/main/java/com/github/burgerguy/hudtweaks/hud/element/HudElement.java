@@ -50,7 +50,7 @@ public abstract class HudElement extends RelativeTreeNode {
 	protected transient HudElementWidget widget;
 	protected transient DrawTest drawTest;
 	protected transient Boolean drawTestResult;
-	protected transient boolean drawTestedOnce;
+	protected transient boolean drawTestedSinceClear;
 	
 	public HudElement(String identifier, String... updateEvents) {
 		super(identifier, updateEvents);
@@ -196,15 +196,16 @@ public abstract class HudElement extends RelativeTreeNode {
 	}
 	
 	public void endDrawTest() {
-		if (drawTest.end()) drawTestedOnce = true;
+		if (drawTest.end()) drawTestedSinceClear = true;
 	}
 	
 	public void clearDrawTest() {
 		drawTestResult = null;
+		drawTestedSinceClear = false;
 	}
 	
 	public boolean isRendered() {
-		if (!drawTestedOnce) return false;
+		if (!drawTestedSinceClear) return false;
 		if (drawTestResult == null) drawTestResult = drawTest.getResultSync();
 		return drawTestResult;
 	}

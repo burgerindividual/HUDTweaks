@@ -7,17 +7,18 @@
 		"burgerdude"
 	],
 	"contact": {
-		"homepage": "N/A",
 		"sources": "https://github.com/burgerguy/HUDTweaks",
 		"issues": "https://github.com/burgerguy/HUDTweaks/issues"
 	},
 	"license": "MIT",
 	"environment": "client",
 	"depends": {
-		"minecraft": ">=1.16"
+		"minecraft": ">=1.16.4"
 	},
 	"custom": {
-		"modmenu:api": true,
-		"modmenu:parent": "hudtweaks"
+		"modmenu": {
+			"badges": [ "library" ],
+			"parent": "hudtweaks"
+		}
 	}
 }

@@ -186,9 +186,10 @@ public abstract class InGameHudMixin extends DrawableHelper {
 		// Typically, when the jump bar is visible it hides the experience bar. When
 		// the exp bar is set to force display, we can just do it here as the only
 		// time it's hidden (aside from F1) is when the jump bar is rendering.
-		if (((ExperienceBarElement)HudContainer.getElement("expbar")).getForceDisplay()) {
+		if (((ExperienceBarElement) HudContainer.getElement("expbar")).getForceDisplay()) {
 			renderExperienceBar(matrices, x);
 		}
+		
 		HudContainer.getMatrixCache().tryPushMatrix("jumpbar", matrices);
 	}
 	
