@@ -5,6 +5,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import com.github.burgerguy.hudtweaks.ModMenuApiImpl;
 import com.github.burgerguy.hudtweaks.gui.HTOptionsScreen;
 
 import net.minecraft.client.MinecraftClient;
@@ -26,13 +27,12 @@ public abstract class GameMenuScreenMixin extends Screen {
 	private void initWidgets(CallbackInfo callbackInfo) {
 		Text text = new TranslatableText("hudtweaks.options");
 		int buttonWidth = MinecraftClient.getInstance().textRenderer.getWidth(text) + 14;
-		AbstractButtonWidget button = new AbstractPressableButtonWidget(width - buttonWidth, 0, buttonWidth, 20, text) {
+		AbstractButtonWidget button = new AbstractPressableButtonWidget(width - buttonWidth, ModMenuApiImpl.shouldCompensateForButton() ? 12 : 0, buttonWidth, 20, text) {
 			@Override
 			public void onPress() {
 				client.openScreen(new HTOptionsScreen(null));
 			}
 		};
-		buttons.add(button);
-		addChild(button);
+		addButton(button);
 	}
 }
