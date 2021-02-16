@@ -4,8 +4,6 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.function.Supplier;
 
-import org.apache.commons.lang3.StringUtils;
-
 import com.github.burgerguy.hudtweaks.config.ConfigHelper;
 import com.github.burgerguy.hudtweaks.gui.widget.ArrowButtonWidget;
 import com.github.burgerguy.hudtweaks.gui.widget.ElementLabelWidget;
