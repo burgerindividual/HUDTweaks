@@ -1,7 +1,7 @@
 package com.github.burgerguy.hudtweaks.hud.element;
 
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.options.AttackIndicator;
+import net.minecraft.client.option.AttackIndicator;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 

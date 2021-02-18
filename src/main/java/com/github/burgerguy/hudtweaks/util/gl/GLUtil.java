@@ -1,13 +1,12 @@
 package com.github.burgerguy.hudtweaks.util.gl;
 
-import org.lwjgl.opengl.GL11;
-
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.BufferRenderer;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexConsumer;
+import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.Matrix4f;
@@ -39,6 +38,7 @@ public enum GLUtil {
 		consumer.vertex(matrix, (float) x2, (float) y2, 0.0F).color(r, g, b, a).next();
 		consumer.vertex(matrix, (float) x2, (float) y1, 0.0F).color(r, g, b, a).next();
 		consumer.vertex(matrix, (float) x1, (float) y1, 0.0F).color(r, g, b, a).next();
+		consumer.vertex(matrix, (float) x1, (float) y2, 0.0F).color(r, g, b, a).next();
 		HTVertexConsumerProvider.draw();
 	}
 	
@@ -65,7 +65,7 @@ public enum GLUtil {
 		RenderSystem.disableTexture();
 		RenderSystem.defaultBlendFunc();
 		Matrix4f matrix = matrices.peek().getModel();
-		bufferBuilder.begin(GL11.GL_QUADS, VertexFormats.POSITION_COLOR);
+		bufferBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
 		bufferBuilder.vertex(matrix, (float) x1, (float) y2, 0.0F).color(g, h, k, f).next();
 		bufferBuilder.vertex(matrix, (float) x2, (float) y2, 0.0F).color(g, h, k, f).next();
 		bufferBuilder.vertex(matrix, (float) x2, (float) y1, 0.0F).color(g, h, k, f).next();

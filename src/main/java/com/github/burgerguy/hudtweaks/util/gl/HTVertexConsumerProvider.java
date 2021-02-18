@@ -2,8 +2,6 @@ package com.github.burgerguy.hudtweaks.util.gl;
 
 import java.util.OptionalDouble;
 
-import org.lwjgl.opengl.GL11;
-
 import com.github.burgerguy.hudtweaks.HudTweaksMod;
 
 import net.minecraft.client.render.RenderLayer;
@@ -11,6 +9,7 @@ import net.minecraft.client.render.RenderPhase;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.util.Identifier;
 
@@ -22,7 +21,7 @@ public abstract class HTVertexConsumerProvider extends RenderLayer {
 	
 	private HTVertexConsumerProvider() {
 		// random values just so we can access the class
-		super("HTAccessor", VertexFormats.POSITION, 0, 0, false, true, null, null);
+		super("HTAccessor", VertexFormats.POSITION, null, 0, false, true, null, null);
 	}
 	
 	public static VertexConsumer getDashedOutlineConsumer(Identifier texture, double lineWidth) {
@@ -34,7 +33,7 @@ public abstract class HTVertexConsumerProvider extends RenderLayer {
 				.lineWidth(new LineWidth(OptionalDouble.of(lineWidth)))
 				.build(false);
 		
-		return vertexConsumerProvider.getBuffer(RenderLayer.of(DASHED_LAYER_NAME_PREFIX + texture, VertexFormats.POSITION_COLOR_TEXTURE, GL11.GL_LINE_STRIP, EMPTY, false, true, parameters));
+		return vertexConsumerProvider.getBuffer(RenderLayer.of(DASHED_LAYER_NAME_PREFIX + texture, VertexFormats.POSITION_COLOR_TEXTURE, VertexFormat.DrawMode.LINE_STRIP, EMPTY, false, true, parameters));
 	}
 	
 	public static VertexConsumer getSolidOutlineConsumer(double lineWidth) {
@@ -45,7 +44,7 @@ public abstract class HTVertexConsumerProvider extends RenderLayer {
 				.lineWidth(new LineWidth(OptionalDouble.of(lineWidth)))
 				.build(false);
 		
-		return vertexConsumerProvider.getBuffer(RenderLayer.of(SOLID_LAYER_NAME_PREFIX, VertexFormats.POSITION_COLOR, GL11.GL_LINE_LOOP, EMPTY, false, true, parameters));
+		return vertexConsumerProvider.getBuffer(RenderLayer.of(SOLID_LAYER_NAME_PREFIX, VertexFormats.POSITION_COLOR, VertexFormat.DrawMode.LINE_STRIP, EMPTY, false, true, parameters));
 	}
 	
 	public static void draw() {
