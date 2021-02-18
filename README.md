@@ -21,6 +21,8 @@ This mod does **NOT** require any other mods to function, including Fabric API.
 * save/load button for config
 * finish mod api and documentation
 * ~~complete disconnection from FAPI~~ (done, but had to JIJ resource loader)
+* vertical hotbar
+* debug menu (F3) text resizing
 
 #### Possible features:
 * (eventually this will have things)
