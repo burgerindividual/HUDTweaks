@@ -81,7 +81,7 @@ public abstract class InGameHudMixin extends DrawableHelper {
 			// something something instanceof bad something something
 			if (element instanceof HudElementEntry) {
 				HudElementEntry hudElement = (HudElementEntry) element;
-				HudContainer.getMatrixCache().putMatrix(hudElement.getIdentifier(), hudElement.createMatrix(client));
+				HudContainer.getMatrixCache().putMatrix(hudElement.getIdentifier().getElementType(), hudElement.createMatrix(client)); // TODO: is this ok?
 			}
 		}
 		client.getProfiler().pop();
