@@ -22,11 +22,11 @@ import com.github.burgerguy.hudtweaks.hud.HudContainer;
 import com.github.burgerguy.hudtweaks.hud.UpdateEvent;
 import com.github.burgerguy.hudtweaks.hud.XAxisNode;
 import com.github.burgerguy.hudtweaks.hud.YAxisNode;
-import com.github.burgerguy.hudtweaks.hud.element.ExperienceBarElement;
-import com.github.burgerguy.hudtweaks.hud.element.HealthElement;
-import com.github.burgerguy.hudtweaks.hud.element.HudElement;
-import com.github.burgerguy.hudtweaks.hud.element.HungerElement;
-import com.github.burgerguy.hudtweaks.hud.element.StatusEffectsElement;
+import com.github.burgerguy.hudtweaks.hud.element.DefaultExperienceBarEntry;
+import com.github.burgerguy.hudtweaks.hud.element.DefaultHealthEntry;
+import com.github.burgerguy.hudtweaks.hud.element.HudElementEntry;
+import com.github.burgerguy.hudtweaks.hud.element.DefaultHungerEntry;
+import com.github.burgerguy.hudtweaks.hud.element.DefaultStatusEffectsEntry;
 import com.google.common.collect.Sets;
 
 import net.minecraft.client.MinecraftClient;
@@ -59,7 +59,7 @@ public abstract class InGameHudMixin extends DrawableHelper {
 			super.fillGradient(matrices, 0, 0, scaledWidth, scaledHeight, 0xC0101010, 0xD0101010);
 		}
 		
-		for (HudElement element : HudContainer.getElements()) {
+		for (HudElementEntry element : HudContainer.getAllEntries()) { // TODO: fix this for when entry switches happen
 			// allows us to keep track of what has rendered this frame
 			element.clearDrawTest();
 		}
@@ -79,8 +79,8 @@ public abstract class InGameHudMixin extends DrawableHelper {
 		
 		for (Object element : Sets.union(updatedElementsX, updatedElementsY)) {
 			// something something instanceof bad something something
-			if (element instanceof HudElement) {
-				HudElement hudElement = (HudElement) element;
+			if (element instanceof HudElementEntry) {
+				HudElementEntry hudElement = (HudElementEntry) element;
 				HudContainer.getMatrixCache().putMatrix(hudElement.getIdentifier(), hudElement.createMatrix(client));
 			}
 		}
@@ -89,7 +89,7 @@ public abstract class InGameHudMixin extends DrawableHelper {
 	
 	@Inject(method = "renderHotbar", at = @At(value = "HEAD"))
 	private void renderHotbarHead(float tickDelta, MatrixStack matrices, CallbackInfo callbackInfo) {
-		HudContainer.getMatrixCache().tryPushMatrix("hotbar", null);
+		HudContainer.getMatrixCache().tryPushMatrix("hotbar", null); // TODO: make each element have a public static final field for their identifier
 	}
 	
 	@Inject(method = "renderHotbar", at = @At(value = "RETURN"))
@@ -118,7 +118,7 @@ public abstract class InGameHudMixin extends DrawableHelper {
 			ordinal = 19,
 			at = @At(value = "JUMP", opcode = Opcodes.IF_ICMPGT))
 	private int flipHealthStackDirection(int healthPos) {
-		if (((HealthElement) HudContainer.getActiveElement("health")).isFlipped()) {
+		if (((DefaultHealthEntry) HudContainer.getActiveElement("health")).isFlipped()) {
 			int originalHealthPos = client.getWindow().getScaledHeight() - 39;
 			return originalHealthPos + originalHealthPos - healthPos;
 		} else {
@@ -131,7 +131,7 @@ public abstract class InGameHudMixin extends DrawableHelper {
 			ordinal = 11,
 			at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/client/gui/hud/InGameHud;getHeartCount(Lnet/minecraft/entity/LivingEntity;)I"))
 	private int forceRenderHunger(int mountHealth) {
-		if (((HungerElement) HudContainer.getActiveElement("hunger")).getForceDisplay()) {
+		if (((DefaultHungerEntry) HudContainer.getActiveElement("hunger")).getForceDisplay()) {
 			return 0;
 		} else {
 			return mountHealth;
@@ -186,7 +186,7 @@ public abstract class InGameHudMixin extends DrawableHelper {
 		// Typically, when the jump bar is visible it hides the experience bar. When
 		// the exp bar is set to force display, we can just do it here as the only
 		// time it's hidden (aside from F1) is when the jump bar is rendering.
-		if (((ExperienceBarElement) HudContainer.getActiveElement("expbar")).getForceDisplay()) {
+		if (((DefaultExperienceBarEntry) HudContainer.getActiveElement("expbar")).getForceDisplay()) {
 			renderExperienceBar(matrices, x);
 		}
 		
@@ -238,7 +238,7 @@ public abstract class InGameHudMixin extends DrawableHelper {
 					ordinal = 2,
 					at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/effect/StatusEffectInstance;isAmbient()Z"))
 	private int modifyStatusEffectX(int x, MatrixStack maxtixStack) {
-		if (((StatusEffectsElement) HudContainer.getActiveElement("statuseffects")).isVertical()) {
+		if (((DefaultStatusEffectsEntry) HudContainer.getActiveElement("statuseffects")).isVertical()) {
 			return client.getWindow().getScaledWidth() - STATUS_EFFECT_OFFSET + preY - postY;
 		} else {
 			return x;
@@ -249,7 +249,7 @@ public abstract class InGameHudMixin extends DrawableHelper {
 					ordinal = 3,
 					at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/effect/StatusEffectInstance;isAmbient()Z"))
 	private int modifyStatusEffectY(int y, MatrixStack maxtixStack) {
-		if (((StatusEffectsElement) HudContainer.getActiveElement("statuseffects")).isVertical()) {
+		if (((DefaultStatusEffectsEntry) HudContainer.getActiveElement("statuseffects")).isVertical()) {
 			return preY + client.getWindow().getScaledWidth() - postX - STATUS_EFFECT_OFFSET;
 		} else {
 			return y;

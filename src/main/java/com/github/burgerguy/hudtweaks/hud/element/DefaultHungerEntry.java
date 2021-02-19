@@ -8,11 +8,11 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.text.TranslatableText;
 
-public class HungerElement extends HudElement {
+public class DefaultHungerEntry extends HudElementEntry {
 	private boolean forceDisplay;
 
-	public HungerElement() {
-		super(new HTIdentifier(new HTIdentifier.Element("hunger", "hudtweaks.element.hunger")));
+	public DefaultHungerEntry() {
+		super(new HTIdentifier(new HTIdentifier.ElementType("hunger", "hudtweaks.element.hunger")));
 	}
 
 	@Override

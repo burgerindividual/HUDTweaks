@@ -9,7 +9,7 @@ import com.github.burgerguy.hudtweaks.gui.widget.ArrowButtonWidget;
 import com.github.burgerguy.hudtweaks.gui.widget.ElementLabelWidget;
 import com.github.burgerguy.hudtweaks.gui.widget.SidebarWidget;
 import com.github.burgerguy.hudtweaks.hud.HudContainer;
-import com.github.burgerguy.hudtweaks.hud.element.HudElement;
+import com.github.burgerguy.hudtweaks.hud.element.HudElementEntry;
 import com.github.burgerguy.hudtweaks.hud.element.HudElementWidget;
 import com.github.burgerguy.hudtweaks.util.Util;
 
@@ -48,7 +48,7 @@ public class HTOptionsScreen extends Screen {
 	}
 	
 	@Override
-	protected void init() { // TODO: add type selector in global elements that only displays when needed
+	protected void init() { // TODO: add entry selector in global elements that only displays when needed
 		super.init();
 		
 		// normal drawables are cleared already when setFocused(null) is invoked before
@@ -61,7 +61,7 @@ public class HTOptionsScreen extends Screen {
 		worldExists = client.world != null;
 		
 		if (worldExists) {
-			for (HudElement element : HudContainer.getElements()) {
+			for (HudElementEntry element : HudContainer.getAllEntries()) {
 				Element widget = element.createWidget(sidebar::updateValues);
 				if (widget != null) {
 					children.add(widget);
@@ -194,7 +194,7 @@ public class HTOptionsScreen extends Screen {
 		if (focused instanceof HudElementWidget && !focused.equals(focusedHudElement)) {
 			focusedHudElement = (HudElementWidget) focused;
 			sidebar.clearDrawables();
-			HudElement element = focusedHudElement.getElement();
+			HudElementEntry element = focusedHudElement.getElement();
 			element.fillSidebar(sidebar);
 			sidebar.setSidebarOptionsHeightSupplier(() -> element.getSidebarOptionsHeight());
 			elementLabel.setHudElement(element);

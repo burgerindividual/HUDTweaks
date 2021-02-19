@@ -26,7 +26,7 @@ import net.minecraft.text.TranslatableText;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Matrix4f;
 
-public abstract class HudElement extends RelativeTreeNode {
+public abstract class HudElementEntry extends RelativeTreeNode {
 	// These are all marked as transient so we can manually add them in our custom serializer
 	protected transient PosType xPosType = PosType.DEFAULT;
 	protected transient PosType yPosType = PosType.DEFAULT;
@@ -52,7 +52,7 @@ public abstract class HudElement extends RelativeTreeNode {
 	protected transient Boolean drawTestResult;
 	protected transient boolean drawTestedSinceClear;
 	
-	public HudElement(HTIdentifier identifier, String... updateEvents) {
+	public HudElementEntry(HTIdentifier identifier, String... updateEvents) {
 		super(identifier, updateEvents);
 		// we have to create the draw test here because
 		// it has to be on the render thread and it has

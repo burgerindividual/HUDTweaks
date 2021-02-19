@@ -8,11 +8,11 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.text.TranslatableText;
 
-public class ExperienceBarElement extends HudElement {
+public class DefaultExperienceBarEntry extends HudElementEntry {
 	private boolean forceDisplay;
 
-	public ExperienceBarElement() {
-		super(new HTIdentifier(new HTIdentifier.Element("expbar", "hudtweaks.element.expbar")));
+	public DefaultExperienceBarEntry() {
+		super(new HTIdentifier(new HTIdentifier.ElementType("expbar", "hudtweaks.element.expbar")));
 	}
 
 	@Override

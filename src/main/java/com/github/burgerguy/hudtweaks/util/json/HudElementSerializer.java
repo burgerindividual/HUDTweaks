@@ -2,7 +2,7 @@ package com.github.burgerguy.hudtweaks.util.json;
 
 import java.lang.reflect.Type;
 
-import com.github.burgerguy.hudtweaks.hud.element.HudElement;
+import com.github.burgerguy.hudtweaks.hud.element.HudElementEntry;
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -11,11 +11,11 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 
-public class HudElementSerializer implements JsonSerializer<HudElement> {
+public class HudElementSerializer implements JsonSerializer<HudElementEntry> {
 	private static final Gson DEFAULT_GSON = new GsonBuilder().setPrettyPrinting().create();
 
 	@Override
-	public JsonElement serialize(HudElement element, Type typeOfSrc, JsonSerializationContext context) {
+	public JsonElement serialize(HudElementEntry element, Type typeOfSrc, JsonSerializationContext context) {
 		JsonObject xPosObject = new JsonObject();
 		xPosObject.add("posType", context.serialize(element.getXPosType()));
 		xPosObject.add("parent", context.serialize(element.getXParent().getIdentifier()));

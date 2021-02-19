@@ -2,10 +2,10 @@ package com.github.burgerguy.hudtweaks.hud.element;
 
 import net.minecraft.client.MinecraftClient;
 
-public class JumpBarElement extends HudElement {
+public class DefaultJumpBarEntry extends HudElementEntry {
 	
-	public JumpBarElement() {
-		super(new HTIdentifier(new HTIdentifier.Element("jumpbar", "hudtweaks.element.jumpbar")));
+	public DefaultJumpBarEntry() {
+		super(new HTIdentifier(new HTIdentifier.ElementType("jumpbar", "hudtweaks.element.jumpbar")));
 	}
 
 	@Override

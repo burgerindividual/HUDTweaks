@@ -4,10 +4,10 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.util.math.MathHelper;
 
-public class ArmorElement extends HudElement {
+public class DefaultArmorEntry extends HudElementEntry {
 	
-	public ArmorElement() {
-		super(new HTIdentifier(new HTIdentifier.Element("armor", "hudtweaks.element.armor")), "onHealthRowsChange");
+	public DefaultArmorEntry() {
+		super(new HTIdentifier(new HTIdentifier.ElementType("armor", "hudtweaks.element.armor")), "onHealthRowsChange");
 	}
 	
 	@Override

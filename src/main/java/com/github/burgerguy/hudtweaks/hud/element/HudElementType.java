@@ -10,38 +10,38 @@ import com.google.gson.JsonElement;
 
 import net.minecraft.util.math.MathHelper;
 
-public class HudElementGroup {
-	private transient final HTIdentifier.Element elementIdentifier;
-	private final List<HudElement> elements = new ArrayList<>();
+public class HudElementType { // TODO: somehow fit this for RelativeTreeNode
+	private transient final HTIdentifier.ElementType elementIdentifier;
+	private final List<HudElementEntry> entries = new ArrayList<>();
 	private transient int activeIndex;
 	
-	public HudElementGroup(HTIdentifier.Element elementIdentifier, HudElement firstElement) {
+	public HudElementType(HTIdentifier.ElementType elementIdentifier, HudElementEntry firstElement) {
 		this.elementIdentifier = elementIdentifier;
-		elements.add(firstElement);
+		entries.add(firstElement);
 	}
 	
-	public void add(HudElement element) {
-		if (element.getIdentifier().getElement().equals(elementIdentifier)) {
-			elements.add(element);
+	public void add(HudElementEntry element) {
+		if (element.getIdentifier().getElementType().equals(elementIdentifier)) {
+			entries.add(element);
 		} else {
-			Util.LOGGER.error("Element with element identifier " + element.getIdentifier().toString() + " does not match element identifier " + elementIdentifier.toString());
+			Util.LOGGER.error("HudElementType with element identifier " + element.getIdentifier().toString() + " does not match element identifier " + elementIdentifier.toString());
 		}
 	}
 	
-	public HudElement getActiveElement() {
-		return elements.get(activeIndex);
+	public HudElementEntry getActiveElement() {
+		return entries.get(activeIndex);
 	}
 	
 	public int getElementCount() {
-		return elements.size();
+		return entries.size();
 	}
 	
 	public void cycleTypeForward() {
-		activeIndex = MathHelper.clamp(activeIndex + 1, 0, elements.size() - 1);
+		activeIndex = MathHelper.clamp(activeIndex + 1, 0, entries.size() - 1);
 	}
 	
 	public void cycleTypeBackward() {
-		activeIndex = MathHelper.clamp(activeIndex - 1, 0, elements.size() - 1);
+		activeIndex = MathHelper.clamp(activeIndex - 1, 0, entries.size() - 1);
 	}
 	
 	public String toString() {
@@ -57,7 +57,7 @@ public class HudElementGroup {
 			try {
 				getActiveElement(entry.getKey()).updateFromJson(entry.getValue());
 			} catch (NullPointerException e) {
-				Util.LOGGER.error("Element specified in config doesn't exist in element map, skipping...", e);
+				Util.LOGGER.error("HudElementType specified in config doesn't exist in element map, skipping...", e);
 				continue;
 			}
 		}

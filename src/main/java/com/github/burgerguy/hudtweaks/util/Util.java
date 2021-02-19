@@ -7,7 +7,7 @@ import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.github.burgerguy.hudtweaks.hud.element.HudElement;
+import com.github.burgerguy.hudtweaks.hud.element.HudElementEntry;
 import com.github.burgerguy.hudtweaks.util.json.HudElementSerializer;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -30,7 +30,7 @@ public enum Util {
 	public static boolean SHOULD_COMPENSATE_FOR_MODMENU_BUTTON = false;
 	
 	static {
-		GSON = new GsonBuilder().setPrettyPrinting().registerTypeHierarchyAdapter(HudElement.class, new HudElementSerializer()).create();
+		GSON = new GsonBuilder().setPrettyPrinting().registerTypeHierarchyAdapter(HudElementEntry.class, new HudElementSerializer()).create();
 	}
 	
 	public static <T> boolean containsNotNull(Set<T> set, T item) {

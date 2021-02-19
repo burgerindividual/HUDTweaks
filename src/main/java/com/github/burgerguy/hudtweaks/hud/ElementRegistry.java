@@ -5,19 +5,19 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import com.github.burgerguy.hudtweaks.hud.element.AirElement;
-import com.github.burgerguy.hudtweaks.hud.element.ArmorElement;
-import com.github.burgerguy.hudtweaks.hud.element.ExperienceBarElement;
+import com.github.burgerguy.hudtweaks.hud.element.DefaultAirElementEntry;
+import com.github.burgerguy.hudtweaks.hud.element.DefaultArmorEntry;
+import com.github.burgerguy.hudtweaks.hud.element.DefaultExperienceBarEntry;
 import com.github.burgerguy.hudtweaks.hud.element.HTIdentifier;
-import com.github.burgerguy.hudtweaks.hud.element.HealthElement;
-import com.github.burgerguy.hudtweaks.hud.element.HotbarElement;
-import com.github.burgerguy.hudtweaks.hud.element.HudElement;
-import com.github.burgerguy.hudtweaks.hud.element.HudElementGroup;
-import com.github.burgerguy.hudtweaks.hud.element.HungerElement;
-import com.github.burgerguy.hudtweaks.hud.element.JumpBarElement;
-import com.github.burgerguy.hudtweaks.hud.element.MountHealthElement;
+import com.github.burgerguy.hudtweaks.hud.element.DefaultHealthEntry;
+import com.github.burgerguy.hudtweaks.hud.element.DefaultHotbarEntry;
+import com.github.burgerguy.hudtweaks.hud.element.HudElementEntry;
+import com.github.burgerguy.hudtweaks.hud.element.HudElementType;
+import com.github.burgerguy.hudtweaks.hud.element.DefaultHungerEntry;
+import com.github.burgerguy.hudtweaks.hud.element.DefaultJumpBarEntry;
+import com.github.burgerguy.hudtweaks.hud.element.DefaultMountHealthEntry;
 import com.github.burgerguy.hudtweaks.hud.element.RelativeTreeRootScreen;
-import com.github.burgerguy.hudtweaks.hud.element.StatusEffectsElement;
+import com.github.burgerguy.hudtweaks.hud.element.DefaultStatusEffectsEntry;
 import com.github.burgerguy.hudtweaks.util.Util;
 import com.google.gson.JsonElement;
 
@@ -29,49 +29,39 @@ import com.google.gson.JsonElement;
  * element replacements by mods that implement the API.
  */
 public class ElementRegistry {
-	private final Map<HTIdentifier, HudElement> elementMap = new HashMap<>();
-	private final Map<HTIdentifier.Element, HudElementGroup> elementGroupMap = new HashMap<>();
+	private final Map<HTIdentifier.ElementType, HudElementType> elementGroupMap = new HashMap<>();
 	
 	public void init() {
-		addElement(new HotbarElement());
-		addElement(new ExperienceBarElement());
-		addElement(new JumpBarElement());
-		addElement(new ArmorElement());
-		addElement(new HealthElement());
-		addElement(new HungerElement());
-		addElement(new MountHealthElement());
-		addElement(new AirElement());
-		addElement(new StatusEffectsElement());
+		addEntry(new DefaultHotbarEntry());
+		addEntry(new DefaultExperienceBarEntry());
+		addEntry(new DefaultJumpBarEntry());
+		addEntry(new DefaultArmorEntry());
+		addEntry(new DefaultHealthEntry());
+		addEntry(new DefaultHungerEntry());
+		addEntry(new DefaultMountHealthEntry());
+		addEntry(new DefaultAirElementEntry());
+		addEntry(new DefaultStatusEffectsEntry());
 	}
 	
-	public HudElementGroup getElementGroup(HTIdentifier.Element identifier) {
+	public HudElementType getElementType(HTIdentifier.ElementType identifier) {
 		return elementGroupMap.get(identifier);
 	}
 
-	public HudElement getActiveElement(HTIdentifier.Element identifier) {
-		return getElementGroup(identifier).getActiveElement();
+	public HudElementEntry getActiveEntry(HTIdentifier.ElementType elementType) {
+		return getElementType(elementType).getActiveElement();
 	}
 	
-	public HudElement getElement(HTIdentifier identifier) {
-		return elementMap.get(identifier);
-	}
-	
-	public Collection<HudElementGroup> getElementGroups() {
+	public Collection<HudElementType> getElementTypes() {
 		return elementGroupMap.values();
 	}
 	
-	public Collection<HudElement> getElements() {
-		return elementMap.values();
-	}
-	
-	public void addElement(HudElement element) {
-		if (!element.getIdentifier().getElement().equals(RelativeTreeRootScreen.IDENTIFIER.getElement())) {
-			if (elementGroupMap.containsKey(element.getIdentifier().getElement())) {
-				getElementGroup(element.getIdentifier().getElement()).add(element);
+	public void addEntry(HudElementEntry element) {
+		if (!element.getIdentifier().getElementType().equals(RelativeTreeRootScreen.IDENTIFIER.getElementType())) {
+			if (elementGroupMap.containsKey(element.getIdentifier().getElementType())) {
+				getElementType(element.getIdentifier().getElementType()).add(element);
 			} else {
-				elementGroupMap.put(element.getIdentifier().getElement(), new HudElementGroup(element.getIdentifier().getElement(), element));
+				elementGroupMap.put(element.getIdentifier().getElementType(), new HudElementType(element.getIdentifier().getElementType(), element));
 			}
-			elementMap.put(element.getIdentifier(), element);
 		} else {
 			Util.LOGGER.error("Failed to add element: identifier \"screen\" is reserved");
 		}
@@ -81,9 +71,9 @@ public class ElementRegistry {
 		for (Entry<String, JsonElement> entry : json.getAsJsonObject().entrySet()) {
 			try {
 				// temporary element identifier to retrieve the group from a string representation
-				getElementGroup(new HTIdentifier.Element(entry.getKey(), null)).updateFromJson(entry.getValue());
+				getElementType(new HTIdentifier.ElementType(entry.getKey(), null)).updateFromJson(entry.getValue());
 			} catch (NullPointerException e) {
-				Util.LOGGER.error("Element specified in config doesn't exist in element map, skipping...", e);
+				Util.LOGGER.error("HudElementType specified in config doesn't exist in element map, skipping...", e);
 				continue;
 			}
 		}

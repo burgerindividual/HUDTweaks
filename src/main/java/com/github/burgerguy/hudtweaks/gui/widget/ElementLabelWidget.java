@@ -2,7 +2,7 @@ package com.github.burgerguy.hudtweaks.gui.widget;
 
 import org.jetbrains.annotations.Nullable;
 
-import com.github.burgerguy.hudtweaks.hud.element.HudElement;
+import com.github.burgerguy.hudtweaks.hud.element.HudElementEntry;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
@@ -19,7 +19,7 @@ public class ElementLabelWidget implements Drawable {
 	private final int x;
 	private final int y;
 	private final int maxWidth;
-	private HudElement element;
+	private HudElementEntry element;
 	
 	public ElementLabelWidget(int x, int y, int maxWidth) {
 		this.x = x;
@@ -34,11 +34,11 @@ public class ElementLabelWidget implements Drawable {
 		if (element == null) {
 			DrawableHelper.drawCenteredText(matrices, textRenderer, new TranslatableText("hudtweaks.options.current_element.blank.display").setStyle(STYLE), x, y, 0xCCB0B0B0);
 		} else {
-			DrawableHelper.drawCenteredText(matrices, textRenderer, new LiteralText(textRenderer.getTextHandler().trimToWidth(element.getIdentifier().getElement().toTranslatedString(), maxWidth, STYLE)).setStyle(STYLE), x, y, 0xCCFFFFFF);
+			DrawableHelper.drawCenteredText(matrices, textRenderer, new LiteralText(textRenderer.getTextHandler().trimToWidth(element.getIdentifier().getElementType().toTranslatedString(), maxWidth, STYLE)).setStyle(STYLE), x, y, 0xCCFFFFFF);
 		}
 	}
 	
-	public void setHudElement(@Nullable HudElement element) {
+	public void setHudElement(@Nullable HudElementEntry element) {
 		this.element = element;
 	}
 }

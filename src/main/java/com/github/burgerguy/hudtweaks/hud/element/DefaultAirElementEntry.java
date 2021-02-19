@@ -6,10 +6,10 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.MathHelper;
 
-public class MountHealthElement extends HudElement {
+public class DefaultAirElementEntry extends HudElementEntry {
 
-	public MountHealthElement() {
-		super(new HTIdentifier(new HTIdentifier.Element("mounthealth", "hudtweaks.element.mounthealth")), "onRidingHealthRowsChange");
+	public DefaultAirElementEntry() {
+		super(new HTIdentifier(new HTIdentifier.ElementType("air", "hudtweaks.element.air")), "onRidingHealthRowsChange");
 	}
 
 	@Override
@@ -19,18 +19,22 @@ public class MountHealthElement extends HudElement {
 
 	@Override
 	protected double calculateHeight(MinecraftClient client) {
-		int ridingHeartCount = 10;
+		return 9;
+	}
+	
+	private int getRidingHealthOffset(MinecraftClient client) {
 		Entity cameraEntity = client.getCameraEntity();
 		if (cameraEntity instanceof PlayerEntity) {
 			Entity ridingEntity = cameraEntity.getVehicle();
 			if (ridingEntity instanceof LivingEntity) {
 				LivingEntity livingEntity = (LivingEntity) ridingEntity;
 				if (livingEntity.isLiving()) {
-					ridingHeartCount = MathHelper.clamp((int) (livingEntity.getMaxHealth() + 0.5F) / 2, 0, 30);
+					int ridingHeartCount = MathHelper.clamp((int) (livingEntity.getMaxHealth() + 0.5F) / 2, 0, 30);
+					return ((int)Math.ceil(ridingHeartCount / 10.0D) - 1) * 10;
 				}
 			}
 		}
-		return Math.ceil(ridingHeartCount / 10.0D) * 9;
+		return 0;
 	}
 
 	@Override
@@ -40,7 +44,6 @@ public class MountHealthElement extends HudElement {
 
 	@Override
 	protected double calculateDefaultY(MinecraftClient client) {
-		// TODO: i think we can do getHeight here instead of getRawHeight, check this
-		return client.getWindow().getScaledHeight() - 30 - getHeight(client);
+		return client.getWindow().getScaledHeight() - 49 - getRidingHealthOffset(client);
 	}	
 }

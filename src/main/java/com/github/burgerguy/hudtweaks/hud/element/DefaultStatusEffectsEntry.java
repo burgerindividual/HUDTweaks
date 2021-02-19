@@ -9,11 +9,11 @@ import net.minecraft.client.resource.language.I18n;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.text.TranslatableText;
 
-public class StatusEffectsElement extends HudElement {
+public class DefaultStatusEffectsEntry extends HudElementEntry {
 	private boolean vertical;
 	
-	public StatusEffectsElement() {
-		super(new HTIdentifier(new HTIdentifier.Element("statuseffects", "hudtweaks.element.statuseffects")), "onStatusEffectsChange");
+	public DefaultStatusEffectsEntry() {
+		super(new HTIdentifier(new HTIdentifier.ElementType("statuseffects", "hudtweaks.element.statuseffects")), "onStatusEffectsChange");
 	}
 	
 	@Override

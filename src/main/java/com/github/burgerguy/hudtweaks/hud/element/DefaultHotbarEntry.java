@@ -5,10 +5,10 @@ import net.minecraft.client.options.AttackIndicator;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 
-public class HotbarElement extends HudElement {
+public class DefaultHotbarEntry extends HudElementEntry {
 
-	public HotbarElement() {
-		super(new HTIdentifier(new HTIdentifier.Element("hotbar", "hudtweaks.element.hotbar")), "onOffhandStatusChange", "onHotbarAttackIndicatorChange");
+	public DefaultHotbarEntry() {
+		super(new HTIdentifier(new HTIdentifier.ElementType("hotbar", "hudtweaks.element.hotbar")), "onOffhandStatusChange", "onHotbarAttackIndicatorChange");
 	}
 	
 	private int getAttackIndicatorOffset(MinecraftClient client) {

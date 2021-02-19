@@ -7,7 +7,7 @@ import com.github.burgerguy.hudtweaks.hud.YAxisNode;
 import net.minecraft.client.MinecraftClient;
 
 public final class RelativeTreeRootScreen extends RelativeTreeNode {
-	public static final HTIdentifier IDENTIFIER = new HTIdentifier(new HTIdentifier.Element("screen", "hudtweaks.element.screen"));
+	public static final HTIdentifier IDENTIFIER = new HTIdentifier(new HTIdentifier.ElementType("screen", "hudtweaks.element.screen"));
 
 	public RelativeTreeRootScreen() {
 		super(IDENTIFIER, "onScreenBoundsChange");

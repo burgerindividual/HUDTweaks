@@ -10,11 +10,11 @@ import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.math.MathHelper;
 
-public class HealthElement extends HudElement {
+public class DefaultHealthEntry extends HudElementEntry {
 	private boolean flipped;
 
-	public HealthElement() {
-		super(new HTIdentifier(new HTIdentifier.Element("health", "hudtweaks.element.health")), "onHealthRowsChange");
+	public DefaultHealthEntry() {
+		super(new HTIdentifier(new HTIdentifier.ElementType("health", "hudtweaks.element.health")), "onHealthRowsChange");
 	}
 
 	@Override

@@ -5,7 +5,7 @@ import org.lwjgl.glfw.GLFW;
 
 import com.github.burgerguy.hudtweaks.hud.XAxisNode;
 import com.github.burgerguy.hudtweaks.hud.YAxisNode;
-import com.github.burgerguy.hudtweaks.hud.element.HudElement.PosType;
+import com.github.burgerguy.hudtweaks.hud.element.HudElementEntry.PosType;
 import com.github.burgerguy.hudtweaks.util.gl.DashedBoxOutline;
 import com.github.burgerguy.hudtweaks.util.gl.GLUtil;
 
@@ -22,7 +22,7 @@ public class HudElementWidget implements Drawable, Element, AutoCloseable, Compa
 	private static final float TICKS_PER_SHIFT = (20.0F / 4.0F);
 	private static final byte PATTERN_LENGTH = 4;
 	
-	private final HudElement element;
+	private final HudElementEntry element;
 	private final Runnable valueUpdater;
 	private final DashedBoxOutline dashedBoxOutline = new DashedBoxOutline();
 	
@@ -32,7 +32,7 @@ public class HudElementWidget implements Drawable, Element, AutoCloseable, Compa
 	private boolean lastChildFocused;
 	private boolean lastElementRendered;
 	
-	protected HudElementWidget(HudElement element, @Nullable Runnable valueUpdater) {
+	protected HudElementWidget(HudElementEntry element, @Nullable Runnable valueUpdater) {
 		this.element = element;
 		this.valueUpdater = valueUpdater;
 	}
@@ -124,15 +124,15 @@ public class HudElementWidget implements Drawable, Element, AutoCloseable, Compa
 	
 	private boolean isChildFocused() {
 		for(XAxisNode node : element.getXChildren()) {
-			if (node instanceof HudElement) {
-				HudElement element = ((HudElement) node);
+			if (node instanceof HudElementEntry) {
+				HudElementEntry element = ((HudElementEntry) node);
 				if (element.getWidget().isFocused() && element.getXPosType().equals(PosType.RELATIVE)) return true;
 			}
 		}
 		
 		for(YAxisNode node : element.getYChildren()) {
-			if (node instanceof HudElement) {
-				HudElement element = ((HudElement) node);
+			if (node instanceof HudElementEntry) {
+				HudElementEntry element = ((HudElementEntry) node);
 				if (element.getWidget().isFocused() && element.getYPosType().equals(PosType.RELATIVE)) return true;
 			}
 		}
@@ -144,7 +144,7 @@ public class HudElementWidget implements Drawable, Element, AutoCloseable, Compa
 		return focused;
 	}
 	
-	public HudElement getElement() {
+	public HudElementEntry getElement() {
 		return element;
 	}
 	
@@ -152,7 +152,7 @@ public class HudElementWidget implements Drawable, Element, AutoCloseable, Compa
 	@Override
 	public int compareTo(HudElementWidget other) {
 		MinecraftClient client = MinecraftClient.getInstance();
-		HudElement otherElement = other.getElement();
+		HudElementEntry otherElement = other.getElement();
 		return Double.compare(
 				element.getWidth(client) * element.getHeight(client),
 				otherElement.getWidth(client) * otherElement.getHeight(client)

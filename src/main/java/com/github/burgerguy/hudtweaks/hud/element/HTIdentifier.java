@@ -7,38 +7,38 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.client.resource.language.I18n;
 
 public class HTIdentifier {
-	private final Element element;
+	private final ElementType element;
 	private final Namespace namespace;
-	private final Type type;
+	private final EntryName type;
 	
 	/**
 	 * Uses the hudtweaks namespace and default type.
 	 */
-	protected HTIdentifier(Element element) {
-		this(element, Namespace.HUDTWEAKS, Type.DEFAULT);
+	protected HTIdentifier(ElementType element) {
+		this(element, Namespace.HUDTWEAKS, EntryName.DEFAULT);
 	}
 	
 	/**
 	 * Uses the hudtweaks namespace.
 	 */	
-	public HTIdentifier(Element element, Type type) {
+	public HTIdentifier(ElementType element, EntryName type) {
 		this(element, Namespace.HUDTWEAKS, type);
 	}
 	
 	/**
 	 * Uses the default type.
 	 */
-	public HTIdentifier(Element element, Namespace namespace) {
-		this(element, namespace, Type.DEFAULT);
+	public HTIdentifier(ElementType element, Namespace namespace) {
+		this(element, namespace, EntryName.DEFAULT);
 	}
 	
-	public HTIdentifier(Element element, Namespace namespace, Type type) {
+	public HTIdentifier(ElementType element, Namespace namespace, EntryName type) {
 		this.namespace = namespace;
 		this.element = element;
 		this.type = type;
 	}
 	
-	public Element getElement() {
+	public ElementType getElementType() {
 		return element;
 	}
 
@@ -46,7 +46,7 @@ public class HTIdentifier {
 		return namespace;
 	}
 
-	public Type getType() {
+	public EntryName getType() {
 		return type;
 	}
 
@@ -65,33 +65,33 @@ public class HTIdentifier {
 	}
 	
 	/**
-	 * Used to identify the element. For example, the health bar's
+	 * Used to identify the element type. For example, the health bar's
 	 * identifier would be "health".
 	 */
-	public static class Element {
-		private final String element;
+	public static class ElementType {
+		private final String elementType;
 		private transient final String translationKey;
 		
-		public Element(String element, @Nullable String translationKey) {
-			this.element = element;
+		public ElementType(String element, @Nullable String translationKey) {
+			this.elementType = element;
 			this.translationKey = translationKey;
 		}
 		
 		public boolean equals(Object obj) {
-			if (!(obj instanceof Element)) return false;
-			return this.element.equals(((Element) obj).element);
+			if (!(obj instanceof ElementType)) return false;
+			return this.elementType.equals(((ElementType) obj).elementType);
 		}
 		
 		public String toString() {
-			return element;
+			return elementType;
 		}
 		
 		public String toTranslatedString() {
-			return translationKey != null && I18n.hasTranslation(translationKey) ? I18n.translate(translationKey) : element;
+			return translationKey != null && I18n.hasTranslation(translationKey) ? I18n.translate(translationKey) : elementType;
 		}
 		
 		public int hashCode() {
-			return element.hashCode();
+			return elementType.hashCode();
 		}
 	}
 	
@@ -139,37 +139,37 @@ public class HTIdentifier {
 	
 	
 	/**
-	 * Used to identify the type of the element. Should be short and
+	 * Used to identify an entry of an element type. Should be short and
 	 * simple. The default type if one isn't provided is "default". This
 	 * really only should be used when one mod has multiple replacements
 	 * for one element. Acceptible types could be "type1" or "type2", but
 	 * it's better to give greater detail like "vertical' or "extended".
 	 */
-	public static class Type {
-		public transient static final Type DEFAULT = new Type("default", "hudtweaks.element.type.default");
-		private final String type;
+	public static class EntryName {
+		public transient static final EntryName DEFAULT = new EntryName("default", "hudtweaks.element.type.default");
+		private final String entryName;
 		private transient final String translationKey;
 		
-		public Type(String type, @Nullable String translationKey) {
-			this.type = type;
+		public EntryName(String entryName, @Nullable String translationKey) {
+			this.entryName = entryName;
 			this.translationKey = translationKey;
 		}
 		
 		public boolean equals(Object obj) {
-			if (!(obj instanceof Type)) return false;
-			return this.type.equals(((Type) obj).type);
+			if (!(obj instanceof EntryName)) return false;
+			return this.entryName.equals(((EntryName) obj).entryName);
 		}
 		
 		public String toString() {
-			return type;
+			return entryName;
 		}
 		
 		public String toTranslatedString() {
-			return translationKey != null && I18n.hasTranslation(translationKey) ? I18n.translate(translationKey) : type;
+			return translationKey != null && I18n.hasTranslation(translationKey) ? I18n.translate(translationKey) : entryName;
 		}
 		
 		public int hashCode() {
-			return type.hashCode();
+			return entryName.hashCode();
 		}
 	}
 }

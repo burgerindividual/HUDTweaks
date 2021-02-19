@@ -1,5 +1,5 @@
 package com.github.burgerguy.hudtweaks.hud.element;
 
-public class TitleElement {
+public class DefaultTitleEntry {
 	// TODO (for both title and subtitle)
 }
