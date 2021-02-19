@@ -18,7 +18,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.MathHelper;
 
 public enum DefaultUpdateEvents {
-	;
+	; // no instantiation, all contents static
 	
 	public static final Set<UpdateEvent> EVENTS = ImmutableSet.of(
 		new UpdateEvent() {

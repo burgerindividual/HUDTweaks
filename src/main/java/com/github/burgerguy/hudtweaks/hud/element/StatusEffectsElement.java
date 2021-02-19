@@ -13,7 +13,7 @@ public class StatusEffectsElement extends HudElement {
 	private boolean vertical;
 	
 	public StatusEffectsElement() {
-		super("statuseffects", "onStatusEffectsChange");
+		super(new HTIdentifier(new HTIdentifier.Element("statuseffects", "hudtweaks.element.statuseffects")), "onStatusEffectsChange");
 	}
 	
 	@Override

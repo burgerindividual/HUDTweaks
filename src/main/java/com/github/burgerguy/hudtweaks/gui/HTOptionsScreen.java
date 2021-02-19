@@ -48,7 +48,7 @@ public class HTOptionsScreen extends Screen {
 	}
 	
 	@Override
-	protected void init() {
+	protected void init() { // TODO: add type selector in global elements that only displays when needed
 		super.init();
 		
 		// normal drawables are cleared already when setFocused(null) is invoked before

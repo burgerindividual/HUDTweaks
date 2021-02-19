@@ -52,7 +52,7 @@ public abstract class HudElement extends RelativeTreeNode {
 	protected transient Boolean drawTestResult;
 	protected transient boolean drawTestedSinceClear;
 	
-	public HudElement(String identifier, String... updateEvents) {
+	public HudElement(HTIdentifier identifier, String... updateEvents) {
 		super(identifier, updateEvents);
 		// we have to create the draw test here because
 		// it has to be on the render thread and it has
@@ -221,7 +221,7 @@ public abstract class HudElement extends RelativeTreeNode {
 		JsonElement parentIdentifier = xPosJson.get("parent");
 		if (parentIdentifier != null && parentIdentifier.isJsonPrimitive() && parentIdentifier.getAsJsonPrimitive().isString()) {
 			String relativeParentIdentifier = parentIdentifier.getAsString();
-			XAxisNode parentNode = HudContainer.getElement(relativeParentIdentifier);
+			XAxisNode parentNode = HudContainer.getActiveElement(relativeParentIdentifier);
 			if(parentNode != null) {
 				moveXUnder(parentNode);
 			}
@@ -235,7 +235,7 @@ public abstract class HudElement extends RelativeTreeNode {
 		parentIdentifier = yPosJson.get("parent");
 		if (parentIdentifier != null && parentIdentifier.isJsonPrimitive() && parentIdentifier.getAsJsonPrimitive().isString()) {
 			String relativeParentIdentifier = parentIdentifier.getAsString();
-			YAxisNode parentNode = HudContainer.getElement(relativeParentIdentifier);
+			YAxisNode parentNode = HudContainer.getActiveElement(relativeParentIdentifier);
 			if(parentNode != null) {
 				moveYUnder(parentNode);
 			}

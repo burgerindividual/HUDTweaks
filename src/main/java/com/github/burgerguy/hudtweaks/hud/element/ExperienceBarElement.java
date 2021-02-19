@@ -12,7 +12,7 @@ public class ExperienceBarElement extends HudElement {
 	private boolean forceDisplay;
 
 	public ExperienceBarElement() {
-		super("expbar");
+		super(new HTIdentifier(new HTIdentifier.Element("expbar", "hudtweaks.element.expbar")));
 	}
 
 	@Override

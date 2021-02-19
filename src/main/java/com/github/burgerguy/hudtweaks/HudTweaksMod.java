@@ -15,7 +15,6 @@ public class HudTweaksMod implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		HudContainer.init();
-		ConfigHelper.tryLoadConfig();
 		FabricLoader.getInstance().getEntrypointContainers("hudtweaks", HudTweaksApi.class).forEach(e -> {
 			HudTweaksApi apiImpl = e.getEntrypoint();
 			apiImpl.onInitialize();
@@ -25,9 +24,10 @@ public class HudTweaksMod implements ClientModInitializer {
 			}
 			
 			for (HudElement element : apiImpl.getCustomElements()) {
-				HudContainer.addElement(element.getIdentifier(), element);
+				HudContainer.getElementRegistry().addElement(element);
 			}
 		});
+		ConfigHelper.tryLoadConfig();
 	}
 	
 }

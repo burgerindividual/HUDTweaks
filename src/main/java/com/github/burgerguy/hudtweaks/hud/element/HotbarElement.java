@@ -8,7 +8,7 @@ import net.minecraft.entity.player.PlayerEntity;
 public class HotbarElement extends HudElement {
 
 	public HotbarElement() {
-		super("hotbar", "onOffhandStatusChange", "onHotbarAttackIndicatorChange");
+		super(new HTIdentifier(new HTIdentifier.Element("hotbar", "hudtweaks.element.hotbar")), "onOffhandStatusChange", "onHotbarAttackIndicatorChange");
 	}
 	
 	private int getAttackIndicatorOffset(MinecraftClient client) {

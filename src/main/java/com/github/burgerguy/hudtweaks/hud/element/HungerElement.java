@@ -12,7 +12,7 @@ public class HungerElement extends HudElement {
 	private boolean forceDisplay;
 
 	public HungerElement() {
-		super("hunger");
+		super(new HTIdentifier(new HTIdentifier.Element("hunger", "hudtweaks.element.hunger")));
 	}
 
 	@Override

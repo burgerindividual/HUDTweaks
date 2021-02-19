@@ -5,7 +5,7 @@ import net.minecraft.client.MinecraftClient;
 public class JumpBarElement extends HudElement {
 	
 	public JumpBarElement() {
-		super("jumpbar");
+		super(new HTIdentifier(new HTIdentifier.Element("jumpbar", "hudtweaks.element.jumpbar")));
 	}
 
 	@Override

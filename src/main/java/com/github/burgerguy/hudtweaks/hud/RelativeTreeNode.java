@@ -5,12 +5,13 @@ import java.util.Set;
 
 import org.jetbrains.annotations.Nullable;
 
+import com.github.burgerguy.hudtweaks.hud.element.HTIdentifier;
 import com.github.burgerguy.hudtweaks.util.Util;
 
 import net.minecraft.client.MinecraftClient;
 
 public abstract class RelativeTreeNode implements XAxisNode, YAxisNode {
-	private transient final String identifier;
+	private transient final HTIdentifier identifier;
 	protected transient final Set<UpdateEvent> updateEvents = new HashSet<>();
 	protected transient XAxisNode xParent;
 	protected transient YAxisNode yParent;
@@ -19,7 +20,7 @@ public abstract class RelativeTreeNode implements XAxisNode, YAxisNode {
 	
 	private transient boolean requiresUpdate;
 	
-	public RelativeTreeNode(String identifier, String... updateEvents) {
+	public RelativeTreeNode(HTIdentifier identifier, String... updateEvents) {
 		this.identifier = identifier;
 		for (String eventIdentifier : updateEvents) {
 			UpdateEvent event = HudContainer.getEventRegistry().get(eventIdentifier);
@@ -33,7 +34,7 @@ public abstract class RelativeTreeNode implements XAxisNode, YAxisNode {
 	}
 	
 	@Override
-	public String getIdentifier() {
+	public final HTIdentifier getIdentifier() {
 		return identifier;
 	}
 	

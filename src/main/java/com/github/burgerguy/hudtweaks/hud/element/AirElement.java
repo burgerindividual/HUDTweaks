@@ -9,7 +9,7 @@ import net.minecraft.util.math.MathHelper;
 public class AirElement extends HudElement {
 
 	public AirElement() {
-		super("air", "onRidingHealthRowsChange");
+		super(new HTIdentifier(new HTIdentifier.Element("air", "hudtweaks.element.air")), "onRidingHealthRowsChange");
 	}
 
 	@Override

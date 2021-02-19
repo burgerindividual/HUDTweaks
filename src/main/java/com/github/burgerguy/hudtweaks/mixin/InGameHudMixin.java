@@ -118,7 +118,7 @@ public abstract class InGameHudMixin extends DrawableHelper {
 			ordinal = 19,
 			at = @At(value = "JUMP", opcode = Opcodes.IF_ICMPGT))
 	private int flipHealthStackDirection(int healthPos) {
-		if (((HealthElement) HudContainer.getElement("health")).isFlipped()) {
+		if (((HealthElement) HudContainer.getActiveElement("health")).isFlipped()) {
 			int originalHealthPos = client.getWindow().getScaledHeight() - 39;
 			return originalHealthPos + originalHealthPos - healthPos;
 		} else {
@@ -131,7 +131,7 @@ public abstract class InGameHudMixin extends DrawableHelper {
 			ordinal = 11,
 			at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/client/gui/hud/InGameHud;getHeartCount(Lnet/minecraft/entity/LivingEntity;)I"))
 	private int forceRenderHunger(int mountHealth) {
-		if (((HungerElement) HudContainer.getElement("hunger")).getForceDisplay()) {
+		if (((HungerElement) HudContainer.getActiveElement("hunger")).getForceDisplay()) {
 			return 0;
 		} else {
 			return mountHealth;
@@ -186,7 +186,7 @@ public abstract class InGameHudMixin extends DrawableHelper {
 		// Typically, when the jump bar is visible it hides the experience bar. When
 		// the exp bar is set to force display, we can just do it here as the only
 		// time it's hidden (aside from F1) is when the jump bar is rendering.
-		if (((ExperienceBarElement) HudContainer.getElement("expbar")).getForceDisplay()) {
+		if (((ExperienceBarElement) HudContainer.getActiveElement("expbar")).getForceDisplay()) {
 			renderExperienceBar(matrices, x);
 		}
 		
@@ -238,7 +238,7 @@ public abstract class InGameHudMixin extends DrawableHelper {
 					ordinal = 2,
 					at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/effect/StatusEffectInstance;isAmbient()Z"))
 	private int modifyStatusEffectX(int x, MatrixStack maxtixStack) {
-		if (((StatusEffectsElement) HudContainer.getElement("statuseffects")).isVertical()) {
+		if (((StatusEffectsElement) HudContainer.getActiveElement("statuseffects")).isVertical()) {
 			return client.getWindow().getScaledWidth() - STATUS_EFFECT_OFFSET + preY - postY;
 		} else {
 			return x;
@@ -249,7 +249,7 @@ public abstract class InGameHudMixin extends DrawableHelper {
 					ordinal = 3,
 					at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/effect/StatusEffectInstance;isAmbient()Z"))
 	private int modifyStatusEffectY(int y, MatrixStack maxtixStack) {
-		if (((StatusEffectsElement) HudContainer.getElement("statuseffects")).isVertical()) {
+		if (((StatusEffectsElement) HudContainer.getActiveElement("statuseffects")).isVertical()) {
 			return preY + client.getWindow().getScaledWidth() - postX - STATUS_EFFECT_OFFSET;
 		} else {
 			return y;

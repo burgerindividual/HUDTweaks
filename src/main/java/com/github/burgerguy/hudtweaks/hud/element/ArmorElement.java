@@ -7,7 +7,7 @@ import net.minecraft.util.math.MathHelper;
 public class ArmorElement extends HudElement {
 	
 	public ArmorElement() {
-		super("armor", "onHealthRowsChange");
+		super(new HTIdentifier(new HTIdentifier.Element("armor", "hudtweaks.element.armor")), "onHealthRowsChange");
 	}
 	
 	@Override

@@ -6,6 +6,7 @@ import java.util.function.Consumer;
 
 import com.github.burgerguy.hudtweaks.hud.HudContainer;
 import com.github.burgerguy.hudtweaks.hud.XAxisNode;
+import com.github.burgerguy.hudtweaks.hud.element.HTIdentifier;
 
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
@@ -13,14 +14,14 @@ import net.minecraft.text.TranslatableText;
 public class XAxisParentButtonWidget extends HTButtonWidget {
 	private final Consumer<XAxisNode> onClick;
 	
-	private final Map<String, XAxisNode> innerMap = new LinkedHashMap<>();
-	private final String[] keyHelper;
+	private final Map<HTIdentifier, XAxisNode> innerMap = new LinkedHashMap<>();
+	private final HTIdentifier[] keyHelper;
 	private int currentIndex;
 	
 	public XAxisParentButtonWidget(int x, int y, int width, int height, XAxisNode currentParentNode, XAxisNode thisNode, Consumer<XAxisNode> onClick) {
 		super(x, y, width, height, createMessage(currentParentNode));
 		recurseAddNode(HudContainer.getScreenRoot(), thisNode);
-		keyHelper = innerMap.keySet().toArray(new String[innerMap.size()]);
+		keyHelper = innerMap.keySet().toArray(new HTIdentifier[innerMap.size()]);
 		for (; currentIndex < keyHelper.length; currentIndex++) {
 			if (keyHelper[currentIndex].equals(currentParentNode.getIdentifier()))
 				break;

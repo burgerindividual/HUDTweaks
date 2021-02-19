@@ -2,10 +2,12 @@ package com.github.burgerguy.hudtweaks.hud;
 
 import java.util.Set;
 
+import com.github.burgerguy.hudtweaks.hud.element.HTIdentifier;
+
 import net.minecraft.client.MinecraftClient;
 
 public interface XAxisNode {	
-	public String getIdentifier();
+	public HTIdentifier getIdentifier();
 	
 	public XAxisNode getXParent();
 	public Set<XAxisNode> getXChildren();

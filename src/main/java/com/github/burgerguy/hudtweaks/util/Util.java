@@ -17,7 +17,7 @@ import com.google.gson.JsonParser;
  * For small utilities that don't need their own class.
  */
 public enum Util {
-	;
+	; // no instantiation, all contents static
 	
 	public static final Gson GSON;
 	public static final JsonParser JSON_PARSER = new JsonParser();

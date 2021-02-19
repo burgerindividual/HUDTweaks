@@ -14,7 +14,7 @@ public class HealthElement extends HudElement {
 	private boolean flipped;
 
 	public HealthElement() {
-		super("health", "onHealthRowsChange");
+		super(new HTIdentifier(new HTIdentifier.Element("health", "hudtweaks.element.health")), "onHealthRowsChange");
 	}
 
 	@Override

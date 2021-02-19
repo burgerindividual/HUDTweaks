@@ -1,9 +1,13 @@
-package com.github.burgerguy.hudtweaks.hud;
+package com.github.burgerguy.hudtweaks.hud.element;
+
+import com.github.burgerguy.hudtweaks.hud.RelativeTreeNode;
+import com.github.burgerguy.hudtweaks.hud.XAxisNode;
+import com.github.burgerguy.hudtweaks.hud.YAxisNode;
 
 import net.minecraft.client.MinecraftClient;
 
 public final class RelativeTreeRootScreen extends RelativeTreeNode {
-	public static final String IDENTIFIER = "screen";
+	public static final HTIdentifier IDENTIFIER = new HTIdentifier(new HTIdentifier.Element("screen", "hudtweaks.element.screen"));
 
 	public RelativeTreeRootScreen() {
 		super(IDENTIFIER, "onScreenBoundsChange");

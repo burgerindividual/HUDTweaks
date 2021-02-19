@@ -13,7 +13,7 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.Matrix4f;
 
 public enum GLUtil {
-	;
+	; // no instantiation, all contents static
 
 	public static void drawBoxOutline(MatrixStack matrices, double x1, double y1, double x2, double y2, int color, float width) {
 		double j;
