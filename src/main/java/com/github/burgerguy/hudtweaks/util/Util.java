@@ -7,9 +7,9 @@ import java.util.Collection;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.github.burgerguy.hudtweaks.hud.ElementRegistry;
 import com.github.burgerguy.hudtweaks.hud.HTIdentifier;
 import com.github.burgerguy.hudtweaks.hud.HTIdentifier.Namespace;
-import com.github.burgerguy.hudtweaks.hud.element.HudElementEntry;
 import com.github.burgerguy.hudtweaks.util.json.ElementRegistrySerializer;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -33,7 +33,7 @@ public enum Util {
 	public static boolean SHOULD_COMPENSATE_FOR_MODMENU_BUTTON = false;
 	
 	static {
-		GSON = new GsonBuilder().setPrettyPrinting().registerTypeHierarchyAdapter(HudElementEntry.class, new ElementRegistrySerializer()).create();
+		GSON = new GsonBuilder().setPrettyPrinting().registerTypeHierarchyAdapter(ElementRegistry.class, new ElementRegistrySerializer()).create();
 	}
 	
 	public static <T> boolean containsNotNull(Collection<T> collection, T item) {
