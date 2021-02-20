@@ -42,12 +42,12 @@ public class ElementRegistry {
 		addEntry(new DefaultStatusEffectsEntry());
 	}
 	
-	public HudElementType getElementType(HTIdentifier.ElementType identifier) {
-		return elementGroupMap.get(identifier);
+	public HudElementType getElementType(HTIdentifier.ElementType elementIdentifier) {
+		return elementGroupMap.get(elementIdentifier);
 	}
 
-	public HudElementEntry getActiveEntry(HTIdentifier.ElementType elementType) {
-		return (HudElementEntry) getElementType(elementType).getActiveEntry();
+	public HudElementEntry getActiveEntry(HTIdentifier.ElementType elementIdentifier) {
+		return getElementType(elementIdentifier).getActiveEntry();
 	}
 	
 	public Collection<HudElementType> getElementTypes() {

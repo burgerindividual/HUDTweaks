@@ -26,17 +26,17 @@ public abstract class AbstractTypeNode {
 		return elementIdentifier;
 	}
 	
-	public Set<AbstractTypeNode> getXChildren() {
+	public Set<? extends AbstractTypeNode> getXChildren() {
 		return xTreeChildren;
 	}
 	
-	public Set<AbstractTypeNode> getYChildren() {
+	public Set<? extends AbstractTypeNode> getYChildren() {
 		return yTreeChildren;
 	}
 	
-	public abstract AbstractTypeNodeEntry getActiveEntry();
+	public abstract <T extends AbstractTypeNodeEntry> T getActiveEntry();
 	
-	public abstract List<AbstractTypeNodeEntry> getRawEntryList();
+	public abstract List<? extends AbstractTypeNodeEntry> getRawEntryList();
 	
 	/**
 	 * Passing null to the UpdateEvent will try a manual update.

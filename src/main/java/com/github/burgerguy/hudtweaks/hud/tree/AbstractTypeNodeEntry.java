@@ -34,6 +34,10 @@ public abstract class AbstractTypeNodeEntry {
 		this.parentNode = parentNode;
 	}
 	
+	public AbstractTypeNode getParentNode() {
+		return parentNode;
+	}
+	
 	public final HTIdentifier getIdentifier() {
 		return identifier;
 	}
@@ -51,7 +55,7 @@ public abstract class AbstractTypeNodeEntry {
 			if (newXParent.equals(xTreeParent)) return;
 			xTreeParent.getXChildren().remove(parentNode);
 		}
-		newXParent.getXChildren().add(parentNode);
+		newXParent.xTreeChildren.add(parentNode);
 		xTreeParent = newXParent;
 		parentNode.setRequiresUpdate();
 	}
@@ -61,7 +65,7 @@ public abstract class AbstractTypeNodeEntry {
 			if (newYParent.equals(yTreeParent)) return;
 			yTreeParent.getYChildren().remove(parentNode);
 		}
-		newYParent.getYChildren().add(parentNode);
+		newYParent.yTreeChildren.add(parentNode);
 		yTreeParent = newYParent;
 		parentNode.setRequiresUpdate();
 	}

@@ -4,9 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
 
+import org.jetbrains.annotations.Nullable;
+
 import com.github.burgerguy.hudtweaks.hud.HTIdentifier;
 import com.github.burgerguy.hudtweaks.hud.tree.AbstractTypeNode;
-import com.github.burgerguy.hudtweaks.hud.tree.AbstractTypeNodeEntry;
 import com.github.burgerguy.hudtweaks.util.Util;
 import com.google.gson.JsonElement;
 
@@ -14,8 +15,10 @@ import net.minecraft.util.math.MathHelper;
 
 public class HudElementType extends AbstractTypeNode { // TODO: somehow fit this for RelativeTreeNode
 	private transient final HTIdentifier.ElementType elementIdentifier;
-	private final List<AbstractTypeNodeEntry> entries = new ArrayList<>();
+	private final List<HudElementEntry> entries = new ArrayList<>();
 	private transient int activeIndex;
+	
+	protected transient HudElementWidget widget;
 	
 	public HudElementType(HTIdentifier.ElementType elementIdentifier) {
 		super(elementIdentifier);
@@ -30,14 +33,15 @@ public class HudElementType extends AbstractTypeNode { // TODO: somehow fit this
 		}
 	}
 	
-	public AbstractTypeNodeEntry getActiveEntry() {
+	@SuppressWarnings("unchecked")
+	public HudElementEntry getActiveEntry() {
 		return entries.get(activeIndex);
 	}
 	
 	/**
 	 * Should only be used for profile saving and loading.
 	 */
-	public List<AbstractTypeNodeEntry> getRawEntryList() {
+	public List<HudElementEntry> getRawEntryList() {
 		return entries;
 	}
 	
@@ -78,8 +82,7 @@ public class HudElementType extends AbstractTypeNode { // TODO: somehow fit this
 			
 			String[] identifiers = jsonEntry.getKey().split(":");
 			boolean foundEntry = false;
-			for (AbstractTypeNodeEntry abstractEntry : entries) {
-				HudElementEntry entry = (HudElementEntry) abstractEntry;
+			for (HudElementEntry entry : entries) {
 				HTIdentifier id = entry.getIdentifier();
 				if (id.getNamespace().toString().equals(identifiers[0]) && id.getEntryName().toString().equals(identifiers[1])) {
 					entry.updateFromJson(jsonEntry.getValue());
@@ -90,5 +93,14 @@ public class HudElementType extends AbstractTypeNode { // TODO: somehow fit this
 			
 			if (!foundEntry) Util.LOGGER.error("Entry specified in config doesn't exist in entry map, skipping...");
 		}
+	}
+	
+	@Nullable
+	public HudElementWidget getWidget() {
+		return widget;
+	}
+	
+	public HudElementWidget createWidget(@Nullable Runnable valueUpdater) {
+		return widget = new HudElementWidget(this, valueUpdater);
 	}
 }

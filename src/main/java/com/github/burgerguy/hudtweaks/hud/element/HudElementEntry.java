@@ -1,14 +1,11 @@
 package com.github.burgerguy.hudtweaks.hud.element;
 
-import org.jetbrains.annotations.Nullable;
-
 import com.github.burgerguy.hudtweaks.gui.widget.HTLabelWidget;
 import com.github.burgerguy.hudtweaks.gui.widget.HTSliderWidget;
 import com.github.burgerguy.hudtweaks.gui.widget.NumberFieldWidget;
+import com.github.burgerguy.hudtweaks.gui.widget.ParentButtonWidget;
 import com.github.burgerguy.hudtweaks.gui.widget.PosTypeButtonWidget;
 import com.github.burgerguy.hudtweaks.gui.widget.SidebarWidget;
-import com.github.burgerguy.hudtweaks.gui.widget.XAxisParentButtonWidget;
-import com.github.burgerguy.hudtweaks.gui.widget.YAxisParentButtonWidget;
 import com.github.burgerguy.hudtweaks.hud.HTIdentifier;
 import com.github.burgerguy.hudtweaks.hud.HudContainer;
 import com.github.burgerguy.hudtweaks.hud.tree.AbstractTypeNodeEntry;
@@ -46,7 +43,6 @@ public abstract class HudElementEntry extends AbstractTypeNodeEntry {
 	protected transient double cachedY;
 	// TODO: add rotation using the already existing anchor points.
 	
-	protected transient HudElementWidget widget;
 	protected transient DrawTest drawTest;
 	protected transient Boolean drawTestResult;
 	protected transient boolean drawTestedSinceClear;
@@ -258,9 +254,9 @@ public abstract class HudElementEntry extends AbstractTypeNodeEntry {
 	 */
 	@SuppressWarnings("resource")
 	public void fillSidebar(SidebarWidget sidebar) {
-		XAxisParentButtonWidget xRelativeParentButton = new XAxisParentButtonWidget(4, 35, sidebar.width - 8, 14, getXParent(), this, p -> moveXUnder(p));
+		ParentButtonWidget xRelativeParentButton = new ParentButtonWidget(4, 35, sidebar.width - 8, 14, getXParent(), getParentNode(), p -> moveXUnder(p), true);
 		
-		YAxisParentButtonWidget yRelativeParentButton = new YAxisParentButtonWidget(4, 143, sidebar.width - 8, 14, getYParent(), this, p -> moveYUnder(p));
+		ParentButtonWidget yRelativeParentButton = new ParentButtonWidget(4, 143, sidebar.width - 8, 14, getYParent(), getParentNode(), p -> moveYUnder(p), false);
 		
 		xRelativeParentButton.active = !xPosType.equals(PosType.DEFAULT);
 		yRelativeParentButton.active = !yPosType.equals(PosType.DEFAULT);
@@ -514,15 +510,6 @@ public abstract class HudElementEntry extends AbstractTypeNodeEntry {
 	 */
 	public int getSidebarOptionsHeight() {
 		return 265;
-	}
-	
-	@Nullable
-	public HudElementWidget getWidget() {
-		return widget;
-	}
-	
-	public HudElementWidget createWidget(@Nullable Runnable valueUpdater) {
-		return widget = new HudElementWidget(this, valueUpdater);
 	}
 	
 }

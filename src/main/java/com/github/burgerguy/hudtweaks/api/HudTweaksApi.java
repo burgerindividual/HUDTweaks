@@ -24,9 +24,9 @@ public interface HudTweaksApi {
 	}
 	
 	/**
-	 * Each of the CustomHudElements must have a MatrixUpdater so it
+	 * Each of the CustomHudElementEntry must have a MatrixUpdater so it
 	 * can update the matricies before and after the render of the
-	 * element.
+	 * entry.
 	 */
-	public Collection<CustomHudElement> getCustomElements();
+	public Collection<CustomHudElementEntry> getCustomElementEntries();
 }

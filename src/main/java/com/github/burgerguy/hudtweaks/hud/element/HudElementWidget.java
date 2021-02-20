@@ -4,8 +4,7 @@ import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
 import com.github.burgerguy.hudtweaks.hud.element.HudElementEntry.PosType;
-import com.github.burgerguy.hudtweaks.hud.tree.XAxisNode;
-import com.github.burgerguy.hudtweaks.hud.tree.YAxisNode;
+import com.github.burgerguy.hudtweaks.hud.tree.AbstractTypeNode;
 import com.github.burgerguy.hudtweaks.util.gl.DashedBoxOutline;
 import com.github.burgerguy.hudtweaks.util.gl.GLUtil;
 
@@ -43,7 +42,8 @@ public class HudElementWidget implements Drawable, Element, AutoCloseable, Compa
 		
 		boolean draw = false;
 		boolean dashed = false;
-		if ((lastElementRendered = element.isRendered())) {
+		HudElementEntry entry = elementType.getActiveEntry();
+		if ((lastElementRendered = entry.isRendered())) {
 			draw = true;
 		} else if (focused || (lastChildFocused = isChildFocused())) {
 			draw = true;
@@ -51,10 +51,10 @@ public class HudElementWidget implements Drawable, Element, AutoCloseable, Compa
 		}
 		
 		if (draw) {
-			double x1 = element.getX(client);
-			double y1 = element.getY(client);
-			double x2 = x1 + element.getWidth(client);
-			double y2 = y1 + element.getHeight(client);
+			double x1 = entry.getX(client);
+			double y1 = entry.getY(client);
+			double x2 = x1 + entry.getWidth(client);
+			double y2 = y1 + entry.getHeight(client);
 			
 			int color = focused ? OUTLINE_COLOR_SELECTED : OUTLINE_COLOR_NORMAL;
 			if (dashed) {
@@ -84,20 +84,21 @@ public class HudElementWidget implements Drawable, Element, AutoCloseable, Compa
 	
 	@Override
 	public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
+		HudElementEntry entry = elementType.getActiveEntry();
 		if (Screen.hasShiftDown()) {
 			MinecraftClient client = MinecraftClient.getInstance();
 			
-			if (!element.xPosType.equals(PosType.DEFAULT)) {
-				element.xRelativePos = MathHelper.clamp(element.xRelativePos + deltaX / element.getXParent().getWidth(client), 0.0D, 1.0D);
+			if (!entry.xPosType.equals(PosType.DEFAULT)) {
+				entry.xRelativePos = MathHelper.clamp(entry.xRelativePos + deltaX / entry.getXParent().getActiveEntry().getWidth(client), 0.0D, 1.0D);
 			}
-			if (!element.yPosType.equals(PosType.DEFAULT)) {
-				element.yRelativePos = MathHelper.clamp(element.yRelativePos + deltaY / element.getYParent().getHeight(client), 0.0D, 1.0D);
+			if (!entry.yPosType.equals(PosType.DEFAULT)) {
+				entry.yRelativePos = MathHelper.clamp(entry.yRelativePos + deltaY / entry.getYParent().getActiveEntry().getHeight(client), 0.0D, 1.0D);
 			}
 		} else {
-			element.xOffset += deltaX;
-			element.yOffset += deltaY;
+			entry.xOffset += deltaX;
+			entry.yOffset += deltaY;
 		}
-		element.setRequiresUpdate();
+		entry.getParentNode().setRequiresUpdate();
 		if (valueUpdater != null) valueUpdater.run();
 		return true;
 	}
@@ -107,10 +108,11 @@ public class HudElementWidget implements Drawable, Element, AutoCloseable, Compa
 		MinecraftClient client = MinecraftClient.getInstance();
 		
 		if (lastElementRendered || focused || lastChildFocused) {
-			double x1 = element.getX(client);
-			double y1 = element.getY(client);
-			double x2 = x1 + element.getWidth(client);
-			double y2 = y1 + element.getHeight(client);
+			HudElementEntry entry = elementType.getActiveEntry();
+			double x1 = entry.getX(client);
+			double y1 = entry.getY(client);
+			double x2 = x1 + entry.getWidth(client);
+			double y2 = y1 + entry.getHeight(client);
 			return mouseX >= x1 && mouseX <= x2 && mouseY >= y1 && mouseY <= y2;
 		} else {
 			return false;
@@ -123,17 +125,17 @@ public class HudElementWidget implements Drawable, Element, AutoCloseable, Compa
 	}
 	
 	private boolean isChildFocused() {
-		for(XAxisNode node : element.getXChildren()) {
-			if (node instanceof HudElementEntry) {
-				HudElementEntry element = ((HudElementEntry) node);
-				if (element.getWidget().isFocused() && element.getXPosType().equals(PosType.RELATIVE)) return true;
+		for(AbstractTypeNode node : elementType.getXChildren()) {
+			if (node instanceof HudElementType) {
+				HudElementEntry element = node.getActiveEntry();
+				if (elementType.getWidget().isFocused() && element.getXPosType().equals(PosType.RELATIVE)) return true;
 			}
 		}
 		
-		for(YAxisNode node : element.getYChildren()) {
-			if (node instanceof HudElementEntry) {
-				HudElementEntry element = ((HudElementEntry) node);
-				if (element.getWidget().isFocused() && element.getYPosType().equals(PosType.RELATIVE)) return true;
+		for(AbstractTypeNode node : elementType.getYChildren()) {
+			if (node instanceof HudElementType) {
+				HudElementEntry element = node.getActiveEntry();
+				if (elementType.getWidget().isFocused() && element.getYPosType().equals(PosType.RELATIVE)) return true;
 			}
 		}
 		
@@ -144,17 +146,18 @@ public class HudElementWidget implements Drawable, Element, AutoCloseable, Compa
 		return focused;
 	}
 	
-	public HudElementEntry getElement() {
-		return element;
+	public HudElementType getElementType() {
+		return elementType;
 	}
 	
 	// This makes sure that the smallest elements get selected first if there are multiple on top of eachother.
 	@Override
 	public int compareTo(HudElementWidget other) {
 		MinecraftClient client = MinecraftClient.getInstance();
-		HudElementEntry otherElement = other.getElement();
+		HudElementEntry thisElement = elementType.getActiveEntry();
+		HudElementEntry otherElement = other.getElementType().getActiveEntry();
 		return Double.compare(
-				element.getWidth(client) * element.getHeight(client),
+				thisElement.getWidth(client) * thisElement.getHeight(client),
 				otherElement.getWidth(client) * otherElement.getHeight(client)
 				);
 	}
@@ -163,7 +166,7 @@ public class HudElementWidget implements Drawable, Element, AutoCloseable, Compa
 	public void close() {
 		dashedBoxOutline.close();
 		// disassociate from main element so this widget can be gc'd
-		element.widget = null;
+		elementType.widget = null;
 	}
 	
 }

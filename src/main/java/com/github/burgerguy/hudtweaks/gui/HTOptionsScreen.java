@@ -10,6 +10,7 @@ import com.github.burgerguy.hudtweaks.gui.widget.ElementLabelWidget;
 import com.github.burgerguy.hudtweaks.gui.widget.SidebarWidget;
 import com.github.burgerguy.hudtweaks.hud.HudContainer;
 import com.github.burgerguy.hudtweaks.hud.element.HudElementEntry;
+import com.github.burgerguy.hudtweaks.hud.element.HudElementType;
 import com.github.burgerguy.hudtweaks.hud.element.HudElementWidget;
 import com.github.burgerguy.hudtweaks.util.Util;
 
@@ -61,8 +62,8 @@ public class HTOptionsScreen extends Screen {
 		worldExists = client.world != null;
 		
 		if (worldExists) {
-			for (HudElementEntry element : HudContainer.getAllEntries()) {
-				Element widget = element.createWidget(sidebar::updateValues);
+			for (HudElementType elementType : HudContainer.getElementRegistry().getElementTypes()) {
+				Element widget = elementType.createWidget(sidebar::updateValues);
 				if (widget != null) {
 					children.add(widget);
 				}
@@ -194,7 +195,7 @@ public class HTOptionsScreen extends Screen {
 		if (focused instanceof HudElementWidget && !focused.equals(focusedHudElement)) {
 			focusedHudElement = (HudElementWidget) focused;
 			sidebar.clearDrawables();
-			HudElementEntry element = focusedHudElement.getElement();
+			HudElementEntry element = focusedHudElement.getElementType().getActiveEntry();
 			element.fillSidebar(sidebar);
 			sidebar.setSidebarOptionsHeightSupplier(() -> element.getSidebarOptionsHeight());
 			elementLabel.setHudElement(element);
