@@ -10,13 +10,14 @@ import net.minecraft.client.MinecraftClient;
 
 public final class RelativeTreeRootScreen extends AbstractTypeNode {
 	public static final HTIdentifier IDENTIFIER = new HTIdentifier(new HTIdentifier.ElementType("screen", "hudtweaks.element.screen"), Util.HUDTWEAKS_NAMESPACE);
-	private final ScreenEntry screenEntry = new ScreenEntry();
+	private ScreenEntry screenEntry;
 	
 	public RelativeTreeRootScreen() {
 		super(IDENTIFIER.getElementType());
 	}
 	
 	public void init() {
+		screenEntry = new ScreenEntry();
 		screenEntry.setParentNode(this);
 	}
 

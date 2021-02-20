@@ -11,8 +11,8 @@ public enum HudContainer {
 	private static final RelativeTreeRootScreen SCREEN_ROOT = new RelativeTreeRootScreen();
 	
 	public static void init() {
-		ELEMENT_REGISTRY.init();
 		EVENT_REGISTRY.init();
+		ELEMENT_REGISTRY.init();
 		SCREEN_ROOT.init();
 	}
 	

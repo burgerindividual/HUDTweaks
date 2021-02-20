@@ -55,13 +55,10 @@ public abstract class InGameHudMixin extends DrawableHelper {
 	private final Set<AbstractTypeNode> updatedElementsY = new HashSet<>();
 	
 	@Inject(method = "render", at = @At(value = "HEAD"))
-	private void renderStart(MatrixStack matrices, float tickDelta, CallbackInfo callbackInfo) {
-		int scaledWidth = client.getWindow().getScaledWidth();
-		int scaledHeight = client.getWindow().getScaledHeight();
-		
+	private void renderStart(MatrixStack matrices, float tickDelta, CallbackInfo callbackInfo) {		
 		if (HTOptionsScreen.isOpen()) {
 			// super janky way to dim background
-			super.fillGradient(matrices, 0, 0, scaledWidth, scaledHeight, 0xC0101010, 0xD0101010);
+			super.fillGradient(matrices, 0, 0, client.getWindow().getScaledWidth(), client.getWindow().getScaledHeight(), 0xC0101010, 0xD0101010);
 		}
 		
 		for (HudElementType elementType : HudContainer.getElementRegistry().getElementTypes()) { // TODO: fix this for when entry switches happen
@@ -85,7 +82,7 @@ public abstract class InGameHudMixin extends DrawableHelper {
 		for (Object type : Sets.union(updatedElementsX, updatedElementsY)) {
 			if (type instanceof HudElementType) {
 				HudElementEntry hudElement = ((HudElementType) type).getActiveEntry();
-				HudContainer.getMatrixCache().putMatrix(hudElement.getIdentifier().getElementType(), hudElement.createMatrix(client)); // TODO: is this ok?
+				HudContainer.getMatrixCache().putMatrix(hudElement.getIdentifier().getElementType(), hudElement.createMatrix(client));
 			}
 		}
 		client.getProfiler().pop();
