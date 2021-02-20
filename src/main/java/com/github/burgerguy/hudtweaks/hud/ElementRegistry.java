@@ -54,14 +54,16 @@ public class ElementRegistry {
 		return elementGroupMap.values();
 	}
 	
-	public void addEntry(HudElementEntry element) {
-		if (!element.getIdentifier().getElementType().equals(RelativeTreeRootScreen.IDENTIFIER.getElementType())) {
-			if (elementGroupMap.containsKey(element.getIdentifier().getElementType())) {
-				getElementType(element.getIdentifier().getElementType()).add(element);
+	public void addEntry(HudElementEntry entry) {
+		if (!entry.getIdentifier().getElementType().equals(RelativeTreeRootScreen.IDENTIFIER.getElementType())) {
+			if (elementGroupMap.containsKey(entry.getIdentifier().getElementType())) {
+				getElementType(entry.getIdentifier().getElementType()).add(entry);
 			} else {
-				HTIdentifier.ElementType elementId = element.getIdentifier().getElementType();
+				HTIdentifier.ElementType elementId = entry.getIdentifier().getElementType();
 				HudElementType type = new HudElementType(elementId);
-				type.add(element);
+				type.add(entry);
+				entry.setParentNode(type);
+				entry.init();
 				elementGroupMap.put(elementId, type);
 			}
 		} else {

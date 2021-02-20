@@ -18,7 +18,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import com.github.burgerguy.hudtweaks.gui.HTOptionsScreen;
-import com.github.burgerguy.hudtweaks.hud.HTIdentifier;
 import com.github.burgerguy.hudtweaks.hud.HudContainer;
 import com.github.burgerguy.hudtweaks.hud.UpdateEvent;
 import com.github.burgerguy.hudtweaks.hud.element.DefaultAirEntry;
@@ -26,12 +25,13 @@ import com.github.burgerguy.hudtweaks.hud.element.DefaultArmorEntry;
 import com.github.burgerguy.hudtweaks.hud.element.DefaultExperienceBarEntry;
 import com.github.burgerguy.hudtweaks.hud.element.DefaultHealthEntry;
 import com.github.burgerguy.hudtweaks.hud.element.DefaultHotbarEntry;
-import com.github.burgerguy.hudtweaks.hud.element.HudElementEntry;
-import com.github.burgerguy.hudtweaks.hud.element.HudElementType;
 import com.github.burgerguy.hudtweaks.hud.element.DefaultHungerEntry;
 import com.github.burgerguy.hudtweaks.hud.element.DefaultJumpBarEntry;
 import com.github.burgerguy.hudtweaks.hud.element.DefaultMountHealthEntry;
 import com.github.burgerguy.hudtweaks.hud.element.DefaultStatusEffectsEntry;
+import com.github.burgerguy.hudtweaks.hud.element.HudElementEntry;
+import com.github.burgerguy.hudtweaks.hud.element.HudElementType;
+import com.github.burgerguy.hudtweaks.hud.tree.AbstractTypeNode;
 import com.google.common.collect.Sets;
 
 import net.minecraft.client.MinecraftClient;
@@ -50,9 +50,9 @@ public abstract class InGameHudMixin extends DrawableHelper {
 	
 	// the updatedElements sets are used to see what matricies should be updated after
 	@Unique
-	private final Set<HTIdentifier.ElementType> updatedElementsX = new HashSet<>();
+	private final Set<AbstractTypeNode> updatedElementsX = new HashSet<>();
 	@Unique
-	private final Set<HTIdentifier.ElementType> updatedElementsY = new HashSet<>();
+	private final Set<AbstractTypeNode> updatedElementsY = new HashSet<>();
 	
 	@Inject(method = "render", at = @At(value = "HEAD"))
 	private void renderStart(MatrixStack matrices, float tickDelta, CallbackInfo callbackInfo) {
@@ -82,10 +82,9 @@ public abstract class InGameHudMixin extends DrawableHelper {
 			}
 		}
 		
-		for (Object element : Sets.union(updatedElementsX, updatedElementsY)) {
-			// something something instanceof bad something something
-			if (element instanceof HudElementEntry) {
-				HudElementEntry hudElement = (HudElementEntry) element;
+		for (Object type : Sets.union(updatedElementsX, updatedElementsY)) {
+			if (type instanceof HudElementType) {
+				HudElementEntry hudElement = ((HudElementType) type).getActiveEntry();
 				HudContainer.getMatrixCache().putMatrix(hudElement.getIdentifier().getElementType(), hudElement.createMatrix(client)); // TODO: is this ok?
 			}
 		}

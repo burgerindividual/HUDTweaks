@@ -41,18 +41,18 @@ public abstract class AbstractTypeNode {
 	/**
 	 * Passing null to the UpdateEvent will try a manual update.
 	 */
-	public void tryUpdateX(@Nullable UpdateEvent event, MinecraftClient client, boolean parentUpdated, Set<HTIdentifier.ElementType> updatedElementsX) {
+	public void tryUpdateX(@Nullable UpdateEvent event, MinecraftClient client, boolean parentUpdated, Set<AbstractTypeNode> updatedElementsX) {
 		boolean selfUpdated = false;
-		if (!updatedElementsX.contains(elementIdentifier)) {
+		if (!updatedElementsX.contains(this)) {
 			if (parentUpdated || requiresUpdate) {
 				getActiveEntry().updateSelfX(client);
-				updatedElementsX.add(elementIdentifier);
+				updatedElementsX.add(this);
 				selfUpdated = true;
 			} else {
 				AbstractTypeNodeEntry activeEntry = getActiveEntry();
 				if (activeEntry.shouldUpdateOnEvent(event)) {
 					activeEntry.updateSelfX(client);
-					updatedElementsX.add(elementIdentifier);
+					updatedElementsX.add(this);
 					selfUpdated = true;
 				}
 			}
@@ -66,18 +66,18 @@ public abstract class AbstractTypeNode {
 	/**
 	 * Passing null to the UpdateEvent will try a manual update.
 	 */
-	public void tryUpdateY(@Nullable UpdateEvent event, MinecraftClient client, boolean parentUpdated, Set<HTIdentifier.ElementType> updatedElementsY) {
+	public void tryUpdateY(@Nullable UpdateEvent event, MinecraftClient client, boolean parentUpdated, Set<AbstractTypeNode> updatedElementsY) {
 		boolean selfUpdated = false;
-		if (!updatedElementsY.contains(elementIdentifier)) {
+		if (!updatedElementsY.contains(this)) {
 			if (parentUpdated || requiresUpdate) {
 				getActiveEntry().updateSelfY(client);
-				updatedElementsY.add(elementIdentifier);
+				updatedElementsY.add(this);
 				selfUpdated = true;
 			} else {
 				AbstractTypeNodeEntry activeEntry = getActiveEntry();
 				if (activeEntry.shouldUpdateOnEvent(event)) {
 					activeEntry.updateSelfY(client);
-					updatedElementsY.add(elementIdentifier);
+					updatedElementsY.add(this);
 					selfUpdated = true;
 				}
 			}

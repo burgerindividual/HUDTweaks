@@ -15,6 +15,10 @@ public final class RelativeTreeRootScreen extends AbstractTypeNode {
 	public RelativeTreeRootScreen() {
 		super(IDENTIFIER.getElementType());
 	}
+	
+	public void init() {
+		screenEntry.setParentNode(this);
+	}
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -31,8 +35,6 @@ public final class RelativeTreeRootScreen extends AbstractTypeNode {
 
 		public ScreenEntry() {
 			super(IDENTIFIER, "onScreenBoundsChange");
-			xTreeParent = null;
-			yTreeParent = null;
 		}
 		
 		@Override

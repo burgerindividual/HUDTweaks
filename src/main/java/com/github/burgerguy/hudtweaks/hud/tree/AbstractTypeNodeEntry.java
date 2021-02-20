@@ -25,7 +25,12 @@ public abstract class AbstractTypeNodeEntry {
 				this.updateEvents.add(event);
 			}
 		}
-		
+	}
+	
+	/**
+	 * Only call this after the parent node has been set.
+	 */
+	public void init() {
 		moveXUnder(HudContainer.getScreenRoot());
 		moveYUnder(HudContainer.getScreenRoot());
 	}

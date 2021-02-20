@@ -13,6 +13,7 @@ public enum HudContainer {
 	public static void init() {
 		ELEMENT_REGISTRY.init();
 		EVENT_REGISTRY.init();
+		SCREEN_ROOT.init();
 	}
 	
 	public static ElementRegistry getElementRegistry() {

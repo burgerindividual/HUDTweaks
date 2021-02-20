@@ -40,7 +40,8 @@ public class MatrixCache {
 	}
 	
 	public void tryPopMatrix(HTIdentifier.ElementType elementType, @Nullable MatrixStack matrixStack) { // TODO: fix draw tests when element changed, also update matrix on entry swap
-		if (appliedMatrixMap.get(elementType)) {
+		Boolean applied = appliedMatrixMap.get(elementType);
+		if (applied != null && applied) {
 			if (matrixStack != null) {
 				matrixStack.pop();
 			} else {
