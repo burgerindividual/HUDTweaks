@@ -6,7 +6,6 @@ import java.util.Map;
 import org.jetbrains.annotations.Nullable;
 
 import com.github.burgerguy.hudtweaks.gui.HTOptionsScreen;
-import com.github.burgerguy.hudtweaks.hud.element.HTIdentifier;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.util.math.MatrixStack;

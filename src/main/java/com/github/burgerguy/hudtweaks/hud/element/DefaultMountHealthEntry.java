@@ -1,5 +1,8 @@
 package com.github.burgerguy.hudtweaks.hud.element;
 
+import com.github.burgerguy.hudtweaks.hud.HTIdentifier;
+import com.github.burgerguy.hudtweaks.util.Util;
+
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -7,9 +10,10 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.MathHelper;
 
 public class DefaultMountHealthEntry extends HudElementEntry {
+	public transient static final HTIdentifier IDENTIFIER = new HTIdentifier(new HTIdentifier.ElementType("mounthealth", "hudtweaks.element.mounthealth"), Util.HUDTWEAKS_NAMESPACE);
 
 	public DefaultMountHealthEntry() {
-		super(new HTIdentifier(new HTIdentifier.ElementType("mounthealth", "hudtweaks.element.mounthealth")), "onRidingHealthRowsChange");
+		super(IDENTIFIER, "onRidingHealthRowsChange");
 	}
 
 	@Override

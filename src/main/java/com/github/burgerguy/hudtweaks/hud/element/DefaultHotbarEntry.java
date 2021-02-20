@@ -1,14 +1,18 @@
 package com.github.burgerguy.hudtweaks.hud.element;
 
+import com.github.burgerguy.hudtweaks.hud.HTIdentifier;
+import com.github.burgerguy.hudtweaks.util.Util;
+
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.options.AttackIndicator;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 
 public class DefaultHotbarEntry extends HudElementEntry {
+	public transient static final HTIdentifier IDENTIFIER = new HTIdentifier(new HTIdentifier.ElementType("hotbar", "hudtweaks.element.hotbar"), Util.HUDTWEAKS_NAMESPACE);
 
 	public DefaultHotbarEntry() {
-		super(new HTIdentifier(new HTIdentifier.ElementType("hotbar", "hudtweaks.element.hotbar")), "onOffhandStatusChange", "onHotbarAttackIndicatorChange");
+		super(IDENTIFIER, "onOffhandStatusChange", "onHotbarAttackIndicatorChange");
 	}
 	
 	private int getAttackIndicatorOffset(MinecraftClient client) {

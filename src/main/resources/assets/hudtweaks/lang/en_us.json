@@ -12,7 +12,7 @@
 	"hudtweaks.element.mounthealth": "Mount Health",
 	"hudtweaks.element.screen": "Screen",
 	"hudtweaks.element.statuseffects": "Status Effects",
-	"hudtweaks.element.type.default": "Default",
+	"hudtweaks.element.entryname.default": "Default",
 	"hudtweaks.options": "HUDTweaks Config",
 	"hudtweaks.options.pos_type.display": "Pos Type: %s",
 	"hudtweaks.options.pos_type.default": "Default",

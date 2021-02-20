@@ -2,6 +2,8 @@ package com.github.burgerguy.hudtweaks.hud.element;
 
 import com.github.burgerguy.hudtweaks.gui.widget.HTButtonWidget;
 import com.github.burgerguy.hudtweaks.gui.widget.SidebarWidget;
+import com.github.burgerguy.hudtweaks.hud.HTIdentifier;
+import com.github.burgerguy.hudtweaks.util.Util;
 import com.google.gson.JsonElement;
 
 import net.minecraft.client.MinecraftClient;
@@ -11,10 +13,11 @@ import net.minecraft.text.TranslatableText;
 import net.minecraft.util.math.MathHelper;
 
 public class DefaultHealthEntry extends HudElementEntry {
+	public transient static final HTIdentifier IDENTIFIER = new HTIdentifier(new HTIdentifier.ElementType("health", "hudtweaks.element.health"), Util.HUDTWEAKS_NAMESPACE);
 	private boolean flipped;
 
 	public DefaultHealthEntry() {
-		super(new HTIdentifier(new HTIdentifier.ElementType("health", "hudtweaks.element.health")), "onHealthRowsChange");
+		super(IDENTIFIER, "onHealthRowsChange");
 	}
 
 	@Override
@@ -87,7 +90,7 @@ public class DefaultHealthEntry extends HudElementEntry {
 			public void onPress() {
 				flipped = !flipped;
 				setMessage(new TranslatableText("hudtweaks.options.health.style.display", flipped ? I18n.translate("hudtweaks.options.health.style.flipped.display") : I18n.translate("hudtweaks.options.health.style.normal.display")));
-				setRequiresUpdate();
+				parentNode.setRequiresUpdate();
 			}
 		});
 	}

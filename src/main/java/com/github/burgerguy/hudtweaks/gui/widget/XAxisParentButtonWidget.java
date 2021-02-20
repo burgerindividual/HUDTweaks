@@ -4,9 +4,9 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 
+import com.github.burgerguy.hudtweaks.hud.HTIdentifier;
 import com.github.burgerguy.hudtweaks.hud.HudContainer;
-import com.github.burgerguy.hudtweaks.hud.XAxisNode;
-import com.github.burgerguy.hudtweaks.hud.element.HTIdentifier;
+import com.github.burgerguy.hudtweaks.hud.tree.XAxisNode;
 
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
@@ -18,7 +18,7 @@ public class XAxisParentButtonWidget extends HTButtonWidget {
 	private final HTIdentifier[] keyHelper;
 	private int currentIndex;
 	
-	public XAxisParentButtonWidget(int x, int y, int width, int height, XAxisNode currentParentNode, XAxisNode thisNode, Consumer<XAxisNode> onClick) {
+	public XAxisParentButtonWidget(int x, int y, int width, int height, XAxisNode currentParentNode, XAxisNode thisNode, Consumer<XAxisNode> onClick, boolean useX) {
 		super(x, y, width, height, createMessage(currentParentNode));
 		recurseAddNode(HudContainer.getScreenRoot(), thisNode);
 		keyHelper = innerMap.keySet().toArray(new HTIdentifier[innerMap.size()]);

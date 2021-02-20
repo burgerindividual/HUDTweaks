@@ -3,9 +3,9 @@ package com.github.burgerguy.hudtweaks.hud.element;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
-import com.github.burgerguy.hudtweaks.hud.XAxisNode;
-import com.github.burgerguy.hudtweaks.hud.YAxisNode;
 import com.github.burgerguy.hudtweaks.hud.element.HudElementEntry.PosType;
+import com.github.burgerguy.hudtweaks.hud.tree.XAxisNode;
+import com.github.burgerguy.hudtweaks.hud.tree.YAxisNode;
 import com.github.burgerguy.hudtweaks.util.gl.DashedBoxOutline;
 import com.github.burgerguy.hudtweaks.util.gl.GLUtil;
 
@@ -22,7 +22,7 @@ public class HudElementWidget implements Drawable, Element, AutoCloseable, Compa
 	private static final float TICKS_PER_SHIFT = (20.0F / 4.0F);
 	private static final byte PATTERN_LENGTH = 4;
 	
-	private final HudElementEntry element;
+	private final HudElementType elementType;
 	private final Runnable valueUpdater;
 	private final DashedBoxOutline dashedBoxOutline = new DashedBoxOutline();
 	
@@ -32,8 +32,8 @@ public class HudElementWidget implements Drawable, Element, AutoCloseable, Compa
 	private boolean lastChildFocused;
 	private boolean lastElementRendered;
 	
-	protected HudElementWidget(HudElementEntry element, @Nullable Runnable valueUpdater) {
-		this.element = element;
+	protected HudElementWidget(HudElementType elementType, @Nullable Runnable valueUpdater) {
+		this.elementType = elementType;
 		this.valueUpdater = valueUpdater;
 	}
 	

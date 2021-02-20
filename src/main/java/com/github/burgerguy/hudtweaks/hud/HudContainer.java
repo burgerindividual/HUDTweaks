@@ -1,6 +1,6 @@
 package com.github.burgerguy.hudtweaks.hud;
 
-import com.github.burgerguy.hudtweaks.hud.element.RelativeTreeRootScreen;
+import com.github.burgerguy.hudtweaks.hud.tree.RelativeTreeRootScreen;
 
 public enum HudContainer {
 	; // no instantiation, all contents static

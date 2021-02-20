@@ -8,15 +8,14 @@ import java.util.Map.Entry;
 import com.github.burgerguy.hudtweaks.hud.element.DefaultAirElementEntry;
 import com.github.burgerguy.hudtweaks.hud.element.DefaultArmorEntry;
 import com.github.burgerguy.hudtweaks.hud.element.DefaultExperienceBarEntry;
-import com.github.burgerguy.hudtweaks.hud.element.HTIdentifier;
 import com.github.burgerguy.hudtweaks.hud.element.DefaultHealthEntry;
 import com.github.burgerguy.hudtweaks.hud.element.DefaultHotbarEntry;
 import com.github.burgerguy.hudtweaks.hud.element.HudElementEntry;
 import com.github.burgerguy.hudtweaks.hud.element.HudElementType;
+import com.github.burgerguy.hudtweaks.hud.tree.RelativeTreeRootScreen;
 import com.github.burgerguy.hudtweaks.hud.element.DefaultHungerEntry;
 import com.github.burgerguy.hudtweaks.hud.element.DefaultJumpBarEntry;
 import com.github.burgerguy.hudtweaks.hud.element.DefaultMountHealthEntry;
-import com.github.burgerguy.hudtweaks.hud.element.RelativeTreeRootScreen;
 import com.github.burgerguy.hudtweaks.hud.element.DefaultStatusEffectsEntry;
 import com.github.burgerguy.hudtweaks.util.Util;
 import com.google.gson.JsonElement;
@@ -48,7 +47,7 @@ public class ElementRegistry {
 	}
 
 	public HudElementEntry getActiveEntry(HTIdentifier.ElementType elementType) {
-		return getElementType(elementType).getActiveElement();
+		return (HudElementEntry) getElementType(elementType).getActiveEntry();
 	}
 	
 	public Collection<HudElementType> getElementTypes() {
@@ -60,20 +59,23 @@ public class ElementRegistry {
 			if (elementGroupMap.containsKey(element.getIdentifier().getElementType())) {
 				getElementType(element.getIdentifier().getElementType()).add(element);
 			} else {
-				elementGroupMap.put(element.getIdentifier().getElementType(), new HudElementType(element.getIdentifier().getElementType(), element));
+				HTIdentifier.ElementType elementId = element.getIdentifier().getElementType();
+				HudElementType type = new HudElementType(elementId);
+				type.add(element);
+				elementGroupMap.put(elementId, type);
 			}
 		} else {
 			Util.LOGGER.error("Failed to add element: identifier \"screen\" is reserved");
 		}
 	}
 	
-	public void updateFromJson(JsonElement json) { //TODO fixme
+	public void updateFromJson(JsonElement json) {
 		for (Entry<String, JsonElement> entry : json.getAsJsonObject().entrySet()) {
 			try {
 				// temporary element identifier to retrieve the group from a string representation
 				getElementType(new HTIdentifier.ElementType(entry.getKey(), null)).updateFromJson(entry.getValue());
 			} catch (NullPointerException e) {
-				Util.LOGGER.error("HudElementType specified in config doesn't exist in element map, skipping...", e);
+				Util.LOGGER.error("HudElementType specified in config doesn't exist in element type map, skipping...", e);
 				continue;
 			}
 		}

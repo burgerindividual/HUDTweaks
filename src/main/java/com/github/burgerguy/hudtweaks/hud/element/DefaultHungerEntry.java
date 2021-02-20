@@ -2,6 +2,8 @@ package com.github.burgerguy.hudtweaks.hud.element;
 
 import com.github.burgerguy.hudtweaks.gui.widget.HTButtonWidget;
 import com.github.burgerguy.hudtweaks.gui.widget.SidebarWidget;
+import com.github.burgerguy.hudtweaks.hud.HTIdentifier;
+import com.github.burgerguy.hudtweaks.util.Util;
 import com.google.gson.JsonElement;
 
 import net.minecraft.client.MinecraftClient;
@@ -9,10 +11,11 @@ import net.minecraft.client.resource.language.I18n;
 import net.minecraft.text.TranslatableText;
 
 public class DefaultHungerEntry extends HudElementEntry {
+	public transient static final HTIdentifier IDENTIFIER = new HTIdentifier(new HTIdentifier.ElementType("hunger", "hudtweaks.element.hunger"), Util.HUDTWEAKS_NAMESPACE);
 	private boolean forceDisplay;
 
 	public DefaultHungerEntry() {
-		super(new HTIdentifier(new HTIdentifier.ElementType("hunger", "hudtweaks.element.hunger")));
+		super(IDENTIFIER);
 	}
 
 	@Override
@@ -57,7 +60,7 @@ public class DefaultHungerEntry extends HudElementEntry {
 			public void onPress() {
 				forceDisplay = !forceDisplay;
 				setMessage(new TranslatableText("hudtweaks.options.forceDisplay.display", forceDisplay ? I18n.translate("hudtweaks.options.forceDisplay.on.display") : I18n.translate("hudtweaks.options.forceDisplay.off.display")));
-				setRequiresUpdate();
+				parentNode.setRequiresUpdate();
 			}
 		});
 	}

@@ -1,7 +1,7 @@
 package com.github.burgerguy.hudtweaks.api;
 
+import com.github.burgerguy.hudtweaks.hud.HTIdentifier;
 import com.github.burgerguy.hudtweaks.hud.HudContainer;
-import com.github.burgerguy.hudtweaks.hud.element.HTIdentifier;
 import com.github.burgerguy.hudtweaks.hud.element.HudElementEntry;
 
 public abstract class CustomHudElement extends HudElementEntry {

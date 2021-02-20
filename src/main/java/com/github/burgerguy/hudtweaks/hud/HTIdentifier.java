@@ -1,4 +1,4 @@
-package com.github.burgerguy.hudtweaks.hud.element;
+package com.github.burgerguy.hudtweaks.hud;
 
 import java.util.Objects;
 
@@ -9,33 +9,19 @@ import net.minecraft.client.resource.language.I18n;
 public class HTIdentifier {
 	private final ElementType element;
 	private final Namespace namespace;
-	private final EntryName type;
+	private final EntryName entryName;
 	
 	/**
-	 * Uses the hudtweaks namespace and default type.
-	 */
-	protected HTIdentifier(ElementType element) {
-		this(element, Namespace.HUDTWEAKS, EntryName.DEFAULT);
-	}
-	
-	/**
-	 * Uses the hudtweaks namespace.
-	 */	
-	public HTIdentifier(ElementType element, EntryName type) {
-		this(element, Namespace.HUDTWEAKS, type);
-	}
-	
-	/**
-	 * Uses the default type.
+	 * Uses the default entry name.
 	 */
 	public HTIdentifier(ElementType element, Namespace namespace) {
 		this(element, namespace, EntryName.DEFAULT);
 	}
 	
-	public HTIdentifier(ElementType element, Namespace namespace, EntryName type) {
+	public HTIdentifier(ElementType element, Namespace namespace, EntryName entryName) {
 		this.namespace = namespace;
 		this.element = element;
-		this.type = type;
+		this.entryName = entryName;
 	}
 	
 	public ElementType getElementType() {
@@ -46,26 +32,26 @@ public class HTIdentifier {
 		return namespace;
 	}
 
-	public EntryName getType() {
-		return type;
+	public EntryName getEntryName() {
+		return entryName;
 	}
 
 	public boolean equals(Object obj) {
 		if (!(obj instanceof HTIdentifier)) return false;
 		HTIdentifier other = (HTIdentifier) obj;
-		return element.equals(other.element) && namespace.equals(other.namespace) && type.equals(other.type);
+		return element.equals(other.element) && namespace.equals(other.namespace) && entryName.equals(other.entryName);
 	}
 	
 	public String toString() {
-		return element.toString() + ":" + namespace.toString() + ":" + type.toString();
+		return element.toString() + ":" + namespace.toString() + ":" + entryName.toString();
 	}
 	
 	public int hashCode() {
-		return Objects.hash(element.toString(), namespace.toString(), type.toString());
+		return Objects.hash(element.toString(), namespace.toString(), entryName.toString());
 	}
 	
 	/**
-	 * Used to identify the element type. For example, the health bar's
+	 * Used to identify the element entryName. For example, the health bar's
 	 * identifier would be "health".
 	 */
 	public static class ElementType {
@@ -101,20 +87,10 @@ public class HTIdentifier {
 	 * Should be the name of the mod, but anything will do.
 	 */
 	public static class Namespace {
-		/**
-		 * Reserved for elements created by hudtweaks
-		 */
-		protected transient static final Namespace HUDTWEAKS = new Namespace();
 		private final String namespace;
 		private transient final String translationKey;
 		
-		private Namespace() {
-			this.namespace = "hudtweaks";
-			this.translationKey = "hudtweaks.name";
-		}
-		
 		public Namespace(String namespace, @Nullable String translationKey) {
-			if (namespace.equals("hudtweaks")) throw new UnsupportedOperationException("namespace \"hudtweaks\" is reserved");
 			this.namespace = namespace;
 			this.translationKey = translationKey;
 		}
@@ -139,14 +115,14 @@ public class HTIdentifier {
 	
 	
 	/**
-	 * Used to identify an entry of an element type. Should be short and
-	 * simple. The default type if one isn't provided is "default". This
+	 * Used to identify an entry of an element entryName. Should be short and
+	 * simple. The default entryName if one isn't provided is "default". This
 	 * really only should be used when one mod has multiple replacements
 	 * for one element. Acceptible types could be "type1" or "type2", but
 	 * it's better to give greater detail like "vertical' or "extended".
 	 */
 	public static class EntryName {
-		public transient static final EntryName DEFAULT = new EntryName("default", "hudtweaks.element.type.default");
+		public transient static final EntryName DEFAULT = new EntryName("default", "hudtweaks.element.entryname.default");
 		private final String entryName;
 		private transient final String translationKey;
 		

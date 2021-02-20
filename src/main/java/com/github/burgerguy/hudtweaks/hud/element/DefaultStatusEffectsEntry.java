@@ -2,6 +2,8 @@ package com.github.burgerguy.hudtweaks.hud.element;
 
 import com.github.burgerguy.hudtweaks.gui.widget.HTButtonWidget;
 import com.github.burgerguy.hudtweaks.gui.widget.SidebarWidget;
+import com.github.burgerguy.hudtweaks.hud.HTIdentifier;
+import com.github.burgerguy.hudtweaks.util.Util;
 import com.google.gson.JsonElement;
 
 import net.minecraft.client.MinecraftClient;
@@ -10,10 +12,11 @@ import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.text.TranslatableText;
 
 public class DefaultStatusEffectsEntry extends HudElementEntry {
+	public transient static final HTIdentifier IDENTIFIER = new HTIdentifier(new HTIdentifier.ElementType("statuseffects", "hudtweaks.element.statuseffects"), Util.HUDTWEAKS_NAMESPACE);
 	private boolean vertical;
 	
 	public DefaultStatusEffectsEntry() {
-		super(new HTIdentifier(new HTIdentifier.ElementType("statuseffects", "hudtweaks.element.statuseffects")), "onStatusEffectsChange");
+		super(IDENTIFIER, "onStatusEffectsChange");
 	}
 	
 	@Override
@@ -101,7 +104,7 @@ public class DefaultStatusEffectsEntry extends HudElementEntry {
 			public void onPress() {
 				vertical = !vertical;
 				setMessage(new TranslatableText("hudtweaks.options.statuseffects.style.display", vertical ? I18n.translate("hudtweaks.options.statuseffects.style.vertical.display") : I18n.translate("hudtweaks.options.statuseffects.style.horizontal.display")));
-				setRequiresUpdate();
+				parentNode.setRequiresUpdate();
 			}
 		});
 	}
