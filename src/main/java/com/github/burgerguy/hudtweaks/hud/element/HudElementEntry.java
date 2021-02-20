@@ -10,11 +10,9 @@ import com.github.burgerguy.hudtweaks.hud.HTIdentifier;
 import com.github.burgerguy.hudtweaks.hud.HudContainer;
 import com.github.burgerguy.hudtweaks.hud.tree.AbstractTypeNodeEntry;
 import com.github.burgerguy.hudtweaks.util.Util;
-import com.github.burgerguy.hudtweaks.util.gl.DrawTest;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.SerializedName;
-import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.resource.language.I18n;
@@ -43,16 +41,8 @@ public abstract class HudElementEntry extends AbstractTypeNodeEntry {
 	protected transient double cachedY;
 	// TODO: add rotation using the already existing anchor points.
 	
-	protected transient DrawTest drawTest;
-	protected transient Boolean drawTestResult;
-	protected transient boolean drawTestedSinceClear;
-	
 	public HudElementEntry(HTIdentifier identifier, String... updateEvents) {
 		super(identifier, updateEvents);
-		// we have to create the draw test here because
-		// it has to be on the render thread and it has
-		// to be after lwjgl has initialized
-		RenderSystem.recordRenderCall(() -> drawTest = new DrawTest());
 	}
 	
 	public enum PosType {
@@ -184,25 +174,6 @@ public abstract class HudElementEntry extends AbstractTypeNodeEntry {
 	
 	public double getYScale() {
 		return yScale;
-	}
-	
-	public void startDrawTest() {
-		drawTest.start();
-	}
-	
-	public void endDrawTest() {
-		if (drawTest.end()) drawTestedSinceClear = true;
-	}
-	
-	public void clearDrawTest() {
-		drawTestResult = null;
-		drawTestedSinceClear = false;
-	}
-	
-	public boolean isRendered() {
-		if (!drawTestedSinceClear) return false;
-		if (drawTestResult == null) drawTestResult = drawTest.getResultSync();
-		return drawTestResult;
 	}
 	
 	public String toString() {

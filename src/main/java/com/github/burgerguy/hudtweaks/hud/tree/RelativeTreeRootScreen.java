@@ -16,6 +16,7 @@ public final class RelativeTreeRootScreen extends AbstractTypeNode {
 		super(IDENTIFIER.getElementType());
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public AbstractTypeNodeEntry getActiveEntry() {
 		return screenEntry;

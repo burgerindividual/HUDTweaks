@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import com.github.burgerguy.hudtweaks.hud.element.DefaultAirElementEntry;
+import com.github.burgerguy.hudtweaks.hud.element.DefaultAirEntry;
 import com.github.burgerguy.hudtweaks.hud.element.DefaultArmorEntry;
 import com.github.burgerguy.hudtweaks.hud.element.DefaultExperienceBarEntry;
 import com.github.burgerguy.hudtweaks.hud.element.DefaultHealthEntry;
@@ -38,7 +38,7 @@ public class ElementRegistry {
 		addEntry(new DefaultHealthEntry());
 		addEntry(new DefaultHungerEntry());
 		addEntry(new DefaultMountHealthEntry());
-		addEntry(new DefaultAirElementEntry());
+		addEntry(new DefaultAirEntry());
 		addEntry(new DefaultStatusEffectsEntry());
 	}
 	

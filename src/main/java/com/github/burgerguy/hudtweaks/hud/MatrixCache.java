@@ -35,7 +35,7 @@ public class MatrixCache {
 				RenderSystem.multMatrix(matrix);
 			}
 			
-			if (HTOptionsScreen.isOpen()) HudContainer.getElementRegistry().getActiveEntry(elementType).startDrawTest(); // we only care about visibility when HudElementWidgets have to be displayed
+			if (HTOptionsScreen.isOpen()) HudContainer.getElementRegistry().getElementType(elementType).startDrawTest(); // we only care about visibility when HudElementWidgets have to be displayed
 		}
 	}
 	
@@ -48,7 +48,7 @@ public class MatrixCache {
 			}
 			appliedMatrixMap.put(elementType, false);
 			
-			HudContainer.getElementRegistry().getActiveEntry(elementType).endDrawTest(); // this won't error out if the draw test isn't active, so it's ok
+			HudContainer.getElementRegistry().getElementType(elementType).endDrawTest(); // this won't error out if the draw test isn't active, so it's ok
 		}
 	}
 }

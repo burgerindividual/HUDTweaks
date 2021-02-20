@@ -42,8 +42,7 @@ public class HudElementWidget implements Drawable, Element, AutoCloseable, Compa
 		
 		boolean draw = false;
 		boolean dashed = false;
-		HudElementEntry entry = elementType.getActiveEntry();
-		if ((lastElementRendered = entry.isRendered())) {
+		if ((lastElementRendered = elementType.isRendered())) {
 			draw = true;
 		} else if (focused || (lastChildFocused = isChildFocused())) {
 			draw = true;
@@ -51,6 +50,7 @@ public class HudElementWidget implements Drawable, Element, AutoCloseable, Compa
 		}
 		
 		if (draw) {
+			HudElementEntry entry = elementType.getActiveEntry();
 			double x1 = entry.getX(client);
 			double y1 = entry.getY(client);
 			double x2 = x1 + entry.getWidth(client);

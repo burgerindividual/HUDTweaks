@@ -23,7 +23,7 @@ public class HudTweaksMod implements ClientModInitializer {
 				HudContainer.getEventRegistry().put(event);
 			}
 			
-			for (HudElementEntry element : apiImpl.getCustomElements()) {
+			for (HudElementEntry element : apiImpl.getCustomElementEntries()) {
 				HudContainer.getElementRegistry().addEntry(element);
 			}
 		});
