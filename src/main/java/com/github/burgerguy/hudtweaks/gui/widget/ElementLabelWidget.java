@@ -25,7 +25,7 @@ public class ElementLabelWidget implements Drawable {
 	public ElementLabelWidget(int x, int y, int maxWidth) {
 		this.x = x;
 		this.y = y;
-		this.overflowTextRenderer = new OverflowTextRenderer(30, 30, 4, x, y, maxWidth);
+		this.overflowTextRenderer = new OverflowTextRenderer(40, 40, 4, x, y, maxWidth);
 	}
 
 	@SuppressWarnings("resource")

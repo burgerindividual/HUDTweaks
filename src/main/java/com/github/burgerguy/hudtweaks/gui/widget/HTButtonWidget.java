@@ -16,7 +16,7 @@ public abstract class HTButtonWidget extends AbstractPressableButtonWidget {
 	public HTButtonWidget(int x, int y, int width, int height, Text message) {
 		super(x, y, width, height, message);
 		setAlpha(0.8F);
-		this.overflowTextRenderer = new OverflowTextRenderer(30, 30, 4, x + width / 2, y + (height - 8) / 2, width - 2);
+		this.overflowTextRenderer = new OverflowTextRenderer(40, 40, 4, x + width / 2, y + (height - 8) / 2, width - 2);
 	}
 
 	@Override
