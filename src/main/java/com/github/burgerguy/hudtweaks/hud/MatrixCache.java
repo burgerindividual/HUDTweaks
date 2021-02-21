@@ -1,7 +1,9 @@
 package com.github.burgerguy.hudtweaks.hud;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -13,7 +15,7 @@ import net.minecraft.util.math.Matrix4f;
 
 public class MatrixCache {
 	private final Map<HTIdentifier.ElementType, Matrix4f> matrixMap = new HashMap<>();
-	private final Map<HTIdentifier.ElementType, Boolean> appliedMatrixMap = new HashMap<>();
+	private final Set<HTIdentifier.ElementType> appliedElements = new HashSet<>();
 	
 	public Matrix4f getMatrix(HTIdentifier.ElementType elementType) {
 		return matrixMap.get(elementType);
@@ -26,7 +28,7 @@ public class MatrixCache {
 	public void tryPushMatrix(HTIdentifier.ElementType elementType, @Nullable MatrixStack matrixStack) {
 		Matrix4f matrix = getMatrix(elementType);
 		if (matrix != null) {
-			appliedMatrixMap.put(elementType, true);
+			appliedElements.add(elementType);
 			if (matrixStack != null) {
 				matrixStack.push();
 				matrixStack.peek().getModel().multiply(matrix);
@@ -40,14 +42,13 @@ public class MatrixCache {
 	}
 	
 	public void tryPopMatrix(HTIdentifier.ElementType elementType, @Nullable MatrixStack matrixStack) { // TODO: fix draw tests when element changed, also update matrix on entry swap
-		Boolean applied = appliedMatrixMap.get(elementType);
-		if (applied != null && applied) {
+		if (appliedElements.contains(elementType)) {
 			if (matrixStack != null) {
 				matrixStack.pop();
 			} else {
 				RenderSystem.popMatrix();
 			}
-			appliedMatrixMap.put(elementType, false);
+			appliedElements.remove(elementType);
 			
 			HudContainer.getElementRegistry().getElementType(elementType).endDrawTest(); // this won't error out if the draw test isn't active, so it's ok
 		}
