@@ -7,8 +7,8 @@ import java.util.function.IntSupplier;
 import com.github.burgerguy.hudtweaks.util.UnmodifiableMergedList;
 import com.github.burgerguy.hudtweaks.util.Util;
 import com.github.burgerguy.hudtweaks.util.gl.GLUtil;
+import com.github.burgerguy.hudtweaks.util.gl.ScissorStack;
 import com.github.burgerguy.hudtweaks.util.gui.ScrollableWrapperElement;
-import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.AbstractParentElement;
@@ -21,11 +21,11 @@ import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.util.math.MatrixStack;
 
 public class SidebarWidget extends AbstractParentElement implements Drawable, TickableElement {
-	private static final int CUTOFF_FROM_BOTTOM = 25;
 	private static final int SCROLLBAR_WIDTH = 2;
 	private static final int SCROLLBAR_COLOR_1 = 0x20A0A0A0;
 	private static final int SCROLLBAR_COLOR_2 = 0x905F5F5F;
 	private static final int SCROLL_PIXEL_MULTIPLIER = 8;
+	private int cutoffFromBottom = 25;
 	
 	private final List<Element> globalElements = new ArrayList<>();
 	private final List<Drawable> globalDrawables = new ArrayList<>();
@@ -85,7 +85,7 @@ public class SidebarWidget extends AbstractParentElement implements Drawable, Ti
 	
 	public void updateScrolledDist() {
 		if (optionsHeightSupplier != null) {
-			scrolledDist = Util.minClamp(scrolledDist, 0, optionsHeightSupplier.getAsInt() - parentScreen.height + CUTOFF_FROM_BOTTOM);
+			scrolledDist = Util.minClamp(scrolledDist, 0, optionsHeightSupplier.getAsInt() - parentScreen.height + cutoffFromBottom);
 		} else {
 			scrolledDist = 0;
 		}
@@ -114,7 +114,7 @@ public class SidebarWidget extends AbstractParentElement implements Drawable, Ti
 	public void render(MatrixStack matrixStack, int mouseX, int mouseY, float delta) {
 		DrawableHelper.fill(matrixStack, 0, 0, width, parentScreen.height, color);
 		
-		double optionsVisibleHeight = parentScreen.height - CUTOFF_FROM_BOTTOM;
+		double optionsVisibleHeight = parentScreen.height - cutoffFromBottom;
 		if (optionsVisibleHeight > 0) {
 			boolean scrollable = false;
 			boolean matrixPushed = false;
@@ -125,7 +125,7 @@ public class SidebarWidget extends AbstractParentElement implements Drawable, Ti
 					int x = width - 2;
 					GLUtil.drawFillColor(matrixStack, x, 0, x + SCROLLBAR_WIDTH, optionsVisibleHeight, SCROLLBAR_COLOR_1);
 					GLUtil.drawFillColor(matrixStack, x, scrolledDist / optionsFullHeight * optionsVisibleHeight, x + SCROLLBAR_WIDTH, (optionsVisibleHeight + scrolledDist) / optionsFullHeight * optionsVisibleHeight, SCROLLBAR_COLOR_2);
-					RenderSystem.enableScissor(0, (int)(CUTOFF_FROM_BOTTOM * scale), (int) (width * scale), (int)(optionsVisibleHeight * scale));
+					ScissorStack.pushScissorArea(0, (int)(cutoffFromBottom * scale), (int) (width * scale), (int)(optionsVisibleHeight * scale));
 					scrollable = true;
 					if (scrolledDist > 0) {
 						matrixStack.push();
@@ -141,7 +141,7 @@ public class SidebarWidget extends AbstractParentElement implements Drawable, Ti
 			
 			if (scrollable) {
 				if (matrixPushed) matrixStack.pop();
-				RenderSystem.disableScissor();
+				ScissorStack.popScissorArea();
 			}
 		}
 		
@@ -184,10 +184,10 @@ public class SidebarWidget extends AbstractParentElement implements Drawable, Ti
 		if (childScrolled) {
 			return true;
 		} else {
-			if (optionsHeightSupplier == null || mouseY > parentScreen.height - CUTOFF_FROM_BOTTOM) {
+			if (optionsHeightSupplier == null || mouseY > parentScreen.height - cutoffFromBottom) {
 				return false;
 			} else {
-				scrolledDist = Util.minClamp(scrolledDist - (amount * SCROLL_PIXEL_MULTIPLIER), 0, optionsHeightSupplier.getAsInt() - parentScreen.height + CUTOFF_FROM_BOTTOM);
+				scrolledDist = Util.minClamp(scrolledDist - (amount * SCROLL_PIXEL_MULTIPLIER), 0, optionsHeightSupplier.getAsInt() - parentScreen.height + cutoffFromBottom);
 				return true;
 			}
 		}
