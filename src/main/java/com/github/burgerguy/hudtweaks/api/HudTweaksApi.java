@@ -1,10 +1,10 @@
 package com.github.burgerguy.hudtweaks.api;
 
+import com.github.burgerguy.hudtweaks.hud.UpdateEvent;
+
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
-
-import com.github.burgerguy.hudtweaks.hud.UpdateEvent;
 
 public interface HudTweaksApi {
 	
@@ -28,5 +28,5 @@ public interface HudTweaksApi {
 	 * can update the matricies before and after the render of the
 	 * entry.
 	 */
-	public Collection<CustomHudElementEntry> getCustomElementEntries();
+	public Collection<PlaceholderName> getCustomElementEntries();
 }
