@@ -1,17 +1,16 @@
 package com.github.burgerguy.hudtweaks.hud.tree;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import com.github.burgerguy.hudtweaks.hud.HTIdentifier;
 import com.github.burgerguy.hudtweaks.hud.HudContainer;
 import com.github.burgerguy.hudtweaks.hud.UpdateEvent;
 import com.github.burgerguy.hudtweaks.util.Util;
-
 import net.minecraft.client.MinecraftClient;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public abstract class AbstractTypeNodeEntry {
-	private transient final HTIdentifier identifier;
+	protected transient final HTIdentifier identifier;
 	protected transient AbstractTypeNode parentNode;
 	protected transient AbstractTypeNode xTreeParent;
 	protected transient AbstractTypeNode yTreeParent;
