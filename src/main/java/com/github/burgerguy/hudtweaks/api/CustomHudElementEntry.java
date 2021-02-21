@@ -4,6 +4,9 @@ import com.github.burgerguy.hudtweaks.hud.HudContainer;
 import com.github.burgerguy.hudtweaks.hud.element.HudElementEntry;
 import net.minecraft.client.MinecraftClient;
 
+import java.lang.reflect.Field;
+import java.util.Set;
+
 public class CustomHudElementEntry extends HudElementEntry {
 	PlaceholderName wrapped;
 
@@ -32,5 +35,15 @@ public class CustomHudElementEntry extends HudElementEntry {
 	@Override
 	protected double calculateDefaultY(MinecraftClient client) {
 		return wrapped.calculateDefaultY(client);
+	}
+
+	@Override
+	public Set<Field> getConfigurableFields() {
+		Set<Field> fields = super.getConfigurableFields(); // get the default fields
+
+		// todo: this would either get the transient fields of this.wrapped via reflection
+		//                      or call some getConfigOptions() function, which would be a disaster of an api
+
+		return fields;
 	}
 }
