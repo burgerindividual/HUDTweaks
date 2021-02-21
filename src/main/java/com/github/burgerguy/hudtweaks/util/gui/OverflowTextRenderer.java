@@ -46,7 +46,7 @@ public class OverflowTextRenderer {
 			ScissorStack.popScissorArea();
 		} else {
 			tickCount = 0;
-			DrawableHelper.drawCenteredText(matrices, textRenderer, text, x, y, 0xCCFFFFFF);
+			DrawableHelper.drawCenteredText(matrices, textRenderer, text, x, y, color);
 		}
 	}
 }
