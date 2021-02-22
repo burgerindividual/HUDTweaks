@@ -25,7 +25,7 @@ public class SidebarWidget extends AbstractParentElement implements Drawable, Ti
 	private static final int SCROLLBAR_COLOR_1 = 0x20A0A0A0;
 	private static final int SCROLLBAR_COLOR_2 = 0x905F5F5F;
 	private static final int SCROLL_PIXEL_MULTIPLIER = 8;
-	private int cutoffFromBottom = 25;
+	public int cutoffFromBottom = 25;
 	
 	private final List<Element> globalElements = new ArrayList<>();
 	private final List<Drawable> globalDrawables = new ArrayList<>();
@@ -44,9 +44,11 @@ public class SidebarWidget extends AbstractParentElement implements Drawable, Ti
 		this.color = color;
 	}
 	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public void addDrawable(Drawable drawable) {
 		drawables.add(drawable);
 		if (drawable instanceof Element) {
+			// this is really bad but it's funny
 			elements.add(new ScrollableWrapperElement((Element) drawable, () -> scrolledDist));
 		}
 	}
@@ -136,7 +138,7 @@ public class SidebarWidget extends AbstractParentElement implements Drawable, Ti
 			}
 			
 			for (Drawable drawable : drawables) {
-				drawable.render(matrixStack, mouseX, scrollable ? (int)(mouseY + scrolledDist) : mouseY, delta);
+				drawable.render(matrixStack, mouseX, mouseY, delta);
 			}
 			
 			if (scrollable) {

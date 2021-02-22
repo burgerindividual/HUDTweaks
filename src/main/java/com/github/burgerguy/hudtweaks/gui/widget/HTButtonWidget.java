@@ -11,7 +11,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.math.MathHelper;
 
 public abstract class HTButtonWidget extends AbstractPressableButtonWidget {
-	private final OverflowTextRenderer overflowTextRenderer;
+	protected final OverflowTextRenderer overflowTextRenderer;
 	
 	public HTButtonWidget(int x, int y, int width, int height, Text message) {
 		super(x, y, width, height, message);

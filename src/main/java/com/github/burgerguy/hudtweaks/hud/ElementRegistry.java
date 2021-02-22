@@ -57,7 +57,10 @@ public class ElementRegistry {
 	public void addEntry(HudElementEntry entry) {
 		if (!entry.getIdentifier().getElementType().equals(RelativeTreeRootScreen.IDENTIFIER.getElementType())) {
 			if (elementGroupMap.containsKey(entry.getIdentifier().getElementType())) {
-				getElementType(entry.getIdentifier().getElementType()).add(entry);
+				HudElementType type = getElementType(entry.getIdentifier().getElementType());
+				type.add(entry);
+				entry.setParentNode(type);
+				entry.init();
 			} else {
 				HTIdentifier.ElementType elementId = entry.getIdentifier().getElementType();
 				HudElementType type = new HudElementType(elementId);

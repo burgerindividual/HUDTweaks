@@ -13,8 +13,6 @@ import com.github.burgerguy.hudtweaks.util.gl.DrawTest;
 import com.google.gson.JsonElement;
 import com.mojang.blaze3d.systems.RenderSystem;
 
-import net.minecraft.util.math.MathHelper;
-
 public class HudElementType extends AbstractTypeNode { // TODO: somehow fit this for RelativeTreeNode
 	private transient final HTIdentifier.ElementType elementIdentifier;
 	private final List<HudElementEntry> entries = new ArrayList<>();
@@ -58,8 +56,13 @@ public class HudElementType extends AbstractTypeNode { // TODO: somehow fit this
 		return entries.size();
 	}
 	
-	public void cycleType(int amount) {
-		activeIndex = MathHelper.clamp(activeIndex + amount, 0, entries.size() - 1);
+	public void cycleEntry() {
+		if (activeIndex < entries.size() - 1) {
+			activeIndex++;
+		} else {
+			activeIndex = 0;
+		}
+		setRequiresUpdate();
 	}
 	
 	public String toString() {

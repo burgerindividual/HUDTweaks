@@ -2,7 +2,7 @@ package com.github.burgerguy.hudtweaks.gui.widget;
 
 import org.jetbrains.annotations.Nullable;
 
-import com.github.burgerguy.hudtweaks.hud.element.HudElementEntry;
+import com.github.burgerguy.hudtweaks.hud.element.HudElementType;
 import com.github.burgerguy.hudtweaks.util.gui.OverflowTextRenderer;
 
 import net.minecraft.client.MinecraftClient;
@@ -20,7 +20,7 @@ public class ElementLabelWidget implements Drawable {
 	private final int x;
 	private final int y;
 	private final OverflowTextRenderer overflowTextRenderer;
-	private HudElementEntry element;
+	private HudElementType elementType;
 	
 	public ElementLabelWidget(int x, int y, int maxWidth) {
 		this.x = x;
@@ -32,15 +32,15 @@ public class ElementLabelWidget implements Drawable {
 	@Override
 	public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
 		TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
-		if (element == null) {
+		if (elementType == null) {
 			DrawableHelper.drawCenteredText(matrices, textRenderer, new TranslatableText("hudtweaks.options.current_element.blank.display").setStyle(STYLE), x, y, 0xCCB0B0B0);
 		} else {
-			overflowTextRenderer.render(matrices, textRenderer, new LiteralText(element.getIdentifier().getElementType().toTranslatedString()).setStyle(STYLE), delta, 0xCCFFFFFF);
+			overflowTextRenderer.render(matrices, textRenderer, new LiteralText(elementType.getElementIdentifier().toTranslatedString()).setStyle(STYLE), delta, 0xCCFFFFFF);
 		}
 	}
 	
-	public void setHudElement(@Nullable HudElementEntry element) {
-		this.element = element;
+	public void setHudElementType(@Nullable HudElementType elementType) {
+		this.elementType = elementType;
 		overflowTextRenderer.restart();
 	}
 }
