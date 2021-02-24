@@ -12,7 +12,7 @@ import com.github.burgerguy.hudtweaks.hud.UpdateEvent;
 import net.minecraft.client.MinecraftClient;
 
 public abstract class AbstractTypeNode {
-	private transient final HTIdentifier.ElementType elementIdentifier;
+	protected transient final HTIdentifier.ElementType elementIdentifier;
 	protected transient final Set<AbstractTypeNode> xTreeChildren = new HashSet<>();
 	protected transient final Set<AbstractTypeNode> yTreeChildren = new HashSet<>();
 	

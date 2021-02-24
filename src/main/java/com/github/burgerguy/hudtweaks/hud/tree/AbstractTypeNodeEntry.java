@@ -11,10 +11,11 @@ import java.util.Set;
 
 public abstract class AbstractTypeNodeEntry {
 	protected transient final HTIdentifier identifier;
+	protected transient final Set<UpdateEvent> updateEvents = new HashSet<>();
+	
 	protected transient AbstractTypeNode parentNode;
 	protected transient AbstractTypeNode xTreeParent;
 	protected transient AbstractTypeNode yTreeParent;
-	protected transient final Set<UpdateEvent> updateEvents = new HashSet<>();
 	
 	public AbstractTypeNodeEntry(HTIdentifier identifier, String... updateEvents) {
 		this.identifier = identifier;

@@ -17,9 +17,6 @@ public class DashedBoxOutline implements AutoCloseable {
 	private int pattern;
 	private byte patternLength;
 	
-	public DashedBoxOutline() {
-	}
-	
 	public void draw(MatrixStack matrices, int color, int pattern, byte patternLength, double x1, double y1, double x2, double y2, float width) {
 		boolean newTex = false;
 		if (this.patternLength != patternLength) {
