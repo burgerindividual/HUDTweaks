@@ -21,11 +21,12 @@ import com.github.burgerguy.hudtweaks.util.Util;
 import com.google.gson.JsonElement;
 
 /**
- * We maintain two maps in this class. The first one is a map of raw
- * identifiers to elements, and is used with matrix application for
- * speed. The second is a map from element types to groups of that
- * type of element. It is used for basically anything else and manages
- * element replacements by mods that implement the API.
+ * In this class, we maintain a map of HudElementTypes that contains
+ * all of the HudElementEntries added with addEntry. New
+ * HudElemenTypes are created as needed, but the default types are
+ * created on init. Types can have multiple entries, but only one
+ * entry will be used for that type at any given time. It should
+ * generally be used for creating replacements for the default types.
  */
 public class ElementRegistry {
 	private final Map<HTIdentifier.ElementType, HudElementType> elementGroupMap = new HashMap<>();
