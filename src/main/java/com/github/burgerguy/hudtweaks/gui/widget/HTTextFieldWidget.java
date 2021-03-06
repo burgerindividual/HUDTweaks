@@ -19,7 +19,7 @@ public class HTTextFieldWidget extends TextFieldWidget {
 			TextFieldAccessor accessor = (TextFieldAccessor) this;
 			
 			int color;
-			if (accessor.callDrawsBackground()) {
+			if (accessor.callHasBorder()) {
 				color = isFocused() ? 0xFFFFFFFF : 0xFF000000;
 				int x1 = x;
 				int y1 = y;
@@ -37,8 +37,8 @@ public class HTTextFieldWidget extends TextFieldWidget {
 			String string = accessor.getTextRenderer().trimToWidth(getText().substring(accessor.getFirstCharacterIndex()), getInnerWidth());
 			boolean bl = k >= 0 && k <= string.length();
 			boolean bl2 = isFocused() && accessor.getFocusedTicks() / 6 % 2 == 0 && bl;
-			int m = accessor.callDrawsBackground() ? x + 4 : x;
-			int n = accessor.callDrawsBackground() ? y + (height - 8) / 2 : y;
+			int m = accessor.callHasBorder() ? x + 4 : x;
+			int n = accessor.callHasBorder() ? y + (height - 8) / 2 : y;
 			int o = m;
 			if (l > string.length()) {
 				l = string.length();

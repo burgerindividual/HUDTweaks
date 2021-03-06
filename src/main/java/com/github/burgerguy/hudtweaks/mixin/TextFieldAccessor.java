@@ -30,7 +30,7 @@ public interface TextFieldAccessor {
 	public BiFunction<String, Integer, OrderedText> getRenderTextProvider();
 	
 	@Invoker
-	public boolean callDrawsBackground();
+	public boolean callHasBorder();
 	@Invoker
 	public void callDrawSelectionHighlight(int x1, int y1, int x2, int y2);
 	@Invoker
