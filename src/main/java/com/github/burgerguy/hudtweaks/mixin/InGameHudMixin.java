@@ -90,27 +90,27 @@ public abstract class InGameHudMixin extends DrawableHelper {
 	
 	@Inject(method = "renderHotbar", at = @At(value = "HEAD"))
 	private void renderHotbarHead(float tickDelta, MatrixStack matrices, CallbackInfo callbackInfo) {
-		HudContainer.getMatrixCache().tryPushMatrix(DefaultHotbarEntry.IDENTIFIER.getElementType(), null); // TODO: make each element have a public static final field for their identifier
+		HudContainer.getMatrixCache().tryPushMatrix(DefaultHotbarEntry.IDENTIFIER, null);
 	}
 	
 	@Inject(method = "renderHotbar", at = @At(value = "RETURN"))
 	private void renderHotbarReturn(float tickDelta, MatrixStack matrices, CallbackInfo callbackInfo) {
-		HudContainer.getMatrixCache().tryPopMatrix(DefaultHotbarEntry.IDENTIFIER.getElementType(), null);
+		HudContainer.getMatrixCache().tryPopMatrix(DefaultHotbarEntry.IDENTIFIER, null);
 	}
 	
 	@Inject(method = "renderStatusBars",
 			at = @At(value = "INVOKE_STRING", target = "Lnet/minecraft/util/profiler/Profiler;push(Ljava/lang/String;)V",
 			args = "ldc=armor"))
 	private void renderArmor(MatrixStack matrices, CallbackInfo callbackInfo) {
-		HudContainer.getMatrixCache().tryPushMatrix(DefaultArmorEntry.IDENTIFIER.getElementType(), matrices);
+		HudContainer.getMatrixCache().tryPushMatrix(DefaultArmorEntry.IDENTIFIER, matrices);
 	}
 	
 	@Inject(method = "renderStatusBars",
 			at = @At(value = "INVOKE_STRING", target = "Lnet/minecraft/util/profiler/Profiler;swap(Ljava/lang/String;)V",
 			args = "ldc=health"))
 	private void renderHealth(MatrixStack matrices, CallbackInfo callbackInfo) {
-		HudContainer.getMatrixCache().tryPopMatrix(DefaultArmorEntry.IDENTIFIER.getElementType(), matrices);
-		HudContainer.getMatrixCache().tryPushMatrix(DefaultHealthEntry.IDENTIFIER.getElementType(), matrices);
+		HudContainer.getMatrixCache().tryPopMatrix(DefaultArmorEntry.IDENTIFIER, matrices);
+		HudContainer.getMatrixCache().tryPushMatrix(DefaultHealthEntry.IDENTIFIER, matrices);
 	}
 	
 	// injects before if (i <= 4)
@@ -131,8 +131,8 @@ public abstract class InGameHudMixin extends DrawableHelper {
 	@Inject(method = "renderStatusBars",
 			at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/client/gui/hud/InGameHud;getHeartCount(Lnet/minecraft/entity/LivingEntity;)I"))
 	private void renderHunger(MatrixStack matrices, CallbackInfo callbackInfo) {
-		HudContainer.getMatrixCache().tryPopMatrix(DefaultHealthEntry.IDENTIFIER.getElementType(), matrices);
-		HudContainer.getMatrixCache().tryPushMatrix(DefaultHungerEntry.IDENTIFIER.getElementType(), matrices);
+		HudContainer.getMatrixCache().tryPopMatrix(DefaultHealthEntry.IDENTIFIER, matrices);
+		HudContainer.getMatrixCache().tryPushMatrix(DefaultHungerEntry.IDENTIFIER, matrices);
 	}
 	
 	// this makes sure the aa will equal zero so the if (aa == 0) will pass
@@ -152,33 +152,33 @@ public abstract class InGameHudMixin extends DrawableHelper {
 			at = @At(value = "INVOKE_STRING", target = "Lnet/minecraft/util/profiler/Profiler;swap(Ljava/lang/String;)V",
 			args = "ldc=air"))
 	private void renderAir(MatrixStack matrices, CallbackInfo callbackInfo) {
-		HudContainer.getMatrixCache().tryPopMatrix(DefaultHungerEntry.IDENTIFIER.getElementType(), matrices);
-		HudContainer.getMatrixCache().tryPushMatrix(DefaultAirEntry.IDENTIFIER.getElementType(), matrices);
+		HudContainer.getMatrixCache().tryPopMatrix(DefaultHungerEntry.IDENTIFIER, matrices);
+		HudContainer.getMatrixCache().tryPushMatrix(DefaultAirEntry.IDENTIFIER, matrices);
 	}
 	
 	@Inject(method = "renderStatusBars", at = @At(value = "RETURN"))
 	private void renderStatusBarsReturn(MatrixStack matrices, CallbackInfo callbackInfo) {
-		HudContainer.getMatrixCache().tryPopMatrix(DefaultAirEntry.IDENTIFIER.getElementType(), matrices);
+		HudContainer.getMatrixCache().tryPopMatrix(DefaultAirEntry.IDENTIFIER, matrices);
 	}
 	
 	@Inject(method = "renderMountHealth", at = @At(value = "HEAD"))
 	private void renderMountHealthHead(MatrixStack matrices, CallbackInfo callbackInfo) {
-		HudContainer.getMatrixCache().tryPushMatrix(DefaultMountHealthEntry.IDENTIFIER.getElementType(), matrices);
+		HudContainer.getMatrixCache().tryPushMatrix(DefaultMountHealthEntry.IDENTIFIER, matrices);
 	}
 	
 	@Inject(method = "renderMountHealth", at = @At(value = "RETURN"))
 	private void renderMountHealthReturn(MatrixStack matrices, CallbackInfo callbackInfo) {
-		HudContainer.getMatrixCache().tryPopMatrix(DefaultMountHealthEntry.IDENTIFIER.getElementType(), matrices);
+		HudContainer.getMatrixCache().tryPopMatrix(DefaultMountHealthEntry.IDENTIFIER, matrices);
 	}
 	
 	@Inject(method = "renderExperienceBar", at = @At(value = "HEAD"))
 	public void renderExperienceBarHead(MatrixStack matrices, int x, CallbackInfo callbackInfo) {
-		HudContainer.getMatrixCache().tryPushMatrix(DefaultExperienceBarEntry.IDENTIFIER.getElementType(), matrices);
+		HudContainer.getMatrixCache().tryPushMatrix(DefaultExperienceBarEntry.IDENTIFIER, matrices);
 	}
 	
 	@Inject(method = "renderExperienceBar", at = @At(value = "RETURN"))
 	public void renderExperienceBarReturn(MatrixStack matrices, int x, CallbackInfo callbackInfo) {
-		HudContainer.getMatrixCache().tryPopMatrix(DefaultExperienceBarEntry.IDENTIFIER.getElementType(), matrices);
+		HudContainer.getMatrixCache().tryPopMatrix(DefaultExperienceBarEntry.IDENTIFIER, matrices);
 	}
 	
 	@Shadow
@@ -194,17 +194,17 @@ public abstract class InGameHudMixin extends DrawableHelper {
 			renderExperienceBar(matrices, x);
 		}
 		
-		HudContainer.getMatrixCache().tryPushMatrix(DefaultJumpBarEntry.IDENTIFIER.getElementType(), matrices);
+		HudContainer.getMatrixCache().tryPushMatrix(DefaultJumpBarEntry.IDENTIFIER, matrices);
 	}
 	
 	@Inject(method = "renderMountJumpBar", at = @At(value = "RETURN"))
 	public void renderMountJumpBarReturn(MatrixStack matrices, int x, CallbackInfo callbackInfo) {
-		HudContainer.getMatrixCache().tryPopMatrix(DefaultJumpBarEntry.IDENTIFIER.getElementType(), matrices);
+		HudContainer.getMatrixCache().tryPopMatrix(DefaultJumpBarEntry.IDENTIFIER, matrices);
 	}
 	
 	@Inject(method = "renderStatusEffectOverlay", at = @At(value = "HEAD"))
 	private void renderStatusEffectOverlayHead(MatrixStack matrices, CallbackInfo callbackInfo) {
-		HudContainer.getMatrixCache().tryPushMatrix(DefaultStatusEffectsEntry.IDENTIFIER.getElementType(), matrices);
+		HudContainer.getMatrixCache().tryPushMatrix(DefaultStatusEffectsEntry.IDENTIFIER, matrices);
 	}
 
 	@Unique
@@ -264,6 +264,6 @@ public abstract class InGameHudMixin extends DrawableHelper {
 
 	@Inject(method = "renderStatusEffectOverlay", at = @At(value = "RETURN"))
 	private void renderStatusEffectOverlayReturn(MatrixStack matrices, CallbackInfo callbackInfo) {
-		HudContainer.getMatrixCache().tryPopMatrix(DefaultStatusEffectsEntry.IDENTIFIER.getElementType(), matrices);
+		HudContainer.getMatrixCache().tryPopMatrix(DefaultStatusEffectsEntry.IDENTIFIER, matrices);
 	}
 }

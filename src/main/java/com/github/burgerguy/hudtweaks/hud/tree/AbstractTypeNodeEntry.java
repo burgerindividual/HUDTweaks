@@ -44,6 +44,11 @@ public abstract class AbstractTypeNodeEntry {
 		return parentNode;
 	}
 	
+	public boolean isActive() {
+		AbstractTypeNodeEntry entry = parentNode.getActiveEntry();
+		return entry == null ? false : entry.equals(this);
+	}
+	
 	public final HTIdentifier getIdentifier() {
 		return identifier;
 	}

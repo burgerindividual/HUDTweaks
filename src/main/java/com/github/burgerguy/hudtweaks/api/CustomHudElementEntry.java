@@ -7,7 +7,8 @@ import com.github.burgerguy.hudtweaks.hud.element.HudElementEntry;
 public abstract class CustomHudElementEntry extends HudElementEntry {
 	public CustomHudElementEntry(HTIdentifier identifier, MatrixUpdater updater, String... updateEvents) {
 		super(identifier, updateEvents);
-		updater.fillRunnables(ms -> HudContainer.getMatrixCache().tryPushMatrix(identifier.getElementType(), ms),
-				ms -> HudContainer.getMatrixCache().tryPopMatrix(identifier.getElementType(), ms));
+		updater.fill(ms -> HudContainer.getMatrixCache().tryPushMatrix(identifier, ms),
+				ms -> HudContainer.getMatrixCache().tryPopMatrix(identifier, ms),
+				this::isActive);
 	}
 }
