@@ -1,11 +1,11 @@
 package com.github.burgerguy.hudtweaks;
 
-import com.github.burgerguy.hudtweaks.api.CustomHudElementEntry;
 import com.github.burgerguy.hudtweaks.api.HudTweaksApi;
-import com.github.burgerguy.hudtweaks.api.PlaceholderName;
 import com.github.burgerguy.hudtweaks.config.ConfigHelper;
 import com.github.burgerguy.hudtweaks.hud.HudContainer;
 import com.github.burgerguy.hudtweaks.hud.UpdateEvent;
+import com.github.burgerguy.hudtweaks.hud.element.HudElementEntry;
+
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.loader.api.FabricLoader;
 
@@ -23,8 +23,8 @@ public class HudTweaksMod implements ClientModInitializer {
 				HudContainer.getEventRegistry().put(event);
 			}
 			
-			for (PlaceholderName element : apiImpl.getCustomElementEntries()) {
-				HudContainer.getElementRegistry().addEntry(new CustomHudElementEntry(element));
+			for (HudElementEntry element : apiImpl.getCustomElementEntries()) {
+				HudContainer.getElementRegistry().addEntry(element);
 			}
 		});
 		ConfigHelper.tryLoadConfig();

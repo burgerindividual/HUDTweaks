@@ -1,9 +1,10 @@
 package com.github.burgerguy.hudtweaks.hud;
 
-import net.minecraft.client.resource.language.I18n;
+import java.util.Objects;
+
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Objects;
+import net.minecraft.client.resource.language.I18n;
 
 public class HTIdentifier {
 	private final ElementType element;
