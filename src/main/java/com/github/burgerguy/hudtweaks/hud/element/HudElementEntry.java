@@ -1,6 +1,11 @@
 package com.github.burgerguy.hudtweaks.hud.element;
 
-import com.github.burgerguy.hudtweaks.gui.widget.*;
+import com.github.burgerguy.hudtweaks.gui.widget.HTLabelWidget;
+import com.github.burgerguy.hudtweaks.gui.widget.HTSliderWidget;
+import com.github.burgerguy.hudtweaks.gui.widget.NumberFieldWidget;
+import com.github.burgerguy.hudtweaks.gui.widget.ParentButtonWidget;
+import com.github.burgerguy.hudtweaks.gui.widget.PosTypeButtonWidget;
+import com.github.burgerguy.hudtweaks.gui.widget.SidebarWidget;
 import com.github.burgerguy.hudtweaks.hud.HTIdentifier;
 import com.github.burgerguy.hudtweaks.hud.HudContainer;
 import com.github.burgerguy.hudtweaks.hud.tree.AbstractTypeNodeEntry;
@@ -8,14 +13,12 @@ import com.github.burgerguy.hudtweaks.util.Util;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.SerializedName;
+
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Matrix4f;
-
-import java.lang.reflect.Field;
-import java.util.Set;
 
 public abstract class HudElementEntry extends AbstractTypeNodeEntry {
 	// These are all marked as transient so we can manually add them in our custom serializer
@@ -176,12 +179,8 @@ public abstract class HudElementEntry extends AbstractTypeNodeEntry {
 	public String toString() {
 		return getIdentifier().toString();
 	}
-
-	public Set<Field> getConfigurableFields() {
-		// todo: preferably use reflection
-		return null;
-	}
-	// TODO: everything below should use ^
+	
+	// TODO: fix all of the garbage below here
 
 	/**
 	 * Override if any extra options are added to the element.
