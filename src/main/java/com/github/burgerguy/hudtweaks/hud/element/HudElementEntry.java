@@ -1,24 +1,18 @@
 package com.github.burgerguy.hudtweaks.hud.element;
 
-import org.jetbrains.annotations.Nullable;
-
 import com.github.burgerguy.hudtweaks.gui.widget.HTLabelWidget;
 import com.github.burgerguy.hudtweaks.gui.widget.HTSliderWidget;
 import com.github.burgerguy.hudtweaks.gui.widget.NumberFieldWidget;
+import com.github.burgerguy.hudtweaks.gui.widget.ParentButtonWidget;
 import com.github.burgerguy.hudtweaks.gui.widget.PosTypeButtonWidget;
 import com.github.burgerguy.hudtweaks.gui.widget.SidebarWidget;
-import com.github.burgerguy.hudtweaks.gui.widget.XAxisParentButtonWidget;
-import com.github.burgerguy.hudtweaks.gui.widget.YAxisParentButtonWidget;
+import com.github.burgerguy.hudtweaks.hud.HTIdentifier;
 import com.github.burgerguy.hudtweaks.hud.HudContainer;
-import com.github.burgerguy.hudtweaks.hud.RelativeTreeNode;
-import com.github.burgerguy.hudtweaks.hud.XAxisNode;
-import com.github.burgerguy.hudtweaks.hud.YAxisNode;
+import com.github.burgerguy.hudtweaks.hud.tree.AbstractTypeNodeEntry;
 import com.github.burgerguy.hudtweaks.util.Util;
-import com.github.burgerguy.hudtweaks.util.gl.DrawTest;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.SerializedName;
-import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.resource.language.I18n;
@@ -26,7 +20,7 @@ import net.minecraft.text.TranslatableText;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Matrix4f;
 
-public abstract class HudElement extends RelativeTreeNode {
+public abstract class HudElementEntry extends AbstractTypeNodeEntry {
 	// These are all marked as transient so we can manually add them in our custom serializer
 	protected transient PosType xPosType = PosType.DEFAULT;
 	protected transient PosType yPosType = PosType.DEFAULT;
@@ -47,17 +41,8 @@ public abstract class HudElement extends RelativeTreeNode {
 	protected transient double cachedY;
 	// TODO: add rotation using the already existing anchor points.
 	
-	protected transient HudElementWidget widget;
-	protected transient DrawTest drawTest;
-	protected transient Boolean drawTestResult;
-	protected transient boolean drawTestedSinceClear;
-	
-	public HudElement(String identifier, String... updateEvents) {
+	public HudElementEntry(HTIdentifier identifier, String... updateEvents) {
 		super(identifier, updateEvents);
-		// we have to create the draw test here because
-		// it has to be on the render thread and it has
-		// to be after lwjgl has initialized
-		RenderSystem.recordRenderCall(() -> drawTest = new DrawTest());
 	}
 	
 	public enum PosType {
@@ -120,7 +105,7 @@ public abstract class HudElement extends RelativeTreeNode {
 			cachedX = getDefaultX(client) + xOffset;
 			break;
 		case RELATIVE:
-			cachedX = (getXParent().getWidth(client) * xRelativePos + xOffset + getXParent().getX(client)) - (getWidth(client) * xAnchorPos);
+			cachedX = (getXParent().getActiveEntry().getWidth(client) * xRelativePos + xOffset + getXParent().getActiveEntry().getX(client)) - (getWidth(client) * xAnchorPos);
 			break;
 		default:
 			throw new UnsupportedOperationException("how");
@@ -136,7 +121,7 @@ public abstract class HudElement extends RelativeTreeNode {
 			cachedY = getDefaultY(client) + yOffset;
 			break;
 		case RELATIVE:
-			cachedY = (getYParent().getHeight(client) * yRelativePos + yOffset + getYParent().getY(client)) - (getHeight(client) * yAnchorPos);
+			cachedY = (getYParent().getActiveEntry().getHeight(client) * yRelativePos + yOffset + getYParent().getActiveEntry().getY(client)) - (getHeight(client) * yAnchorPos);
 			break;
 		default:
 			throw new UnsupportedOperationException("how");
@@ -147,7 +132,7 @@ public abstract class HudElement extends RelativeTreeNode {
 		Matrix4f matrix = Matrix4f.scale((float) xScale, (float) yScale, 1);
 		matrix.multiply(Matrix4f.translate((float) ((getX(client) * (1 / xScale)) - getDefaultX(client)),
 				(float) ((getY(client) * (1 / yScale)) - getDefaultY(client)), 1));
-		setUpdated();
+		parentNode.setUpdated();
 		return matrix;
 	}
 	
@@ -191,25 +176,12 @@ public abstract class HudElement extends RelativeTreeNode {
 		return yScale;
 	}
 	
-	public void startDrawTest() {
-		drawTest.start();
+	public String toString() {
+		return getIdentifier().toString();
 	}
 	
-	public void endDrawTest() {
-		if (drawTest.end()) drawTestedSinceClear = true;
-	}
-	
-	public void clearDrawTest() {
-		drawTestResult = null;
-		drawTestedSinceClear = false;
-	}
-	
-	public boolean isRendered() {
-		if (!drawTestedSinceClear) return false;
-		if (drawTestResult == null) drawTestResult = drawTest.getResultSync();
-		return drawTestResult;
-	}
-	
+	// TODO: fix all of the garbage below here
+
 	/**
 	 * Override if any extra options are added to the element.
 	 * Make sure to call super before anything else.
@@ -221,7 +193,7 @@ public abstract class HudElement extends RelativeTreeNode {
 		JsonElement parentIdentifier = xPosJson.get("parent");
 		if (parentIdentifier != null && parentIdentifier.isJsonPrimitive() && parentIdentifier.getAsJsonPrimitive().isString()) {
 			String relativeParentIdentifier = parentIdentifier.getAsString();
-			XAxisNode parentNode = HudContainer.getElement(relativeParentIdentifier);
+			HudElementType parentNode = HudContainer.getElementRegistry().getElementType(new HTIdentifier.ElementType(relativeParentIdentifier, null));
 			if(parentNode != null) {
 				moveXUnder(parentNode);
 			}
@@ -235,7 +207,7 @@ public abstract class HudElement extends RelativeTreeNode {
 		parentIdentifier = yPosJson.get("parent");
 		if (parentIdentifier != null && parentIdentifier.isJsonPrimitive() && parentIdentifier.getAsJsonPrimitive().isString()) {
 			String relativeParentIdentifier = parentIdentifier.getAsString();
-			YAxisNode parentNode = HudContainer.getElement(relativeParentIdentifier);
+			HudElementType parentNode = HudContainer.getElementRegistry().getElementType(new HTIdentifier.ElementType(relativeParentIdentifier, null));
 			if(parentNode != null) {
 				moveYUnder(parentNode);
 			}
@@ -255,9 +227,9 @@ public abstract class HudElement extends RelativeTreeNode {
 	 */
 	@SuppressWarnings("resource")
 	public void fillSidebar(SidebarWidget sidebar) {
-		XAxisParentButtonWidget xRelativeParentButton = new XAxisParentButtonWidget(4, 35, sidebar.width - 8, 14, getXParent(), this, p -> moveXUnder(p));
+		ParentButtonWidget xRelativeParentButton = new ParentButtonWidget(4, 35, sidebar.width - 8, 14, getXParent(), getParentNode(), p -> moveXUnder(p), true);
 		
-		YAxisParentButtonWidget yRelativeParentButton = new YAxisParentButtonWidget(4, 143, sidebar.width - 8, 14, getYParent(), this, p -> moveYUnder(p));
+		ParentButtonWidget yRelativeParentButton = new ParentButtonWidget(4, 143, sidebar.width - 8, 14, getYParent(), getParentNode(), p -> moveYUnder(p), false);
 		
 		xRelativeParentButton.active = !xPosType.equals(PosType.DEFAULT);
 		yRelativeParentButton.active = !yPosType.equals(PosType.DEFAULT);
@@ -271,7 +243,7 @@ public abstract class HudElement extends RelativeTreeNode {
 			@Override
 			public void applyValue() {
 				xRelativePos = value;
-				setRequiresUpdate();
+				parentNode.setRequiresUpdate();
 			}
 			
 			@Override
@@ -300,7 +272,7 @@ public abstract class HudElement extends RelativeTreeNode {
 			@Override
 			public void applyValue() {
 				yRelativePos = value;
-				setRequiresUpdate();
+				parentNode.setRequiresUpdate();
 			}
 			
 			@Override
@@ -332,7 +304,7 @@ public abstract class HudElement extends RelativeTreeNode {
 			@Override
 			public void applyValue() {
 				xAnchorPos = value;
-				setRequiresUpdate();
+				parentNode.setRequiresUpdate();
 			}
 			
 			@Override
@@ -361,7 +333,7 @@ public abstract class HudElement extends RelativeTreeNode {
 			@Override
 			public void applyValue() {
 				yAnchorPos = value;
-				setRequiresUpdate();
+				parentNode.setRequiresUpdate();
 			}
 			
 			@Override
@@ -386,7 +358,7 @@ public abstract class HudElement extends RelativeTreeNode {
 		
 		PosTypeButtonWidget xPosTypeButton = new PosTypeButtonWidget(4, 16, sidebar.width - 8, 14,  xPosType, t -> {
 			xPosType = t;
-			setRequiresUpdate();
+			parentNode.setRequiresUpdate();
 			xAnchorSlider.active = !t.equals(PosType.DEFAULT);
 			xRelativeSlider.active = !t.equals(PosType.DEFAULT);
 			xRelativeParentButton.active = !t.equals(PosType.DEFAULT);
@@ -394,7 +366,7 @@ public abstract class HudElement extends RelativeTreeNode {
 		
 		PosTypeButtonWidget yPosTypeButton = new PosTypeButtonWidget(4, 124, sidebar.width - 8, 14,  yPosType, t -> {
 			yPosType = t;
-			setRequiresUpdate();
+			parentNode.setRequiresUpdate();
 			yAnchorSlider.active = !t.equals(PosType.DEFAULT);
 			yRelativeSlider.active = !t.equals(PosType.DEFAULT);
 			yRelativeParentButton.active = !t.equals(PosType.DEFAULT);
@@ -410,11 +382,11 @@ public abstract class HudElement extends RelativeTreeNode {
 		xOffsetField.setChangedListener(s -> {
 			if (s.equals("")) {
 				xOffset = 0.0D;
-				setRequiresUpdate();
+				parentNode.setRequiresUpdate();
 			} else {
 				try {
 					xOffset = Double.parseDouble(s);
-					setRequiresUpdate();
+					parentNode.setRequiresUpdate();
 				} catch(NumberFormatException ignored) {}
 			}
 		});
@@ -429,11 +401,11 @@ public abstract class HudElement extends RelativeTreeNode {
 		yOffsetField.setChangedListener(s -> {
 			if (s.equals("")) {
 				yOffset = 0.0D;
-				setRequiresUpdate();
+				parentNode.setRequiresUpdate();
 			} else {
 				try {
 					yOffset = Double.parseDouble(s);
-					setRequiresUpdate();
+					parentNode.setRequiresUpdate();
 				} catch(NumberFormatException ignored) {}
 			}
 		});
@@ -449,13 +421,13 @@ public abstract class HudElement extends RelativeTreeNode {
 		xScaleField.setChangedListener(s -> {
 			if (s.equals("")) {
 				xScale = 0.0D;
-				setRequiresUpdate();
+				parentNode.setRequiresUpdate();
 			} else {
 				try {
 					double value = Double.parseDouble(s);
 					double lastValue = xScale;
 					xScale = value < 0.0D ? 0.0D : value;
-					if (xScale != lastValue) setRequiresUpdate();
+					if (xScale != lastValue) parentNode.setRequiresUpdate();
 				} catch(NumberFormatException ignored) {}
 			}
 		});
@@ -470,13 +442,13 @@ public abstract class HudElement extends RelativeTreeNode {
 		yScaleField.setChangedListener(s -> {
 			if (s.equals("")) {
 				yScale = 0.0D;
-				setRequiresUpdate();
+				parentNode.setRequiresUpdate();
 			} else {
 				try {
 					double value = Double.parseDouble(s);
 					double lastValue = yScale;
 					yScale = value < 0.0D ? 0.0D : value;
-					if (yScale != lastValue) setRequiresUpdate();
+					if (yScale != lastValue) parentNode.setRequiresUpdate();
 				} catch(NumberFormatException ignored) {}
 			}
 		});
@@ -511,15 +483,6 @@ public abstract class HudElement extends RelativeTreeNode {
 	 */
 	public int getSidebarOptionsHeight() {
 		return 265;
-	}
-	
-	@Nullable
-	public HudElementWidget getWidget() {
-		return widget;
-	}
-	
-	public HudElementWidget createWidget(@Nullable Runnable valueUpdater) {
-		return widget = new HudElementWidget(this, valueUpdater);
 	}
 	
 }

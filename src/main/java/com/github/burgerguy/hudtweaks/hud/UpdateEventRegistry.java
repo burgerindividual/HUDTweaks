@@ -7,7 +7,7 @@ import java.util.Map;
 public class UpdateEventRegistry {
 	private final Map<String, UpdateEvent> registeredEventMap = new HashMap<>();
 	
-	public UpdateEventRegistry() {
+	public void init() {
 		for (UpdateEvent event : DefaultUpdateEvents.EVENTS) {
 			put(event);
 		}

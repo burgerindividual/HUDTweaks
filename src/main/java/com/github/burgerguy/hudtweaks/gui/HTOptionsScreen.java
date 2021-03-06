@@ -7,11 +7,14 @@ import java.util.function.Supplier;
 import com.github.burgerguy.hudtweaks.config.ConfigHelper;
 import com.github.burgerguy.hudtweaks.gui.widget.ArrowButtonWidget;
 import com.github.burgerguy.hudtweaks.gui.widget.ElementLabelWidget;
+import com.github.burgerguy.hudtweaks.gui.widget.EntryCycleButtonWidget;
 import com.github.burgerguy.hudtweaks.gui.widget.SidebarWidget;
 import com.github.burgerguy.hudtweaks.hud.HudContainer;
-import com.github.burgerguy.hudtweaks.hud.element.HudElement;
+import com.github.burgerguy.hudtweaks.hud.element.HudElementEntry;
+import com.github.burgerguy.hudtweaks.hud.element.HudElementType;
 import com.github.burgerguy.hudtweaks.hud.element.HudElementWidget;
 import com.github.burgerguy.hudtweaks.util.Util;
+import com.github.burgerguy.hudtweaks.util.gui.DisableableWrapperElement;
 
 import io.netty.util.BooleanSupplier;
 import net.minecraft.client.MinecraftClient;
@@ -35,6 +38,7 @@ public class HTOptionsScreen extends Screen {
 	private final Screen prevScreen;
 	private final SidebarWidget sidebar;
 	private ElementLabelWidget elementLabel;
+	private DisableableWrapperElement<EntryCycleButtonWidget> cycleButton;
 	
 	private HudElementWidget focusedHudElement;
 	
@@ -48,7 +52,7 @@ public class HTOptionsScreen extends Screen {
 	}
 	
 	@Override
-	protected void init() {
+	protected void init() { // TODO: add entry selector in global elements that only displays when needed
 		super.init();
 		
 		// normal drawables are cleared already when setFocused(null) is invoked before
@@ -61,8 +65,8 @@ public class HTOptionsScreen extends Screen {
 		worldExists = client.world != null;
 		
 		if (worldExists) {
-			for (HudElement element : HudContainer.getElements()) {
-				Element widget = element.createWidget(sidebar::updateValues);
+			for (HudElementType elementType : HudContainer.getElementRegistry().getElementTypes()) {
+				Element widget = elementType.createWidget(sidebar::updateValues);
 				if (widget != null) {
 					children.add(widget);
 				}
@@ -92,9 +96,12 @@ public class HTOptionsScreen extends Screen {
 			ArrowButtonWidget rightArrow = new ArrowButtonWidget(sidebar.width - 21, height - 21, false, new TranslatableText("hudtweaks.options.next_element.name"), b -> {
 				changeHudElementFocus(true);
 			});
+			cycleButton = new DisableableWrapperElement<EntryCycleButtonWidget>(new EntryCycleButtonWidget(0, height - 38, sidebar.width, 14));
+			
 			sidebar.addGlobalDrawable(elementLabel);
 			sidebar.addGlobalDrawable(leftArrow);
 			sidebar.addGlobalDrawable(rightArrow);
+			sidebar.addGlobalDrawable(cycleButton);
 		}
 	}
 	
@@ -194,17 +201,31 @@ public class HTOptionsScreen extends Screen {
 		if (focused instanceof HudElementWidget && !focused.equals(focusedHudElement)) {
 			focusedHudElement = (HudElementWidget) focused;
 			sidebar.clearDrawables();
-			HudElement element = focusedHudElement.getElement();
+			HudElementEntry element = focusedHudElement.getElementType().getActiveEntry();
 			element.fillSidebar(sidebar);
 			sidebar.setSidebarOptionsHeightSupplier(() -> element.getSidebarOptionsHeight());
-			elementLabel.setHudElement(element);
+			elementLabel.setHudElementType(focusedHudElement.getElementType());
+			if (focusedHudElement.getElementType().getElementCount() > 1) {
+				cycleButton.setDisabled(false);
+				cycleButton.getInnerElement().setHudElementType(focusedHudElement.getElementType());
+				sidebar.cutoffFromBottom = 43;
+			} else {
+				cycleButton.setDisabled(true);
+				cycleButton.getInnerElement().setHudElementType(null);
+				sidebar.cutoffFromBottom = 25;
+			}
 		}
 		
 		if (focused == null) {
 			focusedHudElement = null;
 			sidebar.clearDrawables();
 			sidebar.setSidebarOptionsHeightSupplier(null);
-			if (elementLabel != null) elementLabel.setHudElement(null);
+			if (elementLabel != null) elementLabel.setHudElementType(null);
+			if (cycleButton != null) {
+				cycleButton.setDisabled(true);
+				cycleButton.getInnerElement().setHudElementType(null);
+			}
+			sidebar.cutoffFromBottom = 25;
 		}
 		
 		super.setFocused(focused);

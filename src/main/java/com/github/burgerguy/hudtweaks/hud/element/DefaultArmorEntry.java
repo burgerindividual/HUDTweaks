@@ -1,13 +1,17 @@
 package com.github.burgerguy.hudtweaks.hud.element;
 
+import com.github.burgerguy.hudtweaks.hud.HTIdentifier;
+import com.github.burgerguy.hudtweaks.util.Util;
+
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.util.math.MathHelper;
 
-public class ArmorElement extends HudElement {
+public class DefaultArmorEntry extends HudElementEntry {
+	public transient static final HTIdentifier IDENTIFIER = new HTIdentifier(new HTIdentifier.ElementType("armor", "hudtweaks.element.armor"), Util.HUDTWEAKS_NAMESPACE);
 	
-	public ArmorElement() {
-		super("armor", "onHealthRowsChange");
+	public DefaultArmorEntry() {
+		super(IDENTIFIER, "onHealthRowsChange");
 	}
 	
 	@Override

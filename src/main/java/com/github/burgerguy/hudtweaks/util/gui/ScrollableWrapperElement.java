@@ -2,15 +2,22 @@ package com.github.burgerguy.hudtweaks.util.gui;
 
 import java.util.function.DoubleSupplier;
 
+import net.minecraft.client.gui.Drawable;
 import net.minecraft.client.gui.Element;
+import net.minecraft.client.util.math.MatrixStack;
 
-public class ScrollableWrapperElement implements Element {
-	private final Element innerElement;
+public class ScrollableWrapperElement<T extends Element & Drawable> implements Element, Drawable {
+	private final T innerElement;
 	private final DoubleSupplier scrolledDistSupplier;
 	
-	public ScrollableWrapperElement(Element innerElement, DoubleSupplier scrolledDistSupplier) {
+	public ScrollableWrapperElement(T innerElement, DoubleSupplier scrolledDistSupplier) {
 		this.innerElement = innerElement;
 		this.scrolledDistSupplier = scrolledDistSupplier;
+	}
+	
+	@Override
+	public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
+		innerElement.render(matrices, mouseX, (int)(mouseY + scrolledDistSupplier.getAsDouble()), delta);
 	}
 	
 	@Override
