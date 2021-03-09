@@ -96,7 +96,7 @@ public class HTOptionsScreen extends Screen {
 			ArrowButtonWidget rightArrow = new ArrowButtonWidget(sidebar.width - 21, height - 21, false, new TranslatableText("hudtweaks.options.next_element.name"), b -> {
 				changeHudElementFocus(true);
 			});
-			cycleButton = new DisableableWrapperElement<EntryCycleButtonWidget>(new EntryCycleButtonWidget(0, height - 38, sidebar.width, 14));
+			cycleButton = new DisableableWrapperElement<EntryCycleButtonWidget>(new EntryCycleButtonWidget(0, height - 39, sidebar.width, 14));
 			
 			sidebar.addGlobalDrawable(elementLabel);
 			sidebar.addGlobalDrawable(leftArrow);
