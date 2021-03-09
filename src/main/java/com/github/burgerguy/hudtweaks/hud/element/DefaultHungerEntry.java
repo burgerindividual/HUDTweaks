@@ -11,7 +11,7 @@ import net.minecraft.client.resource.language.I18n;
 import net.minecraft.text.TranslatableText;
 
 public class DefaultHungerEntry extends HudElementEntry {
-	public transient static final HTIdentifier IDENTIFIER = new HTIdentifier(new HTIdentifier.ElementType("hunger", "hudtweaks.element.hunger"), Util.HUDTWEAKS_NAMESPACE);
+	public transient static final HTIdentifier IDENTIFIER = new HTIdentifier(new HTIdentifier.ElementType("hunger", "hudtweaks.element.hunger"), Util.MINECRAFT_NAMESPACE);
 	private boolean forceDisplay;
 
 	public DefaultHungerEntry() {

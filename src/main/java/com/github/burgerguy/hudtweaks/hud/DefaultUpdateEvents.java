@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Set;
 
+import com.github.burgerguy.hudtweaks.mixin.InGameHudAccessor;
 import com.google.common.collect.ImmutableSet;
 
 import net.minecraft.client.MinecraftClient;
@@ -15,6 +16,7 @@ import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.MathHelper;
 
 public enum DefaultUpdateEvents {
@@ -168,6 +170,24 @@ public enum DefaultUpdateEvents {
 					(!currentIndicator.equals(lastIndicator) &&
 					(currentIndicator.equals(AttackIndicator.HOTBAR) || lastIndicator.equals(AttackIndicator.HOTBAR)))) {
 					lastIndicator = currentIndicator;
+					return true;
+				}
+				return false;
+			}
+		},
+		new UpdateEvent() {
+			private ItemStack lastHeldStack;
+			
+			@Override
+			public String getIdentifier() {
+				return "onHeldItemTickChange"; // this only updates per tick rather than per frame, hence the word "Tick"
+			}
+
+			@Override
+			public boolean shouldUpdate(MinecraftClient client) {
+				ItemStack currentHeldStack = ((InGameHudAccessor) client.inGameHud).getCurrentStack();
+				if (lastHeldStack == null || !ItemStack.areItemsEqualIgnoreDamage(lastHeldStack, currentHeldStack)) {
+					lastHeldStack = currentHeldStack;
 					return true;
 				}
 				return false;

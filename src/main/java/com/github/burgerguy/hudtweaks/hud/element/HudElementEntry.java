@@ -69,30 +69,30 @@ public abstract class HudElementEntry extends AbstractTypeNodeEntry {
 	protected abstract double calculateDefaultY(MinecraftClient client);
 	
 	@Override
-	public double getWidth(MinecraftClient client) {
+	public double getWidth() {
 		return cachedWidth;
 	}
 
 	@Override
-	public double getHeight(MinecraftClient client) {
+	public double getHeight() {
 		return cachedHeight;
 	}
 
-	public double getDefaultX(MinecraftClient client) {
+	public double getDefaultX() {
 		return cachedDefaultX;
 	}
 	
-	public double getDefaultY(MinecraftClient client) {
+	public double getDefaultY() {
 		return cachedDefaultY;
 	}
 	
 	@Override
-	public double getX(MinecraftClient client) {
+	public double getX() {
 		return cachedX;
 	}
 	
 	@Override
-	public double getY(MinecraftClient client) {
+	public double getY() {
 		return cachedY;
 	}
 	
@@ -102,10 +102,10 @@ public abstract class HudElementEntry extends AbstractTypeNodeEntry {
 		cachedDefaultX = calculateDefaultX(client);
 		switch(xPosType) {
 		case DEFAULT:
-			cachedX = getDefaultX(client) + xOffset;
+			cachedX = getDefaultX() + xOffset;
 			break;
 		case RELATIVE:
-			cachedX = (getXParent().getActiveEntry().getWidth(client) * xRelativePos + xOffset + getXParent().getActiveEntry().getX(client)) - (getWidth(client) * xAnchorPos);
+			cachedX = (getXParent().getActiveEntry().getWidth() * xRelativePos + xOffset + getXParent().getActiveEntry().getX()) - (getWidth() * xAnchorPos);
 			break;
 		default:
 			throw new UnsupportedOperationException("how");
@@ -118,20 +118,20 @@ public abstract class HudElementEntry extends AbstractTypeNodeEntry {
 		cachedDefaultY = calculateDefaultY(client);
 		switch(yPosType) {
 		case DEFAULT:
-			cachedY = getDefaultY(client) + yOffset;
+			cachedY = getDefaultY() + yOffset;
 			break;
 		case RELATIVE:
-			cachedY = (getYParent().getActiveEntry().getHeight(client) * yRelativePos + yOffset + getYParent().getActiveEntry().getY(client)) - (getHeight(client) * yAnchorPos);
+			cachedY = (getYParent().getActiveEntry().getHeight() * yRelativePos + yOffset + getYParent().getActiveEntry().getY()) - (getHeight() * yAnchorPos);
 			break;
 		default:
 			throw new UnsupportedOperationException("how");
 		}
 	}
 	
-	public Matrix4f createMatrix(MinecraftClient client) {
+	public Matrix4f createMatrix() {
 		Matrix4f matrix = Matrix4f.scale((float) xScale, (float) yScale, 1);
-		matrix.multiply(Matrix4f.translate((float) ((getX(client) * (1 / xScale)) - getDefaultX(client)),
-				(float) ((getY(client) * (1 / yScale)) - getDefaultY(client)), 1));
+		matrix.multiply(Matrix4f.translate((float) ((getX() * (1 / xScale)) - getDefaultX()),
+				(float) ((getY() * (1 / yScale)) - getDefaultY()), 1));
 		parentNode.setUpdated();
 		return matrix;
 	}

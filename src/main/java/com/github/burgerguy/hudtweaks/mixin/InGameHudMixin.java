@@ -20,17 +20,7 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import com.github.burgerguy.hudtweaks.gui.HTOptionsScreen;
 import com.github.burgerguy.hudtweaks.hud.HudContainer;
 import com.github.burgerguy.hudtweaks.hud.UpdateEvent;
-import com.github.burgerguy.hudtweaks.hud.element.DefaultAirEntry;
-import com.github.burgerguy.hudtweaks.hud.element.DefaultArmorEntry;
-import com.github.burgerguy.hudtweaks.hud.element.DefaultExperienceBarEntry;
-import com.github.burgerguy.hudtweaks.hud.element.DefaultHealthEntry;
-import com.github.burgerguy.hudtweaks.hud.element.DefaultHotbarEntry;
-import com.github.burgerguy.hudtweaks.hud.element.DefaultHungerEntry;
-import com.github.burgerguy.hudtweaks.hud.element.DefaultJumpBarEntry;
-import com.github.burgerguy.hudtweaks.hud.element.DefaultMountHealthEntry;
-import com.github.burgerguy.hudtweaks.hud.element.DefaultStatusEffectsEntry;
-import com.github.burgerguy.hudtweaks.hud.element.HudElementEntry;
-import com.github.burgerguy.hudtweaks.hud.element.HudElementType;
+import com.github.burgerguy.hudtweaks.hud.element.*;
 import com.github.burgerguy.hudtweaks.hud.tree.AbstractTypeNode;
 import com.google.common.collect.Sets;
 
@@ -82,7 +72,7 @@ public abstract class InGameHudMixin extends DrawableHelper {
 		for (Object type : Sets.union(updatedElementsX, updatedElementsY)) {
 			if (type instanceof HudElementType) {
 				HudElementEntry hudElement = ((HudElementType) type).getActiveEntry();
-				HudContainer.getMatrixCache().putMatrix(hudElement.getIdentifier().getElementType(), hudElement.createMatrix(client));
+				HudContainer.getMatrixCache().putMatrix(hudElement.getIdentifier().getElementType(), hudElement.createMatrix());
 			}
 		}
 		client.getProfiler().pop();
@@ -265,5 +255,15 @@ public abstract class InGameHudMixin extends DrawableHelper {
 	@Inject(method = "renderStatusEffectOverlay", at = @At(value = "RETURN"))
 	private void renderStatusEffectOverlayReturn(MatrixStack matrices, CallbackInfo callbackInfo) {
 		HudContainer.getMatrixCache().tryPopMatrix(DefaultStatusEffectsEntry.IDENTIFIER, matrices);
+	}
+	
+	@Inject(method = "renderHeldItemTooltip", at = @At(value = "HEAD"))
+	private void renderTooltipHead(MatrixStack matrices, CallbackInfo callbackInfo) {
+		HudContainer.getMatrixCache().tryPushMatrix(DefaultTooltipEntry.IDENTIFIER, matrices);
+	}
+	
+	@Inject(method = "renderHeldItemTooltip", at = @At(value = "RETURN"))
+	private void renderTooltipRetuen(MatrixStack matrices, CallbackInfo callbackInfo) {
+		HudContainer.getMatrixCache().tryPopMatrix(DefaultTooltipEntry.IDENTIFIER, matrices);
 	}
 }

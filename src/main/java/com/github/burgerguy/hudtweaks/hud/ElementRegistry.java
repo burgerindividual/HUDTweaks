@@ -17,6 +17,7 @@ import com.github.burgerguy.hudtweaks.hud.element.DefaultHungerEntry;
 import com.github.burgerguy.hudtweaks.hud.element.DefaultJumpBarEntry;
 import com.github.burgerguy.hudtweaks.hud.element.DefaultMountHealthEntry;
 import com.github.burgerguy.hudtweaks.hud.element.DefaultStatusEffectsEntry;
+import com.github.burgerguy.hudtweaks.hud.element.DefaultTooltipEntry;
 import com.github.burgerguy.hudtweaks.util.Util;
 import com.google.gson.JsonElement;
 
@@ -41,6 +42,7 @@ public class ElementRegistry {
 		addEntry(new DefaultMountHealthEntry());
 		addEntry(new DefaultAirEntry());
 		addEntry(new DefaultStatusEffectsEntry());
+		addEntry(new DefaultTooltipEntry());
 	}
 	
 	public HudElementType getElementType(HTIdentifier.ElementType elementIdentifier) {

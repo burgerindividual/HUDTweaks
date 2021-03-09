@@ -29,6 +29,7 @@ public enum Util {
 	public static final NumberFormat ANCHOR_POS_FORMATTER = new DecimalFormat("%##0.0");
 	public static final NumberFormat NUM_FIELD_FORMATTER = new DecimalFormat("####0.0");
 	public static final HTIdentifier.Namespace HUDTWEAKS_NAMESPACE = new Namespace("hudtweaks", "hudtweaks.name");
+	public static final HTIdentifier.Namespace MINECRAFT_NAMESPACE = new Namespace("minecraft", "advancements.story.root.title");
 	
 	public static boolean SHOULD_COMPENSATE_FOR_MODMENU_BUTTON = false;
 	

@@ -9,7 +9,7 @@ import com.github.burgerguy.hudtweaks.util.Util;
 import net.minecraft.client.MinecraftClient;
 
 public final class RelativeTreeRootScreen extends AbstractTypeNode {
-	public static final HTIdentifier IDENTIFIER = new HTIdentifier(new HTIdentifier.ElementType("screen", "hudtweaks.element.screen"), Util.HUDTWEAKS_NAMESPACE);
+	public static final HTIdentifier IDENTIFIER = new HTIdentifier(new HTIdentifier.ElementType("screen", "hudtweaks.element.screen"), Util.MINECRAFT_NAMESPACE);
 	private ScreenEntry screenEntry;
 	
 	public RelativeTreeRootScreen() {
@@ -33,39 +33,40 @@ public final class RelativeTreeRootScreen extends AbstractTypeNode {
 	}
 	
 	private class ScreenEntry extends AbstractTypeNodeEntry {
+		private int width, height;
 
 		public ScreenEntry() {
 			super(IDENTIFIER, "onScreenBoundsChange");
 		}
 		
 		@Override
-		public double getX(MinecraftClient client) {
+		public double getX() {
 			return 0;
 		}
 
 		@Override
-		public double getWidth(MinecraftClient client) {
-			return client.getWindow().getScaledWidth();
+		public double getWidth() {
+			return width;
 		}
 
 		@Override
-		public double getY(MinecraftClient client) {
+		public double getY() {
 			return 0;
 		}
 
 		@Override
-		public double getHeight(MinecraftClient client) {
-			return client.getWindow().getScaledHeight();
+		public double getHeight() {
+			return height;
 		}
 		
 		@Override
 		public void updateSelfX(MinecraftClient client) {
-			// noop, only update stuff below
+			width = client.getWindow().getScaledWidth();
 		}
 
 		@Override
 		public void updateSelfY(MinecraftClient client) {
-			// noop, only update stuff below
+			height = client.getWindow().getScaledHeight();
 		}
 		
 		@Override

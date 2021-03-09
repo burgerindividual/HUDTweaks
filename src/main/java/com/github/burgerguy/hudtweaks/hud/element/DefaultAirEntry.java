@@ -10,7 +10,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.MathHelper;
 
 public class DefaultAirEntry extends HudElementEntry {
-	public transient static final HTIdentifier IDENTIFIER = new HTIdentifier(new HTIdentifier.ElementType("air", "hudtweaks.element.air"), Util.HUDTWEAKS_NAMESPACE);
+	public transient static final HTIdentifier IDENTIFIER = new HTIdentifier(new HTIdentifier.ElementType("air", "hudtweaks.element.air"), Util.MINECRAFT_NAMESPACE);
 
 	public DefaultAirEntry() {
 		super(IDENTIFIER, "onRidingHealthRowsChange");

@@ -10,7 +10,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.MathHelper;
 
 public class DefaultMountHealthEntry extends HudElementEntry {
-	public transient static final HTIdentifier IDENTIFIER = new HTIdentifier(new HTIdentifier.ElementType("mounthealth", "hudtweaks.element.mounthealth"), Util.HUDTWEAKS_NAMESPACE);
+	public transient static final HTIdentifier IDENTIFIER = new HTIdentifier(new HTIdentifier.ElementType("mounthealth", "hudtweaks.element.mounthealth"), Util.MINECRAFT_NAMESPACE);
 
 	public DefaultMountHealthEntry() {
 		super(IDENTIFIER, "onRidingHealthRowsChange");
@@ -45,6 +45,6 @@ public class DefaultMountHealthEntry extends HudElementEntry {
 	@Override
 	protected double calculateDefaultY(MinecraftClient client) {
 		// TODO: i think we can do getHeight here instead of getRawHeight, check this
-		return client.getWindow().getScaledHeight() - 30 - getHeight(client);
+		return client.getWindow().getScaledHeight() - 30 - getHeight();
 	}	
 }

@@ -51,10 +51,10 @@ public class HudElementWidget implements Drawable, Element, AutoCloseable, Compa
 		
 		if (draw) {
 			HudElementEntry entry = elementType.getActiveEntry();
-			double x1 = entry.getX(client);
-			double y1 = entry.getY(client);
-			double x2 = x1 + entry.getWidth(client);
-			double y2 = y1 + entry.getHeight(client);
+			double x1 = entry.getX();
+			double y1 = entry.getY();
+			double x2 = x1 + entry.getWidth();
+			double y2 = y1 + entry.getHeight();
 			
 			int color = focused ? OUTLINE_COLOR_SELECTED : OUTLINE_COLOR_NORMAL;
 			if (dashed) {
@@ -85,14 +85,12 @@ public class HudElementWidget implements Drawable, Element, AutoCloseable, Compa
 	@Override
 	public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
 		HudElementEntry entry = elementType.getActiveEntry();
-		if (Screen.hasShiftDown()) {
-			MinecraftClient client = MinecraftClient.getInstance();
-			
+		if (Screen.hasShiftDown()) {			
 			if (!entry.xPosType.equals(PosType.DEFAULT)) {
-				entry.xRelativePos = MathHelper.clamp(entry.xRelativePos + deltaX / entry.getXParent().getActiveEntry().getWidth(client), 0.0D, 1.0D);
+				entry.xRelativePos = MathHelper.clamp(entry.xRelativePos + deltaX / entry.getXParent().getActiveEntry().getWidth(), 0.0D, 1.0D);
 			}
 			if (!entry.yPosType.equals(PosType.DEFAULT)) {
-				entry.yRelativePos = MathHelper.clamp(entry.yRelativePos + deltaY / entry.getYParent().getActiveEntry().getHeight(client), 0.0D, 1.0D);
+				entry.yRelativePos = MathHelper.clamp(entry.yRelativePos + deltaY / entry.getYParent().getActiveEntry().getHeight(), 0.0D, 1.0D);
 			}
 		} else {
 			entry.xOffset += deltaX;
@@ -104,15 +102,13 @@ public class HudElementWidget implements Drawable, Element, AutoCloseable, Compa
 	}
 	
 	@Override
-	public boolean isMouseOver(double mouseX, double mouseY) {
-		MinecraftClient client = MinecraftClient.getInstance();
-		
+	public boolean isMouseOver(double mouseX, double mouseY) {		
 		if (lastElementRendered || focused || lastChildFocused) {
 			HudElementEntry entry = elementType.getActiveEntry();
-			double x1 = entry.getX(client);
-			double y1 = entry.getY(client);
-			double x2 = x1 + entry.getWidth(client);
-			double y2 = y1 + entry.getHeight(client);
+			double x1 = entry.getX();
+			double y1 = entry.getY();
+			double x2 = x1 + entry.getWidth();
+			double y2 = y1 + entry.getHeight();
 			return mouseX >= x1 && mouseX <= x2 && mouseY >= y1 && mouseY <= y2;
 		} else {
 			return false;
@@ -153,12 +149,11 @@ public class HudElementWidget implements Drawable, Element, AutoCloseable, Compa
 	// This makes sure that the smallest elements get selected first if there are multiple on top of eachother.
 	@Override
 	public int compareTo(HudElementWidget other) {
-		MinecraftClient client = MinecraftClient.getInstance();
 		HudElementEntry thisElement = elementType.getActiveEntry();
 		HudElementEntry otherElement = other.getElementType().getActiveEntry();
 		return Double.compare(
-				thisElement.getWidth(client) * thisElement.getHeight(client),
-				otherElement.getWidth(client) * otherElement.getHeight(client)
+				thisElement.getWidth() * thisElement.getHeight(),
+				otherElement.getWidth() * otherElement.getHeight()
 				);
 	}
 	

@@ -85,13 +85,13 @@ public abstract class AbstractTypeNodeEntry {
 		return Util.containsNotNull(updateEvents, event);
 	}
 	
-	public abstract double getX(MinecraftClient client);
+	public abstract double getX();
 	
-	public abstract double getWidth(MinecraftClient client);
+	public abstract double getWidth();
 	
-	public abstract double getY(MinecraftClient client);
+	public abstract double getY();
 	
-	public abstract double getHeight(MinecraftClient client);
+	public abstract double getHeight();
 	
 	public abstract void updateSelfX(MinecraftClient client);
 	

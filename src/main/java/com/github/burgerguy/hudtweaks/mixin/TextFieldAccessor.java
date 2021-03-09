@@ -13,26 +13,26 @@ import net.minecraft.text.OrderedText;
 @Mixin(TextFieldWidget.class)
 public interface TextFieldAccessor {
 	@Accessor("textRenderer")
-	public TextRenderer getTextRenderer();
+	TextRenderer getTextRenderer();
 	@Accessor("focusedTicks")
-	public int getFocusedTicks();
+	int getFocusedTicks();
 	@Accessor("editable")
-	public boolean getEditable();
+	boolean getEditable();
 	@Accessor("firstCharacterIndex")
-	public int getFirstCharacterIndex();
+	int getFirstCharacterIndex();
 	@Accessor("selectionStart")
-	public int getSelectionStart();
+	int getSelectionStart();
 	@Accessor("selectionEnd")
-	public int getSelectionEnd();
+	int getSelectionEnd();
 	@Accessor("suggestion")
-	public String getSuggestion();
+	String getSuggestion();
 	@Accessor("renderTextProvider")
-	public BiFunction<String, Integer, OrderedText> getRenderTextProvider();
+	BiFunction<String, Integer, OrderedText> getRenderTextProvider();
 	
 	@Invoker
-	public boolean callDrawsBackground();
+	boolean callDrawsBackground();
 	@Invoker
-	public void callDrawSelectionHighlight(int x1, int y1, int x2, int y2);
+	void callDrawSelectionHighlight(int x1, int y1, int x2, int y2);
 	@Invoker
-	public int callGetMaxLength();
+	int callGetMaxLength();
 }
