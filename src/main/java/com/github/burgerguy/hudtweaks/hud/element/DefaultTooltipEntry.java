@@ -14,7 +14,7 @@ public class DefaultTooltipEntry extends HudElementEntry {
 	public transient static final HTIdentifier IDENTIFIER = new HTIdentifier(new HTIdentifier.ElementType("tooltip", "hudtweaks.element.tooltip"), Util.MINECRAFT_NAMESPACE);
 
 	public DefaultTooltipEntry() {
-		super(IDENTIFIER, "onHeldItemTickChange");
+		super(IDENTIFIER, "onHeldItemTickChange", "onHasStatusBarsChange");
 	}
 
 	@Override
@@ -42,7 +42,7 @@ public class DefaultTooltipEntry extends HudElementEntry {
 
 	@Override
 	protected double calculateDefaultY(MinecraftClient client) {
-		return client.getWindow().getScaledHeight() - 59;
+		return client.getWindow().getScaledHeight() - (client.interactionManager.hasStatusBars() ? 59 : 45);
 	}
 	
 }

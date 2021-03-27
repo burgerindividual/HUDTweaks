@@ -2,9 +2,13 @@ package com.github.burgerguy.hudtweaks.hud;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import com.github.burgerguy.hudtweaks.mixin.InGameHudAccessor;
+import com.github.burgerguy.hudtweaks.mixin.BossBarHudAccessor;
 import com.google.common.collect.ImmutableSet;
 
 import net.minecraft.client.MinecraftClient;
@@ -16,6 +20,7 @@ import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.client.gui.hud.ClientBossBar;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.MathHelper;
 
@@ -188,6 +193,60 @@ public enum DefaultUpdateEvents {
 				ItemStack currentHeldStack = ((InGameHudAccessor) client.inGameHud).getCurrentStack();
 				if (lastHeldStack == null || !ItemStack.areItemsEqualIgnoreDamage(lastHeldStack, currentHeldStack)) {
 					lastHeldStack = currentHeldStack;
+					return true;
+				}
+				return false;
+			}
+		},
+		new UpdateEvent() {
+			private ItemStack lastHeldStack;
+			
+			@Override
+			public String getIdentifier() {
+				return "onHeldItemTickChange"; // this only updates per tick rather than per frame, hence the word "Tick"
+			}
+
+			@Override
+			public boolean shouldUpdate(MinecraftClient client) {
+				ItemStack currentHeldStack = ((InGameHudAccessor) client.inGameHud).getCurrentStack();
+				if (lastHeldStack == null || !ItemStack.areItemsEqualIgnoreDamage(lastHeldStack, currentHeldStack)) {
+					lastHeldStack = currentHeldStack;
+					return true;
+				}
+				return false;
+			}
+		},
+		new UpdateEvent() {
+			private Boolean lastHasStatusBars;
+			
+			@Override
+			public String getIdentifier() {
+				return "onHasStatusBarsChange";
+			}
+			
+			@Override
+			public boolean shouldUpdate(MinecraftClient client) {
+				boolean hasStatusBars = client.interactionManager.hasStatusBars();
+				if (lastHasStatusBars == null || !lastHasStatusBars.equals(hasStatusBars)) {
+					lastHasStatusBars = hasStatusBars;
+					return true;
+				}
+				return false;
+			}
+		},
+		new UpdateEvent() {
+			private Map<UUID, ClientBossBar> lastBossBars;
+
+			@Override
+			public String getIdentifier() {
+				return "onBossBarsChange";
+			}
+
+			@Override
+			public boolean shouldUpdate(MinecraftClient client) {
+				Map<UUID, ClientBossBar> currentBossBars = ((BossBarHudAccessor) client.inGameHud.getBossBarHud()).getBossBars();
+				if (lastBossBars == null || !lastBossBars.equals(currentBossBars)) {
+					lastBossBars = new HashMap<>(currentBossBars);
 					return true;
 				}
 				return false;

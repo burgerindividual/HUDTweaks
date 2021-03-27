@@ -8,7 +8,9 @@
     "InGameHudMixin",
     "TextFieldAccessor",
     "GameMenuScreenMixin",
-    "InGameHudAccessor"
+    "InGameHudAccessor",
+    "BossBarHudMixin",
+    "BossBarHudAccessor"
   ],
   "injectors": {
     "defaultRequire": 1
