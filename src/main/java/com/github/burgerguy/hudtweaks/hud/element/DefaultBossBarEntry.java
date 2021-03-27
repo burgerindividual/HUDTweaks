@@ -33,7 +33,7 @@ public class DefaultBossBarEntry extends HudElementEntry {
 			if (y >= client.getWindow().getScaledHeight() / 3) break;
 			maxBars++;
 		}
-		int bars = Math.min(((BossBarHudAccessor) client.inGameHud.getBossBarHud()).getBossBars().size() - 1, maxBars);
+		int bars = Math.min(Math.max(((BossBarHudAccessor) client.inGameHud.getBossBarHud()).getBossBars().size() - 1, 0), maxBars);
 		return bars * 19 + 14;
 	}
 
