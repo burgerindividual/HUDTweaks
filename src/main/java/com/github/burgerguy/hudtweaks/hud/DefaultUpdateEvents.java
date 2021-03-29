@@ -9,6 +9,7 @@ import java.util.UUID;
 
 import com.github.burgerguy.hudtweaks.mixin.InGameHudAccessor;
 import com.github.burgerguy.hudtweaks.mixin.BossBarHudAccessor;
+import com.github.burgerguy.hudtweaks.util.Util;
 import com.google.common.collect.ImmutableSet;
 
 import net.minecraft.client.MinecraftClient;
@@ -22,6 +23,7 @@ import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.client.gui.hud.ClientBossBar;
 import net.minecraft.item.ItemStack;
+import net.minecraft.text.Text;
 import net.minecraft.util.math.MathHelper;
 
 public enum DefaultUpdateEvents {
@@ -250,6 +252,33 @@ public enum DefaultUpdateEvents {
 					return true;
 				}
 				return false;
+			}
+		},
+		new UpdateEvent() {
+			private Text lastActionBarText;
+			private Boolean lastTimeThresholdResult;
+
+			@Override
+			public String getIdentifier() {
+				return "onActionBarChange";
+			}
+
+			@Override
+			public boolean shouldUpdate(MinecraftClient client) {
+				boolean passed = false;
+				
+				boolean timeThresholdResult = ((InGameHudAccessor) client.inGameHud).getActionBarRemaining() - Util.getTrueTickDelta(client) > (160.0F / 255.0F);
+				if (lastTimeThresholdResult == null || !lastTimeThresholdResult.equals(timeThresholdResult)) {
+					lastTimeThresholdResult = timeThresholdResult;
+					passed = true;
+				}
+				
+				Text currentActionBarText = ((InGameHudAccessor) client.inGameHud).getActionBarText();
+				if (lastActionBarText == null || !lastActionBarText.equals(currentActionBarText)) {
+					lastActionBarText = currentActionBarText;
+					passed = true;
+				}
+				return passed;
 			}
 		}
 	);

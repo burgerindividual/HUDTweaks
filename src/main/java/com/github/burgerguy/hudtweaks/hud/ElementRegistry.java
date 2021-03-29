@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.github.burgerguy.hudtweaks.hud.element.DefaultActionBarEntry;
 import com.github.burgerguy.hudtweaks.hud.element.DefaultAirEntry;
 import com.github.burgerguy.hudtweaks.hud.element.DefaultArmorEntry;
 import com.github.burgerguy.hudtweaks.hud.element.DefaultBossBarEntry;
@@ -45,6 +46,7 @@ public class ElementRegistry {
 		addEntry(new DefaultStatusEffectsEntry());
 		addEntry(new DefaultTooltipEntry());
 		addEntry(new DefaultBossBarEntry());
+		addEntry(new DefaultActionBarEntry());
 	}
 	
 	public HudElementType getElementType(HTIdentifier.ElementType elementIdentifier) {

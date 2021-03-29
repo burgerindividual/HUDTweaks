@@ -10,10 +10,13 @@ import org.apache.logging.log4j.Logger;
 import com.github.burgerguy.hudtweaks.hud.ElementRegistry;
 import com.github.burgerguy.hudtweaks.hud.HTIdentifier;
 import com.github.burgerguy.hudtweaks.hud.HTIdentifier.Namespace;
+import com.github.burgerguy.hudtweaks.mixin.MinecraftClientAccessor;
 import com.github.burgerguy.hudtweaks.util.json.ElementRegistrySerializer;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParser;
+
+import net.minecraft.client.MinecraftClient;
 
 /**
  * For small utilities that don't need their own class.
@@ -51,5 +54,9 @@ public enum Util {
 		} else {
 			return value > max ? max : value;
 		}
+	}
+	
+	public static float getTrueTickDelta(MinecraftClient client) {
+		return client.isPaused() ? ((MinecraftClientAccessor) client).getPausedTickDelta() : client.getTickDelta();
 	}
 }

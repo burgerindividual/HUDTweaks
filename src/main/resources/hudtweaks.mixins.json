@@ -10,7 +10,8 @@
     "GameMenuScreenMixin",
     "InGameHudAccessor",
     "BossBarHudMixin",
-    "BossBarHudAccessor"
+    "BossBarHudAccessor",
+    "MinecraftClientAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

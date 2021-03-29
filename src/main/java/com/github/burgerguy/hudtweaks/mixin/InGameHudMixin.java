@@ -263,7 +263,22 @@ public abstract class InGameHudMixin extends DrawableHelper {
 	}
 	
 	@Inject(method = "renderHeldItemTooltip", at = @At(value = "RETURN"))
-	private void renderTooltipRetuen(MatrixStack matrices, CallbackInfo callbackInfo) {
+	private void renderTooltipReturn(MatrixStack matrices, CallbackInfo callbackInfo) {
 		HudContainer.getMatrixCache().tryPopMatrix(DefaultTooltipEntry.IDENTIFIER, matrices);
+	}
+	
+	@Inject(method = "render",
+			at = @At(value = "INVOKE",
+			target = "Lnet/minecraft/client/font/TextRenderer;draw(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/text/Text;FFI)I"))
+	private void renderActionBarStart(MatrixStack matrices, float tickDelta, CallbackInfo callbackInfo) {
+		HudContainer.getMatrixCache().tryPushMatrix(DefaultActionBarEntry.IDENTIFIER, matrices);
+	}
+	
+	@Inject(method = "render",
+			at = @At(value = "INVOKE",
+			target = "Lnet/minecraft/client/font/TextRenderer;draw(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/text/Text;FFI)I",
+			shift = At.Shift.AFTER))
+	private void renderActionBarEnd(MatrixStack matrices, float tickDelta, CallbackInfo callbackInfo) {
+		HudContainer.getMatrixCache().tryPopMatrix(DefaultActionBarEntry.IDENTIFIER, matrices);
 	}
 }
