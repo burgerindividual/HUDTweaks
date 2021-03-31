@@ -6,7 +6,7 @@ import com.github.burgerguy.hudtweaks.util.Util;
 import net.minecraft.client.MinecraftClient;
 
 public class DefaultJumpBarEntry extends HudElementEntry {
-	public transient static final HTIdentifier IDENTIFIER = new HTIdentifier(new HTIdentifier.ElementType("jumpbar", "hudtweaks.element.jumpbar"), Util.MINECRAFT_NAMESPACE);
+	public static final HTIdentifier IDENTIFIER = new HTIdentifier(new HTIdentifier.ElementType("jumpbar", "hudtweaks.element.jumpbar"), Util.MINECRAFT_NAMESPACE);
 	
 	public DefaultJumpBarEntry() {
 		super(IDENTIFIER);

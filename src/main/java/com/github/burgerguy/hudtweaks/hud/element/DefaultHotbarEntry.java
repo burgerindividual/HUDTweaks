@@ -9,7 +9,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 
 public class DefaultHotbarEntry extends HudElementEntry {
-	public transient static final HTIdentifier IDENTIFIER = new HTIdentifier(new HTIdentifier.ElementType("hotbar", "hudtweaks.element.hotbar"), Util.MINECRAFT_NAMESPACE);
+	public static final HTIdentifier IDENTIFIER = new HTIdentifier(new HTIdentifier.ElementType("hotbar", "hudtweaks.element.hotbar"), Util.MINECRAFT_NAMESPACE);
 
 	public DefaultHotbarEntry() {
 		super(IDENTIFIER, "onOffhandStatusChange", "onHotbarAttackIndicatorChange");

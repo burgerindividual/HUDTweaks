@@ -13,6 +13,8 @@
 	"hudtweaks.element.mounthealth": "Mount Health",
 	"hudtweaks.element.screen": "Screen",
 	"hudtweaks.element.statuseffects": "Status Effects",
+	"hudtweaks.element.subtitle": "Subtitle",
+	"hudtweaks.element.title": "Title",
 	"hudtweaks.element.tooltip": "Tooltip",
 	"hudtweaks.element.entryname.default": "Default",
 	"hudtweaks.options": "HUDTweaks Config",

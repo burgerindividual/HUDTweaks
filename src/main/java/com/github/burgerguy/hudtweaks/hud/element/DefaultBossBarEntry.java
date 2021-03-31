@@ -8,7 +8,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.hud.ClientBossBar;
 
 public class DefaultBossBarEntry extends HudElementEntry {
-	public transient static final HTIdentifier IDENTIFIER = new HTIdentifier(new HTIdentifier.ElementType("bossbar", "hudtweaks.element.bossbar"), Util.MINECRAFT_NAMESPACE);
+	public static final HTIdentifier IDENTIFIER = new HTIdentifier(new HTIdentifier.ElementType("bossbar", "hudtweaks.element.bossbar"), Util.MINECRAFT_NAMESPACE);
 
 	public DefaultBossBarEntry() {
 		super(IDENTIFIER, "onBossBarsChange");

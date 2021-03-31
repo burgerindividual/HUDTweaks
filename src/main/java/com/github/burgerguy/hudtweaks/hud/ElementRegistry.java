@@ -5,21 +5,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import com.github.burgerguy.hudtweaks.hud.element.DefaultActionBarEntry;
-import com.github.burgerguy.hudtweaks.hud.element.DefaultAirEntry;
-import com.github.burgerguy.hudtweaks.hud.element.DefaultArmorEntry;
-import com.github.burgerguy.hudtweaks.hud.element.DefaultBossBarEntry;
-import com.github.burgerguy.hudtweaks.hud.element.DefaultExperienceBarEntry;
-import com.github.burgerguy.hudtweaks.hud.element.DefaultHealthEntry;
-import com.github.burgerguy.hudtweaks.hud.element.DefaultHotbarEntry;
-import com.github.burgerguy.hudtweaks.hud.element.HudElementEntry;
-import com.github.burgerguy.hudtweaks.hud.element.HudElementType;
+import com.github.burgerguy.hudtweaks.hud.element.*;
 import com.github.burgerguy.hudtweaks.hud.tree.RelativeTreeRootScreen;
-import com.github.burgerguy.hudtweaks.hud.element.DefaultHungerEntry;
-import com.github.burgerguy.hudtweaks.hud.element.DefaultJumpBarEntry;
-import com.github.burgerguy.hudtweaks.hud.element.DefaultMountHealthEntry;
-import com.github.burgerguy.hudtweaks.hud.element.DefaultStatusEffectsEntry;
-import com.github.burgerguy.hudtweaks.hud.element.DefaultTooltipEntry;
 import com.github.burgerguy.hudtweaks.util.Util;
 import com.google.gson.JsonElement;
 
@@ -47,6 +34,8 @@ public class ElementRegistry {
 		addEntry(new DefaultTooltipEntry());
 		addEntry(new DefaultBossBarEntry());
 		addEntry(new DefaultActionBarEntry());
+		addEntry(new DefaultTitleEntry());
+		addEntry(new DefaultSubtitleEntry());
 	}
 	
 	public HudElementType getElementType(HTIdentifier.ElementType elementIdentifier) {

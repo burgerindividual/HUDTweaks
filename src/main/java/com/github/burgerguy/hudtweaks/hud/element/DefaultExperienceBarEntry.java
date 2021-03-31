@@ -11,7 +11,7 @@ import net.minecraft.client.resource.language.I18n;
 import net.minecraft.text.TranslatableText;
 
 public class DefaultExperienceBarEntry extends HudElementEntry {
-	public transient static final HTIdentifier IDENTIFIER = new HTIdentifier(new HTIdentifier.ElementType("expbar", "hudtweaks.element.expbar"), Util.MINECRAFT_NAMESPACE);
+	public static final HTIdentifier IDENTIFIER = new HTIdentifier(new HTIdentifier.ElementType("expbar", "hudtweaks.element.expbar"), Util.MINECRAFT_NAMESPACE);
 	private boolean forceDisplay;
 
 	public DefaultExperienceBarEntry() {

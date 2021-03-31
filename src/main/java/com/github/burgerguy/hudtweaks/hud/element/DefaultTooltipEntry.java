@@ -11,7 +11,7 @@ import net.minecraft.text.MutableText;
 import net.minecraft.util.Formatting;
 
 public class DefaultTooltipEntry extends HudElementEntry {
-	public transient static final HTIdentifier IDENTIFIER = new HTIdentifier(new HTIdentifier.ElementType("tooltip", "hudtweaks.element.tooltip"), Util.MINECRAFT_NAMESPACE);
+	public static final HTIdentifier IDENTIFIER = new HTIdentifier(new HTIdentifier.ElementType("tooltip", "hudtweaks.element.tooltip"), Util.MINECRAFT_NAMESPACE);
 
 	public DefaultTooltipEntry() {
 		super(IDENTIFIER, "onHeldItemTickChange", "onHasStatusBarsChange");
@@ -37,7 +37,7 @@ public class DefaultTooltipEntry extends HudElementEntry {
 
 	@Override
 	protected double calculateDefaultX(MinecraftClient client) {
-		return (client.getWindow().getScaledWidth() - getWidth()) / 2;
+		return (client.getWindow().getScaledWidth() - (int) getWidth()) / 2;
 	}
 
 	@Override

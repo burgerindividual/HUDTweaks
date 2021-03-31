@@ -281,4 +281,38 @@ public abstract class InGameHudMixin extends DrawableHelper {
 	private void renderActionBarEnd(MatrixStack matrices, float tickDelta, CallbackInfo callbackInfo) {
 		HudContainer.getMatrixCache().tryPopMatrix(DefaultActionBarEntry.IDENTIFIER, matrices);
 	}
+	
+	@Inject(method = "render",
+			at = @At(value = "INVOKE",
+			target = "Lnet/minecraft/client/font/TextRenderer;drawWithShadow(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/text/Text;FFI)I",
+			ordinal = 0))
+	private void renderTitleStart(MatrixStack matrices, float tickDelta, CallbackInfo callbackInfo) {
+		HudContainer.getMatrixCache().tryPushMatrix(DefaultTitleEntry.IDENTIFIER, matrices);
+	}
+	
+	@Inject(method = "render",
+			at = @At(value = "INVOKE",
+			target = "Lnet/minecraft/client/font/TextRenderer;drawWithShadow(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/text/Text;FFI)I",
+			ordinal = 0,
+			shift = At.Shift.AFTER))
+	private void renderTitleEnd(MatrixStack matrices, float tickDelta, CallbackInfo callbackInfo) {
+		HudContainer.getMatrixCache().tryPopMatrix(DefaultTitleEntry.IDENTIFIER, matrices);
+	}
+	
+	@Inject(method = "render",
+			at = @At(value = "INVOKE",
+			target = "Lnet/minecraft/client/font/TextRenderer;drawWithShadow(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/text/Text;FFI)I",
+			ordinal = 1))
+	private void renderSubtitleStart(MatrixStack matrices, float tickDelta, CallbackInfo callbackInfo) {
+		HudContainer.getMatrixCache().tryPushMatrix(DefaultSubtitleEntry.IDENTIFIER, matrices);
+	}
+	
+	@Inject(method = "render",
+			at = @At(value = "INVOKE",
+			target = "Lnet/minecraft/client/font/TextRenderer;drawWithShadow(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/text/Text;FFI)I",
+			ordinal = 1,
+			shift = At.Shift.AFTER))
+	private void renderSubtitleEnd(MatrixStack matrices, float tickDelta, CallbackInfo callbackInfo) {
+		HudContainer.getMatrixCache().tryPopMatrix(DefaultSubtitleEntry.IDENTIFIER, matrices);
+	}
 }

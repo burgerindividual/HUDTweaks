@@ -8,7 +8,7 @@ import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.util.math.MathHelper;
 
 public class DefaultArmorEntry extends HudElementEntry {
-	public transient static final HTIdentifier IDENTIFIER = new HTIdentifier(new HTIdentifier.ElementType("armor", "hudtweaks.element.armor"), Util.MINECRAFT_NAMESPACE);
+	public static final HTIdentifier IDENTIFIER = new HTIdentifier(new HTIdentifier.ElementType("armor", "hudtweaks.element.armor"), Util.MINECRAFT_NAMESPACE);
 	
 	public DefaultArmorEntry() {
 		super(IDENTIFIER, "onHealthRowsChange");

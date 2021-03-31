@@ -13,7 +13,7 @@ import net.minecraft.text.TranslatableText;
 import net.minecraft.util.math.MathHelper;
 
 public class DefaultHealthEntry extends HudElementEntry {
-	public transient static final HTIdentifier IDENTIFIER = new HTIdentifier(new HTIdentifier.ElementType("health", "hudtweaks.element.health"), Util.MINECRAFT_NAMESPACE);
+	public static final HTIdentifier IDENTIFIER = new HTIdentifier(new HTIdentifier.ElementType("health", "hudtweaks.element.health"), Util.MINECRAFT_NAMESPACE);
 	private boolean flipped;
 
 	public DefaultHealthEntry() {

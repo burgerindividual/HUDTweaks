@@ -12,7 +12,7 @@ import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.text.TranslatableText;
 
 public class DefaultStatusEffectsEntry extends HudElementEntry {
-	public transient static final HTIdentifier IDENTIFIER = new HTIdentifier(new HTIdentifier.ElementType("statuseffects", "hudtweaks.element.statuseffects"), Util.MINECRAFT_NAMESPACE);
+	public static final HTIdentifier IDENTIFIER = new HTIdentifier(new HTIdentifier.ElementType("statuseffects", "hudtweaks.element.statuseffects"), Util.MINECRAFT_NAMESPACE);
 	private boolean vertical;
 	
 	public DefaultStatusEffectsEntry() {

@@ -280,6 +280,42 @@ public enum DefaultUpdateEvents {
 				}
 				return passed;
 			}
+		},
+		new UpdateEvent() {
+			private Text lastTitleText;
+
+			@Override
+			public String getIdentifier() {
+				return "onTitleTextChange";
+			}
+
+			@Override
+			public boolean shouldUpdate(MinecraftClient client) {				
+				Text currentTitleText = ((InGameHudAccessor) client.inGameHud).getTitleText();
+				if (lastTitleText == null || !lastTitleText.equals(currentTitleText)) {
+					lastTitleText = currentTitleText;
+					return true;
+				}
+				return false;
+			}
+		},
+		new UpdateEvent() {
+			private Text lastSubtitleText;
+
+			@Override
+			public String getIdentifier() {
+				return "onSubtitleTextChange";
+			}
+
+			@Override
+			public boolean shouldUpdate(MinecraftClient client) {				
+				Text currentSubtitleText = ((InGameHudAccessor) client.inGameHud).getSubtitleText();
+				if (lastSubtitleText == null || !lastSubtitleText.equals(currentSubtitleText)) {
+					lastSubtitleText = currentSubtitleText;
+					return true;
+				}
+				return false;
+			}
 		}
 	);
 }

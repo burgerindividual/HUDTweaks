@@ -10,7 +10,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.MathHelper;
 
 public class DefaultMountHealthEntry extends HudElementEntry {
-	public transient static final HTIdentifier IDENTIFIER = new HTIdentifier(new HTIdentifier.ElementType("mounthealth", "hudtweaks.element.mounthealth"), Util.MINECRAFT_NAMESPACE);
+	public static final HTIdentifier IDENTIFIER = new HTIdentifier(new HTIdentifier.ElementType("mounthealth", "hudtweaks.element.mounthealth"), Util.MINECRAFT_NAMESPACE);
 
 	public DefaultMountHealthEntry() {
 		super(IDENTIFIER, "onRidingHealthRowsChange");

@@ -8,7 +8,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 
 public class DefaultActionBarEntry extends HudElementEntry {
-	public transient static final HTIdentifier IDENTIFIER = new HTIdentifier(new HTIdentifier.ElementType("actionbar", "hudtweaks.element.actionbar"), Util.MINECRAFT_NAMESPACE);
+	public static final HTIdentifier IDENTIFIER = new HTIdentifier(new HTIdentifier.ElementType("actionbar", "hudtweaks.element.actionbar"), Util.MINECRAFT_NAMESPACE);
 	
 	public DefaultActionBarEntry() {
 		super(IDENTIFIER, "onActionBarChange");
