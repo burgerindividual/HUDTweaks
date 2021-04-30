@@ -11,6 +11,7 @@ import net.minecraft.util.math.Matrix4f;
 public class DefaultSubtitleEntry extends HudElementEntry {
 	public static final HTIdentifier IDENTIFIER = new HTIdentifier(new HTIdentifier.ElementType("subtitle", "hudtweaks.element.subtitle"), Util.MINECRAFT_NAMESPACE);
 	private static final int SCALE = 2;
+	private static final int Y_OFFSET = 5;
 	
 	public DefaultSubtitleEntry() {
 		super(IDENTIFIER, "onSubtitleTextChange");
@@ -32,19 +33,20 @@ public class DefaultSubtitleEntry extends HudElementEntry {
 
 	@Override
 	protected double calculateDefaultX(MinecraftClient client) {
-		return (client.getWindow().getScaledWidth() - (int) getWidth()) / 2;
+		return (client.getWindow().getScaledWidth() - getWidth()) / 2.0f;
 	}
 
 	@Override
 	protected double calculateDefaultY(MinecraftClient client) {
-		return client.getWindow().getScaledHeight() / 2 + 10;
+		return client.getWindow().getScaledHeight() / 2.0f + (Y_OFFSET * SCALE);
 	}
 	
 	@Override
+	// TODO: X scaling is weird here, scales from middle rather than left side
 	public Matrix4f createMatrix() {
 		Matrix4f matrix = Matrix4f.scale((float) xScale, (float) yScale, 1);
-		matrix.multiply(Matrix4f.translate((float) ((getX() - getDefaultX() * (1 / xScale)) / SCALE),
-				(float) (((getY() * (1 / yScale)) - (getDefaultY() * (1 / yScale))) / SCALE), 1));
+		matrix.multiply(Matrix4f.translate((float) ((getX() - getDefaultX()) / SCALE / xScale),
+				(float) ((getY() - getDefaultY()) / SCALE / yScale) - (float) (Y_OFFSET - (Y_OFFSET / yScale)), 1));
 		parentNode.setUpdated();
 		return matrix;
 	}

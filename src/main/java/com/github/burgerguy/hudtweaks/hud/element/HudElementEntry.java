@@ -130,8 +130,8 @@ public abstract class HudElementEntry extends AbstractTypeNodeEntry {
 	
 	public Matrix4f createMatrix() {
 		Matrix4f matrix = Matrix4f.scale((float) xScale, (float) yScale, 1);
-		matrix.multiply(Matrix4f.translate((float) ((getX() * (1 / xScale)) - getDefaultX()),
-				(float) ((getY() * (1 / yScale)) - getDefaultY()), 1));
+		matrix.multiply(Matrix4f.translate((float) ((getX() / xScale) - getDefaultX()),
+				(float) ((getY() / yScale) - getDefaultY()), 1));
 		parentNode.setUpdated();
 		return matrix;
 	}
