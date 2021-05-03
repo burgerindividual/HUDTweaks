@@ -66,10 +66,8 @@ public class DefaultStatusEffectsEntry extends HudElementEntry {
 			} else {
 				hasOther = true;
 			}
-			
-			if (!hasBeneficial && hasOther) return 26;
 		}
-		return 0;
+		return !hasBeneficial && hasOther ? 26 : 0;
 	}
 	
 	@Override
