@@ -20,9 +20,6 @@
 		],
 		"modmenu": [
 			"com.github.burgerguy.hudtweaks.ModMenuApiImpl"
-		],
-		"mm:early_risers": [
-			"com.github.burgerguy.hudtweaks.HudTweaksEarlyRiser"
 		]
 	},
 	"mixins": [
