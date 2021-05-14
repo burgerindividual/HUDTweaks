@@ -19,6 +19,7 @@ import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
 import com.github.burgerguy.hudtweaks.hud.HudContainer;
 import com.github.burgerguy.hudtweaks.hud.element.DefaultBossBarEntry;
 import com.github.burgerguy.hudtweaks.hud.element.HudElementEntry;
+import com.github.burgerguy.hudtweaks.util.Util;
 
 import net.fabricmc.loader.api.FabricLoader;
 
@@ -84,13 +85,14 @@ public class HudTweaksMixinPlugin implements IMixinConfigPlugin {
 				}
 			}
 			bossBarClassModified = true;
+			Util.LOGGER.info("BossBarHud class (" + targetClassName + ") successfully modified.");
 		}
 	}
 	
 	public static float getScreenPercent() {
 		HudElementEntry entry = HudContainer.getElementRegistry().getActiveEntry(DefaultBossBarEntry.IDENTIFIER.getElementType());
 		if (entry instanceof DefaultBossBarEntry) {
-			return ((DefaultBossBarEntry) entry).getScaledScreenPercent();
+			return ((DefaultBossBarEntry) entry).getScaledMaxHeight();
 		}
 		return (1.0f / 3.0f);
 	}

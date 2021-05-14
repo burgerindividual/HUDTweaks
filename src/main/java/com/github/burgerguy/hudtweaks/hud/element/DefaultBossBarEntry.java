@@ -11,10 +11,11 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.hud.ClientBossBar;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Matrix4f;
 
 public class DefaultBossBarEntry extends HudElementEntry {
 	public static final HTIdentifier IDENTIFIER = new HTIdentifier(new HTIdentifier.ElementType("bossbar", "hudtweaks.element.bossbar"), Util.MINECRAFT_NAMESPACE);
-	private float screenPercent = (1.0f / 3.0f);
+	private float maxHeight = (1.0f / 3.0f);
 
 	public DefaultBossBarEntry() {
 		super(IDENTIFIER, "onBossBarsChange");
@@ -36,7 +37,7 @@ public class DefaultBossBarEntry extends HudElementEntry {
 		float y = 12;
 		while (true) {
 			y += 19;
-			if (y >= (float) client.getWindow().getScaledHeight() * getScaledScreenPercent()) break;
+			if (y >= (float) client.getWindow().getScaledHeight() * getScaledMaxHeight()) break;
 			maxBars++;
 		}
 		int bars = Math.min(Math.max(((BossBarHudAccessor) client.inGameHud.getBossBarHud()).getBossBars().size() - 1, 0), maxBars);
@@ -45,7 +46,7 @@ public class DefaultBossBarEntry extends HudElementEntry {
 
 	@Override
 	protected double calculateDefaultX(MinecraftClient client) {
-		return client.getWindow().getScaledWidth() / 2 - (getWidth() / 2);
+		return (client.getWindow().getScaledWidth() - (getWidth() / xScale)) / 2;
 	}
 
 	@Override
@@ -53,28 +54,28 @@ public class DefaultBossBarEntry extends HudElementEntry {
 		return 3;
 	}
 	
-	public float getRawScreenPercent() {
-		return screenPercent;
+	public float getRawMaxHeight() {
+		return maxHeight;
 	}
 	
-	public float getScaledScreenPercent() {
-		return screenPercent * (float) (1.0 / yScale);
+	public float getScaledMaxHeight() {
+		return maxHeight * (yScale == 0.0 ? 0.0f : (float) (1.0 / yScale));
 	}
 	
-	public void setScreenPercent(float screenPercent) {
-		this.screenPercent = screenPercent;
+	public void setMaxHeight(float screenPercent) {
+		this.maxHeight = screenPercent;
 	}
 	
 	@Override
 	public void updateFromJson(JsonElement json) {
 		super.updateFromJson(json);
-		setScreenPercent(json.getAsJsonObject().get("screenPercent").getAsFloat());
+		setMaxHeight(json.getAsJsonObject().get("maxHeight").getAsFloat());
 	}
 	
 	@Override
 	public void fillSidebar(SidebarWidget sidebar) {
 		super.fillSidebar(sidebar);
-		sidebar.addDrawable(new HTSliderWidget(4, 276, sidebar.width - 8, 14, screenPercent) {
+		sidebar.addDrawable(new HTSliderWidget(4, 276, sidebar.width - 8, 14, maxHeight) {
 			@Override
 			protected void updateMessage() {
 				setMessage(new TranslatableText("hudtweaks.options.bossbar.style.screen_percent", Util.RELATIVE_POS_FORMATTER.format(value)));
@@ -82,8 +83,7 @@ public class DefaultBossBarEntry extends HudElementEntry {
 			
 			@Override
 			public void applyValue() {
-				screenPercent
-				= (float) value;
+				maxHeight = (float) value;
 				parentNode.setRequiresUpdate();
 			}
 			

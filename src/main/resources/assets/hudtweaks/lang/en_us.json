@@ -34,7 +34,7 @@
 	"hudtweaks.options.statuseffects.style.display": "Style: %s",
 	"hudtweaks.options.statuseffects.style.vertical.display": "Vertical",
 	"hudtweaks.options.statuseffects.style.horizontal.display": "Horizontal",
-	"hudtweaks.options.bossbar.style.screen_percent": "Screen Percent: %s",
+	"hudtweaks.options.bossbar.style.screen_percent": "Max Height: %s",
 	"hudtweaks.options.forceDisplay.display": "Force Display: %s",
 	"hudtweaks.options.forceDisplay.on.display": "On",
 	"hudtweaks.options.forceDisplay.off.display": "Off",
