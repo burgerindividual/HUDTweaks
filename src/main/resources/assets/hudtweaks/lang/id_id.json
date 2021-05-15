@@ -34,6 +34,7 @@
 	"hudtweaks.options.statuseffects.style.display": "Gaya: %s",
 	"hudtweaks.options.statuseffects.style.vertical.display": "Vertikal",
 	"hudtweaks.options.statuseffects.style.horizontal.display": "Horizontal",
+	"hudtweaks.options.bossbar.style.screen_percent": "Tinggi Maksimum: %s",
 	"hudtweaks.options.forceDisplay.display": "Paksa Tampilkan: %s",
 	"hudtweaks.options.forceDisplay.on.display": "Aktif",
 	"hudtweaks.options.forceDisplay.off.display": "Nonaktif",
