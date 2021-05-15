@@ -44,11 +44,9 @@ public class SidebarWidget extends AbstractParentElement implements Drawable, Ti
 		this.color = color;
 	}
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public void addDrawable(Drawable drawable) {
 		drawables.add(drawable);
 		if (drawable instanceof Element) {
-			// this is really bad but it's funny
 			elements.add(new ScrollableWrapperElement((Element) drawable, () -> scrolledDist));
 		}
 	}
@@ -138,7 +136,7 @@ public class SidebarWidget extends AbstractParentElement implements Drawable, Ti
 			}
 
 			for (Drawable drawable : drawables) {
-				drawable.render(matrixStack, mouseX, mouseY, delta);
+				drawable.render(matrixStack, mouseX, (int) (mouseY + scrolledDist), delta);
 			}
 
 			if (scrollable) {
