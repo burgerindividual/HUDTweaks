@@ -28,7 +28,7 @@ public interface TextFieldAccessor {
 	String getSuggestion();
 	@Accessor("renderTextProvider")
 	BiFunction<String, Integer, OrderedText> getRenderTextProvider();
-	
+
 	@Invoker
 	boolean callDrawsBackground();
 	@Invoker

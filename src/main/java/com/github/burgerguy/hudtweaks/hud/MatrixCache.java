@@ -17,15 +17,15 @@ import net.minecraft.util.math.Matrix4f;
 public class MatrixCache {
 	private final Map<HTIdentifier.ElementType, Matrix4f> matrixMap = new HashMap<>();
 	private final Set<HTIdentifier.ElementType> appliedElements = new HashSet<>();
-	
+
 	public Matrix4f getMatrix(HTIdentifier.ElementType elementType) {
 		return matrixMap.get(elementType);
 	}
-	
+
 	public void putMatrix(HTIdentifier.ElementType elementType, Matrix4f matrix) {
 		matrixMap.put(elementType, matrix);
 	}
-	
+
 	public void tryPushMatrix(HTIdentifier entryIdentifier, @Nullable MatrixStack matrixStack) {
 		HTIdentifier.ElementType elementTypeIdentifier = entryIdentifier.getElementType();
 		Matrix4f matrix = getMatrix(elementTypeIdentifier);
@@ -40,12 +40,12 @@ public class MatrixCache {
 					RenderSystem.pushMatrix();
 					RenderSystem.multMatrix(matrix);
 				}
-				
+
 				if (HTOptionsScreen.isOpen()) elementType.startDrawTest(); // we only care about visibility when HudElementWidgets have to be displayed
 			}
 		}
 	}
-	
+
 	public void tryPopMatrix(HTIdentifier entryIdentifier, @Nullable MatrixStack matrixStack) {
 		HTIdentifier.ElementType elementTypeIdentifier = entryIdentifier.getElementType();
 		if (appliedElements.contains(elementTypeIdentifier)) {
@@ -57,7 +57,7 @@ public class MatrixCache {
 					RenderSystem.popMatrix();
 				}
 				appliedElements.remove(elementTypeIdentifier);
-				
+
 				elementType.endDrawTest();
 			}
 		}

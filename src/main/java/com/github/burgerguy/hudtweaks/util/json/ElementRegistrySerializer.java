@@ -17,7 +17,7 @@ import com.google.gson.JsonSerializer;
 
 public class ElementRegistrySerializer implements JsonSerializer<ElementRegistry> {
 	private static final Gson DEFAULT_GSON = new GsonBuilder().setPrettyPrinting().create();
-
+	
 	@Override
 	public JsonElement serialize(ElementRegistry elementRegistry, Type typeOfSrc, JsonSerializationContext context) {
 		JsonObject registryObject = new JsonObject();
@@ -51,6 +51,6 @@ public class ElementRegistrySerializer implements JsonSerializer<ElementRegistry
 		}
 		return registryObject;
 	}
-	
-	
+
+
 }

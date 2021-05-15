@@ -9,26 +9,26 @@ import net.minecraft.util.math.MathHelper;
 
 public class DefaultArmorEntry extends HudElementEntry {
 	public static final HTIdentifier IDENTIFIER = new HTIdentifier(new HTIdentifier.ElementType("armor", "hudtweaks.element.armor"), Util.MINECRAFT_NAMESPACE);
-	
+
 	public DefaultArmorEntry() {
 		super(IDENTIFIER, "onHealthRowsChange");
 	}
-	
+
 	@Override
 	protected double calculateWidth(MinecraftClient client) {
 		return 81;
 	}
-	
+
 	@Override
 	protected double calculateHeight(MinecraftClient client) {
 		return 9;
 	}
-	
+
 	@Override
 	protected double calculateDefaultX(MinecraftClient client) {
 		return client.getWindow().getScaledWidth() / 2 - 91;
 	}
-	
+
 	@Override
 	protected double calculateDefaultY(MinecraftClient client) {
 		int offsetHeight;

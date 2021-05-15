@@ -13,11 +13,11 @@ import net.minecraft.text.TranslatableText;
 
 public class ParentButtonWidget extends HTButtonWidget {
 	private final Consumer<AbstractTypeNode> onClick;
-	
+
 	private final Map<HTIdentifier.ElementType, AbstractTypeNode> innerMap = new LinkedHashMap<>();
 	private final HTIdentifier.ElementType[] keyHelper;
 	private int currentIndex;
-	
+
 	public ParentButtonWidget(int x, int y, int width, int height, AbstractTypeNode currentParentNode, AbstractTypeNode thisNode, Consumer<AbstractTypeNode> onClick, boolean useX) {
 		super(x, y, width, height, createMessage(currentParentNode));
 		recurseAddNode(HudContainer.getScreenRoot(), thisNode);
@@ -26,11 +26,11 @@ public class ParentButtonWidget extends HTButtonWidget {
 			if (keyHelper[currentIndex].equals(currentParentNode.getElementIdentifier()))
 				break;
 		}
-		
+
 		this.onClick = onClick;
 	}
-	
-	
+
+
 	private void recurseAddNode(AbstractTypeNode node, AbstractTypeNode exclude) {
 		if (!node.equals(exclude)) {
 			innerMap.put(node.getElementIdentifier(), node);
@@ -39,20 +39,20 @@ public class ParentButtonWidget extends HTButtonWidget {
 			}
 		}
 	}
-	
+
 	@Override
 	public void onPress() {
 		if (++currentIndex >= keyHelper.length) currentIndex = 0;
 		AbstractTypeNode newParentNode = innerMap.get(keyHelper[currentIndex]);
 		setMessage(newParentNode);
-		
+
 		onClick.accept(newParentNode);
 	}
-	
+
 	private static Text createMessage(AbstractTypeNode node) {
 		return new TranslatableText("hudtweaks.options.parent.display", node.getElementIdentifier().toTranslatedString());
 	}
-	
+
 	public void setMessage(AbstractTypeNode node) {
 		setMessage(createMessage(node));
 	}

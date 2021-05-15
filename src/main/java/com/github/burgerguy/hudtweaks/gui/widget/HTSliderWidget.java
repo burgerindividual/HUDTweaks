@@ -10,13 +10,13 @@ import net.minecraft.util.math.MathHelper;
 
 public abstract class HTSliderWidget extends SliderWidget implements ValueUpdatable {
 	private static final int HANDLE_WIDTH = 7;
-
+	
 	public HTSliderWidget(int x, int y, int width, int height, double value) {
 		super(x, y, width, height, LiteralText.EMPTY, value);
 		setAlpha(0.8F);
 		updateMessage();
 	}
-	
+
 	@Override
 	public void renderButton(MatrixStack matrixStack, int mouseX, int mouseY, float delta) {
 		MinecraftClient minecraftClient = MinecraftClient.getInstance();
@@ -36,7 +36,7 @@ public abstract class HTSliderWidget extends SliderWidget implements ValueUpdata
 			DrawableHelper.fill(matrixStack, x1, y1, x2, y2, 0x50303030);
 		}
 	}
-	
+
 	@Override
 	protected void renderBg(MatrixStack matrixStack, MinecraftClient client, int mouseX, int mouseY) {
 		int x1 = x + (int) (value * (width - HANDLE_WIDTH));
@@ -50,12 +50,12 @@ public abstract class HTSliderWidget extends SliderWidget implements ValueUpdata
 		DrawableHelper.fill(matrixStack, x2,     y1 + 1, x2 - 1, y2 - 1, color);
 		DrawableHelper.fill(matrixStack, x1 + 1, y1 + 1, x2 - 1, y2 - 1, 0x7F9F9F9F);
 	}
-	
+
 	@Override
 	public void onClick(double mouseX, double mouseY) {
 		setValueFromMouse(mouseX);
 	}
-	
+
 	@Override
 	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
 		boolean bl = keyCode == 263;
@@ -64,27 +64,27 @@ public abstract class HTSliderWidget extends SliderWidget implements ValueUpdata
 			setValue(value + f / (width - HANDLE_WIDTH));
 			return true;
 		}
-		
+
 		return false;
 	}
-	
+
 	protected void setValueFromMouse(double mouseX) {
 		setValue((mouseX - (x + (HANDLE_WIDTH / 2.0D - 1.0D))) / (width - HANDLE_WIDTH));
 	}
-	
+
 	public void setValue(double newValue) {
 		double oldValue = value;
 		value = MathHelper.clamp(newValue, 0.0D, 1.0D);
 		if (oldValue != value) {
 			applyValue();
 		}
-		
+
 		updateMessage();
 	}
-	
+
 	@Override
 	protected void onDrag(double mouseX, double mouseY, double deltaX, double deltaY) {
 		setValueFromMouse(mouseX);
 	}
-	
+
 }

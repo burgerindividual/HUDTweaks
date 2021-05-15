@@ -20,7 +20,21 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import com.github.burgerguy.hudtweaks.gui.HTOptionsScreen;
 import com.github.burgerguy.hudtweaks.hud.HudContainer;
 import com.github.burgerguy.hudtweaks.hud.UpdateEvent;
-import com.github.burgerguy.hudtweaks.hud.element.*;
+import com.github.burgerguy.hudtweaks.hud.element.DefaultActionBarEntry;
+import com.github.burgerguy.hudtweaks.hud.element.DefaultAirEntry;
+import com.github.burgerguy.hudtweaks.hud.element.DefaultArmorEntry;
+import com.github.burgerguy.hudtweaks.hud.element.DefaultExperienceBarEntry;
+import com.github.burgerguy.hudtweaks.hud.element.DefaultHealthEntry;
+import com.github.burgerguy.hudtweaks.hud.element.DefaultHotbarEntry;
+import com.github.burgerguy.hudtweaks.hud.element.DefaultHungerEntry;
+import com.github.burgerguy.hudtweaks.hud.element.DefaultJumpBarEntry;
+import com.github.burgerguy.hudtweaks.hud.element.DefaultMountHealthEntry;
+import com.github.burgerguy.hudtweaks.hud.element.DefaultStatusEffectsEntry;
+import com.github.burgerguy.hudtweaks.hud.element.DefaultSubtitleEntry;
+import com.github.burgerguy.hudtweaks.hud.element.DefaultTitleEntry;
+import com.github.burgerguy.hudtweaks.hud.element.DefaultTooltipEntry;
+import com.github.burgerguy.hudtweaks.hud.element.HudElementEntry;
+import com.github.burgerguy.hudtweaks.hud.element.HudElementType;
 import com.github.burgerguy.hudtweaks.hud.tree.AbstractTypeNode;
 import com.google.common.collect.Sets;
 
@@ -37,25 +51,25 @@ public abstract class InGameHudMixin extends DrawableHelper {
 	@Final
 	@Shadow
 	private MinecraftClient client;
-	
+
 	// the updatedElements sets are used to see what matricies should be updated after
 	@Unique
 	private final Set<AbstractTypeNode> updatedElementsX = new HashSet<>();
 	@Unique
 	private final Set<AbstractTypeNode> updatedElementsY = new HashSet<>();
-	
+
 	@Inject(method = "render", at = @At(value = "HEAD"))
 	private void renderStart(MatrixStack matrices, float tickDelta, CallbackInfo callbackInfo) {
 		if (HTOptionsScreen.isOpen()) {
 			// super janky way to dim background
 			super.fillGradient(matrices, 0, 0, client.getWindow().getScaledWidth(), client.getWindow().getScaledHeight(), 0xC0101010, 0xD0101010);
 		}
-		
+
 		for (HudElementType elementType : HudContainer.getElementRegistry().getElementTypes()) { // TODO: fix this for when entry switches happen
 			// allows us to keep track of what has rendered this frame
 			elementType.clearDrawTest();
 		}
-		
+
 		client.getProfiler().push("fireHudTweaksEvents");
 		updatedElementsX.clear();
 		updatedElementsY.clear();
@@ -68,7 +82,7 @@ public abstract class InGameHudMixin extends DrawableHelper {
 				HudContainer.getScreenRoot().tryUpdateY(event, client, false, updatedElementsY);
 			}
 		}
-		
+
 		for (Object type : Sets.union(updatedElementsX, updatedElementsY)) {
 			if (type instanceof HudElementType) {
 				HudElementEntry hudElement = ((HudElementType) type).getActiveEntry();
@@ -77,24 +91,24 @@ public abstract class InGameHudMixin extends DrawableHelper {
 		}
 		client.getProfiler().pop();
 	}
-	
+
 	@Inject(method = "renderHotbar", at = @At(value = "HEAD"))
 	private void renderHotbarHead(float tickDelta, MatrixStack matrices, CallbackInfo callbackInfo) {
 		HudContainer.getMatrixCache().tryPushMatrix(DefaultHotbarEntry.IDENTIFIER, null);
 	}
-	
+
 	@Inject(method = "renderHotbar", at = @At(value = "RETURN"))
 	private void renderHotbarReturn(float tickDelta, MatrixStack matrices, CallbackInfo callbackInfo) {
 		HudContainer.getMatrixCache().tryPopMatrix(DefaultHotbarEntry.IDENTIFIER, null);
 	}
-	
+
 	@Inject(method = "renderStatusBars",
 			at = @At(value = "INVOKE_STRING", target = "Lnet/minecraft/util/profiler/Profiler;push(Ljava/lang/String;)V",
 			args = "ldc=armor"))
 	private void renderArmor(MatrixStack matrices, CallbackInfo callbackInfo) {
 		HudContainer.getMatrixCache().tryPushMatrix(DefaultArmorEntry.IDENTIFIER, matrices);
 	}
-	
+
 	@Inject(method = "renderStatusBars",
 			at = @At(value = "INVOKE_STRING", target = "Lnet/minecraft/util/profiler/Profiler;swap(Ljava/lang/String;)V",
 			args = "ldc=health"))
@@ -102,7 +116,7 @@ public abstract class InGameHudMixin extends DrawableHelper {
 		HudContainer.getMatrixCache().tryPopMatrix(DefaultArmorEntry.IDENTIFIER, matrices);
 		HudContainer.getMatrixCache().tryPushMatrix(DefaultHealthEntry.IDENTIFIER, matrices);
 	}
-	
+
 	// injects before if (i <= 4)
 	// this reverses the negation it does right before
 	@ModifyVariable(method = "renderStatusBars",
@@ -117,14 +131,14 @@ public abstract class InGameHudMixin extends DrawableHelper {
 			return healthPos;
 		}
 	}
-	
+
 	@Inject(method = "renderStatusBars",
 			at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/client/gui/hud/InGameHud;getHeartCount(Lnet/minecraft/entity/LivingEntity;)I"))
 	private void renderHunger(MatrixStack matrices, CallbackInfo callbackInfo) {
 		HudContainer.getMatrixCache().tryPopMatrix(DefaultHealthEntry.IDENTIFIER, matrices);
 		HudContainer.getMatrixCache().tryPushMatrix(DefaultHungerEntry.IDENTIFIER, matrices);
 	}
-	
+
 	// this makes sure the aa will equal zero so the if (aa == 0) will pass
 	@ModifyVariable(method = "renderStatusBars",
 			ordinal = 11,
@@ -137,7 +151,7 @@ public abstract class InGameHudMixin extends DrawableHelper {
 			return mountHealth;
 		}
 	}
-	
+
 	@Inject(method = "renderStatusBars",
 			at = @At(value = "INVOKE_STRING", target = "Lnet/minecraft/util/profiler/Profiler;swap(Ljava/lang/String;)V",
 			args = "ldc=air"))
@@ -145,35 +159,35 @@ public abstract class InGameHudMixin extends DrawableHelper {
 		HudContainer.getMatrixCache().tryPopMatrix(DefaultHungerEntry.IDENTIFIER, matrices);
 		HudContainer.getMatrixCache().tryPushMatrix(DefaultAirEntry.IDENTIFIER, matrices);
 	}
-	
+
 	@Inject(method = "renderStatusBars", at = @At(value = "RETURN"))
 	private void renderStatusBarsReturn(MatrixStack matrices, CallbackInfo callbackInfo) {
 		HudContainer.getMatrixCache().tryPopMatrix(DefaultAirEntry.IDENTIFIER, matrices);
 	}
-	
+
 	@Inject(method = "renderMountHealth", at = @At(value = "HEAD"))
 	private void renderMountHealthHead(MatrixStack matrices, CallbackInfo callbackInfo) {
 		HudContainer.getMatrixCache().tryPushMatrix(DefaultMountHealthEntry.IDENTIFIER, matrices);
 	}
-	
+
 	@Inject(method = "renderMountHealth", at = @At(value = "RETURN"))
 	private void renderMountHealthReturn(MatrixStack matrices, CallbackInfo callbackInfo) {
 		HudContainer.getMatrixCache().tryPopMatrix(DefaultMountHealthEntry.IDENTIFIER, matrices);
 	}
-	
+
 	@Inject(method = "renderExperienceBar", at = @At(value = "HEAD"))
 	public void renderExperienceBarHead(MatrixStack matrices, int x, CallbackInfo callbackInfo) {
 		HudContainer.getMatrixCache().tryPushMatrix(DefaultExperienceBarEntry.IDENTIFIER, matrices);
 	}
-	
+
 	@Inject(method = "renderExperienceBar", at = @At(value = "RETURN"))
 	public void renderExperienceBarReturn(MatrixStack matrices, int x, CallbackInfo callbackInfo) {
 		HudContainer.getMatrixCache().tryPopMatrix(DefaultExperienceBarEntry.IDENTIFIER, matrices);
 	}
-	
+
 	@Shadow
 	public abstract void renderExperienceBar(MatrixStack matrices, int x);
-	
+
 	@Inject(method = "renderMountJumpBar", at = @At(value = "HEAD"))
 	public void renderMountJumpBarHead(MatrixStack matrices, int x, CallbackInfo callbackInfo) {
 		// Typically, when the jump bar is visible it hides the experience bar. When
@@ -183,20 +197,20 @@ public abstract class InGameHudMixin extends DrawableHelper {
 		if (activeExpBarEntry instanceof DefaultExperienceBarEntry && ((DefaultExperienceBarEntry) activeExpBarEntry).getForceDisplay()) {
 			renderExperienceBar(matrices, x);
 		}
-		
+
 		HudContainer.getMatrixCache().tryPushMatrix(DefaultJumpBarEntry.IDENTIFIER, matrices);
 	}
-	
+
 	@Inject(method = "renderMountJumpBar", at = @At(value = "RETURN"))
 	public void renderMountJumpBarReturn(MatrixStack matrices, int x, CallbackInfo callbackInfo) {
 		HudContainer.getMatrixCache().tryPopMatrix(DefaultJumpBarEntry.IDENTIFIER, matrices);
 	}
-	
+
 	@Inject(method = "renderStatusEffectOverlay", at = @At(value = "HEAD"))
 	private void renderStatusEffectOverlayHead(MatrixStack matrices, CallbackInfo callbackInfo) {
 		HudContainer.getMatrixCache().tryPushMatrix(DefaultStatusEffectsEntry.IDENTIFIER, matrices);
 	}
-
+	
 	@Unique
 	private static final int STATUS_EFFECT_OFFSET = 25;
 	@Unique
@@ -207,30 +221,30 @@ public abstract class InGameHudMixin extends DrawableHelper {
 	private int postX;
 	@Unique
 	private int postY;
-
+	
 	@Inject(method = "renderStatusEffectOverlay",
 			at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/effect/StatusEffect;isBeneficial()Z"),
 			locals = LocalCapture.CAPTURE_FAILHARD)
 	private void setupPreCalcVars(MatrixStack matrices, CallbackInfo callbackInfo,
 			Collection<?> u1, int u2, int u3, StatusEffectSpriteManager u4, List<?> u5, Iterator<?> u6, StatusEffectInstance u7, StatusEffect u8, // unused vars
 			int x, int y) {
-		this.preX = x;
-		this.preY = y;
+		preX = x;
+		preY = y;
 	}
-
+	
 	@Inject(method = "renderStatusEffectOverlay",
 			at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/effect/StatusEffectInstance;isAmbient()Z"),
 			locals = LocalCapture.CAPTURE_FAILHARD)
 	private void setupPostCalcVars(MatrixStack matrices, CallbackInfo callbackInfo,
 			Collection<?> u1, int u2, int u3, StatusEffectSpriteManager u4, List<?> u5, Iterator<?> u6, StatusEffectInstance u7, StatusEffect u8, // unused vars
 			int x, int y) {
-		this.postX = x;
-		this.postY = y;
+		postX = x;
+		postY = y;
 	}
-
+	
 	@ModifyVariable(method = "renderStatusEffectOverlay",
-					ordinal = 2,
-					at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/effect/StatusEffectInstance;isAmbient()Z"))
+			ordinal = 2,
+			at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/effect/StatusEffectInstance;isAmbient()Z"))
 	private int modifyStatusEffectX(int x, MatrixStack maxtixStack) {
 		HudElementEntry activeStatusEffectsEntry = HudContainer.getElementRegistry().getActiveEntry(DefaultStatusEffectsEntry.IDENTIFIER.getElementType());
 		if (activeStatusEffectsEntry instanceof DefaultStatusEffectsEntry && ((DefaultStatusEffectsEntry) activeStatusEffectsEntry).isVertical()) {
@@ -239,10 +253,10 @@ public abstract class InGameHudMixin extends DrawableHelper {
 			return x;
 		}
 	}
-
+	
 	@ModifyVariable(method = "renderStatusEffectOverlay",
-					ordinal = 3,
-					at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/effect/StatusEffectInstance;isAmbient()Z"))
+			ordinal = 3,
+			at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/effect/StatusEffectInstance;isAmbient()Z"))
 	private int modifyStatusEffectY(int y, MatrixStack maxtixStack) {
 		HudElementEntry activeStatusEffectsEntry = HudContainer.getElementRegistry().getActiveEntry(DefaultStatusEffectsEntry.IDENTIFIER.getElementType());
 		if (activeStatusEffectsEntry instanceof DefaultStatusEffectsEntry && ((DefaultStatusEffectsEntry) activeStatusEffectsEntry).isVertical()) {
@@ -251,29 +265,29 @@ public abstract class InGameHudMixin extends DrawableHelper {
 			return y;
 		}
 	}
-
+	
 	@Inject(method = "renderStatusEffectOverlay", at = @At(value = "RETURN"))
 	private void renderStatusEffectOverlayReturn(MatrixStack matrices, CallbackInfo callbackInfo) {
 		HudContainer.getMatrixCache().tryPopMatrix(DefaultStatusEffectsEntry.IDENTIFIER, matrices);
 	}
-	
+
 	@Inject(method = "renderHeldItemTooltip", at = @At(value = "HEAD"))
 	private void renderTooltipHead(MatrixStack matrices, CallbackInfo callbackInfo) {
 		HudContainer.getMatrixCache().tryPushMatrix(DefaultTooltipEntry.IDENTIFIER, matrices);
 	}
-	
+
 	@Inject(method = "renderHeldItemTooltip", at = @At(value = "RETURN"))
 	private void renderTooltipReturn(MatrixStack matrices, CallbackInfo callbackInfo) {
 		HudContainer.getMatrixCache().tryPopMatrix(DefaultTooltipEntry.IDENTIFIER, matrices);
 	}
-	
+
 	@Inject(method = "render",
 			at = @At(value = "INVOKE",
 			target = "Lnet/minecraft/client/font/TextRenderer;draw(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/text/Text;FFI)I"))
 	private void renderActionBarStart(MatrixStack matrices, float tickDelta, CallbackInfo callbackInfo) {
 		HudContainer.getMatrixCache().tryPushMatrix(DefaultActionBarEntry.IDENTIFIER, matrices);
 	}
-	
+
 	@Inject(method = "render",
 			at = @At(value = "INVOKE",
 			target = "Lnet/minecraft/client/font/TextRenderer;draw(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/text/Text;FFI)I",
@@ -281,7 +295,7 @@ public abstract class InGameHudMixin extends DrawableHelper {
 	private void renderActionBarEnd(MatrixStack matrices, float tickDelta, CallbackInfo callbackInfo) {
 		HudContainer.getMatrixCache().tryPopMatrix(DefaultActionBarEntry.IDENTIFIER, matrices);
 	}
-	
+
 	@Inject(method = "render",
 			at = @At(value = "INVOKE",
 			target = "Lnet/minecraft/client/font/TextRenderer;drawWithShadow(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/text/Text;FFI)I",
@@ -289,7 +303,7 @@ public abstract class InGameHudMixin extends DrawableHelper {
 	private void renderTitleStart(MatrixStack matrices, float tickDelta, CallbackInfo callbackInfo) {
 		HudContainer.getMatrixCache().tryPushMatrix(DefaultTitleEntry.IDENTIFIER, matrices);
 	}
-	
+
 	@Inject(method = "render",
 			at = @At(value = "INVOKE",
 			target = "Lnet/minecraft/client/font/TextRenderer;drawWithShadow(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/text/Text;FFI)I",
@@ -298,7 +312,7 @@ public abstract class InGameHudMixin extends DrawableHelper {
 	private void renderTitleEnd(MatrixStack matrices, float tickDelta, CallbackInfo callbackInfo) {
 		HudContainer.getMatrixCache().tryPopMatrix(DefaultTitleEntry.IDENTIFIER, matrices);
 	}
-	
+
 	@Inject(method = "render",
 			at = @At(value = "INVOKE",
 			target = "Lnet/minecraft/client/font/TextRenderer;drawWithShadow(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/text/Text;FFI)I",
@@ -306,7 +320,7 @@ public abstract class InGameHudMixin extends DrawableHelper {
 	private void renderSubtitleStart(MatrixStack matrices, float tickDelta, CallbackInfo callbackInfo) {
 		HudContainer.getMatrixCache().tryPushMatrix(DefaultSubtitleEntry.IDENTIFIER, matrices);
 	}
-	
+
 	@Inject(method = "render",
 			at = @At(value = "INVOKE",
 			target = "Lnet/minecraft/client/font/TextRenderer;drawWithShadow(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/text/Text;FFI)I",
@@ -315,9 +329,9 @@ public abstract class InGameHudMixin extends DrawableHelper {
 	private void renderSubtitleEnd(MatrixStack matrices, float tickDelta, CallbackInfo callbackInfo) {
 		HudContainer.getMatrixCache().tryPopMatrix(DefaultSubtitleEntry.IDENTIFIER, matrices);
 	}
-	
-//	@ModifyArgs(method = "render", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/RenderSystem;scalef(FFF)V"))
-//	private void disableScaling(Args args) {
-//		args.setAll(1.0F, 1.0F, 1.0F);
-//	}
+
+	//	@ModifyArgs(method = "render", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/RenderSystem;scalef(FFF)V"))
+	//	private void disableScaling(Args args) {
+	//		args.setAll(1.0F, 1.0F, 1.0F);
+	//	}
 }

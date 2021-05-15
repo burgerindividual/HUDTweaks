@@ -13,12 +13,12 @@ import net.minecraft.client.util.math.MatrixStack;
 
 @Mixin(BossBarHud.class)
 public abstract class BossBarHudMixin {
-	
+
 	@Inject(method = "render", at = @At(value = "HEAD"))
 	private void renderBossBarHead(MatrixStack matrices, CallbackInfo ci) {
 		HudContainer.getMatrixCache().tryPushMatrix(DefaultBossBarEntry.IDENTIFIER, matrices);
 	}
-	
+
 	@Inject(method = "render", at = @At(value = "RETURN"))
 	private void renderBossBarReturn(MatrixStack matrices, CallbackInfo ci) {
 		HudContainer.getMatrixCache().tryPopMatrix(DefaultBossBarEntry.IDENTIFIER, matrices);

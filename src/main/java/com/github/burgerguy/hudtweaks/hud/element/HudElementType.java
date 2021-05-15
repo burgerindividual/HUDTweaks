@@ -17,12 +17,12 @@ public class HudElementType extends AbstractTypeNode { // TODO: somehow fit this
 	private transient final HTIdentifier.ElementType elementIdentifier;
 	private final List<HudElementEntry> entries = new ArrayList<>();
 	private transient int activeIndex;
-	
+
 	protected transient HudElementWidget widget;
 	protected transient DrawTest drawTest;
 	protected transient Boolean drawTestResult;
 	protected transient boolean drawTestedSinceClear;
-	
+
 	public HudElementType(HTIdentifier.ElementType elementIdentifier) {
 		super(elementIdentifier);
 		this.elementIdentifier = elementIdentifier;
@@ -31,7 +31,7 @@ public class HudElementType extends AbstractTypeNode { // TODO: somehow fit this
 		// to be after lwjgl has initialized
 		RenderSystem.recordRenderCall(() -> drawTest = new DrawTest());
 	}
-	
+
 	public void add(HudElementEntry element) {
 		if (element.getIdentifier().getElementType().equals(elementIdentifier)) {
 			entries.add(element);
@@ -39,23 +39,25 @@ public class HudElementType extends AbstractTypeNode { // TODO: somehow fit this
 			Util.LOGGER.error("HudElementType with element identifier " + element.getIdentifier().toString() + " does not match element identifier " + elementIdentifier.toString());
 		}
 	}
-	
+
+	@Override
 	@SuppressWarnings("unchecked")
 	public HudElementEntry getActiveEntry() {
 		return entries.get(activeIndex);
 	}
-	
+
 	/**
 	 * Should only be used for profile saving and loading.
 	 */
+	@Override
 	public List<HudElementEntry> getRawEntryList() {
 		return entries;
 	}
-	
+
 	public int getElementCount() {
 		return entries.size();
 	}
-	
+
 	public void cycleEntry() {
 		if (activeIndex < entries.size() - 1) {
 			activeIndex++;
@@ -64,15 +66,16 @@ public class HudElementType extends AbstractTypeNode { // TODO: somehow fit this
 		}
 		setRequiresUpdate();
 	}
-	
+
+	@Override
 	public String toString() {
 		return elementIdentifier.toString();
 	}
-	
+
 	public String toTranslatedString() {
 		return elementIdentifier.toTranslatedString();
 	}
-	
+
 	public void updateFromJson(JsonElement json) {
 		for (Entry<String, JsonElement> jsonEntry : json.getAsJsonObject().entrySet()) {
 			JsonElement value = jsonEntry.getValue();
@@ -91,7 +94,7 @@ public class HudElementType extends AbstractTypeNode { // TODO: somehow fit this
 					continue;
 				}
 			}
-			
+
 			String[] identifiers = jsonEntry.getKey().split(":");
 			boolean foundEntry = false;
 			for (HudElementEntry entry : entries) {
@@ -102,35 +105,35 @@ public class HudElementType extends AbstractTypeNode { // TODO: somehow fit this
 					break;
 				}
 			}
-			
+
 			if (!foundEntry) Util.LOGGER.error("Entry specified in config doesn't exist in entry map, skipping...");
 		}
 	}
-	
+
 	public void startDrawTest() {
 		drawTest.start();
 	}
-	
+
 	public void endDrawTest() {
 		if (drawTest.end()) drawTestedSinceClear = true;
 	}
-	
+
 	public void clearDrawTest() {
 		drawTestResult = null;
 		drawTestedSinceClear = false;
 	}
-	
+
 	public boolean isRendered() {
 		if (!drawTestedSinceClear) return false;
 		if (drawTestResult == null) drawTestResult = drawTest.getResultSync();
 		return drawTestResult;
 	}
-	
+
 	@Nullable
 	public HudElementWidget getWidget() {
 		return widget;
 	}
-	
+
 	public HudElementWidget createWidget(@Nullable Runnable valueUpdater) {
 		return widget = new HudElementWidget(this, valueUpdater);
 	}

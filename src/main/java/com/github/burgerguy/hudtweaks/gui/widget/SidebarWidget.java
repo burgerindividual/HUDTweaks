@@ -26,24 +26,24 @@ public class SidebarWidget extends AbstractParentElement implements Drawable, Ti
 	private static final int SCROLLBAR_COLOR_2 = 0x905F5F5F;
 	private static final int SCROLL_PIXEL_MULTIPLIER = 8;
 	public int cutoffFromBottom = 25;
-	
+
 	private final List<Element> globalElements = new ArrayList<>();
 	private final List<Drawable> globalDrawables = new ArrayList<>();
 	private final List<Element> elements = new ArrayList<>();
 	private final List<Drawable> drawables = new ArrayList<>();
-	
+
 	private final Screen parentScreen;
 	public int width;
 	public int color;
 	private IntSupplier optionsHeightSupplier;
 	private double scrolledDist;
-	
+
 	public SidebarWidget(Screen parentScreen, int width, int color) {
 		this.parentScreen = parentScreen;
 		this.width = width;
 		this.color = color;
 	}
-	
+
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public void addDrawable(Drawable drawable) {
 		drawables.add(drawable);
@@ -52,7 +52,7 @@ public class SidebarWidget extends AbstractParentElement implements Drawable, Ti
 			elements.add(new ScrollableWrapperElement((Element) drawable, () -> scrolledDist));
 		}
 	}
-	
+
 	public void clearDrawables() {
 		Element focused = getFocused();
 		if (focused != null && elements.contains(focused)) {
@@ -62,14 +62,14 @@ public class SidebarWidget extends AbstractParentElement implements Drawable, Ti
 		drawables.clear();
 		elements.clear();
 	}
-	
+
 	public void addGlobalDrawable(Drawable drawable) {
 		globalDrawables.add(drawable);
 		if (drawable instanceof Element) {
 			globalElements.add((Element) drawable);
 		}
 	}
-	
+
 	public void clearGlobalDrawables() {
 		Element focused = getFocused();
 		if (focused != null && globalElements.contains(focused)) {
@@ -79,12 +79,12 @@ public class SidebarWidget extends AbstractParentElement implements Drawable, Ti
 		globalDrawables.clear();
 		globalElements.clear();
 	}
-	
+
 	public void setSidebarOptionsHeightSupplier(IntSupplier optionsHeightSupplier) {
 		this.optionsHeightSupplier = optionsHeightSupplier;
 		updateScrolledDist();
 	}
-	
+
 	public void updateScrolledDist() {
 		if (optionsHeightSupplier != null) {
 			scrolledDist = Util.minClamp(scrolledDist, 0, optionsHeightSupplier.getAsInt() - parentScreen.height + cutoffFromBottom);
@@ -92,30 +92,30 @@ public class SidebarWidget extends AbstractParentElement implements Drawable, Ti
 			scrolledDist = 0;
 		}
 	}
-	
+
 	@Override
 	public List<? extends Element> children() {
 		return new UnmodifiableMergedList<>(globalElements, elements);
 	}
-	
+
 	public void updateValues() {
 		for (Drawable drawable : drawables) {
 			if (drawable instanceof ValueUpdatable) {
 				((ValueUpdatable) drawable).updateValue();
 			}
 		}
-		
+
 		for (Drawable drawable : globalDrawables) {
 			if (drawable instanceof ValueUpdatable) {
 				((ValueUpdatable) drawable).updateValue();
 			}
 		}
 	}
-	
+
 	@Override
 	public void render(MatrixStack matrixStack, int mouseX, int mouseY, float delta) {
 		DrawableHelper.fill(matrixStack, 0, 0, width, parentScreen.height, color);
-		
+
 		double optionsVisibleHeight = parentScreen.height - cutoffFromBottom;
 		if (optionsVisibleHeight > 0) {
 			boolean scrollable = false;
@@ -136,50 +136,50 @@ public class SidebarWidget extends AbstractParentElement implements Drawable, Ti
 					}
 				}
 			}
-			
+
 			for (Drawable drawable : drawables) {
 				drawable.render(matrixStack, mouseX, mouseY, delta);
 			}
-			
+
 			if (scrollable) {
 				if (matrixPushed) matrixStack.pop();
 				ScissorStack.popScissorArea();
 			}
 		}
-		
+
 		for (Drawable drawable : globalDrawables) {
 			drawable.render(matrixStack, mouseX, mouseY, delta);
 		}
 	}
-	
+
 	@Override
 	public boolean mouseClicked(double mouseX, double mouseY, int button) {
 		Element clickedElement = null;
-		
+
 		for (Element element : children()) {
 			if (element.mouseClicked(mouseX, mouseY, button)) {
 				clickedElement = element;
 				break;
 			}
 		}
-		
+
 		Element lastFocused = getFocused();
 		if (lastFocused != null && !lastFocused.equals(clickedElement)) {
 			while (lastFocused.changeFocus(true)); // removes focus from the previous element
 		}
 		setFocused(clickedElement); // sets the parent's focused element (can be set to null)
-		
+
 		if (clickedElement != null) {
 			if (button == 0) {
 				setDragging(true);
 			}
-			
+
 			return true;
 		} else {
 			return isMouseOver(mouseX, mouseY); // we want the hud element focus to remain, even if empty space is clicked on the sidebar
 		}
 	}
-	
+
 	@Override
 	public boolean mouseScrolled(double mouseX, double mouseY, double amount) {
 		boolean childScrolled = super.mouseScrolled(mouseX, mouseY, amount);
@@ -189,17 +189,17 @@ public class SidebarWidget extends AbstractParentElement implements Drawable, Ti
 			if (optionsHeightSupplier == null || mouseY > parentScreen.height - cutoffFromBottom) {
 				return false;
 			} else {
-				scrolledDist = Util.minClamp(scrolledDist - (amount * SCROLL_PIXEL_MULTIPLIER), 0, optionsHeightSupplier.getAsInt() - parentScreen.height + cutoffFromBottom);
+				scrolledDist = Util.minClamp(scrolledDist - amount * SCROLL_PIXEL_MULTIPLIER, 0, optionsHeightSupplier.getAsInt() - parentScreen.height + cutoffFromBottom);
 				return true;
 			}
 		}
 	}
-	
+
 	@Override
 	public boolean isMouseOver(double mouseX, double mouseY) {
 		return mouseX >= 0 && mouseX <= width && mouseY >= 0 && mouseY <= parentScreen.height;
 	}
-
+	
 	@Override
 	public void tick() {
 		for (Drawable drawable : drawables) {
@@ -210,7 +210,7 @@ public class SidebarWidget extends AbstractParentElement implements Drawable, Ti
 				((TextFieldWidget) drawable).tick();
 			}
 		}
-		
+
 		for (Drawable drawable : globalDrawables) {
 			if (drawable instanceof TickableElement) {
 				((TickableElement) drawable).tick();
@@ -220,5 +220,5 @@ public class SidebarWidget extends AbstractParentElement implements Drawable, Ti
 			}
 		}
 	}
-	
+
 }

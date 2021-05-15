@@ -13,46 +13,46 @@ import net.minecraft.text.TranslatableText;
 public class DefaultExperienceBarEntry extends HudElementEntry {
 	public static final HTIdentifier IDENTIFIER = new HTIdentifier(new HTIdentifier.ElementType("expbar", "hudtweaks.element.expbar"), Util.MINECRAFT_NAMESPACE);
 	private boolean forceDisplay;
-
+	
 	public DefaultExperienceBarEntry() {
 		super(IDENTIFIER);
 	}
-
+	
 	@Override
 	protected double calculateWidth(MinecraftClient client) {
 		return 182;
 	}
-
+	
 	@Override
 	protected double calculateHeight(MinecraftClient client) {
 		// TODO: is this right?
 		return 12;
 	}
-
+	
 	@Override
 	protected double calculateDefaultX(MinecraftClient client) {
 		return client.getWindow().getScaledWidth() / 2 - 91;
 	}
-
+	
 	@Override
 	protected double calculateDefaultY(MinecraftClient client) {
 		return client.getWindow().getScaledHeight() - 36;
 	}
-	
+
 	public boolean getForceDisplay() {
 		return forceDisplay;
 	}
-
+	
 	public void setForceDisplay(boolean forceDisplay) {
 		this.forceDisplay = forceDisplay;
 	}
-	
+
 	@Override
 	public void updateFromJson(JsonElement json) {
 		super.updateFromJson(json);
 		setForceDisplay(json.getAsJsonObject().get("forceDisplay").getAsBoolean());
 	}
-	
+
 	@Override
 	public void fillSidebar(SidebarWidget sidebar) {
 		super.fillSidebar(sidebar);
@@ -65,7 +65,7 @@ public class DefaultExperienceBarEntry extends HudElementEntry {
 			}
 		});
 	}
-	
+
 	@Override
 	public int getSidebarOptionsHeight() {
 		return super.getSidebarOptionsHeight() + 25;

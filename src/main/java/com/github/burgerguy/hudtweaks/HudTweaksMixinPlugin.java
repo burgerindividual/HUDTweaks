@@ -24,32 +24,32 @@ import com.github.burgerguy.hudtweaks.util.Util;
 import net.fabricmc.loader.api.FabricLoader;
 
 public class HudTweaksMixinPlugin implements IMixinConfigPlugin {
-
+	
 	@Override
 	public void onLoad(String mixinPackage) {
 	}
-
+	
 	@Override
 	public String getRefMapperConfig() {
 		return null;
 	}
-
+	
 	@Override
 	public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
 		return true;
 	}
-
+	
 	@Override
 	public void acceptTargets(Set<String> myTargets, Set<String> otherTargets) {
 	}
-
+	
 	@Override
 	public List<String> getMixins() {
 		return null;
 	}
-	
-	private boolean bossBarClassModified;
 
+	private boolean bossBarClassModified;
+	
 	@Override
 	public void preApply(String targetClassName, ClassNode targetClass, String mixinClassName, IMixinInfo mixinInfo) {
 		// note to self:
@@ -64,8 +64,7 @@ public class HudTweaksMixinPlugin implements IMixinConfigPlugin {
 		// sure to keep a hashset like described before, because classes with multiple mixins WILL be run
 		// through this function multiple times.
 		if (!bossBarClassModified && targetClassName.equals(FabricLoader.getInstance().getMappingResolver().mapClassName("intermediary", "net.minecraft.class_337"))) { // BossBarHud class
-			for(int i = 0; i < targetClass.methods.size(); i++) {
-				MethodNode methodNode = targetClass.methods.get(i);
+			for (MethodNode methodNode : targetClass.methods) {
 				if (methodNode.name.equals("render")) {
 					ListIterator<AbstractInsnNode> itr = methodNode.instructions.iterator();
 					while (itr.hasNext() && itr.next().getOpcode() != Opcodes.ICONST_3) {} // find ICONST_3 to start injection
@@ -88,17 +87,17 @@ public class HudTweaksMixinPlugin implements IMixinConfigPlugin {
 			Util.LOGGER.info("BossBarHud class (" + targetClassName + ") successfully modified.");
 		}
 	}
-	
+
 	public static float getScreenPercent() {
 		HudElementEntry entry = HudContainer.getElementRegistry().getActiveEntry(DefaultBossBarEntry.IDENTIFIER.getElementType());
 		if (entry instanceof DefaultBossBarEntry) {
 			return ((DefaultBossBarEntry) entry).getScaledMaxHeight();
 		}
-		return (1.0f / 3.0f);
+		return 1.0f / 3.0f;
 	}
-
+	
 	@Override
 	public void postApply(String targetClassName, ClassNode targetClass, String mixinClassName, IMixinInfo mixinInfo) {
 	}
-	
+
 }

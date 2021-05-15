@@ -12,13 +12,13 @@ import net.minecraft.util.math.MathHelper;
 
 public abstract class HTButtonWidget extends AbstractPressableButtonWidget {
 	protected final OverflowTextRenderer overflowTextRenderer;
-	
+
 	public HTButtonWidget(int x, int y, int width, int height, Text message) {
 		super(x, y, width, height, message);
 		setAlpha(0.8F);
-		this.overflowTextRenderer = new OverflowTextRenderer(40, 40, 4, x + width / 2, y + (height - 8) / 2, width - 2);
+		overflowTextRenderer = new OverflowTextRenderer(40, 40, 4, x + width / 2, y + (height - 8) / 2, width - 2);
 	}
-
+	
 	@Override
 	public void renderButton(MatrixStack matrices, int mouseX, int mouseY, float delta) {
 		MinecraftClient minecraftClient = MinecraftClient.getInstance();

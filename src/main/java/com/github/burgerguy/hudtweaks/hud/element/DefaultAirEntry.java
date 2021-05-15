@@ -11,21 +11,21 @@ import net.minecraft.util.math.MathHelper;
 
 public class DefaultAirEntry extends HudElementEntry {
 	public static final HTIdentifier IDENTIFIER = new HTIdentifier(new HTIdentifier.ElementType("air", "hudtweaks.element.air"), Util.MINECRAFT_NAMESPACE);
-
+	
 	public DefaultAirEntry() {
 		super(IDENTIFIER, "onRidingHealthRowsChange");
 	}
-
+	
 	@Override
 	protected double calculateWidth(MinecraftClient client) {
 		return 81;
 	}
-
+	
 	@Override
 	protected double calculateHeight(MinecraftClient client) {
 		return 9;
 	}
-	
+
 	private int getRidingHealthOffset(MinecraftClient client) {
 		Entity cameraEntity = client.getCameraEntity();
 		if (cameraEntity instanceof PlayerEntity) {
@@ -40,14 +40,14 @@ public class DefaultAirEntry extends HudElementEntry {
 		}
 		return 0;
 	}
-
+	
 	@Override
 	protected double calculateDefaultX(MinecraftClient client) {
 		return client.getWindow().getScaledWidth() / 2 + 10;
 	}
-
+	
 	@Override
 	protected double calculateDefaultY(MinecraftClient client) {
 		return client.getWindow().getScaledHeight() - 49 - getRidingHealthOffset(client);
-	}	
+	}
 }

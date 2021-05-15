@@ -16,18 +16,18 @@ import net.minecraft.text.TranslatableText;
 
 public class ElementLabelWidget implements Drawable {
 	private static final Style STYLE = Style.EMPTY.withItalic(true);
-	
+
 	private final int x;
 	private final int y;
 	private final OverflowTextRenderer overflowTextRenderer;
 	private HudElementType elementType;
-	
+
 	public ElementLabelWidget(int x, int y, int maxWidth) {
 		this.x = x;
 		this.y = y;
-		this.overflowTextRenderer = new OverflowTextRenderer(40, 40, 4, x, y, maxWidth);
+		overflowTextRenderer = new OverflowTextRenderer(40, 40, 4, x, y, maxWidth);
 	}
-
+	
 	@SuppressWarnings("resource")
 	@Override
 	public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
@@ -38,7 +38,7 @@ public class ElementLabelWidget implements Drawable {
 			overflowTextRenderer.render(matrices, textRenderer, new LiteralText(elementType.getElementIdentifier().toTranslatedString()).setStyle(STYLE), delta, 0xCCFFFFFF);
 		}
 	}
-	
+
 	public void setHudElementType(@Nullable HudElementType elementType) {
 		this.elementType = elementType;
 		overflowTextRenderer.restart();

@@ -5,7 +5,22 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import com.github.burgerguy.hudtweaks.hud.element.*;
+import com.github.burgerguy.hudtweaks.hud.element.DefaultActionBarEntry;
+import com.github.burgerguy.hudtweaks.hud.element.DefaultAirEntry;
+import com.github.burgerguy.hudtweaks.hud.element.DefaultArmorEntry;
+import com.github.burgerguy.hudtweaks.hud.element.DefaultBossBarEntry;
+import com.github.burgerguy.hudtweaks.hud.element.DefaultExperienceBarEntry;
+import com.github.burgerguy.hudtweaks.hud.element.DefaultHealthEntry;
+import com.github.burgerguy.hudtweaks.hud.element.DefaultHotbarEntry;
+import com.github.burgerguy.hudtweaks.hud.element.DefaultHungerEntry;
+import com.github.burgerguy.hudtweaks.hud.element.DefaultJumpBarEntry;
+import com.github.burgerguy.hudtweaks.hud.element.DefaultMountHealthEntry;
+import com.github.burgerguy.hudtweaks.hud.element.DefaultStatusEffectsEntry;
+import com.github.burgerguy.hudtweaks.hud.element.DefaultSubtitleEntry;
+import com.github.burgerguy.hudtweaks.hud.element.DefaultTitleEntry;
+import com.github.burgerguy.hudtweaks.hud.element.DefaultTooltipEntry;
+import com.github.burgerguy.hudtweaks.hud.element.HudElementEntry;
+import com.github.burgerguy.hudtweaks.hud.element.HudElementType;
 import com.github.burgerguy.hudtweaks.hud.tree.RelativeTreeRootScreen;
 import com.github.burgerguy.hudtweaks.util.Util;
 import com.google.gson.JsonElement;
@@ -20,7 +35,7 @@ import com.google.gson.JsonElement;
  */
 public class ElementRegistry {
 	private final Map<HTIdentifier.ElementType, HudElementType> elementGroupMap = new HashMap<>();
-	
+
 	public void init() {
 		addEntry(new DefaultHotbarEntry());
 		addEntry(new DefaultExperienceBarEntry());
@@ -37,19 +52,19 @@ public class ElementRegistry {
 		addEntry(new DefaultTitleEntry());
 		addEntry(new DefaultSubtitleEntry());
 	}
-	
+
 	public HudElementType getElementType(HTIdentifier.ElementType elementIdentifier) {
 		return elementGroupMap.get(elementIdentifier);
 	}
-
+	
 	public HudElementEntry getActiveEntry(HTIdentifier.ElementType elementIdentifier) {
 		return getElementType(elementIdentifier).getActiveEntry();
 	}
-	
+
 	public Collection<HudElementType> getElementTypes() {
 		return elementGroupMap.values();
 	}
-	
+
 	public void addEntry(HudElementEntry entry) {
 		if (!entry.getIdentifier().getElementType().equals(RelativeTreeRootScreen.IDENTIFIER.getElementType())) {
 			if (elementGroupMap.containsKey(entry.getIdentifier().getElementType())) {
@@ -69,7 +84,7 @@ public class ElementRegistry {
 			Util.LOGGER.error("Failed to add element: identifier \"screen\" is reserved");
 		}
 	}
-	
+
 	public void updateFromJson(JsonElement json) {
 		for (Entry<String, JsonElement> entry : json.getAsJsonObject().entrySet()) {
 			try {

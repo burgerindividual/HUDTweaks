@@ -15,29 +15,29 @@ public abstract class AbstractTypeNode {
 	protected transient final HTIdentifier.ElementType elementIdentifier;
 	protected transient final Set<AbstractTypeNode> xTreeChildren = new HashSet<>();
 	protected transient final Set<AbstractTypeNode> yTreeChildren = new HashSet<>();
-	
+
 	private transient boolean requiresUpdate;
-	
+
 	public AbstractTypeNode(HTIdentifier.ElementType elementIdentifier) {
 		this.elementIdentifier = elementIdentifier;
 	}
-	
+
 	public final HTIdentifier.ElementType getElementIdentifier() {
 		return elementIdentifier;
 	}
-	
+
 	public Set<? extends AbstractTypeNode> getXChildren() {
 		return xTreeChildren;
 	}
-	
+
 	public Set<? extends AbstractTypeNode> getYChildren() {
 		return yTreeChildren;
 	}
-	
+
 	public abstract <T extends AbstractTypeNodeEntry> T getActiveEntry();
-	
+
 	public abstract List<? extends AbstractTypeNodeEntry> getRawEntryList();
-	
+
 	/**
 	 * Passing null to the UpdateEvent will try a manual update.
 	 */
@@ -57,12 +57,12 @@ public abstract class AbstractTypeNode {
 				}
 			}
 		}
-		
+
 		for (AbstractTypeNode child : xTreeChildren) {
 			child.tryUpdateX(event, client, selfUpdated, updatedElementsX);
 		}
 	}
-	
+
 	/**
 	 * Passing null to the UpdateEvent will try a manual update.
 	 */
@@ -82,16 +82,16 @@ public abstract class AbstractTypeNode {
 				}
 			}
 		}
-		
+
 		for (AbstractTypeNode child : yTreeChildren) {
 			child.tryUpdateY(event, client, selfUpdated, updatedElementsY);
 		}
 	}
-	
+
 	public void setRequiresUpdate() {
 		requiresUpdate = true;
 	}
-	
+
 	/**
 	 * Do not touch unless you know what you're doing.
 	 */

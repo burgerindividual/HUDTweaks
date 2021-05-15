@@ -11,23 +11,23 @@ import net.fabricmc.loader.api.FabricLoader;
 
 public class HudTweaksMod implements ClientModInitializer {
 	public static final String MOD_ID = "hudtweaks";
-
+	
 	@Override
 	public void onInitializeClient() {
 		HudContainer.init();
 		FabricLoader.getInstance().getEntrypointContainers("hudtweaks", HudTweaksApi.class).forEach(e -> {
 			HudTweaksApi apiImpl = e.getEntrypoint();
 			apiImpl.onInitialize();
-			
+
 			for (UpdateEvent event : apiImpl.getCustomEvents()) {
 				HudContainer.getEventRegistry().put(event);
 			}
-			
+
 			for (HudElementEntry element : apiImpl.getCustomElementEntries()) {
 				HudContainer.getElementRegistry().addEntry(element);
 			}
 		});
 		ConfigHelper.tryLoadConfig();
 	}
-	
+
 }

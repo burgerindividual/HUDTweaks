@@ -23,23 +23,23 @@ import net.minecraft.client.MinecraftClient;
  */
 public enum Util {
 	; // no instantiation, all contents static
-	
+
 	public static final Gson GSON;
 	public static final JsonParser JSON_PARSER = new JsonParser();
 	public static final Logger LOGGER = LogManager.getLogger("HUDTweaks");
-	
+
 	public static final NumberFormat RELATIVE_POS_FORMATTER = new DecimalFormat("%##0.0");
 	public static final NumberFormat ANCHOR_POS_FORMATTER = new DecimalFormat("%##0.0");
 	public static final NumberFormat NUM_FIELD_FORMATTER = new DecimalFormat("####0.0");
 	public static final HTIdentifier.Namespace HUDTWEAKS_NAMESPACE = new Namespace("hudtweaks", "hudtweaks.name");
 	public static final HTIdentifier.Namespace MINECRAFT_NAMESPACE = new Namespace("minecraft", "advancements.story.root.title");
-	
+
 	public static boolean SHOULD_COMPENSATE_FOR_MODMENU_BUTTON = false;
-	
+
 	static {
 		GSON = new GsonBuilder().setPrettyPrinting().registerTypeHierarchyAdapter(ElementRegistry.class, new ElementRegistrySerializer()).create();
 	}
-	
+
 	public static <T> boolean containsNotNull(Collection<T> collection, T item) {
 		if (item == null) {
 			return false;
@@ -47,7 +47,7 @@ public enum Util {
 			return collection.contains(item);
 		}
 	}
-	
+
 	public static double minClamp(double value, double min, double max) {
 		if (value < min || max <= min) {
 			return min;
@@ -55,7 +55,7 @@ public enum Util {
 			return value > max ? max : value;
 		}
 	}
-	
+
 	public static float getTrueTickDelta(MinecraftClient client) {
 		return client.isPaused() ? ((MinecraftClientAccessor) client).getPausedTickDelta() : client.getTickDelta();
 	}

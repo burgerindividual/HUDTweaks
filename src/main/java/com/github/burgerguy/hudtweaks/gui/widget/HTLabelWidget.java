@@ -12,7 +12,7 @@ public class HTLabelWidget implements Drawable {
 	private final boolean centered;
 	public int color;
 	public String text;
-	
+
 	public HTLabelWidget(String text, int x, int y, int color, boolean centered) {
 		this.x = x;
 		this.y = y;
@@ -20,7 +20,7 @@ public class HTLabelWidget implements Drawable {
 		this.centered = centered;
 		this.text = text;
 	}
-
+	
 	@SuppressWarnings("resource")
 	@Override
 	public void render(MatrixStack matrixStack, int mouseX, int mouseY, float delta) {
@@ -31,5 +31,5 @@ public class HTLabelWidget implements Drawable {
 			textRenderer.drawWithShadow(matrixStack, text, x, y, color);
 		}
 	}
-	
+
 }

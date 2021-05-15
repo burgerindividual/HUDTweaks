@@ -21,7 +21,7 @@ public abstract class GameMenuScreenMixin extends Screen {
 	private GameMenuScreenMixin() {
 		super(null);
 	}
-	
+
 	@SuppressWarnings("resource")
 	@Inject(method = "initWidgets", at = @At(value = "HEAD"))
 	private void initWidgets(CallbackInfo callbackInfo) {

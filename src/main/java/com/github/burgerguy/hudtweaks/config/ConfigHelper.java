@@ -19,9 +19,9 @@ import net.fabricmc.loader.api.FabricLoader;
 
 public enum ConfigHelper {
 	;
-	
+
 	public static final Path configFile = FabricLoader.getInstance().getConfigDir().resolve("hudtweaks.json");
-	
+
 	/**
 	 * Tries to parse the configuration file.
 	 */
@@ -41,7 +41,7 @@ public enum ConfigHelper {
 			Util.LOGGER.log(Level.INFO, "Config file not found");
 		}
 	}
-	
+
 	/**
 	 * Saves the current HUD state as a json file for later reloading.
 	 * This doesn't save all the information that would be in the class
@@ -59,5 +59,5 @@ public enum ConfigHelper {
 			Util.LOGGER.error("Error saving config file", e);
 		}
 	}
-	
+
 }

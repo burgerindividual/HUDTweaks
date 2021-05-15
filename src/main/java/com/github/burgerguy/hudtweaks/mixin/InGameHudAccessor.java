@@ -11,16 +11,16 @@ import net.minecraft.text.Text;
 public interface InGameHudAccessor {
 	@Accessor("currentStack")
 	ItemStack getCurrentStack();
-	
+
 	@Accessor("overlayMessage")
 	Text getActionBarText();
-	
+
 	@Accessor("overlayRemaining")
 	int getActionBarRemaining();
-	
+
 	@Accessor("title")
 	Text getTitleText();
-	
+
 	@Accessor("subtitle")
 	Text getSubtitleText();
 }

@@ -7,14 +7,14 @@ import java.util.Set;
 import com.github.burgerguy.hudtweaks.hud.UpdateEvent;
 
 public interface HudTweaksApi {
-	
+
 	/**
 	 * Used for manipulating already existing things in the HudContainer.
 	 */
 	default public void onInitialize() {
 		// noop by default
 	}
-	
+
 	/**
 	 * Implement if custom events are needed for updating the custom
 	 * elements.
@@ -22,7 +22,7 @@ public interface HudTweaksApi {
 	default public Set<UpdateEvent> getCustomEvents() {
 		return Collections.emptySet();
 	}
-	
+
 	/**
 	 * Each of the CustomHudElementEntry must have a MatrixUpdater so it
 	 * can update the matricies before and after the render of the
