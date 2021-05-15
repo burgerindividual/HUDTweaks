@@ -329,9 +329,4 @@ public abstract class InGameHudMixin extends DrawableHelper {
 	private void renderSubtitleEnd(MatrixStack matrices, float tickDelta, CallbackInfo callbackInfo) {
 		HudContainer.getMatrixCache().tryPopMatrix(DefaultSubtitleEntry.IDENTIFIER, matrices);
 	}
-
-	//	@ModifyArgs(method = "render", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/RenderSystem;scalef(FFF)V"))
-	//	private void disableScaling(Args args) {
-	//		args.setAll(1.0F, 1.0F, 1.0F);
-	//	}
 }
