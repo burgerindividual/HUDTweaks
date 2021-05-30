@@ -2,11 +2,14 @@ package com.github.burgerguy.hudtweaks.hud;
 
 import com.github.burgerguy.hudtweaks.util.Util;
 import com.google.gson.JsonParseException;
+import net.fabricmc.loader.api.FabricLoader;
+import net.fabricmc.loader.api.ModContainer;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.resource.language.I18n;
 
 import java.util.Objects;
+import java.util.Optional;
 
 public final class HTIdentifier {
 	private final ModId modId;
@@ -52,15 +55,11 @@ public final class HTIdentifier {
 		return modId.toString() + ':' + elementId.toString();
 	}
 
-	public String toTranslatedString() {
-		return modId.toTranslatedString() + ':' + elementId.toTranslatedString();
-	}
-
 	public String toDisplayableString() {
 		if (modId.equals(Util.MINECRAFT_MODID)) {
-			return elementId.toTranslatedString();
+			return elementId.toDisplayableString();
 		} else {
-			return toTranslatedString();
+			return modId.toDisplayableString() + ':' + elementId.toDisplayableString();
 		}
 	}
 
@@ -71,11 +70,12 @@ public final class HTIdentifier {
 
 	public static class ModId {
 		private final String modId;
-		private final String translationKey;
+		private final String modName;
 
-		public ModId(String modId, @Nullable String translationKey) {
+		public ModId(String modId) {
 			this.modId = modId;
-			this.translationKey = translationKey;
+			Optional<ModContainer> modContainer = FabricLoader.getInstance().getModContainer(modId);
+			this.modName = modContainer.isPresent() ? modContainer.get().getMetadata().getName() : modId;
 		}
 
 		@Override
@@ -89,8 +89,8 @@ public final class HTIdentifier {
 			return modId;
 		}
 
-		public String toTranslatedString() {
-			return translationKey != null && I18n.hasTranslation(translationKey) ? I18n.translate(translationKey) : modId;
+		public String toDisplayableString() {
+			return modName;
 		}
 
 		@Override
@@ -123,7 +123,7 @@ public final class HTIdentifier {
 			return elementId;
 		}
 
-		public String toTranslatedString() {
+		public String toDisplayableString() {
 			return translationKey != null && I18n.hasTranslation(translationKey) ? I18n.translate(translationKey) : elementId;
 		}
 
