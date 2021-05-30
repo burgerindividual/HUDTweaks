@@ -29,7 +29,7 @@ public enum Util {
 	public static final NumberFormat RELATIVE_POS_FORMATTER = new DecimalFormat("%##0.0");
 	public static final NumberFormat ANCHOR_POS_FORMATTER = new DecimalFormat("%##0.0");
 	public static final NumberFormat NUM_FIELD_FORMATTER = new DecimalFormat("####0.0");
-	public static final HTIdentifier.ModId MINECRAFT_MODID = new HTIdentifier.ModId("minecraft", "advancements.story.root.title");
+	public static final HTIdentifier.ModId MINECRAFT_MODID = new HTIdentifier.ModId("minecraft");
 
 	public static boolean SHOULD_COMPENSATE_FOR_MODMENU_BUTTON = false;
 

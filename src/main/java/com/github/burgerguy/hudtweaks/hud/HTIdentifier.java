@@ -78,6 +78,14 @@ public final class HTIdentifier {
 			this.modName = modContainer.isPresent() ? modContainer.get().getMetadata().getName() : modId;
 		}
 
+		/**
+		 * Only used for profile loading and saving
+		 */
+		private ModId(String modId, String modName) {
+			this.modId = modId;
+			this.modName = modName;
+		}
+
 		@Override
 		public boolean equals(Object obj) {
 			if (!(obj instanceof ModId)) return false;
