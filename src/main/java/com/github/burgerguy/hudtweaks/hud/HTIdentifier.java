@@ -1,5 +1,6 @@
 package com.github.burgerguy.hudtweaks.hud;
 
+import com.github.burgerguy.hudtweaks.util.Util;
 import com.google.gson.JsonParseException;
 import org.jetbrains.annotations.Nullable;
 
@@ -53,6 +54,14 @@ public final class HTIdentifier {
 
 	public String toTranslatedString() {
 		return modId.toTranslatedString() + ':' + elementId.toTranslatedString();
+	}
+
+	public String toDisplayableString() {
+		if (modId.equals(Util.MINECRAFT_MODID)) {
+			return elementId.toTranslatedString();
+		} else {
+			return toTranslatedString();
+		}
 	}
 
 	@Override

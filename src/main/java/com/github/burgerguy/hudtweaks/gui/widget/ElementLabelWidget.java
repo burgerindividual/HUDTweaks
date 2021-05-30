@@ -34,7 +34,7 @@ public class ElementLabelWidget implements Drawable {
 		if (elementContainer == null) {
 			DrawableHelper.drawCenteredText(matrices, textRenderer, new TranslatableText("hudtweaks.options.current_element.blank.display").setStyle(STYLE), x, y, 0xCCB0B0B0);
 		} else {
-			overflowTextRenderer.render(matrices, textRenderer, new LiteralText(elementContainer.getActiveElement().getIdentifier().toTranslatedString()).setStyle(STYLE), delta, 0xCCFFFFFF);
+			overflowTextRenderer.render(matrices, textRenderer, new LiteralText(elementContainer.getActiveElement().getIdentifier().toDisplayableString()).setStyle(STYLE), delta, 0xCCFFFFFF);
 		}
 	}
 

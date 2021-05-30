@@ -57,10 +57,11 @@ public class ParentButtonWidget extends HTButtonWidget {
 
 	private static Text createMessage(AbstractContainerNode node) {
 		// display active name, but store with initial name
-		return new TranslatableText("hudtweaks.options.parent.display", node.getActiveElement().getIdentifier().toTranslatedString());
+		return new TranslatableText("hudtweaks.options.parent.display", node.getActiveElement().getIdentifier().toDisplayableString());
 	}
 
 	public void setMessage(AbstractContainerNode node) {
 		setMessage(createMessage(node));
+		overflowTextRenderer.restart();
 	}
 }
