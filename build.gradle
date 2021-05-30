@@ -74,7 +74,8 @@ dependencies {
 	
 	include "net.fabricmc.fabric-api:fabric-resource-loader-v0:${project.resource_loader_version}"
 	
-	modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
+	modCompileOnly "com.terraformersmc:modmenu:${project.modmenu_version}"
+	modRuntime "com.terraformersmc:modmenu:${project.modmenu_version}"
 }
 
 remapJar.dependsOn(project(":HUDTweaks-apihelper").tasks.remapJar)
