@@ -32,7 +32,6 @@ allprojects {
 	dependencies {
 		minecraft "com.mojang:minecraft:${project.minecraft_version}"
 		mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
-		// included because it otherwise doesn't compile
 		modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 	}
 	
@@ -76,10 +75,6 @@ dependencies {
 	include "net.fabricmc.fabric-api:fabric-resource-loader-v0:${project.resource_loader_version}"
 	
 	modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
-	
-	modRuntime ("com.github.SuperCoder7979:databreaker:0.2.6") {
-		exclude module: "fabric-loader"
-	}
 }
 
 remapJar.dependsOn(project(":HUDTweaks-apihelper").tasks.remapJar)
