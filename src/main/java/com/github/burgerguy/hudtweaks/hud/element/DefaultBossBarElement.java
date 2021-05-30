@@ -12,11 +12,11 @@ import net.minecraft.client.gui.hud.ClientBossBar;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.math.MathHelper;
 
-public class DefaultBossBarEntry extends HudElementEntry {
-	public static final HTIdentifier IDENTIFIER = new HTIdentifier(new HTIdentifier.ElementType("bossbar", "hudtweaks.element.bossbar"), Util.MINECRAFT_NAMESPACE);
+public class DefaultBossBarElement extends HudElement {
+	public static final HTIdentifier IDENTIFIER = new HTIdentifier(Util.MINECRAFT_MODID, new HTIdentifier.ElementId("bossbar", "hudtweaks.element.bossbar"));
 	private float maxHeight = 1.0f / 3.0f;
 	
-	public DefaultBossBarEntry() {
+	public DefaultBossBarElement() {
 		super(IDENTIFIER, "onBossBarsChange");
 	}
 	

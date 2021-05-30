@@ -9,10 +9,10 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.MathHelper;
 
-public class DefaultMountHealthEntry extends HudElementEntry {
-	public static final HTIdentifier IDENTIFIER = new HTIdentifier(new HTIdentifier.ElementType("mounthealth", "hudtweaks.element.mounthealth"), Util.MINECRAFT_NAMESPACE);
+public class DefaultMountHealthElement extends HudElement {
+	public static final HTIdentifier IDENTIFIER = new HTIdentifier(Util.MINECRAFT_MODID, new HTIdentifier.ElementId("mounthealth", "hudtweaks.element.mounthealth"));
 	
-	public DefaultMountHealthEntry() {
+	public DefaultMountHealthElement() {
 		super(IDENTIFIER, "onRidingHealthRowsChange");
 	}
 	
@@ -39,7 +39,7 @@ public class DefaultMountHealthEntry extends HudElementEntry {
 	
 	@Override
 	protected double calculateDefaultX(MinecraftClient client) {
-		return client.getWindow().getScaledWidth() / 2 + 10;
+		return client.getWindow().getScaledWidth() / 2.0 + 10;
 	}
 	
 	@Override

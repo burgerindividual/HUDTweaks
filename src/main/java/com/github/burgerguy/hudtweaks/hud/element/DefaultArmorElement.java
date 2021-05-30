@@ -7,10 +7,10 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.util.math.MathHelper;
 
-public class DefaultArmorEntry extends HudElementEntry {
-	public static final HTIdentifier IDENTIFIER = new HTIdentifier(new HTIdentifier.ElementType("armor", "hudtweaks.element.armor"), Util.MINECRAFT_NAMESPACE);
+public class DefaultArmorElement extends HudElement {
+	public static final HTIdentifier IDENTIFIER = new HTIdentifier(Util.MINECRAFT_MODID, new HTIdentifier.ElementId("armor", "hudtweaks.element.armor"));
 
-	public DefaultArmorEntry() {
+	public DefaultArmorElement() {
 		super(IDENTIFIER, "onHealthRowsChange");
 	}
 
@@ -26,7 +26,7 @@ public class DefaultArmorEntry extends HudElementEntry {
 
 	@Override
 	protected double calculateDefaultX(MinecraftClient client) {
-		return client.getWindow().getScaledWidth() / 2 - 91;
+		return client.getWindow().getScaledWidth() / 2.0 - 91;
 	}
 
 	@Override

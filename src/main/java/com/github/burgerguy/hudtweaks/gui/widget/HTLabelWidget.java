@@ -21,7 +21,6 @@ public class HTLabelWidget implements Drawable {
 		this.text = text;
 	}
 	
-	@SuppressWarnings("resource")
 	@Override
 	public void render(MatrixStack matrixStack, int mouseX, int mouseY, float delta) {
 		TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;

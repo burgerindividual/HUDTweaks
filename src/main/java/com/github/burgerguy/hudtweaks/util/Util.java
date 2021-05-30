@@ -1,22 +1,20 @@
 package com.github.burgerguy.hudtweaks.util;
 
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
-import java.util.Collection;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import com.github.burgerguy.hudtweaks.hud.ElementRegistry;
 import com.github.burgerguy.hudtweaks.hud.HTIdentifier;
-import com.github.burgerguy.hudtweaks.hud.HTIdentifier.Namespace;
 import com.github.burgerguy.hudtweaks.mixin.MinecraftClientAccessor;
-import com.github.burgerguy.hudtweaks.util.json.ElementRegistrySerializer;
+import com.github.burgerguy.hudtweaks.config.ElementRegistrySerializer;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParser;
-
 import net.minecraft.client.MinecraftClient;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.util.Collection;
+import java.util.Collections;
 
 /**
  * For small utilities that don't need their own class.
@@ -31,8 +29,7 @@ public enum Util {
 	public static final NumberFormat RELATIVE_POS_FORMATTER = new DecimalFormat("%##0.0");
 	public static final NumberFormat ANCHOR_POS_FORMATTER = new DecimalFormat("%##0.0");
 	public static final NumberFormat NUM_FIELD_FORMATTER = new DecimalFormat("####0.0");
-	public static final HTIdentifier.Namespace HUDTWEAKS_NAMESPACE = new Namespace("hudtweaks", "hudtweaks.name");
-	public static final HTIdentifier.Namespace MINECRAFT_NAMESPACE = new Namespace("minecraft", "advancements.story.root.title");
+	public static final HTIdentifier.ModId MINECRAFT_MODID = new HTIdentifier.ModId("minecraft", "advancements.story.root.title");
 
 	public static boolean SHOULD_COMPENSATE_FOR_MODMENU_BUTTON = false;
 
@@ -58,5 +55,9 @@ public enum Util {
 
 	public static float getTrueTickDelta(MinecraftClient client) {
 		return client.isPaused() ? ((MinecraftClientAccessor) client).getPausedTickDelta() : client.getTickDelta();
+	}
+
+	public static <T> Iterable<T> emptyIfNull(Iterable<T> iterable) {
+		return iterable == null ? Collections.emptyList() : iterable;
 	}
 }

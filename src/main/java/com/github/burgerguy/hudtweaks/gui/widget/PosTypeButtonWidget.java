@@ -2,7 +2,7 @@ package com.github.burgerguy.hudtweaks.gui.widget;
 
 import java.util.function.Consumer;
 
-import com.github.burgerguy.hudtweaks.hud.element.HudElementEntry.PosType;
+import com.github.burgerguy.hudtweaks.hud.element.HudElement.PosType;
 
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.text.Text;

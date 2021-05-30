@@ -11,11 +11,11 @@ import net.minecraft.client.resource.language.I18n;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.text.TranslatableText;
 
-public class DefaultStatusEffectsEntry extends HudElementEntry {
-	public static final HTIdentifier IDENTIFIER = new HTIdentifier(new HTIdentifier.ElementType("statuseffects", "hudtweaks.element.statuseffects"), Util.MINECRAFT_NAMESPACE);
+public class DefaultStatusEffectsElement extends HudElement {
+	public static final HTIdentifier IDENTIFIER = new HTIdentifier(Util.MINECRAFT_MODID, new HTIdentifier.ElementId("statuseffects", "hudtweaks.element.statuseffects"));
 	private boolean vertical;
 
-	public DefaultStatusEffectsEntry() {
+	public DefaultStatusEffectsElement() {
 		super(IDENTIFIER, "onStatusEffectsChange");
 	}
 

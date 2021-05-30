@@ -19,7 +19,7 @@ public class DrawTest implements AutoCloseable {
 	}
 
 	/**
-	 * @return true if the method was called inactive active.
+	 * @return true if the method was called while inactive.
 	 */
 	public boolean start() {
 		if (!active) {

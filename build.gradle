@@ -77,7 +77,7 @@ dependencies {
 	
 	modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
 	
-	modRuntime ("com.github.SuperCoder7979:databreaker:master-SNAPSHOT") {
+	modRuntime ("com.github.SuperCoder7979:databreaker:0.2.6") {
 		exclude module: "fabric-loader"
 	}
 }

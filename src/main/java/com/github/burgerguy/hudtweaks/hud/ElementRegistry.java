@@ -5,91 +5,76 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import com.github.burgerguy.hudtweaks.hud.element.DefaultActionBarEntry;
-import com.github.burgerguy.hudtweaks.hud.element.DefaultAirEntry;
-import com.github.burgerguy.hudtweaks.hud.element.DefaultArmorEntry;
-import com.github.burgerguy.hudtweaks.hud.element.DefaultBossBarEntry;
-import com.github.burgerguy.hudtweaks.hud.element.DefaultExperienceBarEntry;
-import com.github.burgerguy.hudtweaks.hud.element.DefaultHealthEntry;
-import com.github.burgerguy.hudtweaks.hud.element.DefaultHotbarEntry;
-import com.github.burgerguy.hudtweaks.hud.element.DefaultHungerEntry;
-import com.github.burgerguy.hudtweaks.hud.element.DefaultJumpBarEntry;
-import com.github.burgerguy.hudtweaks.hud.element.DefaultMountHealthEntry;
-import com.github.burgerguy.hudtweaks.hud.element.DefaultStatusEffectsEntry;
-import com.github.burgerguy.hudtweaks.hud.element.DefaultSubtitleEntry;
-import com.github.burgerguy.hudtweaks.hud.element.DefaultTitleEntry;
-import com.github.burgerguy.hudtweaks.hud.element.DefaultTooltipEntry;
-import com.github.burgerguy.hudtweaks.hud.element.HudElementEntry;
-import com.github.burgerguy.hudtweaks.hud.element.HudElementType;
+import com.github.burgerguy.hudtweaks.api.HudElementOverride;
+import com.github.burgerguy.hudtweaks.hud.element.*;
 import com.github.burgerguy.hudtweaks.hud.tree.RelativeTreeRootScreen;
 import com.github.burgerguy.hudtweaks.util.Util;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonParseException;
 
-/**
- * In this class, we maintain a map of HudElementTypes that contains
- * all of the HudElementEntries added with addEntry. New
- * HudElemenTypes are created as needed, but the default types are
- * created on init. Types can have multiple entries, but only one
- * entry will be used for that type at any given time. It should
- * generally be used for creating replacements for the default types.
- */
 public class ElementRegistry {
-	private final Map<HTIdentifier.ElementType, HudElementType> elementGroupMap = new HashMap<>();
+	private final Map<HTIdentifier, HudElementContainer> elementContainerMap = new HashMap<>();
 
 	public void init() {
-		addEntry(new DefaultHotbarEntry());
-		addEntry(new DefaultExperienceBarEntry());
-		addEntry(new DefaultJumpBarEntry());
-		addEntry(new DefaultArmorEntry());
-		addEntry(new DefaultHealthEntry());
-		addEntry(new DefaultHungerEntry());
-		addEntry(new DefaultMountHealthEntry());
-		addEntry(new DefaultAirEntry());
-		addEntry(new DefaultStatusEffectsEntry());
-		addEntry(new DefaultTooltipEntry());
-		addEntry(new DefaultBossBarEntry());
-		addEntry(new DefaultActionBarEntry());
-		addEntry(new DefaultTitleEntry());
-		addEntry(new DefaultSubtitleEntry());
+		addElement(new DefaultHotbarElement());
+		addElement(new DefaultExperienceBarElement());
+		addElement(new DefaultJumpBarElement());
+		addElement(new DefaultArmorElement());
+		addElement(new DefaultHealthElement());
+		addElement(new DefaultHungerElement());
+		addElement(new DefaultMountHealthElement());
+		addElement(new DefaultAirElement());
+		addElement(new DefaultStatusEffectsElement());
+		addElement(new DefaultTooltipElement());
+		addElement(new DefaultBossBarElement());
+		addElement(new DefaultActionBarElement());
+		addElement(new DefaultTitleElement());
+		addElement(new DefaultSubtitleElement());
 	}
 
-	public HudElementType getElementType(HTIdentifier.ElementType elementIdentifier) {
-		return elementGroupMap.get(elementIdentifier);
+	public HudElementContainer getElementContainer(HTIdentifier identifier) {
+		return elementContainerMap.get(identifier);
 	}
 	
-	public HudElementEntry getActiveEntry(HTIdentifier.ElementType elementIdentifier) {
-		return getElementType(elementIdentifier).getActiveEntry();
+	public HudElement getActiveElement(HTIdentifier identifier) {
+		return getElementContainer(identifier).getActiveElement();
 	}
 
-	public Collection<HudElementType> getElementTypes() {
-		return elementGroupMap.values();
+	public Collection<HudElementContainer> getElementContainers() {
+		return elementContainerMap.values();
 	}
 
-	public void addEntry(HudElementEntry entry) {
-		if (!entry.getIdentifier().getElementType().equals(RelativeTreeRootScreen.IDENTIFIER.getElementType())) {
-			if (elementGroupMap.containsKey(entry.getIdentifier().getElementType())) {
-				HudElementType type = getElementType(entry.getIdentifier().getElementType());
-				type.add(entry);
-				entry.setParentNode(type);
-				entry.init();
-			} else {
-				HTIdentifier.ElementType elementId = entry.getIdentifier().getElementType();
-				HudElementType type = new HudElementType(elementId);
-				type.add(entry);
-				entry.setParentNode(type);
-				entry.init();
-				elementGroupMap.put(elementId, type);
-			}
+	public void addElement(HudElement element) {
+		if (elementContainerMap.containsKey(element.getIdentifier())) {
+			Util.LOGGER.error("Failed to add element: element with identifier \"" + element + "\" already exists");
+			return;
+		}
+
+		HudElementContainer elementContainer = new HudElementContainer(element);
+		element.setParentNode(elementContainer);
+		element.init();
+		elementContainerMap.put(element.getIdentifier(), elementContainer); // use initial element identifier for overriding
+	}
+
+	public void addOverride(HudElementOverride override) {
+		if (override.getOverrideTarget().equals(RelativeTreeRootScreen.IDENTIFIER)) {
+			Util.LOGGER.error("Failed to add override: overriding \"screen\" not allowed");
+			return;
+		}
+
+		HudElementContainer elementContainer = elementContainerMap.get(override.getOverrideTarget());
+		if (elementContainer != null) {
+			elementContainer.addOverride(override);
 		} else {
-			Util.LOGGER.error("Failed to add element: identifier \"screen\" is reserved");
+			Util.LOGGER.error("Failed to add override: element with identifier \"" + override.getOverrideTarget() + "\" doesn't exist");
 		}
 	}
 
 	public void updateFromJson(JsonElement json) {
 		for (Entry<String, JsonElement> entry : json.getAsJsonObject().entrySet()) {
 			try {
-				// temporary element identifier to retrieve the group from a string representation
-				getElementType(new HTIdentifier.ElementType(entry.getKey(), null)).updateFromJson(entry.getValue());
+				// temporary element identifier to retrieve the container from a string representation
+				getElementContainer(HTIdentifier.fromString(entry.getKey())).updateFromJson(entry.getValue());
 			} catch (NullPointerException e) {
 				Util.LOGGER.error("HudElementType specified in config doesn't exist in element type map, skipping...", e);
 				continue;

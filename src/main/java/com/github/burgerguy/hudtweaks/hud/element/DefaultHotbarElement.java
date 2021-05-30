@@ -8,10 +8,10 @@ import net.minecraft.client.options.AttackIndicator;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 
-public class DefaultHotbarEntry extends HudElementEntry {
-	public static final HTIdentifier IDENTIFIER = new HTIdentifier(new HTIdentifier.ElementType("hotbar", "hudtweaks.element.hotbar"), Util.MINECRAFT_NAMESPACE);
+public class DefaultHotbarElement extends HudElement {
+	public static final HTIdentifier IDENTIFIER = new HTIdentifier(Util.MINECRAFT_MODID, new HTIdentifier.ElementId("hotbar", "hudtweaks.element.hotbar"));
 	
-	public DefaultHotbarEntry() {
+	public DefaultHotbarElement() {
 		super(IDENTIFIER, "onOffhandStatusChange", "onHotbarAttackIndicatorChange");
 	}
 
@@ -41,7 +41,7 @@ public class DefaultHotbarEntry extends HudElementEntry {
 	
 	@Override
 	protected double calculateDefaultX(MinecraftClient client) {
-		return client.getWindow().getScaledWidth() / 2 - 91 - getOffhandOffset(client);
+		return client.getWindow().getScaledWidth() / 2.0 - 91 - getOffhandOffset(client);
 	}
 	
 	@Override

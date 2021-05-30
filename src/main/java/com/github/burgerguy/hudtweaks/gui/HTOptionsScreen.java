@@ -7,14 +7,12 @@ import java.util.function.Supplier;
 import com.github.burgerguy.hudtweaks.config.ConfigHelper;
 import com.github.burgerguy.hudtweaks.gui.widget.ArrowButtonWidget;
 import com.github.burgerguy.hudtweaks.gui.widget.ElementLabelWidget;
-import com.github.burgerguy.hudtweaks.gui.widget.EntryCycleButtonWidget;
 import com.github.burgerguy.hudtweaks.gui.widget.SidebarWidget;
 import com.github.burgerguy.hudtweaks.hud.HudContainer;
-import com.github.burgerguy.hudtweaks.hud.element.HudElementEntry;
-import com.github.burgerguy.hudtweaks.hud.element.HudElementType;
+import com.github.burgerguy.hudtweaks.hud.element.HudElement;
+import com.github.burgerguy.hudtweaks.hud.element.HudElementContainer;
 import com.github.burgerguy.hudtweaks.hud.element.HudElementWidget;
 import com.github.burgerguy.hudtweaks.util.Util;
-import com.github.burgerguy.hudtweaks.util.gui.DisableableWrapperElement;
 
 import io.netty.util.BooleanSupplier;
 import net.minecraft.client.MinecraftClient;
@@ -38,7 +36,6 @@ public class HTOptionsScreen extends Screen {
 	private final Screen prevScreen;
 	private final SidebarWidget sidebar;
 	private ElementLabelWidget elementLabel;
-	private DisableableWrapperElement<EntryCycleButtonWidget> cycleButton;
 
 	private HudElementWidget focusedHudElement;
 
@@ -65,8 +62,8 @@ public class HTOptionsScreen extends Screen {
 		worldExists = client.world != null;
 
 		if (worldExists) {
-			for (HudElementType elementType : HudContainer.getElementRegistry().getElementTypes()) {
-				Element widget = elementType.createWidget(sidebar::updateValues);
+			for (HudElementContainer elementContainer : HudContainer.getElementRegistry().getElementContainers()) {
+				Element widget = elementContainer.createWidget(sidebar::updateValues);
 				if (widget != null) {
 					children.add(widget);
 				}
@@ -79,7 +76,7 @@ public class HTOptionsScreen extends Screen {
 				boolean isHudElement2 = e2 instanceof HudElementWidget;
 				if (isHudElement1 && !isHudElement2) {
 					return 1;
-				} else if (isHudElement1 && isHudElement2) {
+				} else if (isHudElement1) {
 					return ((HudElementWidget) e1).compareTo((HudElementWidget) e2);
 				} else {
 					return 0;
@@ -90,18 +87,12 @@ public class HTOptionsScreen extends Screen {
 			children.add(0, sidebar);
 
 			elementLabel = new ElementLabelWidget(sidebar.width / 2, height - 17, sidebar.width - 42);
-			ArrowButtonWidget leftArrow = new ArrowButtonWidget(5, height - 21, true, new TranslatableText("hudtweaks.options.previous_element.name"), b -> {
-				changeHudElementFocus(false);
-			});
-			ArrowButtonWidget rightArrow = new ArrowButtonWidget(sidebar.width - 21, height - 21, false, new TranslatableText("hudtweaks.options.next_element.name"), b -> {
-				changeHudElementFocus(true);
-			});
-			cycleButton = new DisableableWrapperElement<>(new EntryCycleButtonWidget(0, height - 39, sidebar.width, 14));
+			ArrowButtonWidget leftArrow = new ArrowButtonWidget(5, height - 21, true, new TranslatableText("hudtweaks.options.previous_element.name"), b -> changeHudElementFocus(false));
+			ArrowButtonWidget rightArrow = new ArrowButtonWidget(sidebar.width - 21, height - 21, false, new TranslatableText("hudtweaks.options.next_element.name"), b -> changeHudElementFocus(true));
 
 			sidebar.addGlobalDrawable(elementLabel);
 			sidebar.addGlobalDrawable(leftArrow);
 			sidebar.addGlobalDrawable(rightArrow);
-			sidebar.addGlobalDrawable(cycleButton);
 		}
 	}
 
@@ -201,31 +192,17 @@ public class HTOptionsScreen extends Screen {
 		if (focused instanceof HudElementWidget && !focused.equals(focusedHudElement)) {
 			focusedHudElement = (HudElementWidget) focused;
 			sidebar.clearDrawables();
-			HudElementEntry element = focusedHudElement.getElementType().getActiveEntry();
+			HudElement element = focusedHudElement.getElementContainer().getActiveElement();
 			element.fillSidebar(sidebar);
-			sidebar.setSidebarOptionsHeightSupplier(() -> element.getSidebarOptionsHeight());
-			elementLabel.setHudElementType(focusedHudElement.getElementType());
-			if (focusedHudElement.getElementType().getElementCount() > 1) {
-				cycleButton.setDisabled(false);
-				cycleButton.getInnerElement().setHudElementType(focusedHudElement.getElementType());
-				sidebar.cutoffFromBottom = 43;
-			} else {
-				cycleButton.setDisabled(true);
-				cycleButton.getInnerElement().setHudElementType(null);
-				sidebar.cutoffFromBottom = 25;
-			}
+			sidebar.setSidebarOptionsHeightSupplier(element::getSidebarOptionsHeight);
+			elementLabel.setHudElementContainer(focusedHudElement.getElementContainer());
 		}
 
 		if (focused == null) {
 			focusedHudElement = null;
 			sidebar.clearDrawables();
 			sidebar.setSidebarOptionsHeightSupplier(null);
-			if (elementLabel != null) elementLabel.setHudElementType(null);
-			if (cycleButton != null) {
-				cycleButton.setDisabled(true);
-				cycleButton.getInnerElement().setHudElementType(null);
-			}
-			sidebar.cutoffFromBottom = 25;
+			if (elementLabel != null) elementLabel.setHudElementContainer(null);
 		}
 
 		super.setFocused(focused);
@@ -245,9 +222,7 @@ public class HTOptionsScreen extends Screen {
 		if (focusedHudElement != null && (curIdx = children.indexOf(focusedHudElement)) >= 0) {
 			newIdx = curIdx + (lookForwards ? 1 : 0);
 		} else {
-			if (lookForwards) {
-				newIdx = 0;
-			} else {
+			if (!lookForwards) {
 				newIdx = children.size();
 			}
 		}
@@ -256,7 +231,7 @@ public class HTOptionsScreen extends Screen {
 		BooleanSupplier hasNearbySupplier = lookForwards ? listIterator::hasNext : listIterator::hasPrevious;
 		Supplier<? extends Element> elementSupplier = lookForwards ? listIterator::next : listIterator::previous;
 
-		Element currentElement = null;
+		Element currentElement;
 		do {
 			try {
 				if (!hasNearbySupplier.get()) {

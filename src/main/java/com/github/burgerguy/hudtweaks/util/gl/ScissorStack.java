@@ -11,7 +11,7 @@ public enum ScissorStack {
 	private static final Deque<ScissorArea> areaStack = new ArrayDeque<>();
 
 	public static void pushScissorArea(int x1, int y1, int x2, int y2) {
-		ScissorArea area = null;
+		ScissorArea area;
 		ScissorArea lastArea = areaStack.peek();
 		if (lastArea != null) {
 			area = new ScissorArea(Math.max(x1, lastArea.x1), Math.max(y1, lastArea.y1), Math.min(x2, lastArea.x2), Math.min(y2, lastArea.y2));

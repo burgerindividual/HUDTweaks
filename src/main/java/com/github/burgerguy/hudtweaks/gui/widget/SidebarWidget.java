@@ -136,7 +136,7 @@ public class SidebarWidget extends AbstractParentElement implements Drawable, Ti
 			}
 
 			for (Drawable drawable : drawables) {
-				drawable.render(matrixStack, mouseX, (int) (mouseY + scrolledDist), delta);
+				drawable.render(matrixStack, mouseX, (int) (mouseY + scrolledDist), delta); // TODO: make sure this rounding is ok, pretty sure it causes a cutoff when scrolling all the way down
 			}
 
 			if (scrollable) {

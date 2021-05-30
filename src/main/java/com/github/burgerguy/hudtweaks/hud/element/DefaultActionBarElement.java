@@ -8,11 +8,11 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.Matrix4f;
 
-public class DefaultActionBarEntry extends HudElementEntry {
-	public static final HTIdentifier IDENTIFIER = new HTIdentifier(new HTIdentifier.ElementType("actionbar", "hudtweaks.element.actionbar"), Util.MINECRAFT_NAMESPACE);
-	private static int Y_OFFSET = -4;
+public class DefaultActionBarElement extends HudElement {
+	public static final HTIdentifier IDENTIFIER = new HTIdentifier(Util.MINECRAFT_MODID, new HTIdentifier.ElementId("actionbar", "hudtweaks.element.actionbar"));
+	private static final int Y_OFFSET = -4;
 
-	public DefaultActionBarEntry() {
+	public DefaultActionBarElement() {
 		super(IDENTIFIER, "onActionBarChange");
 	}
 	

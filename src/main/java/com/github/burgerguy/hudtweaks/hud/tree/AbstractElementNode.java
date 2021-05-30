@@ -10,15 +10,15 @@ import com.github.burgerguy.hudtweaks.util.Util;
 
 import net.minecraft.client.MinecraftClient;
 
-public abstract class AbstractTypeNodeEntry {
+public abstract class AbstractElementNode {
 	protected transient final HTIdentifier identifier;
 	protected transient final Set<UpdateEvent> updateEvents = new HashSet<>();
 
-	protected transient AbstractTypeNode parentNode;
-	protected transient AbstractTypeNode xTreeParent;
-	protected transient AbstractTypeNode yTreeParent;
+	protected transient AbstractContainerNode parentNode;
+	protected transient AbstractContainerNode xTreeParent;
+	protected transient AbstractContainerNode yTreeParent;
 
-	public AbstractTypeNodeEntry(HTIdentifier identifier, String... updateEvents) {
+	public AbstractElementNode(HTIdentifier identifier, String... updateEvents) {
 		this.identifier = identifier;
 		for (String eventIdentifier : updateEvents) {
 			UpdateEvent event = HudContainer.getEventRegistry().get(eventIdentifier);
@@ -36,32 +36,28 @@ public abstract class AbstractTypeNodeEntry {
 		moveYUnder(HudContainer.getScreenRoot());
 	}
 
-	public void setParentNode(AbstractTypeNode parentNode) {
+	public void setParentNode(AbstractContainerNode parentNode) {
 		this.parentNode = parentNode;
 	}
 
-	public AbstractTypeNode getParentNode() {
-		return parentNode;
-	}
-
-	public boolean isActive() {
-		AbstractTypeNodeEntry entry = parentNode.getActiveEntry();
-		return entry == null ? false : entry.equals(this);
+	@SuppressWarnings("unchecked")
+	public <T extends AbstractContainerNode> T getParentNode() {
+		return (T) parentNode;
 	}
 
 	public final HTIdentifier getIdentifier() {
 		return identifier;
 	}
 
-	public AbstractTypeNode getXParent() {
+	public AbstractContainerNode getXParent() {
 		return xTreeParent;
 	}
 
-	public AbstractTypeNode getYParent() {
+	public AbstractContainerNode getYParent() {
 		return yTreeParent;
 	}
 
-	public void moveXUnder(AbstractTypeNode newXParent) {
+	public void moveXUnder(AbstractContainerNode newXParent) {
 		if (xTreeParent != null) {
 			if (newXParent.equals(xTreeParent)) return;
 			xTreeParent.getXChildren().remove(parentNode);
@@ -71,7 +67,7 @@ public abstract class AbstractTypeNodeEntry {
 		parentNode.setRequiresUpdate();
 	}
 
-	public void moveYUnder(AbstractTypeNode newYParent) {
+	public void moveYUnder(AbstractContainerNode newYParent) {
 		if (yTreeParent != null) {
 			if (newYParent.equals(yTreeParent)) return;
 			yTreeParent.getYChildren().remove(parentNode);

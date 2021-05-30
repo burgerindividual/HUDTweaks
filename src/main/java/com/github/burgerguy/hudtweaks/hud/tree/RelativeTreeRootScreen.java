@@ -8,34 +8,31 @@ import com.github.burgerguy.hudtweaks.util.Util;
 
 import net.minecraft.client.MinecraftClient;
 
-public final class RelativeTreeRootScreen extends AbstractTypeNode {
-	public static final HTIdentifier IDENTIFIER = new HTIdentifier(new HTIdentifier.ElementType("screen", "hudtweaks.element.screen"), Util.MINECRAFT_NAMESPACE);
-	private ScreenEntry screenEntry;
-
-	public RelativeTreeRootScreen() {
-		super(IDENTIFIER.getElementType());
-	}
+public final class RelativeTreeRootScreen extends AbstractContainerNode {
+	public static final HTIdentifier IDENTIFIER = new HTIdentifier(Util.MINECRAFT_MODID, new HTIdentifier.ElementId("screen", "hudtweaks.element.screen"));
+	private ScreenElement screenElement;
 
 	public void init() {
-		screenEntry = new ScreenEntry();
-		screenEntry.setParentNode(this);
+		screenElement = new ScreenElement();
+		screenElement.setParentNode(this);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public AbstractElementNode getInitialElement() {
+		return screenElement;
 	}
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public AbstractTypeNodeEntry getActiveEntry() {
-		return screenEntry;
-	}
-	
-	@Override
-	public List<AbstractTypeNodeEntry> getRawEntryList() {
-		return Collections.singletonList(screenEntry);
+	public AbstractElementNode getActiveElement() {
+		return screenElement;
 	}
 
-	private class ScreenEntry extends AbstractTypeNodeEntry {
+	private static class ScreenElement extends AbstractElementNode {
 		private int width, height;
 		
-		public ScreenEntry() {
+		public ScreenElement() {
 			super(IDENTIFIER, "onScreenBoundsChange");
 		}
 
@@ -70,12 +67,12 @@ public final class RelativeTreeRootScreen extends AbstractTypeNode {
 		}
 
 		@Override
-		public void moveXUnder(AbstractTypeNode newXParent) {
+		public void moveXUnder(AbstractContainerNode newXParent) {
 			// noop, always want to be the root node
 		}
 
 		@Override
-		public void moveYUnder(AbstractTypeNode newYParent) {
+		public void moveYUnder(AbstractContainerNode newYParent) {
 			// noop, always want to be the root node
 		}
 	}

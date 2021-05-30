@@ -22,11 +22,11 @@ public abstract class GameMenuScreenMixin extends Screen {
 		super(null);
 	}
 
-	@SuppressWarnings("resource")
 	@Inject(method = "initWidgets", at = @At(value = "HEAD"))
 	private void initWidgets(CallbackInfo callbackInfo) {
 		Text text = new TranslatableText("hudtweaks.options");
 		int buttonWidth = MinecraftClient.getInstance().textRenderer.getWidth(text) + 14;
+		@SuppressWarnings("MixinInnerClass") // cry about it
 		AbstractButtonWidget button = new AbstractPressableButtonWidget(width - buttonWidth, Util.SHOULD_COMPENSATE_FOR_MODMENU_BUTTON ? 12 : 0, buttonWidth, 20, text) {
 			@Override
 			public void onPress() {

@@ -12,11 +12,11 @@ import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.math.MathHelper;
 
-public class DefaultHealthEntry extends HudElementEntry {
-	public static final HTIdentifier IDENTIFIER = new HTIdentifier(new HTIdentifier.ElementType("health", "hudtweaks.element.health"), Util.MINECRAFT_NAMESPACE);
+public class DefaultHealthElement extends HudElement {
+	public static final HTIdentifier IDENTIFIER = new HTIdentifier(Util.MINECRAFT_MODID, new HTIdentifier.ElementId("health", "hudtweaks.element.health"));
 	private boolean flipped;
 	
-	public DefaultHealthEntry() {
+	public DefaultHealthElement() {
 		super(IDENTIFIER, "onHealthRowsChange");
 	}
 	
@@ -60,12 +60,12 @@ public class DefaultHealthEntry extends HudElementEntry {
 
 	@Override
 	protected double calculateDefaultX(MinecraftClient client) {
-		return client.getWindow().getScaledWidth() / 2 - 91;
+		return client.getWindow().getScaledWidth() / 2.0 - 91;
 	}
 	
 	@Override
 	protected double calculateDefaultY(MinecraftClient client) {
-		return client.getWindow().getScaledHeight() - 39 - (flipped || client == null || client.player == null ? 0 : getRawHeight(client)) - getHeartJumpDistance(client);
+		return client.getWindow().getScaledHeight() - 39 - (flipped || client.player == null ? 0 : getRawHeight(client)) - getHeartJumpDistance(client);
 	}
 
 	public boolean isFlipped() {

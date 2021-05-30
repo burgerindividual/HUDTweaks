@@ -5,10 +5,10 @@ import com.github.burgerguy.hudtweaks.util.Util;
 
 import net.minecraft.client.MinecraftClient;
 
-public class DefaultJumpBarEntry extends HudElementEntry {
-	public static final HTIdentifier IDENTIFIER = new HTIdentifier(new HTIdentifier.ElementType("jumpbar", "hudtweaks.element.jumpbar"), Util.MINECRAFT_NAMESPACE);
+public class DefaultJumpBarElement extends HudElement {
+	public static final HTIdentifier IDENTIFIER = new HTIdentifier(Util.MINECRAFT_MODID, new HTIdentifier.ElementId("jumpbar", "hudtweaks.element.jumpbar"));
 
-	public DefaultJumpBarEntry() {
+	public DefaultJumpBarElement() {
 		super(IDENTIFIER);
 	}
 	
@@ -24,7 +24,7 @@ public class DefaultJumpBarEntry extends HudElementEntry {
 	
 	@Override
 	protected double calculateDefaultX(MinecraftClient client) {
-		return client.getWindow().getScaledWidth() / 2 - 91;
+		return client.getWindow().getScaledWidth() / 2.0 - 91;
 	}
 	
 	@Override

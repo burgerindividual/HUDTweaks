@@ -8,7 +8,7 @@ import com.github.burgerguy.hudtweaks.gui.widget.PosTypeButtonWidget;
 import com.github.burgerguy.hudtweaks.gui.widget.SidebarWidget;
 import com.github.burgerguy.hudtweaks.hud.HTIdentifier;
 import com.github.burgerguy.hudtweaks.hud.HudContainer;
-import com.github.burgerguy.hudtweaks.hud.tree.AbstractTypeNodeEntry;
+import com.github.burgerguy.hudtweaks.hud.tree.AbstractElementNode;
 import com.github.burgerguy.hudtweaks.util.Util;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -20,7 +20,7 @@ import net.minecraft.text.TranslatableText;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Matrix4f;
 
-public abstract class HudElementEntry extends AbstractTypeNodeEntry {
+public abstract class HudElement extends AbstractElementNode {
 	// These are all marked as transient so we can manually add them in our custom serializer
 	protected transient PosType xPosType = PosType.DEFAULT;
 	protected transient PosType yPosType = PosType.DEFAULT;
@@ -33,6 +33,7 @@ public abstract class HudElementEntry extends AbstractTypeNodeEntry {
 	protected transient double xScale = 1.0D;
 	protected transient double yScale = 1.0D;
 
+	// These are marked transient because we don't want them serialized at all
 	protected transient double cachedWidth;
 	protected transient double cachedHeight;
 	protected transient double cachedDefaultX;
@@ -41,14 +42,14 @@ public abstract class HudElementEntry extends AbstractTypeNodeEntry {
 	protected transient double cachedY;
 	// TODO: add rotation using the already existing anchor points.
 
-	public HudElementEntry(HTIdentifier identifier, String... updateEvents) {
+	public HudElement(HTIdentifier identifier, String... updateEvents) {
 		super(identifier, updateEvents);
 	}
 
 	public enum PosType {
 		@SerializedName(value = "default", alternate = "DEFAULT")
 		/**
-		 * Keeps the position in the unmodified spot, but allows for offset.
+		  Keeps the position in the unmodified spot, but allows for offset.
 		 */
 		DEFAULT,
 
@@ -105,7 +106,7 @@ public abstract class HudElementEntry extends AbstractTypeNodeEntry {
 			cachedX = getDefaultX() + xOffset;
 			break;
 		case RELATIVE:
-			cachedX = getXParent().getActiveEntry().getWidth() * xRelativePos + xOffset + getXParent().getActiveEntry().getX() - getWidth() * xAnchorPos;
+			cachedX = getXParent().getActiveElement().getWidth() * xRelativePos + xOffset + getXParent().getActiveElement().getX() - getWidth() * xAnchorPos;
 			break;
 		default:
 			throw new UnsupportedOperationException("how");
@@ -121,7 +122,7 @@ public abstract class HudElementEntry extends AbstractTypeNodeEntry {
 			cachedY = getDefaultY() + yOffset;
 			break;
 		case RELATIVE:
-			cachedY = getYParent().getActiveEntry().getHeight() * yRelativePos + yOffset + getYParent().getActiveEntry().getY() - getHeight() * yAnchorPos;
+			cachedY = getYParent().getActiveElement().getHeight() * yRelativePos + yOffset + getYParent().getActiveElement().getY() - getHeight() * yAnchorPos;
 			break;
 		default:
 			throw new UnsupportedOperationException("how");
@@ -194,7 +195,7 @@ public abstract class HudElementEntry extends AbstractTypeNodeEntry {
 		JsonElement parentIdentifier = xPosJson.get("parent");
 		if (parentIdentifier != null && parentIdentifier.isJsonPrimitive() && parentIdentifier.getAsJsonPrimitive().isString()) {
 			String relativeParentIdentifier = parentIdentifier.getAsString();
-			HudElementType parentNode = HudContainer.getElementRegistry().getElementType(new HTIdentifier.ElementType(relativeParentIdentifier, null));
+			HudElementContainer parentNode = HudContainer.getElementRegistry().getElementContainer(HTIdentifier.fromString(relativeParentIdentifier));
 			if(parentNode != null) {
 				moveXUnder(parentNode);
 			}
@@ -208,7 +209,7 @@ public abstract class HudElementEntry extends AbstractTypeNodeEntry {
 		parentIdentifier = yPosJson.get("parent");
 		if (parentIdentifier != null && parentIdentifier.isJsonPrimitive() && parentIdentifier.getAsJsonPrimitive().isString()) {
 			String relativeParentIdentifier = parentIdentifier.getAsString();
-			HudElementType parentNode = HudContainer.getElementRegistry().getElementType(new HTIdentifier.ElementType(relativeParentIdentifier, null));
+			HudElementContainer parentNode = HudContainer.getElementRegistry().getElementContainer(HTIdentifier.fromString(relativeParentIdentifier));
 			if(parentNode != null) {
 				moveYUnder(parentNode);
 			}
@@ -226,11 +227,10 @@ public abstract class HudElementEntry extends AbstractTypeNodeEntry {
 	 * Override if any extra options are added to the element.
 	 * Make sure to call super before anything else.
 	 */
-	@SuppressWarnings("resource")
 	public void fillSidebar(SidebarWidget sidebar) {
-		ParentButtonWidget xRelativeParentButton = new ParentButtonWidget(4, 35, sidebar.width - 8, 14, getXParent(), getParentNode(), this::moveXUnder, true);
+		ParentButtonWidget xRelativeParentButton = new ParentButtonWidget(4, 35, sidebar.width - 8, 14, getXParent(), getParentNode(), this::moveXUnder);
 
-		ParentButtonWidget yRelativeParentButton = new ParentButtonWidget(4, 143, sidebar.width - 8, 14, getYParent(), getParentNode(), this::moveYUnder, false);
+		ParentButtonWidget yRelativeParentButton = new ParentButtonWidget(4, 143, sidebar.width - 8, 14, getYParent(), getParentNode(), this::moveYUnder);
 
 		xRelativeParentButton.active = !xPosType.equals(PosType.DEFAULT);
 		yRelativeParentButton.active = !yPosType.equals(PosType.DEFAULT);

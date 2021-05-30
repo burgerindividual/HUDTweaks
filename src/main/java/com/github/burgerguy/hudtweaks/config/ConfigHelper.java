@@ -27,7 +27,7 @@ public enum ConfigHelper {
 	 */
 	public static void tryLoadConfig() {
 		if (Files.exists(configFile)) {
-			Util.LOGGER.log(Level.INFO, "Loading config file...");
+			Util.LOGGER.info("Loading config file...");
 			try (BufferedReader reader = new BufferedReader(new FileReader(configFile.toFile()))) {
 				HudContainer.getElementRegistry().updateFromJson(Util.JSON_PARSER.parse(reader));
 			} catch (JsonIOException e) {
@@ -38,19 +38,17 @@ public enum ConfigHelper {
 				Util.LOGGER.error("Error loading config file", e);
 			}
 		} else {
-			Util.LOGGER.log(Level.INFO, "Config file not found");
+			Util.LOGGER.info("Config file not found");
 		}
 	}
 
 	/**
 	 * Saves the current HUD state as a json file for later reloading.
 	 * This doesn't save all the information that would be in the class
-	 * tree, just the things that would make sense in a config file. The
-	 * fields that aren't included are set as transient in their
-	 * appropriate classes.
+	 * tree, just the things that would make sense in a config file.
 	 */
 	public static void trySaveConfig() {
-		Util.LOGGER.log(Level.INFO, "Saving config file...");
+		Util.LOGGER.info("Saving config file...");
 		try (BufferedWriter writer = new BufferedWriter(new FileWriter(configFile.toFile()))) {
 			Util.GSON.toJson(HudContainer.getElementRegistry(), writer);
 		} catch (JsonIOException e) {

@@ -1,7 +1,7 @@
 package com.github.burgerguy.hudtweaks.gui.widget;
 
 public interface ValueUpdatable {
-	public default void updateValue() {
+	default void updateValue() {
 		// noop
 	}
 }

@@ -8,18 +8,18 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.Matrix4f;
 
-public class DefaultTitleEntry extends HudElementEntry {
-	public static final HTIdentifier IDENTIFIER = new HTIdentifier(new HTIdentifier.ElementType("title", "hudtweaks.element.title"), Util.MINECRAFT_NAMESPACE);
-	private static final int SCALE = 4;
-	private static final int Y_OFFSET = -10;
+public class DefaultSubtitleElement extends HudElement {
+	public static final HTIdentifier IDENTIFIER = new HTIdentifier(Util.MINECRAFT_MODID, new HTIdentifier.ElementId("subtitle", "hudtweaks.element.subtitle"));
+	private static final int SCALE = 2;
+	private static final int Y_OFFSET = 5;
 
-	public DefaultTitleEntry() {
-		super(IDENTIFIER, "onTitleTextChange");
+	public DefaultSubtitleElement() {
+		super(IDENTIFIER, "onSubtitleTextChange");
 	}
 	
 	@Override
 	protected double calculateWidth(MinecraftClient client) {
-		Text titleText = ((InGameHudAccessor) client.inGameHud).getTitleText();
+		Text titleText = ((InGameHudAccessor) client.inGameHud).getSubtitleText();
 		if (titleText != null) {
 			return client.textRenderer.getWidth(titleText) * SCALE;
 		}

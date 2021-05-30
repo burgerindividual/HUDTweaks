@@ -6,24 +6,30 @@ import java.util.function.Consumer;
 
 import com.github.burgerguy.hudtweaks.hud.HTIdentifier;
 import com.github.burgerguy.hudtweaks.hud.HudContainer;
-import com.github.burgerguy.hudtweaks.hud.tree.AbstractTypeNode;
+import com.github.burgerguy.hudtweaks.hud.tree.AbstractContainerNode;
 
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 
 public class ParentButtonWidget extends HTButtonWidget {
-	private final Consumer<AbstractTypeNode> onClick;
+	private final Consumer<AbstractContainerNode> onClick;
 
-	private final Map<HTIdentifier.ElementType, AbstractTypeNode> innerMap = new LinkedHashMap<>();
-	private final HTIdentifier.ElementType[] keyHelper;
+	/**
+	 * Actual storage of the parents
+	 */
+	private final Map<HTIdentifier, AbstractContainerNode> innerMap = new LinkedHashMap<>();
+	/**
+	 * Used for iteration and indices
+	 */
+	private final HTIdentifier[] keyHelper;
 	private int currentIndex;
 
-	public ParentButtonWidget(int x, int y, int width, int height, AbstractTypeNode currentParentNode, AbstractTypeNode thisNode, Consumer<AbstractTypeNode> onClick, boolean useX) {
+	public ParentButtonWidget(int x, int y, int width, int height, AbstractContainerNode currentParentNode, AbstractContainerNode thisNode, Consumer<AbstractContainerNode> onClick) {
 		super(x, y, width, height, createMessage(currentParentNode));
 		recurseAddNode(HudContainer.getScreenRoot(), thisNode);
-		keyHelper = innerMap.keySet().toArray(new HTIdentifier.ElementType[innerMap.size()]);
-		for (; currentIndex < keyHelper.length; currentIndex++) {
-			if (keyHelper[currentIndex].equals(currentParentNode.getElementIdentifier()))
+		keyHelper = innerMap.keySet().toArray(new HTIdentifier[0]);
+		for (; currentIndex < keyHelper.length; currentIndex++) { // iterates through the array to find the index of the last saved element
+			if (keyHelper[currentIndex].equals(currentParentNode.getInitialElement().getIdentifier()))
 				break;
 		}
 
@@ -31,10 +37,10 @@ public class ParentButtonWidget extends HTButtonWidget {
 	}
 
 
-	private void recurseAddNode(AbstractTypeNode node, AbstractTypeNode exclude) {
+	private void recurseAddNode(AbstractContainerNode node, AbstractContainerNode exclude) {
 		if (!node.equals(exclude)) {
-			innerMap.put(node.getElementIdentifier(), node);
-			for (AbstractTypeNode child : node.getXChildren()) {
+			innerMap.put(node.getInitialElement().getIdentifier(), node);
+			for (AbstractContainerNode child : node.getXChildren()) {
 				recurseAddNode(child, exclude);
 			}
 		}
@@ -43,17 +49,18 @@ public class ParentButtonWidget extends HTButtonWidget {
 	@Override
 	public void onPress() {
 		if (++currentIndex >= keyHelper.length) currentIndex = 0;
-		AbstractTypeNode newParentNode = innerMap.get(keyHelper[currentIndex]);
+		AbstractContainerNode newParentNode = innerMap.get(keyHelper[currentIndex]);
 		setMessage(newParentNode);
 
 		onClick.accept(newParentNode);
 	}
 
-	private static Text createMessage(AbstractTypeNode node) {
-		return new TranslatableText("hudtweaks.options.parent.display", node.getElementIdentifier().toTranslatedString());
+	private static Text createMessage(AbstractContainerNode node) {
+		// display active name, but store with initial name
+		return new TranslatableText("hudtweaks.options.parent.display", node.getActiveElement().getIdentifier().toTranslatedString());
 	}
 
-	public void setMessage(AbstractTypeNode node) {
+	public void setMessage(AbstractContainerNode node) {
 		setMessage(createMessage(node));
 	}
 }

@@ -10,11 +10,11 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.text.TranslatableText;
 
-public class DefaultExperienceBarEntry extends HudElementEntry {
-	public static final HTIdentifier IDENTIFIER = new HTIdentifier(new HTIdentifier.ElementType("expbar", "hudtweaks.element.expbar"), Util.MINECRAFT_NAMESPACE);
+public class DefaultExperienceBarElement extends HudElement {
+	public static final HTIdentifier IDENTIFIER = new HTIdentifier(Util.MINECRAFT_MODID, new HTIdentifier.ElementId("expbar", "hudtweaks.element.expbar"));
 	private boolean forceDisplay;
 	
-	public DefaultExperienceBarEntry() {
+	public DefaultExperienceBarElement() {
 		super(IDENTIFIER);
 	}
 	
@@ -31,7 +31,7 @@ public class DefaultExperienceBarEntry extends HudElementEntry {
 	
 	@Override
 	protected double calculateDefaultX(MinecraftClient client) {
-		return client.getWindow().getScaledWidth() / 2 - 91;
+		return client.getWindow().getScaledWidth() / 2.0 - 91;
 	}
 	
 	@Override

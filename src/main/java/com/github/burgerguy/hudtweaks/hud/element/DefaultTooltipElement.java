@@ -10,10 +10,10 @@ import net.minecraft.text.LiteralText;
 import net.minecraft.text.MutableText;
 import net.minecraft.util.Formatting;
 
-public class DefaultTooltipEntry extends HudElementEntry {
-	public static final HTIdentifier IDENTIFIER = new HTIdentifier(new HTIdentifier.ElementType("tooltip", "hudtweaks.element.tooltip"), Util.MINECRAFT_NAMESPACE);
+public class DefaultTooltipElement extends HudElement {
+	public static final HTIdentifier IDENTIFIER = new HTIdentifier(Util.MINECRAFT_MODID, new HTIdentifier.ElementId("tooltip", "hudtweaks.element.tooltip"));
 	
-	public DefaultTooltipEntry() {
+	public DefaultTooltipElement() {
 		super(IDENTIFIER, "onHeldItemTickChange", "onHasStatusBarsChange");
 	}
 	
@@ -37,7 +37,7 @@ public class DefaultTooltipEntry extends HudElementEntry {
 	
 	@Override
 	protected double calculateDefaultX(MinecraftClient client) {
-		return (client.getWindow().getScaledWidth() - (int) (getWidth() / xScale)) / 2;
+		return (client.getWindow().getScaledWidth() - (int) (getWidth() / xScale)) / 2.0;
 	}
 	
 	@Override

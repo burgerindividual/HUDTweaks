@@ -9,10 +9,10 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.MathHelper;
 
-public class DefaultAirEntry extends HudElementEntry {
-	public static final HTIdentifier IDENTIFIER = new HTIdentifier(new HTIdentifier.ElementType("air", "hudtweaks.element.air"), Util.MINECRAFT_NAMESPACE);
+public class DefaultAirElement extends HudElement {
+	public static final HTIdentifier IDENTIFIER = new HTIdentifier(Util.MINECRAFT_MODID, new HTIdentifier.ElementId("air", "hudtweaks.element.air"));
 	
-	public DefaultAirEntry() {
+	public DefaultAirElement() {
 		super(IDENTIFIER, "onRidingHealthRowsChange");
 	}
 	
@@ -43,7 +43,7 @@ public class DefaultAirEntry extends HudElementEntry {
 	
 	@Override
 	protected double calculateDefaultX(MinecraftClient client) {
-		return client.getWindow().getScaledWidth() / 2 + 10;
+		return client.getWindow().getScaledWidth() / 2.0 + 10;
 	}
 	
 	@Override

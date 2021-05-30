@@ -10,11 +10,11 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.text.TranslatableText;
 
-public class DefaultHungerEntry extends HudElementEntry {
-	public static final HTIdentifier IDENTIFIER = new HTIdentifier(new HTIdentifier.ElementType("hunger", "hudtweaks.element.hunger"), Util.MINECRAFT_NAMESPACE);
+public class DefaultHungerElement extends HudElement {
+	public static final HTIdentifier IDENTIFIER = new HTIdentifier(Util.MINECRAFT_MODID, new HTIdentifier.ElementId("hunger", "hudtweaks.element.hunger"));
 	private boolean forceDisplay;
 	
-	public DefaultHungerEntry() {
+	public DefaultHungerElement() {
 		super(IDENTIFIER);
 	}
 	
@@ -30,7 +30,7 @@ public class DefaultHungerEntry extends HudElementEntry {
 	
 	@Override
 	protected double calculateDefaultX(MinecraftClient client) {
-		return client.getWindow().getScaledWidth() / 2 + 10;
+		return client.getWindow().getScaledWidth() / 2.0 + 10;
 	}
 	
 	@Override

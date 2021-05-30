@@ -1,5 +1,5 @@
 package com.github.burgerguy.hudtweaks.hud.element;
 
-public class DefaultScoreboardEntry {
+public class DefaultSubtitlesElement {
 	// TODO
 }

@@ -1,163 +1,126 @@
 package com.github.burgerguy.hudtweaks.hud;
 
-import java.util.Objects;
-
+import com.google.gson.JsonParseException;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.resource.language.I18n;
 
-public class HTIdentifier {
-	private final ElementType element;
-	private final Namespace namespace;
-	private final EntryName entryName;
+import java.util.Objects;
+
+public final class HTIdentifier {
+	private final ModId modId;
+	private final ElementId elementId;
+
+	public HTIdentifier(ModId modId, ElementId elementId) {
+		this.modId = modId;
+		this.elementId = elementId;
+	}
+
+	public ModId getModId() {
+		return modId;
+	}
+
+	public ElementId getElementId() {
+		return elementId;
+	}
 
 	/**
-	 * Uses the default entry name.
+	 * Should ONLY be used for profile loading/saving.
+	 * This does NOT include any translation strings.
 	 */
-	public HTIdentifier(ElementType element, Namespace namespace) {
-		this(element, namespace, EntryName.DEFAULT);
+	public static HTIdentifier fromString(String string) {
+		String[] split = string.split(":");
+		if (split.length == 2) {
+			return new HTIdentifier(new HTIdentifier.ModId(split[0], null), new HTIdentifier.ElementId(split[1], null));
+		} else {
+			throw new JsonParseException("Unable to parse identifier string \"" + string + "\"");
+		}
 	}
 
-	public HTIdentifier(ElementType element, Namespace namespace, EntryName entryName) {
-		this.namespace = namespace;
-		this.element = element;
-		this.entryName = entryName;
-	}
-
-	public ElementType getElementType() {
-		return element;
-	}
-	
-	public Namespace getNamespace() {
-		return namespace;
-	}
-	
-	public EntryName getEntryName() {
-		return entryName;
-	}
-	
 	@Override
 	public boolean equals(Object obj) {
-		if (!(obj instanceof HTIdentifier)) return false;
-		HTIdentifier other = (HTIdentifier) obj;
-		return element.equals(other.element) && namespace.equals(other.namespace) && entryName.equals(other.entryName);
+		if (obj == this) return true;
+		if (obj == null || obj.getClass() != this.getClass()) return false;
+		HTIdentifier that = (HTIdentifier) obj;
+		return Objects.equals(this.modId, that.modId) &&
+				Objects.equals(this.elementId, that.elementId);
 	}
 
 	@Override
 	public String toString() {
-		return element.toString() + ":" + namespace.toString() + ":" + entryName.toString();
+		return modId.toString() + ':' + elementId.toString();
+	}
+
+	public String toTranslatedString() {
+		return modId.toTranslatedString() + ':' + elementId.toTranslatedString();
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(element.toString(), namespace.toString(), entryName.toString());
+		return Objects.hash(modId, elementId);
+	}
+
+	public static class ModId {
+		private final String modId;
+		private final String translationKey;
+
+		public ModId(String modId, @Nullable String translationKey) {
+			this.modId = modId;
+			this.translationKey = translationKey;
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (!(obj instanceof ModId)) return false;
+			return modId.equals(((ModId) obj).modId);
+		}
+
+		@Override
+		public String toString() {
+			return modId;
+		}
+
+		public String toTranslatedString() {
+			return translationKey != null && I18n.hasTranslation(translationKey) ? I18n.translate(translationKey) : modId;
+		}
+
+		@Override
+		public int hashCode() {
+			return modId.hashCode();
+		}
 	}
 
 	/**
 	 * Used to identify the element entryName. For example, the health bar's
 	 * identifier would be "health".
 	 */
-	public static class ElementType {
-		private final String elementType;
-		private transient final String translationKey;
+	public static class ElementId {
+		private final String elementId;
+		private final String translationKey;
 
-		public ElementType(String element, @Nullable String translationKey) {
-			elementType = element;
+		public ElementId(String element, @Nullable String translationKey) {
+			elementId = element;
 			this.translationKey = translationKey;
 		}
 
 		@Override
 		public boolean equals(Object obj) {
-			if (!(obj instanceof ElementType)) return false;
-			return elementType.equals(((ElementType) obj).elementType);
+			if (!(obj instanceof ElementId)) return false;
+			return elementId.equals(((ElementId) obj).elementId);
 		}
 
 		@Override
 		public String toString() {
-			return elementType;
+			return elementId;
 		}
 
 		public String toTranslatedString() {
-			return translationKey != null && I18n.hasTranslation(translationKey) ? I18n.translate(translationKey) : elementType;
+			return translationKey != null && I18n.hasTranslation(translationKey) ? I18n.translate(translationKey) : elementId;
 		}
 
 		@Override
 		public int hashCode() {
-			return elementType.hashCode();
-		}
-	}
-
-	/**
-	 * Used to identify the namespace. Treated similarly to namespaces in
-	 * normal minecraft identifiers, except they are before the element.
-	 * Should be the name of the mod, but anything will do.
-	 */
-	public static class Namespace {
-		private final String namespace;
-		private transient final String translationKey;
-
-		public Namespace(String namespace, @Nullable String translationKey) {
-			this.namespace = namespace;
-			this.translationKey = translationKey;
-		}
-
-		@Override
-		public boolean equals(Object obj) {
-			if (!(obj instanceof Namespace)) return false;
-			return namespace.equals(((Namespace) obj).namespace);
-		}
-
-		@Override
-		public String toString() {
-			return namespace;
-		}
-
-		public String toTranslatedString() {
-			return translationKey != null && I18n.hasTranslation(translationKey) ? I18n.translate(translationKey) : namespace;
-		}
-
-		@Override
-		public int hashCode() {
-			return namespace.hashCode();
-		}
-	}
-
-
-	/**
-	 * Used to identify an entry of an element entryName. Should be short and
-	 * simple. The default entryName if one isn't provided is "default". This
-	 * really only should be used when one mod has multiple replacements
-	 * for one element. Acceptible types could be "type1" or "type2", but
-	 * it's better to give greater detail like "vertical' or "extended".
-	 */
-	public static class EntryName {
-		public transient static final EntryName DEFAULT = new EntryName("default", "hudtweaks.element.entryname.default");
-		private final String entryName;
-		private transient final String translationKey;
-
-		public EntryName(String entryName, @Nullable String translationKey) {
-			this.entryName = entryName;
-			this.translationKey = translationKey;
-		}
-
-		@Override
-		public boolean equals(Object obj) {
-			if (!(obj instanceof EntryName)) return false;
-			return entryName.equals(((EntryName) obj).entryName);
-		}
-
-		@Override
-		public String toString() {
-			return entryName;
-		}
-
-		public String toTranslatedString() {
-			return translationKey != null && I18n.hasTranslation(translationKey) ? I18n.translate(translationKey) : entryName;
-		}
-
-		@Override
-		public int hashCode() {
-			return entryName.hashCode();
+			return elementId.hashCode();
 		}
 	}
 }
