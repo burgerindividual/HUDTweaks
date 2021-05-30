@@ -59,7 +59,7 @@ public final class HTIdentifier {
 		if (modId.equals(Util.MINECRAFT_MODID)) {
 			return elementId.toDisplayableString();
 		} else {
-			return modId.toDisplayableString() + ':' + elementId.toDisplayableString();
+			return modId.toDisplayableString() + " - " + elementId.toDisplayableString();
 		}
 	}
 
