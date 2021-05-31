@@ -5,7 +5,6 @@ import com.github.burgerguy.hudtweaks.gui.widget.SidebarWidget;
 import com.github.burgerguy.hudtweaks.hud.HTIdentifier;
 import com.github.burgerguy.hudtweaks.util.Util;
 import com.google.gson.JsonElement;
-
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.entity.effect.StatusEffectInstance;

@@ -2,7 +2,6 @@ package com.github.burgerguy.hudtweaks.gui.widget;
 
 import com.github.burgerguy.hudtweaks.HudTweaksMod;
 import com.mojang.blaze3d.systems.RenderSystem;
-
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.widget.ButtonWidget;

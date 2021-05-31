@@ -1,9 +1,9 @@
 package com.github.burgerguy.hudtweaks.util.gl;
 
+import com.mojang.blaze3d.systems.RenderSystem;
+
 import java.util.ArrayDeque;
 import java.util.Deque;
-
-import com.mojang.blaze3d.systems.RenderSystem;
 
 public enum ScissorStack {
 	;

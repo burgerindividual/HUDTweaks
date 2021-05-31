@@ -1,13 +1,18 @@
 package com.github.burgerguy.hudtweaks.mixin;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-
+import com.github.burgerguy.hudtweaks.gui.HTOptionsScreen;
+import com.github.burgerguy.hudtweaks.hud.HudContainer;
+import com.github.burgerguy.hudtweaks.hud.UpdateEvent;
 import com.github.burgerguy.hudtweaks.hud.element.*;
 import com.github.burgerguy.hudtweaks.hud.tree.AbstractContainerNode;
+import com.google.common.collect.Sets;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.DrawableHelper;
+import net.minecraft.client.gui.hud.InGameHud;
+import net.minecraft.client.texture.StatusEffectSpriteManager;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.entity.effect.StatusEffect;
+import net.minecraft.entity.effect.StatusEffectInstance;
 import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -19,18 +24,7 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
-import com.github.burgerguy.hudtweaks.gui.HTOptionsScreen;
-import com.github.burgerguy.hudtweaks.hud.HudContainer;
-import com.github.burgerguy.hudtweaks.hud.UpdateEvent;
-import com.google.common.collect.Sets;
-
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawableHelper;
-import net.minecraft.client.gui.hud.InGameHud;
-import net.minecraft.client.texture.StatusEffectSpriteManager;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.effect.StatusEffect;
-import net.minecraft.entity.effect.StatusEffectInstance;
+import java.util.*;
 
 @Mixin(InGameHud.class)
 public abstract class InGameHudMixin extends DrawableHelper {

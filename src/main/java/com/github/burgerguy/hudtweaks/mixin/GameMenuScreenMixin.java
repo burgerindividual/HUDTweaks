@@ -1,13 +1,7 @@
 package com.github.burgerguy.hudtweaks.mixin;
 
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
 import com.github.burgerguy.hudtweaks.gui.HTOptionsScreen;
 import com.github.burgerguy.hudtweaks.util.Util;
-
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.GameMenuScreen;
 import net.minecraft.client.gui.screen.Screen;
@@ -15,6 +9,10 @@ import net.minecraft.client.gui.widget.AbstractButtonWidget;
 import net.minecraft.client.gui.widget.AbstractPressableButtonWidget;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(GameMenuScreen.class)
 public abstract class GameMenuScreenMixin extends Screen {

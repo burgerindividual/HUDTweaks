@@ -6,13 +6,13 @@
   "plugin": "com.github.burgerguy.hudtweaks.HudTweaksMixinPlugin",
   "mixins": [],
   "client": [
-    "InGameHudMixin",
-    "TextFieldAccessor",
+    "BossBarHudAccessor",
+    "BossBarHudMixin",
     "GameMenuScreenMixin",
     "InGameHudAccessor",
-    "BossBarHudMixin",
-    "BossBarHudAccessor",
-    "MinecraftClientAccessor"
+    "InGameHudMixin",
+    "MinecraftClientAccessor",
+    "TextFieldAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

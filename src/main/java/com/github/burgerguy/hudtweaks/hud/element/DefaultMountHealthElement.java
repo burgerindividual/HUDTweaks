@@ -2,7 +2,6 @@ package com.github.burgerguy.hudtweaks.hud.element;
 
 import com.github.burgerguy.hudtweaks.hud.HTIdentifier;
 import com.github.burgerguy.hudtweaks.util.Util;
-
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;

@@ -1,21 +1,14 @@
 package com.github.burgerguy.hudtweaks.config;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-
-import org.apache.logging.log4j.Level;
-
 import com.github.burgerguy.hudtweaks.hud.HudContainer;
 import com.github.burgerguy.hudtweaks.util.Util;
 import com.google.gson.JsonIOException;
 import com.google.gson.JsonParseException;
-
 import net.fabricmc.loader.api.FabricLoader;
+
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 public enum ConfigHelper {
 	;

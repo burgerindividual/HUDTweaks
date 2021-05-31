@@ -1,15 +1,11 @@
 package com.github.burgerguy.hudtweaks.hud.tree;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import com.github.burgerguy.hudtweaks.hud.HTIdentifier;
+import com.github.burgerguy.hudtweaks.hud.UpdateEvent;
+import net.minecraft.client.MinecraftClient;
 import org.jetbrains.annotations.Nullable;
 
-import com.github.burgerguy.hudtweaks.hud.UpdateEvent;
-
-import net.minecraft.client.MinecraftClient;
+import java.util.HashSet;
+import java.util.Set;
 
 public abstract class AbstractContainerNode {
 	protected final Set<AbstractContainerNode> xTreeChildren = new HashSet<>();

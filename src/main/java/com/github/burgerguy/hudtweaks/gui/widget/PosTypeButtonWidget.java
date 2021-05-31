@@ -1,12 +1,11 @@
 package com.github.burgerguy.hudtweaks.gui.widget;
 
-import java.util.function.Consumer;
-
 import com.github.burgerguy.hudtweaks.hud.element.HudElement.PosType;
-
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
+
+import java.util.function.Consumer;
 
 public class PosTypeButtonWidget extends HTButtonWidget {
 	private final Consumer<PosType> onClick;

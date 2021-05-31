@@ -1,9 +1,9 @@
 package com.github.burgerguy.hudtweaks.api;
 
+import com.github.burgerguy.hudtweaks.hud.UpdateEvent;
+
 import java.util.Collection;
 import java.util.Set;
-
-import com.github.burgerguy.hudtweaks.hud.UpdateEvent;
 
 public interface HudTweaksApi {
 

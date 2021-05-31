@@ -1,7 +1,6 @@
 package com.github.burgerguy.hudtweaks.gui.widget;
 
 import com.github.burgerguy.hudtweaks.mixin.TextFieldAccessor;
-
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.util.math.MatrixStack;

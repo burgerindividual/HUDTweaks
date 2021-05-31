@@ -6,7 +6,6 @@ import com.github.burgerguy.hudtweaks.hud.HTIdentifier;
 import com.github.burgerguy.hudtweaks.mixin.BossBarHudAccessor;
 import com.github.burgerguy.hudtweaks.util.Util;
 import com.google.gson.JsonElement;
-
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.hud.ClientBossBar;
 import net.minecraft.text.TranslatableText;

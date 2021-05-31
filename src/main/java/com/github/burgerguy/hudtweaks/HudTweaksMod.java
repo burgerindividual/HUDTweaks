@@ -6,7 +6,6 @@ import com.github.burgerguy.hudtweaks.config.ConfigHelper;
 import com.github.burgerguy.hudtweaks.hud.HudContainer;
 import com.github.burgerguy.hudtweaks.hud.UpdateEvent;
 import com.github.burgerguy.hudtweaks.hud.element.HudElement;
-
 import com.github.burgerguy.hudtweaks.util.Util;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.loader.api.FabricLoader;

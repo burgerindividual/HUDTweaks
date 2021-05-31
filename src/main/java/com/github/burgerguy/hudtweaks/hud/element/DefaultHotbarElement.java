@@ -2,7 +2,6 @@ package com.github.burgerguy.hudtweaks.hud.element;
 
 import com.github.burgerguy.hudtweaks.hud.HTIdentifier;
 import com.github.burgerguy.hudtweaks.util.Util;
-
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.options.AttackIndicator;
 import net.minecraft.entity.Entity;
@@ -21,7 +20,7 @@ public class DefaultHotbarElement extends HudElement {
 
 	private int getOffhandOffset(MinecraftClient client) {
 		Entity cameraEntity = client.getCameraEntity();
-		if (cameraEntity != null && cameraEntity instanceof PlayerEntity) {
+		if (cameraEntity instanceof PlayerEntity) {
 			if (!((PlayerEntity) cameraEntity).getOffHandStack().isEmpty()) {
 				return 29;
 			}

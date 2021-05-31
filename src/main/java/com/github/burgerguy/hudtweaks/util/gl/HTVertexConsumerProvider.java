@@ -1,18 +1,11 @@
 package com.github.burgerguy.hudtweaks.util.gl;
 
-import java.util.OptionalDouble;
-
+import com.github.burgerguy.hudtweaks.HudTweaksMod;
+import net.minecraft.client.render.*;
+import net.minecraft.util.Identifier;
 import org.lwjgl.opengl.GL11;
 
-import com.github.burgerguy.hudtweaks.HudTweaksMod;
-
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.RenderPhase;
-import net.minecraft.client.render.Tessellator;
-import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.VertexFormats;
-import net.minecraft.util.Identifier;
+import java.util.OptionalDouble;
 
 public abstract class HTVertexConsumerProvider extends RenderLayer {
 	private static final String DASHED_LAYER_NAME_PREFIX = HudTweaksMod.MOD_ID + "/dashed-line-layer-";

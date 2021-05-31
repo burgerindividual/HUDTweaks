@@ -1,9 +1,5 @@
 package com.github.burgerguy.hudtweaks.gui;
 
-import java.util.List;
-import java.util.ListIterator;
-import java.util.function.Supplier;
-
 import com.github.burgerguy.hudtweaks.config.ConfigHelper;
 import com.github.burgerguy.hudtweaks.gui.widget.ArrowButtonWidget;
 import com.github.burgerguy.hudtweaks.gui.widget.ElementLabelWidget;
@@ -13,7 +9,6 @@ import com.github.burgerguy.hudtweaks.hud.element.HudElement;
 import com.github.burgerguy.hudtweaks.hud.element.HudElementContainer;
 import com.github.burgerguy.hudtweaks.hud.element.HudElementWidget;
 import com.github.burgerguy.hudtweaks.util.Util;
-
 import io.netty.util.BooleanSupplier;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.Drawable;
@@ -26,6 +21,10 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.OrderedText;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
+
+import java.util.List;
+import java.util.ListIterator;
+import java.util.function.Supplier;
 
 public class HTOptionsScreen extends Screen {
 	private static final int SIDEBAR_WIDTH = 116;
@@ -96,10 +95,10 @@ public class HTOptionsScreen extends Screen {
 		}
 	}
 
-	@Override
 	/**
 	 * This is done to prevent one screen from incrementing the counter more than once.
 	 */
+	@Override
 	public void resize(MinecraftClient client, int width, int height) {
 		screensOpened--;
 		this.init(client, width, height);

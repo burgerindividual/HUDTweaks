@@ -1,15 +1,10 @@
 package com.github.burgerguy.hudtweaks.gui.widget;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.IntSupplier;
-
 import com.github.burgerguy.hudtweaks.util.UnmodifiableMergedList;
 import com.github.burgerguy.hudtweaks.util.Util;
 import com.github.burgerguy.hudtweaks.util.gl.GLUtil;
 import com.github.burgerguy.hudtweaks.util.gl.ScissorStack;
 import com.github.burgerguy.hudtweaks.util.gui.ScrollableWrapperElement;
-
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.AbstractParentElement;
 import net.minecraft.client.gui.Drawable;
@@ -19,6 +14,10 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.TickableElement;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.util.math.MatrixStack;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.IntSupplier;
 
 public class SidebarWidget extends AbstractParentElement implements Drawable, TickableElement {
 	private static final int SCROLLBAR_WIDTH = 2;

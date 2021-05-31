@@ -1,18 +1,16 @@
 package com.github.burgerguy.hudtweaks.hud;
 
+import com.github.burgerguy.hudtweaks.gui.HTOptionsScreen;
+import com.github.burgerguy.hudtweaks.hud.element.HudElementContainer;
+import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.util.math.Matrix4f;
+import org.jetbrains.annotations.Nullable;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
-import org.jetbrains.annotations.Nullable;
-
-import com.github.burgerguy.hudtweaks.gui.HTOptionsScreen;
-import com.github.burgerguy.hudtweaks.hud.element.HudElementContainer;
-import com.mojang.blaze3d.systems.RenderSystem;
-
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.math.Matrix4f;
 
 
 public class MatrixCache {

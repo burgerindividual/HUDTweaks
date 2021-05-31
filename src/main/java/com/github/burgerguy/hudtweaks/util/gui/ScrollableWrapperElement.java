@@ -1,8 +1,8 @@
 package com.github.burgerguy.hudtweaks.util.gui;
 
-import java.util.function.DoubleSupplier;
-
 import net.minecraft.client.gui.Element;
+
+import java.util.function.DoubleSupplier;
 
 public class ScrollableWrapperElement implements Element {
 	private final Element innerElement;

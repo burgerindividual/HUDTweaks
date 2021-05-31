@@ -1,7 +1,6 @@
 package com.github.burgerguy.hudtweaks.util.gui;
 
 import com.github.burgerguy.hudtweaks.util.gl.ScissorStack;
-
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawableHelper;

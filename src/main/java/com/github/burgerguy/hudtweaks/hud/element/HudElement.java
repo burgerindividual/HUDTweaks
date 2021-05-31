@@ -1,11 +1,6 @@
 package com.github.burgerguy.hudtweaks.hud.element;
 
-import com.github.burgerguy.hudtweaks.gui.widget.HTLabelWidget;
-import com.github.burgerguy.hudtweaks.gui.widget.HTSliderWidget;
-import com.github.burgerguy.hudtweaks.gui.widget.NumberFieldWidget;
-import com.github.burgerguy.hudtweaks.gui.widget.ParentButtonWidget;
-import com.github.burgerguy.hudtweaks.gui.widget.PosTypeButtonWidget;
-import com.github.burgerguy.hudtweaks.gui.widget.SidebarWidget;
+import com.github.burgerguy.hudtweaks.gui.widget.*;
 import com.github.burgerguy.hudtweaks.hud.HTIdentifier;
 import com.github.burgerguy.hudtweaks.hud.HudContainer;
 import com.github.burgerguy.hudtweaks.hud.tree.AbstractElementNode;
@@ -13,7 +8,6 @@ import com.github.burgerguy.hudtweaks.util.Util;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.SerializedName;
-
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.text.TranslatableText;
@@ -47,17 +41,17 @@ public abstract class HudElement extends AbstractElementNode {
 	}
 
 	public enum PosType {
-		@SerializedName(value = "default", alternate = "DEFAULT")
 		/**
-		  Keeps the position in the unmodified spot, but allows for offset.
+		 Keeps the position in the unmodified spot, but allows for offset.
 		 */
+		@SerializedName(value = "default", alternate = "DEFAULT")
 		DEFAULT,
 
-		@SerializedName(value = "relative", alternate = "RELATIVE")
 		/**
 		 * Allows positioning anywhere relative to a bound element with a
 		 * relative pos and offset. The bound element can also be the screen.
 		 */
+		@SerializedName(value = "relative", alternate = "RELATIVE")
 		RELATIVE
 	}
 
@@ -427,7 +421,7 @@ public abstract class HudElement extends AbstractElementNode {
 				try {
 					double value = Double.parseDouble(s);
 					double lastValue = xScale;
-					xScale = value < 0.0D ? 0.0D : value;
+					xScale = Math.max(value, 0.0D);
 					if (xScale != lastValue) parentNode.setRequiresUpdate();
 				} catch(NumberFormatException ignored) {}
 			}
@@ -448,7 +442,7 @@ public abstract class HudElement extends AbstractElementNode {
 				try {
 					double value = Double.parseDouble(s);
 					double lastValue = yScale;
-					yScale = value < 0.0D ? 0.0D : value;
+					yScale = Math.max(value, 0.0D);
 					if (yScale != lastValue) parentNode.setRequiresUpdate();
 				} catch(NumberFormatException ignored) {}
 			}

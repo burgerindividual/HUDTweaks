@@ -1,11 +1,7 @@
 package com.github.burgerguy.hudtweaks.hud.tree;
 
-import java.util.Collections;
-import java.util.List;
-
 import com.github.burgerguy.hudtweaks.hud.HTIdentifier;
 import com.github.burgerguy.hudtweaks.util.Util;
-
 import net.minecraft.client.MinecraftClient;
 
 public final class RelativeTreeRootScreen extends AbstractContainerNode {

@@ -1,19 +1,17 @@
 package com.github.burgerguy.hudtweaks.hud.element;
 
-import com.github.burgerguy.hudtweaks.hud.tree.AbstractContainerNode;
-import org.jetbrains.annotations.Nullable;
-import org.lwjgl.glfw.GLFW;
-
 import com.github.burgerguy.hudtweaks.hud.element.HudElement.PosType;
+import com.github.burgerguy.hudtweaks.hud.tree.AbstractContainerNode;
 import com.github.burgerguy.hudtweaks.util.gl.DashedBoxOutline;
 import com.github.burgerguy.hudtweaks.util.gl.GLUtil;
-
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.Drawable;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.MathHelper;
+import org.jetbrains.annotations.Nullable;
+import org.lwjgl.glfw.GLFW;
 
 public class HudElementWidget implements Drawable, Element, AutoCloseable, Comparable<HudElementWidget> {
 	private static final int OUTLINE_COLOR_NORMAL = 0xFFFF0000;

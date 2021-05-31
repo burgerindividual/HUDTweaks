@@ -1,10 +1,7 @@
 package com.github.burgerguy.hudtweaks.gui.widget;
 
-import org.jetbrains.annotations.Nullable;
-
 import com.github.burgerguy.hudtweaks.hud.element.HudElementContainer;
 import com.github.burgerguy.hudtweaks.util.gui.OverflowTextRenderer;
-
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.Drawable;
@@ -13,6 +10,7 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Style;
 import net.minecraft.text.TranslatableText;
+import org.jetbrains.annotations.Nullable;
 
 public class ElementLabelWidget implements Drawable {
 	private static final Style STYLE = Style.EMPTY.withItalic(true);

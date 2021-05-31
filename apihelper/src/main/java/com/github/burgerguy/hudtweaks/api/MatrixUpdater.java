@@ -1,11 +1,9 @@
 package com.github.burgerguy.hudtweaks.api;
 
-import java.util.function.Consumer;
-import java.util.function.Supplier;
-
+import net.minecraft.client.util.math.MatrixStack;
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.client.util.math.MatrixStack;
+import java.util.function.Consumer;
 
 public class MatrixUpdater {
 	private static final Consumer<MatrixStack> NOOP_CONSUMER = ms -> {};

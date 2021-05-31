@@ -1,16 +1,15 @@
 package com.github.burgerguy.hudtweaks.hud;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-
 import com.github.burgerguy.hudtweaks.api.HudElementOverride;
 import com.github.burgerguy.hudtweaks.hud.element.*;
 import com.github.burgerguy.hudtweaks.hud.tree.RelativeTreeRootScreen;
 import com.github.burgerguy.hudtweaks.util.Util;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonParseException;
+
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 
 public class ElementRegistry {
 	private final Map<HTIdentifier, HudElementContainer> elementContainerMap = new HashMap<>();
@@ -77,7 +76,6 @@ public class ElementRegistry {
 				getElementContainer(HTIdentifier.fromString(entry.getKey())).updateFromJson(entry.getValue());
 			} catch (NullPointerException e) {
 				Util.LOGGER.error("HudElementType specified in config doesn't exist in element type map, skipping...", e);
-				continue;
 			}
 		}
 	}

@@ -1,17 +1,9 @@
 package com.github.burgerguy.hudtweaks.hud;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
-
 import com.github.burgerguy.hudtweaks.mixin.BossBarHudAccessor;
 import com.github.burgerguy.hudtweaks.mixin.InGameHudAccessor;
 import com.github.burgerguy.hudtweaks.util.Util;
 import com.google.common.collect.ImmutableSet;
-
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.hud.ClientBossBar;
 import net.minecraft.client.network.ClientPlayerEntity;
@@ -25,6 +17,8 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.MathHelper;
+
+import java.util.*;
 
 public enum DefaultUpdateEvents {
 	; // no instantiation, all contents static
@@ -75,7 +69,7 @@ public enum DefaultUpdateEvents {
 				@Override
 				public boolean shouldUpdate(MinecraftClient client) {
 					Entity cameraEntity = client.getCameraEntity();
-					if (cameraEntity != null && cameraEntity instanceof PlayerEntity) {
+					if (cameraEntity instanceof PlayerEntity) {
 						boolean offhandStatus = ((PlayerEntity) cameraEntity).getOffHandStack().isEmpty();
 						if (offhandStatus != lastOffhandStatus) {
 							lastOffhandStatus = offhandStatus;
@@ -119,9 +113,9 @@ public enum DefaultUpdateEvents {
 				@Override
 				public boolean shouldUpdate(MinecraftClient client) {
 					Entity cameraEntity = client.getCameraEntity();
-					if (cameraEntity != null && cameraEntity instanceof PlayerEntity) {
+					if (cameraEntity instanceof PlayerEntity) {
 						Entity ridingEntity = cameraEntity.getVehicle();
-						if (ridingEntity != null && ridingEntity instanceof LivingEntity) {
+						if (ridingEntity instanceof LivingEntity) {
 							LivingEntity livingEntity = (LivingEntity) ridingEntity;
 							if (livingEntity.isLiving()) {
 								int ridingHeartCount = MathHelper.clamp((int) (livingEntity.getMaxHealth() + 0.5F) / 2, 0, 30);

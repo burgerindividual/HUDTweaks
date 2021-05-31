@@ -1,9 +1,9 @@
 package com.github.burgerguy.hudtweaks.util;
 
+import com.github.burgerguy.hudtweaks.config.ElementRegistrySerializer;
 import com.github.burgerguy.hudtweaks.hud.ElementRegistry;
 import com.github.burgerguy.hudtweaks.hud.HTIdentifier;
 import com.github.burgerguy.hudtweaks.mixin.MinecraftClientAccessor;
-import com.github.burgerguy.hudtweaks.config.ElementRegistrySerializer;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParser;
@@ -49,7 +49,7 @@ public enum Util {
 		if (value < min || max <= min) {
 			return min;
 		} else {
-			return value > max ? max : value;
+			return Math.min(value, max);
 		}
 	}
 

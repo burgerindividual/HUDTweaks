@@ -1,15 +1,14 @@
 package com.github.burgerguy.hudtweaks.gui.widget;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.function.Consumer;
-
 import com.github.burgerguy.hudtweaks.hud.HTIdentifier;
 import com.github.burgerguy.hudtweaks.hud.HudContainer;
 import com.github.burgerguy.hudtweaks.hud.tree.AbstractContainerNode;
-
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.function.Consumer;
 
 public class ParentButtonWidget extends HTButtonWidget {
 	private final Consumer<AbstractContainerNode> onClick;

@@ -1,19 +1,17 @@
 package com.github.burgerguy.hudtweaks.hud.element;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map.Entry;
-
 import com.github.burgerguy.hudtweaks.api.HudElementOverride;
-import org.jetbrains.annotations.Nullable;
-
-import com.github.burgerguy.hudtweaks.hud.HTIdentifier;
 import com.github.burgerguy.hudtweaks.hud.tree.AbstractContainerNode;
 import com.github.burgerguy.hudtweaks.util.Util;
 import com.github.burgerguy.hudtweaks.util.gl.DrawTest;
 import com.google.gson.JsonElement;
 import com.mojang.blaze3d.systems.RenderSystem;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map.Entry;
 
 public class HudElementContainer extends AbstractContainerNode {
 	private final HudElement initialElement;
@@ -42,11 +40,11 @@ public class HudElementContainer extends AbstractContainerNode {
 		return initialElement;
 	}
 
-	@SuppressWarnings("unchecked")
-	@Override
 	/**
 	 * Gets the first enabled override in the list, otherwise the initial element.
 	 */
+	@SuppressWarnings("unchecked")
+	@Override
 	public HudElement getActiveElement() {
 		if (!overrides.isEmpty()) {
 			for (HudElementOverride override : overrides) {
@@ -55,7 +53,7 @@ public class HudElementContainer extends AbstractContainerNode {
 				}
 			}
 		}
-		return getInitialElement();
+		return initialElement;
 	}
 
 	/**

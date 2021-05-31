@@ -4,9 +4,8 @@ import com.github.burgerguy.hudtweaks.util.Util;
 import com.google.gson.JsonParseException;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
-import org.jetbrains.annotations.Nullable;
-
 import net.minecraft.client.resource.language.I18n;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 import java.util.Optional;
