@@ -20,8 +20,10 @@ import net.minecraft.util.math.MathHelper;
 
 import java.util.*;
 
-public enum DefaultUpdateEvents {
-	; // no instantiation, all contents static
+public final class DefaultUpdateEvents {
+	private DefaultUpdateEvents() {
+		// no instantiation, all contents static
+	}
 
 	public static final Set<UpdateEvent> EVENTS = ImmutableSet.of(
 			new UpdateEvent() {

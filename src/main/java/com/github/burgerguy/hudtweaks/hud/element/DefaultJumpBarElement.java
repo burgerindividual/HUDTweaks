@@ -12,22 +12,22 @@ public class DefaultJumpBarElement extends HudElement {
 	}
 	
 	@Override
-	protected double calculateWidth(MinecraftClient client) {
+	protected float calculateWidth(MinecraftClient client) {
 		return 182;
 	}
 	
 	@Override
-	protected double calculateHeight(MinecraftClient client) {
+	protected float calculateHeight(MinecraftClient client) {
 		return 5;
 	}
 	
 	@Override
-	protected double calculateDefaultX(MinecraftClient client) {
-		return client.getWindow().getScaledWidth() / 2.0 - 91;
+	protected float calculateDefaultX(MinecraftClient client) {
+		return client.getWindow().getScaledWidth() / 2.0f - 91;
 	}
 	
 	@Override
-	protected double calculateDefaultY(MinecraftClient client) {
+	protected float calculateDefaultY(MinecraftClient client) {
 		return client.getWindow().getScaledHeight() - 29;
 	}
 }

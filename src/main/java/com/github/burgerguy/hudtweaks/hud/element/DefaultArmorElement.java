@@ -14,22 +14,22 @@ public class DefaultArmorElement extends HudElement {
 	}
 
 	@Override
-	protected double calculateWidth(MinecraftClient client) {
+	protected float calculateWidth(MinecraftClient client) {
 		return 81;
 	}
 
 	@Override
-	protected double calculateHeight(MinecraftClient client) {
+	protected float calculateHeight(MinecraftClient client) {
 		return 9;
 	}
 
 	@Override
-	protected double calculateDefaultX(MinecraftClient client) {
-		return client.getWindow().getScaledWidth() / 2.0 - 91;
+	protected float calculateDefaultX(MinecraftClient client) {
+		return client.getWindow().getScaledWidth() / 2.0f - 91;
 	}
 
 	@Override
-	protected double calculateDefaultY(MinecraftClient client) {
+	protected float calculateDefaultY(MinecraftClient client) {
 		int offsetHeight;
 		if (client == null || client.player == null) {
 			offsetHeight = 10;

@@ -2,8 +2,10 @@ package com.github.burgerguy.hudtweaks.hud;
 
 import com.github.burgerguy.hudtweaks.hud.tree.RelativeTreeRootScreen;
 
-public enum HudContainer {
-	; // no instantiation, all contents static
+public final class HudContainer {
+	private HudContainer() {
+		// no instantiation, all contents static
+	}
 
 	private static final ElementRegistry ELEMENT_REGISTRY = new ElementRegistry();
 	private static final MatrixCache MATRIX_CACHE = new MatrixCache();

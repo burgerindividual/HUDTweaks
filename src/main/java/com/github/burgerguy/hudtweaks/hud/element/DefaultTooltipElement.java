@@ -17,7 +17,7 @@ public class DefaultTooltipElement extends HudElement {
 	}
 	
 	@Override
-	protected double calculateWidth(MinecraftClient client) {
+	protected float calculateWidth(MinecraftClient client) {
 		if (client.player.inventory != null) {
 			ItemStack currentHeldStack = ((InGameHudAccessor) client.inGameHud).getCurrentStack();
 			MutableText stackText = new LiteralText("").append(currentHeldStack.getName()).formatted(currentHeldStack.getRarity().formatting);
@@ -30,17 +30,17 @@ public class DefaultTooltipElement extends HudElement {
 	}
 	
 	@Override
-	protected double calculateHeight(MinecraftClient client) {
+	protected float calculateHeight(MinecraftClient client) {
 		return client.textRenderer.fontHeight;
 	}
 	
 	@Override
-	protected double calculateDefaultX(MinecraftClient client) {
-		return (client.getWindow().getScaledWidth() - (int) (getWidth() / xScale)) / 2.0;
+	protected float calculateDefaultX(MinecraftClient client) {
+		return (client.getWindow().getScaledWidth() - (int) (getWidth() / xScale)) / 2.0f;
 	}
 	
 	@Override
-	protected double calculateDefaultY(MinecraftClient client) {
+	protected float calculateDefaultY(MinecraftClient client) {
 		return client.getWindow().getScaledHeight() - (client.interactionManager.hasStatusBars() ? 59 : 45);
 	}
 

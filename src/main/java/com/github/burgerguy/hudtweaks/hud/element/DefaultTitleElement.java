@@ -17,7 +17,7 @@ public class DefaultTitleElement extends HudElement {
 	}
 	
 	@Override
-	protected double calculateWidth(MinecraftClient client) {
+	protected float calculateWidth(MinecraftClient client) {
 		Text titleText = ((InGameHudAccessor) client.inGameHud).getTitleText();
 		if (titleText != null) {
 			return client.textRenderer.getWidth(titleText) * SCALE;
@@ -26,26 +26,26 @@ public class DefaultTitleElement extends HudElement {
 	}
 	
 	@Override
-	protected double calculateHeight(MinecraftClient client) {
+	protected float calculateHeight(MinecraftClient client) {
 		return client.textRenderer.fontHeight * SCALE;
 	}
 	
 	@Override
-	protected double calculateDefaultX(MinecraftClient client) {
+	protected float calculateDefaultX(MinecraftClient client) {
 		return (client.getWindow().getScaledWidth() - getWidth()) / 2.0f;
 	}
 	
 	@Override
-	protected double calculateDefaultY(MinecraftClient client) {
+	protected float calculateDefaultY(MinecraftClient client) {
 		return client.getWindow().getScaledHeight() / 2.0f + Y_OFFSET * SCALE;
 	}
 
 	@Override
 	// TODO: X scaling is weird here, scales from middle rather than left side
 	public Matrix4f createMatrix() {
-		Matrix4f matrix = Matrix4f.scale((float) xScale, (float) yScale, 1);
-		matrix.multiply(Matrix4f.translate((float) ((getX() - getDefaultX()) / SCALE / xScale),
-				(float) ((getY() - getDefaultY()) / SCALE / yScale) - (float) (Y_OFFSET - Y_OFFSET / yScale), 1));
+		Matrix4f matrix = Matrix4f.scale(xScale, yScale, 1);
+		matrix.multiply(Matrix4f.translate((getX() - getDefaultX()) / SCALE / xScale,
+				((getY() - getDefaultY()) / SCALE / yScale) - (Y_OFFSET - Y_OFFSET / yScale), 1));
 		parentNode.setUpdated();
 		return matrix;
 	}

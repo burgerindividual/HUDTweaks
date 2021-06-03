@@ -29,22 +29,22 @@ public class DefaultHotbarElement extends HudElement {
 	}
 	
 	@Override
-	protected double calculateWidth(MinecraftClient client) {
+	protected float calculateWidth(MinecraftClient client) {
 		return 182 + getAttackIndicatorOffset(client) + getOffhandOffset(client);
 	}
 	
 	@Override
-	protected double calculateHeight(MinecraftClient client) {
+	protected float calculateHeight(MinecraftClient client) {
 		return 24;
 	}
 	
 	@Override
-	protected double calculateDefaultX(MinecraftClient client) {
-		return client.getWindow().getScaledWidth() / 2.0 - 91 - getOffhandOffset(client);
+	protected float calculateDefaultX(MinecraftClient client) {
+		return client.getWindow().getScaledWidth() / 2.0f - 91 - getOffhandOffset(client);
 	}
 	
 	@Override
-	protected double calculateDefaultY(MinecraftClient client) {
+	protected float calculateDefaultY(MinecraftClient client) {
 		return client.getWindow().getScaledHeight() - 24;
 	}
 }

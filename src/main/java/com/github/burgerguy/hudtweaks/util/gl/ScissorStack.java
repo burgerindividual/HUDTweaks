@@ -5,8 +5,10 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import java.util.ArrayDeque;
 import java.util.Deque;
 
-public enum ScissorStack {
-	;
+public final class ScissorStack {
+	private ScissorStack() {
+		// no instantiation, all contents static
+	}
 
 	private static final Deque<ScissorArea> areaStack = new ArrayDeque<>();
 

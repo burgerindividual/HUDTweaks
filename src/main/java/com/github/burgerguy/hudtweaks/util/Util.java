@@ -19,8 +19,10 @@ import java.util.Collections;
 /**
  * For small utilities that don't need their own class.
  */
-public enum Util {
-	; // no instantiation, all contents static
+public final class Util {
+	private Util() {
+		// no instantiation, all contents static
+	}
 
 	public static final Gson GSON;
 	public static final JsonParser JSON_PARSER = new JsonParser();
@@ -45,7 +47,7 @@ public enum Util {
 		}
 	}
 
-	public static double minClamp(double value, double min, double max) {
+	public static float minClamp(float value, float min, float max) {
 		if (value < min || max <= min) {
 			return min;
 		} else {
