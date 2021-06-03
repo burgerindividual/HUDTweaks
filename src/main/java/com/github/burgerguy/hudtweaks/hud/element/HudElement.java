@@ -10,35 +10,35 @@ import com.google.gson.JsonObject;
 import com.google.gson.annotations.SerializedName;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.resource.language.I18n;
-import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Matrix4f;
-import net.minecraft.util.math.Quaternion;
 
 public abstract class HudElement extends AbstractElementNode {
 	// These are all marked as transient so we can manually add them in our custom serializer
 	protected transient PosType xPosType = PosType.DEFAULT;
 	protected transient PosType yPosType = PosType.DEFAULT;
-	protected transient float xAnchorPos;
-	protected transient float yAnchorPos;
-	protected transient float xRelativePos;
-	protected transient float yRelativePos;
-	protected transient float xOffset;
-	protected transient float yOffset;
-	protected transient float xScale = 1.0f;
-	protected transient float yScale = 1.0f;
+	protected transient double xAnchorPos;
+	protected transient double yAnchorPos;
+	protected transient double xRelativePos;
+	protected transient double yRelativePos;
+	protected transient double xOffset;
+	protected transient double yOffset;
+	protected transient double xScale = 1.0D;
+	protected transient double yScale = 1.0D;
+	// TODO: do this please thanks
 	protected transient float xRotationAnchor;
 	protected transient float yRotationAnchor;
 	protected transient float rotationDegrees = 1;
 
 	// These are marked transient because we don't want them serialized at all
-	protected transient float cachedWidth;
-	protected transient float cachedHeight;
-	protected transient float cachedDefaultX;
-	protected transient float cachedDefaultY;
-	protected transient float cachedX;
-	protected transient float cachedY;
+	protected transient double cachedWidth;
+	protected transient double cachedHeight;
+	protected transient double cachedDefaultX;
+	protected transient double cachedDefaultY;
+	protected transient double cachedX;
+	protected transient double cachedY;
+	// TODO: add rotation using the already existing anchor points.
 
 	public HudElement(HTIdentifier identifier, String... updateEvents) {
 		super(identifier, updateEvents);
@@ -59,39 +59,39 @@ public abstract class HudElement extends AbstractElementNode {
 		RELATIVE
 	}
 
-	protected abstract float calculateWidth(MinecraftClient client);
+	protected abstract double calculateWidth(MinecraftClient client);
 
-	protected abstract float calculateHeight(MinecraftClient client);
+	protected abstract double calculateHeight(MinecraftClient client);
 
-	protected abstract float calculateDefaultX(MinecraftClient client);
+	protected abstract double calculateDefaultX(MinecraftClient client);
 
-	protected abstract float calculateDefaultY(MinecraftClient client);
+	protected abstract double calculateDefaultY(MinecraftClient client);
 
 	@Override
-	public float getWidth() {
+	public double getWidth() {
 		return cachedWidth;
 	}
 	
 	@Override
-	public float getHeight() {
+	public double getHeight() {
 		return cachedHeight;
 	}
 	
-	public float getDefaultX() {
+	public double getDefaultX() {
 		return cachedDefaultX;
 	}
 
-	public float getDefaultY() {
+	public double getDefaultY() {
 		return cachedDefaultY;
 	}
 
 	@Override
-	public float getX() {
+	public double getX() {
 		return cachedX;
 	}
 
 	@Override
-	public float getY() {
+	public double getY() {
 		return cachedY;
 	}
 
@@ -125,9 +125,9 @@ public abstract class HudElement extends AbstractElementNode {
 
 	public Matrix4f createMatrix() {
 		//Quaternion quaternion = new Quaternion(new Vector3f(0.0f, 0.0f, 1.0f), rotationDegrees, true);
-		Matrix4f matrix = Matrix4f.scale(xScale, yScale, 1);
-		matrix.multiply(Matrix4f.translate(getX() / xScale - getDefaultX(),
-				getY() / yScale - getDefaultY(), 1));
+		Matrix4f matrix = Matrix4f.scale((float) xScale, (float) yScale, 1);
+		matrix.multiply(Matrix4f.translate((float) (getX() / xScale - getDefaultX()),
+				(float) (getY() / yScale - getDefaultY()), 1));
 		//matrix.multiply(quaternion);
 		parentNode.setUpdated();
 		return matrix;
@@ -141,35 +141,35 @@ public abstract class HudElement extends AbstractElementNode {
 		return yPosType;
 	}
 
-	public float getXAnchorPos() {
+	public double getXAnchorPos() {
 		return xAnchorPos;
 	}
 
-	public float getYAnchorPos() {
+	public double getYAnchorPos() {
 		return yAnchorPos;
 	}
 
-	public float getXRelativePos() {
+	public double getXRelativePos() {
 		return xRelativePos;
 	}
 
-	public float getYRelativePos() {
+	public double getYRelativePos() {
 		return yRelativePos;
 	}
 
-	public float getXOffset() {
+	public double getXOffset() {
 		return xOffset;
 	}
 
-	public float getYOffset() {
+	public double getYOffset() {
 		return yOffset;
 	}
 
-	public float getXScale() {
+	public double getXScale() {
 		return xScale;
 	}
 
-	public float getYScale() {
+	public double getYScale() {
 		return yScale;
 	}
 
@@ -197,9 +197,9 @@ public abstract class HudElement extends AbstractElementNode {
 			}
 		}
 		xPosType = Util.GSON.fromJson(xPosJson.get("posType"), PosType.class);
-		xAnchorPos = xPosJson.get("anchorPos").getAsFloat();
-		xOffset = xPosJson.get("offset").getAsFloat();
-		xRelativePos = xPosJson.get("relativePos").getAsFloat();
+		xAnchorPos = xPosJson.get("anchorPos").getAsDouble();
+		xOffset = xPosJson.get("offset").getAsDouble();
+		xRelativePos = xPosJson.get("relativePos").getAsDouble();
 
 		JsonObject yPosJson = elementJson.get("yPos").getAsJsonObject();
 		parentIdentifier = yPosJson.get("parent");
@@ -211,12 +211,12 @@ public abstract class HudElement extends AbstractElementNode {
 			}
 		}
 		yPosType = Util.GSON.fromJson(yPosJson.get("posType"), PosType.class);
-		yAnchorPos = yPosJson.get("anchorPos").getAsFloat();
-		yOffset = yPosJson.get("offset").getAsFloat();
-		yRelativePos = yPosJson.get("relativePos").getAsFloat();
+		yAnchorPos = yPosJson.get("anchorPos").getAsDouble();
+		yOffset = yPosJson.get("offset").getAsDouble();
+		yRelativePos = yPosJson.get("relativePos").getAsDouble();
 
-		xScale = elementJson.get("xScale").getAsFloat();
-		yScale = elementJson.get("yScale").getAsFloat();
+		xScale = elementJson.get("xScale").getAsDouble();
+		yScale = elementJson.get("yScale").getAsDouble();
 	}
 
 	/**
@@ -239,7 +239,7 @@ public abstract class HudElement extends AbstractElementNode {
 
 			@Override
 			public void applyValue() {
-				xRelativePos = (float) value;
+				xRelativePos = value;
 				parentNode.setRequiresUpdate();
 			}
 
@@ -268,7 +268,7 @@ public abstract class HudElement extends AbstractElementNode {
 
 			@Override
 			public void applyValue() {
-				yRelativePos = (float) value;
+				yRelativePos = value;
 				parentNode.setRequiresUpdate();
 			}
 
@@ -300,7 +300,7 @@ public abstract class HudElement extends AbstractElementNode {
 
 			@Override
 			public void applyValue() {
-				xAnchorPos = (float) value;
+				xAnchorPos = value;
 				parentNode.setRequiresUpdate();
 			}
 
@@ -329,7 +329,7 @@ public abstract class HudElement extends AbstractElementNode {
 
 			@Override
 			public void applyValue() {
-				yAnchorPos = (float) value;
+				yAnchorPos = value;
 				parentNode.setRequiresUpdate();
 			}
 
@@ -378,11 +378,11 @@ public abstract class HudElement extends AbstractElementNode {
 		xOffsetField.setText(Util.NUM_FIELD_FORMATTER.format(xOffset));
 		xOffsetField.setChangedListener(s -> {
 			if (s.equals("")) {
-				xOffset = 0.0f;
+				xOffset = 0.0D;
 				parentNode.setRequiresUpdate();
 			} else {
 				try {
-					xOffset = Float.parseFloat(s);
+					xOffset = Double.parseDouble(s);
 					parentNode.setRequiresUpdate();
 				} catch(NumberFormatException ignored) {}
 			}
@@ -397,11 +397,11 @@ public abstract class HudElement extends AbstractElementNode {
 		yOffsetField.setText(Util.NUM_FIELD_FORMATTER.format(yOffset));
 		yOffsetField.setChangedListener(s -> {
 			if (s.equals("")) {
-				yOffset = 0.0f;
+				yOffset = 0.0D;
 				parentNode.setRequiresUpdate();
 			} else {
 				try {
-					yOffset = Float.parseFloat(s);
+					yOffset = Double.parseDouble(s);
 					parentNode.setRequiresUpdate();
 				} catch(NumberFormatException ignored) {}
 			}
@@ -411,19 +411,19 @@ public abstract class HudElement extends AbstractElementNode {
 		NumberFieldWidget xScaleField = new NumberFieldWidget(MinecraftClient.getInstance().textRenderer, 48, 232, sidebar.width - 52, 14, new TranslatableText("hudtweaks.options.x_scale.name")) {
 			@Override
 			public void updateValue() {
-				setText(Float.toString(xScale));
+				setText(Double.toString(xScale));
 			}
 		};
-		xScaleField.setText(Float.toString(xScale));
+		xScaleField.setText(Double.toString(xScale));
 		xScaleField.setChangedListener(s -> {
 			if (s.equals("")) {
-				xScale = 0.0f;
+				xScale = 0.0D;
 				parentNode.setRequiresUpdate();
 			} else {
 				try {
-					float value = Float.parseFloat(s);
-					float lastValue = xScale;
-					xScale = Math.max(value, 0.0f);
+					double value = Double.parseDouble(s);
+					double lastValue = xScale;
+					xScale = Math.max(value, 0.0D);
 					if (xScale != lastValue) parentNode.setRequiresUpdate();
 				} catch(NumberFormatException ignored) {}
 			}
@@ -432,19 +432,19 @@ public abstract class HudElement extends AbstractElementNode {
 		NumberFieldWidget yScaleField = new NumberFieldWidget(MinecraftClient.getInstance().textRenderer, 48, 251, sidebar.width - 52, 14, new TranslatableText("hudtweaks.options.y_scale.name")) {
 			@Override
 			public void updateValue() {
-				setText(Float.toString(yScale));
+				setText(Double.toString(yScale));
 			}
 		};
-		yScaleField.setText(Float.toString(yScale));
+		yScaleField.setText(Double.toString(yScale));
 		yScaleField.setChangedListener(s -> {
 			if (s.equals("")) {
-				yScale = 0.0f;
+				yScale = 0.0D;
 				parentNode.setRequiresUpdate();
 			} else {
 				try {
-					float value = Float.parseFloat(s);
-					float lastValue = yScale;
-					yScale = Math.max(value, 0.0f);
+					double value = Double.parseDouble(s);
+					double lastValue = yScale;
+					yScale = Math.max(value, 0.0D);
 					if (yScale != lastValue) parentNode.setRequiresUpdate();
 				} catch(NumberFormatException ignored) {}
 			}

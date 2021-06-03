@@ -47,7 +47,7 @@ public final class Util {
 		}
 	}
 
-	public static float minClamp(float value, float min, float max) {
+	public static double minClamp(double value, double min, double max) {
 		if (value < min || max <= min) {
 			return min;
 		} else {

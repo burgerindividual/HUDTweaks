@@ -20,7 +20,7 @@ public class DefaultBossBarElement extends HudElement {
 	}
 	
 	@Override
-	protected float calculateWidth(MinecraftClient client) {
+	protected double calculateWidth(MinecraftClient client) {
 		int widestText = 0;
 		for (ClientBossBar bossBar : ((BossBarHudAccessor) client.inGameHud.getBossBarHud()).getBossBars().values()) {
 			int textWidth = client.textRenderer.getWidth(bossBar.getName());
@@ -30,7 +30,7 @@ public class DefaultBossBarElement extends HudElement {
 	}
 	
 	@Override
-	protected float calculateHeight(MinecraftClient client) {
+	protected double calculateHeight(MinecraftClient client) {
 		int maxBars = 0;
 		float y = 12;
 		while (true) {
@@ -43,12 +43,12 @@ public class DefaultBossBarElement extends HudElement {
 	}
 	
 	@Override
-	protected float calculateDefaultX(MinecraftClient client) {
+	protected double calculateDefaultX(MinecraftClient client) {
 		return (client.getWindow().getScaledWidth() - getWidth() / xScale) / 2;
 	}
 	
 	@Override
-	protected float calculateDefaultY(MinecraftClient client) {
+	protected double calculateDefaultY(MinecraftClient client) {
 		return 3;
 	}
 

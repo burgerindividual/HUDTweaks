@@ -18,23 +18,23 @@ public class DefaultExperienceBarElement extends HudElement {
 	}
 	
 	@Override
-	protected float calculateWidth(MinecraftClient client) {
+	protected double calculateWidth(MinecraftClient client) {
 		return 182;
 	}
 	
 	@Override
-	protected float calculateHeight(MinecraftClient client) {
+	protected double calculateHeight(MinecraftClient client) {
 		// TODO: is this right?
 		return 12;
 	}
 	
 	@Override
-	protected float calculateDefaultX(MinecraftClient client) {
-		return client.getWindow().getScaledWidth() / 2.0f - 91;
+	protected double calculateDefaultX(MinecraftClient client) {
+		return client.getWindow().getScaledWidth() / 2.0 - 91;
 	}
 	
 	@Override
-	protected float calculateDefaultY(MinecraftClient client) {
+	protected double calculateDefaultY(MinecraftClient client) {
 		return client.getWindow().getScaledHeight() - 36;
 	}
 

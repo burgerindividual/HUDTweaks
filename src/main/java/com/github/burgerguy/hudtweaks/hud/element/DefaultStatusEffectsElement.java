@@ -19,12 +19,12 @@ public class DefaultStatusEffectsElement extends HudElement {
 	}
 
 	@Override
-	protected float calculateWidth(MinecraftClient client) {
+	protected double calculateWidth(MinecraftClient client) {
 		return vertical ? getRawHeight(client) : getRawWidth(client);
 	}
 
 	@Override
-	protected float calculateHeight(MinecraftClient client) {
+	protected double calculateHeight(MinecraftClient client) {
 		return vertical ? getRawWidth(client) : getRawHeight(client);
 	}
 
@@ -70,12 +70,12 @@ public class DefaultStatusEffectsElement extends HudElement {
 	}
 
 	@Override
-	protected float calculateDefaultX(MinecraftClient client) {
+	protected double calculateDefaultX(MinecraftClient client) {
 		return client.getWindow().getScaledWidth() - calculateWidth(client) - 1 - (vertical ? getNonBeneficialOffset(client) : 0);
 	}
 
 	@Override
-	protected float calculateDefaultY(MinecraftClient client) {
+	protected double calculateDefaultY(MinecraftClient client) {
 		return (client.isDemo() ? 16 : 1) + (vertical ? 0 : getNonBeneficialOffset(client));
 	}
 

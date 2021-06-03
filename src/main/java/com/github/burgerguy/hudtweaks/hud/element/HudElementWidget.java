@@ -49,17 +49,17 @@ public class HudElementWidget implements Drawable, Element, AutoCloseable, Compa
 
 		if (draw) {
 			HudElement element = elementContainer.getActiveElement();
-			float x1 = element.getX();
-			float y1 = element.getY();
-			float x2 = x1 + element.getWidth();
-			float y2 = y1 + element.getHeight();
+			double x1 = element.getX();
+			double y1 = element.getY();
+			double x2 = x1 + element.getWidth();
+			double y2 = y1 + element.getHeight();
 
 			int color = focused ? OUTLINE_COLOR_SELECTED : OUTLINE_COLOR_NORMAL;
 			if (dashed) {
 				if (focused) cyclePattern(delta);
-				dashedBoxOutline.draw(matrixStack, color, dashPattern, PATTERN_LENGTH, x1 - .5f, y1 - .5f, x2 + .5f, y2 + .5f, (float) client.getWindow().getScaleFactor());
+				dashedBoxOutline.draw(matrixStack, color, dashPattern, PATTERN_LENGTH, x1 - .5, y1 - .5, x2 + .5, y2 + .5, (float) client.getWindow().getScaleFactor());
 			} else {
-				GLUtil.drawBoxOutline(matrixStack, x1 - .5f, y1 - .5f, x2 + .5f, y2 + .5f, color, (float) client.getWindow().getScaleFactor());
+				GLUtil.drawBoxOutline(matrixStack, x1 - .5, y1 - .5, x2 + .5, y2 + .5, color, (float) client.getWindow().getScaleFactor());
 			}
 		}
 	}
@@ -85,10 +85,10 @@ public class HudElementWidget implements Drawable, Element, AutoCloseable, Compa
 		HudElement element = elementContainer.getActiveElement();
 		if (Screen.hasShiftDown()) {
 			if (!element.xPosType.equals(PosType.DEFAULT)) {
-				element.xRelativePos = MathHelper.clamp((float) (element.xRelativePos + deltaX / element.getXParent().getActiveElement().getWidth()), 0.0f, 1.0f);
+				element.xRelativePos = MathHelper.clamp(element.xRelativePos + deltaX / element.getXParent().getActiveElement().getWidth(), 0.0D, 1.0D);
 			}
 			if (!element.yPosType.equals(PosType.DEFAULT)) {
-				element.yRelativePos = MathHelper.clamp((float) (element.yRelativePos + deltaY / element.getYParent().getActiveElement().getHeight()), 0.0f, 1.0f);
+				element.yRelativePos = MathHelper.clamp(element.yRelativePos + deltaY / element.getYParent().getActiveElement().getHeight(), 0.0D, 1.0D);
 			}
 		} else {
 			element.xOffset += deltaX;
@@ -103,10 +103,10 @@ public class HudElementWidget implements Drawable, Element, AutoCloseable, Compa
 	public boolean isMouseOver(double mouseX, double mouseY) {
 		if (lastElementRendered || focused || lastChildFocused) {
 			HudElement element = elementContainer.getActiveElement();
-			float x1 = element.getX();
-			float y1 = element.getY();
-			float x2 = x1 + element.getWidth();
-			float y2 = y1 + element.getHeight();
+			double x1 = element.getX();
+			double y1 = element.getY();
+			double x2 = x1 + element.getWidth();
+			double y2 = y1 + element.getHeight();
 			return mouseX >= x1 && mouseX <= x2 && mouseY >= y1 && mouseY <= y2;
 		} else {
 			return false;
@@ -149,7 +149,7 @@ public class HudElementWidget implements Drawable, Element, AutoCloseable, Compa
 	public int compareTo(HudElementWidget other) {
 		HudElement thisElement = elementContainer.getActiveElement();
 		HudElement otherElement = other.getElementContainer().getActiveElement();
-		return Float.compare(
+		return Double.compare(
 				thisElement.getWidth() * thisElement.getHeight(),
 				otherElement.getWidth() * otherElement.getHeight()
 				);

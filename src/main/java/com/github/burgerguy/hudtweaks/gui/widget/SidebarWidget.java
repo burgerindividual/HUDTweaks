@@ -35,7 +35,7 @@ public class SidebarWidget extends AbstractParentElement implements Drawable, Ti
 	public int width;
 	public int color;
 	private IntSupplier optionsHeightSupplier;
-	private float scrolledDist;
+	private double scrolledDist;
 
 	public SidebarWidget(Screen parentScreen, int width, int color) {
 		this.parentScreen = parentScreen;
@@ -113,14 +113,14 @@ public class SidebarWidget extends AbstractParentElement implements Drawable, Ti
 	public void render(MatrixStack matrixStack, int mouseX, int mouseY, float delta) {
 		DrawableHelper.fill(matrixStack, 0, 0, width, parentScreen.height, color);
 
-		float optionsVisibleHeight = parentScreen.height - cutoffFromBottom;
+		double optionsVisibleHeight = parentScreen.height - cutoffFromBottom;
 		if (optionsVisibleHeight > 0) {
 			boolean scrollable = false;
 			boolean matrixPushed = false;
 			if (optionsHeightSupplier != null) {
-				int optionsFullHeight = optionsHeightSupplier.getAsInt();
+				double optionsFullHeight = optionsHeightSupplier.getAsInt();
 				if (optionsVisibleHeight < optionsFullHeight) {
-					float scale = (float) MinecraftClient.getInstance().getWindow().getScaleFactor();
+					double scale = MinecraftClient.getInstance().getWindow().getScaleFactor();
 					int x = width - 2;
 					GLUtil.drawFillColor(matrixStack, x, 0, x + SCROLLBAR_WIDTH, optionsVisibleHeight, SCROLLBAR_COLOR_1);
 					GLUtil.drawFillColor(matrixStack, x, scrolledDist / optionsFullHeight * optionsVisibleHeight, x + SCROLLBAR_WIDTH, (optionsVisibleHeight + scrolledDist) / optionsFullHeight * optionsVisibleHeight, SCROLLBAR_COLOR_2);
@@ -186,7 +186,7 @@ public class SidebarWidget extends AbstractParentElement implements Drawable, Ti
 			if (optionsHeightSupplier == null || mouseY > parentScreen.height - cutoffFromBottom) {
 				return false;
 			} else {
-				scrolledDist = Util.minClamp(scrolledDist - (float) amount * SCROLL_PIXEL_MULTIPLIER, 0, optionsHeightSupplier.getAsInt() - parentScreen.height + cutoffFromBottom);
+				scrolledDist = Util.minClamp(scrolledDist - amount * SCROLL_PIXEL_MULTIPLIER, 0, optionsHeightSupplier.getAsInt() - parentScreen.height + cutoffFromBottom);
 				return true;
 			}
 		}

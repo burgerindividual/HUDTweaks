@@ -80,13 +80,13 @@ public abstract class AbstractElementNode {
 		return Util.containsNotNull(updateEvents, event);
 	}
 
-	public abstract float getX();
+	public abstract double getX();
 
-	public abstract float getWidth();
+	public abstract double getWidth();
 
-	public abstract float getY();
+	public abstract double getY();
 
-	public abstract float getHeight();
+	public abstract double getHeight();
 
 	public abstract void updateSelfX(MinecraftClient client);
 

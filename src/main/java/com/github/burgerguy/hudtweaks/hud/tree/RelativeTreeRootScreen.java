@@ -33,22 +33,22 @@ public final class RelativeTreeRootScreen extends AbstractContainerNode {
 		}
 
 		@Override
-		public float getX() {
+		public double getX() {
 			return 0;
 		}
 		
 		@Override
-		public float getWidth() {
+		public double getWidth() {
 			return width;
 		}
 		
 		@Override
-		public float getY() {
+		public double getY() {
 			return 0;
 		}
 		
 		@Override
-		public float getHeight() {
+		public double getHeight() {
 			return height;
 		}
 

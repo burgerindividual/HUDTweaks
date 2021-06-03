@@ -20,11 +20,11 @@ public class DefaultHealthElement extends HudElement {
 	}
 	
 	@Override
-	protected float calculateWidth(MinecraftClient client) {
+	protected double calculateWidth(MinecraftClient client) {
 		return 81;
 	}
 
-	private float getRawHeight(MinecraftClient client) {
+	private int getRawHeight(MinecraftClient client) {
 		double maxHealth = client.player.getAttributeValue(EntityAttributes.GENERIC_MAX_HEALTH);
 		int absorption = MathHelper.ceil(client.player.getAbsorptionAmount());
 		int healthRows = MathHelper.ceil((maxHealth + absorption) / 2.0D / 10.0D);
@@ -48,7 +48,7 @@ public class DefaultHealthElement extends HudElement {
 	}
 	
 	@Override
-	protected float calculateHeight(MinecraftClient client) {
+	protected double calculateHeight(MinecraftClient client) {
 		if (client == null || client.player == null) {
 			return 9 + getHeartJumpDistance(client);
 		}
@@ -58,12 +58,12 @@ public class DefaultHealthElement extends HudElement {
 	}
 
 	@Override
-	protected float calculateDefaultX(MinecraftClient client) {
-		return client.getWindow().getScaledWidth() / 2.0f - 91;
+	protected double calculateDefaultX(MinecraftClient client) {
+		return client.getWindow().getScaledWidth() / 2.0 - 91;
 	}
 	
 	@Override
-	protected float calculateDefaultY(MinecraftClient client) {
+	protected double calculateDefaultY(MinecraftClient client) {
 		return client.getWindow().getScaledHeight() - 39 - (flipped || client.player == null ? 0 : getRawHeight(client)) - getHeartJumpDistance(client);
 	}
 
