@@ -4,6 +4,7 @@ import net.minecraft.client.font.TextRenderer;
 import net.minecraft.text.Text;
 
 public class NumberFieldWidget extends HTTextFieldWidget implements ValueUpdatable {
+	protected Number value;
 	
 	public NumberFieldWidget(TextRenderer textRenderer, int x, int y, int width, int height, Text text) {
 		super(textRenderer, x, y, width, height, text);

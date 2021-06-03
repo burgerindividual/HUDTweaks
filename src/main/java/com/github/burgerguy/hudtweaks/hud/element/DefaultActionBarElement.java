@@ -16,7 +16,7 @@ public class DefaultActionBarElement extends HudElement {
 	}
 	
 	@Override
-	protected double calculateWidth(MinecraftClient client) {
+	protected float calculateWidth(MinecraftClient client) {
 		if (((InGameHudAccessor) client.inGameHud).getActionBarRemaining() - Util.getTrueTickDelta(client) > 160.0F / 255.0F) {
 			Text actionBarText = ((InGameHudAccessor) client.inGameHud).getActionBarText();
 			if (actionBarText != null) {
@@ -27,26 +27,26 @@ public class DefaultActionBarElement extends HudElement {
 	}
 	
 	@Override
-	protected double calculateHeight(MinecraftClient client) {
+	protected float calculateHeight(MinecraftClient client) {
 		return client.textRenderer.fontHeight - 1; // compensate for lack of shadow
 	}
 	
 	@Override
-	protected double calculateDefaultX(MinecraftClient client) {
+	protected float calculateDefaultX(MinecraftClient client) {
 		return (client.getWindow().getScaledWidth() - getWidth()) / 2;
 	}
 	
 	@Override
-	protected double calculateDefaultY(MinecraftClient client) {
+	protected float calculateDefaultY(MinecraftClient client) {
 		return client.getWindow().getScaledHeight() - 68 + Y_OFFSET;
 	}
 
 	@Override
 	// TODO: X scaling is weird here, scales from middle rather than left side
 	public Matrix4f createMatrix() {
-		Matrix4f matrix = Matrix4f.scale((float) xScale, (float) yScale, 1);
-		matrix.multiply(Matrix4f.translate((float) ((getX() - getDefaultX()) / xScale),
-				(float) ((getY() - getDefaultY()) / yScale) - (float) (Y_OFFSET - Y_OFFSET / yScale), 1));
+		Matrix4f matrix = Matrix4f.scale(xScale, yScale, 1);
+		matrix.multiply(Matrix4f.translate((getX() - getDefaultX()) / xScale,
+				((getY() - getDefaultY()) / yScale) - (Y_OFFSET - Y_OFFSET / yScale), 1));
 		parentNode.setUpdated();
 		return matrix;
 	}

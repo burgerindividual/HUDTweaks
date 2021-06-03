@@ -16,12 +16,12 @@ public class DefaultMountHealthElement extends HudElement {
 	}
 	
 	@Override
-	protected double calculateWidth(MinecraftClient client) {
+	protected float calculateWidth(MinecraftClient client) {
 		return 81;
 	}
 	
 	@Override
-	protected double calculateHeight(MinecraftClient client) {
+	protected float calculateHeight(MinecraftClient client) {
 		int ridingHeartCount = 10;
 		Entity cameraEntity = client.getCameraEntity();
 		if (cameraEntity instanceof PlayerEntity) {
@@ -33,16 +33,16 @@ public class DefaultMountHealthElement extends HudElement {
 				}
 			}
 		}
-		return Math.ceil(ridingHeartCount / 10.0D) * 9;
+		return MathHelper.ceil(ridingHeartCount / 10.0D) * 9;
 	}
 	
 	@Override
-	protected double calculateDefaultX(MinecraftClient client) {
-		return client.getWindow().getScaledWidth() / 2.0 + 10;
+	protected float calculateDefaultX(MinecraftClient client) {
+		return client.getWindow().getScaledWidth() / 2.0f + 10;
 	}
 	
 	@Override
-	protected double calculateDefaultY(MinecraftClient client) {
+	protected float calculateDefaultY(MinecraftClient client) {
 		// TODO: i think we can do getHeight here instead of getRawHeight, check this
 		return client.getWindow().getScaledHeight() - 30 - getHeight();
 	}

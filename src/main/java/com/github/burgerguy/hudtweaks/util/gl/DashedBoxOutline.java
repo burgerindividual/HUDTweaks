@@ -6,6 +6,7 @@ import net.minecraft.client.texture.NativeImage;
 import net.minecraft.client.texture.NativeImageBackedTexture;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Matrix4f;
 
 public class DashedBoxOutline implements AutoCloseable {
@@ -17,7 +18,7 @@ public class DashedBoxOutline implements AutoCloseable {
 	private int pattern;
 	private byte patternLength;
 
-	public void draw(MatrixStack matrices, int color, int pattern, byte patternLength, double x1, double y1, double x2, double y2, float width) {
+	public void draw(MatrixStack matrices, int color, int pattern, byte patternLength, float x1, float y1, float x2, float y2, float width) {
 		boolean newTex = false;
 		if (this.patternLength != patternLength) {
 			this.patternLength = patternLength;
@@ -48,20 +49,20 @@ public class DashedBoxOutline implements AutoCloseable {
 		int b = color & 255;
 		Matrix4f matrix = matrices.peek().getModel();
 		VertexConsumer consumer = HTVertexConsumerProvider.getDashedOutlineConsumer(texId, width);
-		consumer.vertex(matrix, (float) x1, (float) y2, 0.0F).color(r, g, b, a).texture(0.0F, 1).next();
-		double wrapTexPos = calcTexLength(x1, y2, x2, y2);
-		consumer.vertex(matrix, (float) x2, (float) y2, 0.0F).color(r, g, b, a).texture((float) wrapTexPos, 1).next();
+		consumer.vertex(matrix, x1, y2, 0.0F).color(r, g, b, a).texture(0.0F, 1).next();
+		float wrapTexPos = calcTexLength(x1, y2, x2, y2);
+		consumer.vertex(matrix, x2, y2, 0.0F).color(r, g, b, a).texture(wrapTexPos, 1).next();
 		wrapTexPos += calcTexLength(x2, y2, x2, y1);
-		consumer.vertex(matrix, (float) x2, (float) y1, 0.0F).color(r, g, b, a).texture((float) wrapTexPos, 1).next();
+		consumer.vertex(matrix, x2, y1, 0.0F).color(r, g, b, a).texture(wrapTexPos, 1).next();
 		wrapTexPos += calcTexLength(x2, y1, x1, y1);
-		consumer.vertex(matrix, (float) x1, (float) y1, 0.0F).color(r, g, b, a).texture((float) wrapTexPos, 1).next();
+		consumer.vertex(matrix, x1, y1, 0.0F).color(r, g, b, a).texture(wrapTexPos, 1).next();
 		wrapTexPos += calcTexLength(x1, y1, x1, y2);
-		consumer.vertex(matrix, (float) x1, (float) y2, 0.0F).color(r, g, b, a).texture((float) wrapTexPos, 1).next();
+		consumer.vertex(matrix, x1, y2, 0.0F).color(r, g, b, a).texture(wrapTexPos, 1).next();
 		HTVertexConsumerProvider.draw();
 	}
 
-	private double calcTexLength(double lastX, double lastY, double thisX, double thisY) {
-		return Math.sqrt(Math.pow(thisX - lastX, 2) + Math.pow(thisY - lastY, 2)) / patternLength;
+	private float calcTexLength(float lastX, float lastY, float thisX, float thisY) {
+		return MathHelper.sqrt(MathHelper.square(thisX - lastX) + MathHelper.square(thisY - lastY)) / patternLength;
 	}
 	
 	@Override

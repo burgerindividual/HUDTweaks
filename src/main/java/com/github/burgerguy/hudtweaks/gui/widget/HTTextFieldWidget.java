@@ -6,6 +6,8 @@ import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 
+import java.text.NumberFormat;
+
 public class HTTextFieldWidget extends TextFieldWidget {
 
 	public HTTextFieldWidget(TextRenderer textRenderer, int x, int y, int width, int height, Text text) {

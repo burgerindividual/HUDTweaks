@@ -10,35 +10,35 @@ import com.google.gson.JsonObject;
 import com.google.gson.annotations.SerializedName;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.resource.language.I18n;
+import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Matrix4f;
+import net.minecraft.util.math.Quaternion;
 
 public abstract class HudElement extends AbstractElementNode {
 	// These are all marked as transient so we can manually add them in our custom serializer
 	protected transient PosType xPosType = PosType.DEFAULT;
 	protected transient PosType yPosType = PosType.DEFAULT;
-	protected transient double xAnchorPos;
-	protected transient double yAnchorPos;
-	protected transient double xRelativePos;
-	protected transient double yRelativePos;
-	protected transient double xOffset;
-	protected transient double yOffset;
-	protected transient double xScale = 1.0D;
-	protected transient double yScale = 1.0D;
-	// TODO: do this please thanks
+	protected transient float xAnchorPos;
+	protected transient float yAnchorPos;
+	protected transient float xRelativePos;
+	protected transient float yRelativePos;
+	protected transient float xOffset;
+	protected transient float yOffset;
+	protected transient float xScale = 1.0f;
+	protected transient float yScale = 1.0f;
 	protected transient float xRotationAnchor;
 	protected transient float yRotationAnchor;
 	protected transient float rotationDegrees = 1;
 
 	// These are marked transient because we don't want them serialized at all
-	protected transient double cachedWidth;
-	protected transient double cachedHeight;
-	protected transient double cachedDefaultX;
-	protected transient double cachedDefaultY;
-	protected transient double cachedX;
-	protected transient double cachedY;
-	// TODO: add rotation using the already existing anchor points.
+	protected transient float cachedWidth;
+	protected transient float cachedHeight;
+	protected transient float cachedDefaultX;
+	protected transient float cachedDefaultY;
+	protected transient float cachedX;
+	protected transient float cachedY;
 
 	public HudElement(HTIdentifier identifier, String... updateEvents) {
 		super(identifier, updateEvents);
@@ -59,39 +59,39 @@ public abstract class HudElement extends AbstractElementNode {
 		RELATIVE
 	}
 
-	protected abstract double calculateWidth(MinecraftClient client);
+	protected abstract float calculateWidth(MinecraftClient client);
 
-	protected abstract double calculateHeight(MinecraftClient client);
+	protected abstract float calculateHeight(MinecraftClient client);
 
-	protected abstract double calculateDefaultX(MinecraftClient client);
+	protected abstract float calculateDefaultX(MinecraftClient client);
 
-	protected abstract double calculateDefaultY(MinecraftClient client);
+	protected abstract float calculateDefaultY(MinecraftClient client);
 
 	@Override
-	public double getWidth() {
+	public float getWidth() {
 		return cachedWidth;
 	}
 	
 	@Override
-	public double getHeight() {
+	public float getHeight() {
 		return cachedHeight;
 	}
 	
-	public double getDefaultX() {
+	public float getDefaultX() {
 		return cachedDefaultX;
 	}
 
-	public double getDefaultY() {
+	public float getDefaultY() {
 		return cachedDefaultY;
 	}
 
 	@Override
-	public double getX() {
+	public float getX() {
 		return cachedX;
 	}
 
 	@Override
-	public double getY() {
+	public float getY() {
 		return cachedY;
 	}
 
@@ -125,9 +125,9 @@ public abstract class HudElement extends AbstractElementNode {
 
 	public Matrix4f createMatrix() {
 		//Quaternion quaternion = new Quaternion(new Vector3f(0.0f, 0.0f, 1.0f), rotationDegrees, true);
-		Matrix4f matrix = Matrix4f.scale((float) xScale, (float) yScale, 1);
-		matrix.multiply(Matrix4f.translate((float) (getX() / xScale - getDefaultX()),
-				(float) (getY() / yScale - getDefaultY()), 1));
+		Matrix4f matrix = Matrix4f.scale(xScale, yScale, 1);
+		matrix.multiply(Matrix4f.translate(getX() / xScale - getDefaultX(),
+				getY() / yScale - getDefaultY(), 1));
 		//matrix.multiply(quaternion);
 		parentNode.setUpdated();
 		return matrix;
@@ -141,35 +141,35 @@ public abstract class HudElement extends AbstractElementNode {
 		return yPosType;
 	}
 
-	public double getXAnchorPos() {
+	public float getXAnchorPos() {
 		return xAnchorPos;
 	}
 
-	public double getYAnchorPos() {
+	public float getYAnchorPos() {
 		return yAnchorPos;
 	}
 
-	public double getXRelativePos() {
+	public float getXRelativePos() {
 		return xRelativePos;
 	}
 
-	public double getYRelativePos() {
+	public float getYRelativePos() {
 		return yRelativePos;
 	}
 
-	public double getXOffset() {
+	public float getXOffset() {
 		return xOffset;
 	}
 
-	public double getYOffset() {
+	public float getYOffset() {
 		return yOffset;
 	}
 
-	public double getXScale() {
+	public float getXScale() {
 		return xScale;
 	}
 
-	public double getYScale() {
+	public float getYScale() {
 		return yScale;
 	}
 
@@ -197,9 +197,9 @@ public abstract class HudElement extends AbstractElementNode {
 			}
 		}
 		xPosType = Util.GSON.fromJson(xPosJson.get("posType"), PosType.class);
-		xAnchorPos = xPosJson.get("anchorPos").getAsDouble();
-		xOffset = xPosJson.get("offset").getAsDouble();
-		xRelativePos = xPosJson.get("relativePos").getAsDouble();
+		xAnchorPos = xPosJson.get("anchorPos").getAsFloat();
+		xOffset = xPosJson.get("offset").getAsFloat();
+		xRelativePos = xPosJson.get("relativePos").getAsFloat();
 
 		JsonObject yPosJson = elementJson.get("yPos").getAsJsonObject();
 		parentIdentifier = yPosJson.get("parent");
@@ -211,12 +211,12 @@ public abstract class HudElement extends AbstractElementNode {
 			}
 		}
 		yPosType = Util.GSON.fromJson(yPosJson.get("posType"), PosType.class);
-		yAnchorPos = yPosJson.get("anchorPos").getAsDouble();
-		yOffset = yPosJson.get("offset").getAsDouble();
-		yRelativePos = yPosJson.get("relativePos").getAsDouble();
+		yAnchorPos = yPosJson.get("anchorPos").getAsFloat();
+		yOffset = yPosJson.get("offset").getAsFloat();
+		yRelativePos = yPosJson.get("relativePos").getAsFloat();
 
-		xScale = elementJson.get("xScale").getAsDouble();
-		yScale = elementJson.get("yScale").getAsDouble();
+		xScale = elementJson.get("xScale").getAsFloat();
+		yScale = elementJson.get("yScale").getAsFloat();
 	}
 
 	/**
@@ -239,7 +239,7 @@ public abstract class HudElement extends AbstractElementNode {
 
 			@Override
 			public void applyValue() {
-				xRelativePos = value;
+				xRelativePos = (float) value;
 				parentNode.setRequiresUpdate();
 			}
 
@@ -268,7 +268,7 @@ public abstract class HudElement extends AbstractElementNode {
 
 			@Override
 			public void applyValue() {
-				yRelativePos = value;
+				yRelativePos = (float) value;
 				parentNode.setRequiresUpdate();
 			}
 
@@ -300,7 +300,7 @@ public abstract class HudElement extends AbstractElementNode {
 
 			@Override
 			public void applyValue() {
-				xAnchorPos = value;
+				xAnchorPos = (float) value;
 				parentNode.setRequiresUpdate();
 			}
 
@@ -329,7 +329,7 @@ public abstract class HudElement extends AbstractElementNode {
 
 			@Override
 			public void applyValue() {
-				yAnchorPos = value;
+				yAnchorPos = (float) value;
 				parentNode.setRequiresUpdate();
 			}
 
@@ -372,17 +372,17 @@ public abstract class HudElement extends AbstractElementNode {
 		NumberFieldWidget xOffsetField = new NumberFieldWidget(MinecraftClient.getInstance().textRenderer, 43, 92, sidebar.width - 47, 14, new TranslatableText("hudtweaks.options.offset.name")) {
 			@Override
 			public void updateValue() {
-				setText(Util.NUM_FIELD_FORMATTER.format(xOffset));
+				setText(Float.toString(xOffset));
 			}
 		};
-		xOffsetField.setText(Util.NUM_FIELD_FORMATTER.format(xOffset));
+		xOffsetField.setText(Float.toString(xOffset));
 		xOffsetField.setChangedListener(s -> {
 			if (s.equals("")) {
-				xOffset = 0.0D;
+				xOffset = 0.0f;
 				parentNode.setRequiresUpdate();
 			} else {
 				try {
-					xOffset = Double.parseDouble(s);
+					xOffset = Float.parseFloat(s);
 					parentNode.setRequiresUpdate();
 				} catch(NumberFormatException ignored) {}
 			}
@@ -391,17 +391,17 @@ public abstract class HudElement extends AbstractElementNode {
 		NumberFieldWidget yOffsetField = new NumberFieldWidget(MinecraftClient.getInstance().textRenderer, 43, 200, sidebar.width - 47, 14, new TranslatableText("hudtweaks.options.offset.name")) {
 			@Override
 			public void updateValue() {
-				setText(Util.NUM_FIELD_FORMATTER.format(yOffset));
+				setText(Float.toString(yOffset));
 			}
 		};
-		yOffsetField.setText(Util.NUM_FIELD_FORMATTER.format(yOffset));
+		yOffsetField.setText(Float.toString(yOffset));
 		yOffsetField.setChangedListener(s -> {
 			if (s.equals("")) {
-				yOffset = 0.0D;
+				yOffset = 0.0f;
 				parentNode.setRequiresUpdate();
 			} else {
 				try {
-					yOffset = Double.parseDouble(s);
+					yOffset = Float.parseFloat(s);
 					parentNode.setRequiresUpdate();
 				} catch(NumberFormatException ignored) {}
 			}
@@ -411,19 +411,19 @@ public abstract class HudElement extends AbstractElementNode {
 		NumberFieldWidget xScaleField = new NumberFieldWidget(MinecraftClient.getInstance().textRenderer, 48, 232, sidebar.width - 52, 14, new TranslatableText("hudtweaks.options.x_scale.name")) {
 			@Override
 			public void updateValue() {
-				setText(Double.toString(xScale));
+				setText(Float.toString(xScale));
 			}
 		};
-		xScaleField.setText(Double.toString(xScale));
+		xScaleField.setText(Float.toString(xScale));
 		xScaleField.setChangedListener(s -> {
 			if (s.equals("")) {
-				xScale = 0.0D;
+				xScale = 0.0f;
 				parentNode.setRequiresUpdate();
 			} else {
 				try {
-					double value = Double.parseDouble(s);
-					double lastValue = xScale;
-					xScale = Math.max(value, 0.0D);
+					float value = Float.parseFloat(s);
+					float lastValue = xScale;
+					xScale = Math.max(value, 0.0f);
 					if (xScale != lastValue) parentNode.setRequiresUpdate();
 				} catch(NumberFormatException ignored) {}
 			}
@@ -432,19 +432,19 @@ public abstract class HudElement extends AbstractElementNode {
 		NumberFieldWidget yScaleField = new NumberFieldWidget(MinecraftClient.getInstance().textRenderer, 48, 251, sidebar.width - 52, 14, new TranslatableText("hudtweaks.options.y_scale.name")) {
 			@Override
 			public void updateValue() {
-				setText(Double.toString(yScale));
+				setText(Float.toString(yScale));
 			}
 		};
-		yScaleField.setText(Double.toString(yScale));
+		yScaleField.setText(Float.toString(yScale));
 		yScaleField.setChangedListener(s -> {
 			if (s.equals("")) {
-				yScale = 0.0D;
+				yScale = 0.0f;
 				parentNode.setRequiresUpdate();
 			} else {
 				try {
-					double value = Double.parseDouble(s);
-					double lastValue = yScale;
-					yScale = Math.max(value, 0.0D);
+					float value = Float.parseFloat(s);
+					float lastValue = yScale;
+					yScale = Math.max(value, 0.0f);
 					if (yScale != lastValue) parentNode.setRequiresUpdate();
 				} catch(NumberFormatException ignored) {}
 			}

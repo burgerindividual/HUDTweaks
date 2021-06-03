@@ -11,8 +11,8 @@ public final class GLUtil {
 		// no instantiation, all contents static
 	}
 	
-	public static void drawBoxOutline(MatrixStack matrices, double x1, double y1, double x2, double y2, int color, float width) {
-		double j;
+	public static void drawBoxOutline(MatrixStack matrices, float x1, float y1, float x2, float y2, int color, float width) {
+		float j;
 		if (x1 < x2) {
 			j = x1;
 			x1 = x2;
@@ -31,15 +31,15 @@ public final class GLUtil {
 		int b = color & 255;
 		Matrix4f matrix = matrices.peek().getModel();
 		VertexConsumer consumer = HTVertexConsumerProvider.getSolidOutlineConsumer(width);
-		consumer.vertex(matrix, (float) x1, (float) y2, 0.0F).color(r, g, b, a).next();
-		consumer.vertex(matrix, (float) x2, (float) y2, 0.0F).color(r, g, b, a).next();
-		consumer.vertex(matrix, (float) x2, (float) y1, 0.0F).color(r, g, b, a).next();
-		consumer.vertex(matrix, (float) x1, (float) y1, 0.0F).color(r, g, b, a).next();
+		consumer.vertex(matrix, x1, y2, 0.0F).color(r, g, b, a).next();
+		consumer.vertex(matrix, x2, y2, 0.0F).color(r, g, b, a).next();
+		consumer.vertex(matrix, x2, y1, 0.0F).color(r, g, b, a).next();
+		consumer.vertex(matrix, x1, y1, 0.0F).color(r, g, b, a).next();
 		HTVertexConsumerProvider.draw();
 	}
 
-	public static void drawFillColor(MatrixStack matrices, double x1, double y1, double x2, double y2, int color) {
-		double j;
+	public static void drawFillColor(MatrixStack matrices, float x1, float y1, float x2, float y2, int color) {
+		float j;
 		if (x1 < x2) {
 			j = x1;
 			x1 = x2;
@@ -62,10 +62,10 @@ public final class GLUtil {
 		RenderSystem.defaultBlendFunc();
 		Matrix4f matrix = matrices.peek().getModel();
 		bufferBuilder.begin(GL11.GL_QUADS, VertexFormats.POSITION_COLOR);
-		bufferBuilder.vertex(matrix, (float) x1, (float) y2, 0.0F).color(g, h, k, f).next();
-		bufferBuilder.vertex(matrix, (float) x2, (float) y2, 0.0F).color(g, h, k, f).next();
-		bufferBuilder.vertex(matrix, (float) x2, (float) y1, 0.0F).color(g, h, k, f).next();
-		bufferBuilder.vertex(matrix, (float) x1, (float) y1, 0.0F).color(g, h, k, f).next();
+		bufferBuilder.vertex(matrix, x1, y2, 0.0F).color(g, h, k, f).next();
+		bufferBuilder.vertex(matrix, x2, y2, 0.0F).color(g, h, k, f).next();
+		bufferBuilder.vertex(matrix, x2, y1, 0.0F).color(g, h, k, f).next();
+		bufferBuilder.vertex(matrix, x1, y1, 0.0F).color(g, h, k, f).next();
 		bufferBuilder.end();
 		BufferRenderer.draw(bufferBuilder);
 		RenderSystem.enableTexture();
