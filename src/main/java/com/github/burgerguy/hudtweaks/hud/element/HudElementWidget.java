@@ -26,7 +26,6 @@ public class HudElementWidget implements Drawable, Element, AutoCloseable, Compa
 	private final Runnable valueUpdater;
 	private final DashedBoxOutline dashedBoxOutline = new DashedBoxOutline();
 
-	private int dashPattern = 0xC;
 	private float tickCounter;
 	private boolean focused;
 	private boolean lastChildFocused;
@@ -72,7 +71,7 @@ public class HudElementWidget implements Drawable, Element, AutoCloseable, Compa
 						dashedBoxOutline.cyclePattern();
 					}
 				}
-				dashedBoxOutline.draw(matrixStack, color, dashPattern, PATTERN_LENGTH, p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, p4.x, p4.y, client.getWindow().getScaleFactor());
+				dashedBoxOutline.draw(matrixStack, color, 0xC, PATTERN_LENGTH, p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, p4.x, p4.y, client.getWindow().getScaleFactor());
 			} else {
 				GLUtil.drawBoxOutline(matrixStack, p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, p4.x, p4.y, color, client.getWindow().getScaleFactor());
 			}
