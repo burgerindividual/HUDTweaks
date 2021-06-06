@@ -1,7 +1,9 @@
 package com.github.burgerguy.hudtweaks.hud.element;
 
+import com.github.burgerguy.hudtweaks.hud.HudContainer;
 import com.github.burgerguy.hudtweaks.hud.element.HudElement.PosType;
 import com.github.burgerguy.hudtweaks.hud.tree.AbstractContainerNode;
+import com.github.burgerguy.hudtweaks.util.Util;
 import com.github.burgerguy.hudtweaks.util.gl.DashedBoxOutline;
 import com.github.burgerguy.hudtweaks.util.gl.GLUtil;
 import net.minecraft.client.MinecraftClient;
@@ -10,6 +12,7 @@ import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec2f;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
@@ -36,6 +39,7 @@ public class HudElementWidget implements Drawable, Element, AutoCloseable, Compa
 
 	@Override
 	public void render(MatrixStack matrixStack, int mouseX, int mouseY, float delta) {
+
 		MinecraftClient client = MinecraftClient.getInstance();
 
 		boolean draw = false;
@@ -49,26 +53,29 @@ public class HudElementWidget implements Drawable, Element, AutoCloseable, Compa
 
 		if (draw) {
 			HudElement element = elementContainer.getActiveElement();
-			float x1 = element.getX();
-			float y1 = element.getY();
-			float x2 = x1 + element.getWidth();
-			float y2 = y1 + element.getHeight();
+			element.rotationDegrees = MathHelper.wrapDegrees(element.rotationDegrees + .5f);
+			elementContainer.setRequiresUpdate();
+			double radians = Math.toRadians(element.getRotationDegrees());
+			float rotateAnchorX = element.getX() + (element.getXRotationAnchor() * element.getWidth());
+			float rotateAnchorY = element.getY() + (element.getYRotationAnchor() * element.getHeight());
+			Vec2f p1 = Util.rotatePoint(element.getX() - 0.5f, element.getY() - 0.5f, rotateAnchorX, rotateAnchorY, radians);
+			Vec2f p2 = Util.rotatePoint(element.getX() + element.getWidth() + 0.5f, element.getY() - 0.5f, rotateAnchorX, rotateAnchorY, radians);
+			Vec2f p3 = Util.rotatePoint(element.getX() + element.getWidth() + 0.5f, element.getY() + element.getHeight() + 0.5f, rotateAnchorX, rotateAnchorY, radians);
+			Vec2f p4 = Util.rotatePoint(element.getX() - 0.5f, element.getY() + element.getHeight() + 0.5f, rotateAnchorX, rotateAnchorY, radians);
 
 			int color = focused ? OUTLINE_COLOR_SELECTED : OUTLINE_COLOR_NORMAL;
 			if (dashed) {
-				if (focused) cyclePattern(delta);
-				dashedBoxOutline.draw(matrixStack, color, dashPattern, PATTERN_LENGTH, x1 - .5f, y1 - .5f, x2 + .5f, y2 + .5f, (float) client.getWindow().getScaleFactor());
+				if (focused) {
+					tickCounter += delta;
+					if (tickCounter >= TICKS_PER_SHIFT) {
+						tickCounter = 0;
+						dashedBoxOutline.cyclePattern();
+					}
+				}
+				dashedBoxOutline.draw(matrixStack, color, dashPattern, PATTERN_LENGTH, p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, p4.x, p4.y, client.getWindow().getScaleFactor());
 			} else {
-				GLUtil.drawBoxOutline(matrixStack, x1 - .5f, y1 - .5f, x2 + .5f, y2 + .5f, color, (float) client.getWindow().getScaleFactor());
+				GLUtil.drawBoxOutline(matrixStack, p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, p4.x, p4.y, color, client.getWindow().getScaleFactor());
 			}
-		}
-	}
-
-	private void cyclePattern(float delta) {
-		tickCounter += delta;
-		if (tickCounter >= TICKS_PER_SHIFT) {
-			tickCounter = 0;
-			dashPattern = (1 << PATTERN_LENGTH) - 1 & (dashPattern << PATTERN_LENGTH - 1 | dashPattern >>> 1);
 		}
 	}
 
@@ -103,11 +110,12 @@ public class HudElementWidget implements Drawable, Element, AutoCloseable, Compa
 	public boolean isMouseOver(double mouseX, double mouseY) {
 		if (lastElementRendered || focused || lastChildFocused) {
 			HudElement element = elementContainer.getActiveElement();
-			float x1 = element.getX();
-			float y1 = element.getY();
-			float x2 = x1 + element.getWidth();
-			float y2 = y1 + element.getHeight();
-			return mouseX >= x1 && mouseX <= x2 && mouseY >= y1 && mouseY <= y2;
+			float rotateAnchorX = element.getXRotationAnchor() * element.getWidth();
+			float rotateAnchorY = element.getYRotationAnchor() * element.getHeight();
+			float offsetMouseX = (float) mouseX - element.getX();
+			float offsetMouseY = (float) mouseY - element.getY();
+			Vec2f rotatedPoint = Util.rotatePoint(offsetMouseX, offsetMouseY, rotateAnchorX, rotateAnchorY, Math.toRadians(-element.getRotationDegrees()));
+			return rotatedPoint.x >= 0 && rotatedPoint.x <= element.getWidth() && rotatedPoint.y >= 0 && rotatedPoint.y <= element.getHeight();
 		} else {
 			return false;
 		}

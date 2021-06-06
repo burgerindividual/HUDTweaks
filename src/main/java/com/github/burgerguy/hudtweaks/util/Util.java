@@ -8,6 +8,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParser;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec2f;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -61,5 +63,12 @@ public final class Util {
 
 	public static <T> Iterable<T> emptyIfNull(Iterable<T> iterable) {
 		return iterable == null ? Collections.emptyList() : iterable;
+	}
+
+	public static Vec2f rotatePoint(float x, float y, float xOrigin, float yOrigin, double radians) {
+		float sinResult = (float) Math.sin(radians);
+		float cosResult = (float) Math.cos(radians);
+		return new Vec2f(((x - xOrigin) * cosResult) - ((y - yOrigin) * sinResult) + xOrigin,
+				((y - yOrigin) * cosResult) + ((x - xOrigin) * sinResult) + yOrigin);
 	}
 }

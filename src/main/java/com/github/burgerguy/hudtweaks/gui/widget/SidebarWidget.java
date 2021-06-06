@@ -14,6 +14,7 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.TickableElement;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.util.math.MathHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -135,7 +136,7 @@ public class SidebarWidget extends AbstractParentElement implements Drawable, Ti
 			}
 
 			for (Drawable drawable : drawables) {
-				drawable.render(matrixStack, mouseX, (int) (mouseY + scrolledDist), delta); // TODO: make sure this rounding is ok, pretty sure it causes a cutoff when scrolling all the way down
+				drawable.render(matrixStack, mouseX, MathHelper.ceil(mouseY + scrolledDist), delta); // ceil fixes weird cutoff
 			}
 
 			if (scrollable) {

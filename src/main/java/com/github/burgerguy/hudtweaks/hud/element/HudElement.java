@@ -30,7 +30,7 @@ public abstract class HudElement extends AbstractElementNode {
 	protected transient float yScale = 1.0f;
 	protected transient float xRotationAnchor;
 	protected transient float yRotationAnchor;
-	protected transient float rotationDegrees = 1;
+	protected transient float rotationDegrees;
 
 	// These are marked transient because we don't want them serialized at all
 	protected transient float cachedWidth;
@@ -124,11 +124,11 @@ public abstract class HudElement extends AbstractElementNode {
 	}
 
 	public Matrix4f createMatrix() {
-		//Quaternion quaternion = new Quaternion(new Vector3f(0.0f, 0.0f, 1.0f), rotationDegrees, true);
-		Matrix4f matrix = Matrix4f.scale(xScale, yScale, 1);
-		matrix.multiply(Matrix4f.translate(getX() / xScale - getDefaultX(),
-				getY() / yScale - getDefaultY(), 1));
-		//matrix.multiply(quaternion);
+		Quaternion quaternion = new Quaternion(Vector3f.POSITIVE_Z, rotationDegrees, true);
+		Matrix4f matrix = Matrix4f.translate(getX(), getY(), 0);
+		matrix.multiply(quaternion);
+		matrix.multiply(Matrix4f.scale(xScale, yScale, 1));
+		matrix.multiply(Matrix4f.translate(-getDefaultX(), -getDefaultY(), 0));
 		parentNode.setUpdated();
 		return matrix;
 	}
@@ -171,6 +171,18 @@ public abstract class HudElement extends AbstractElementNode {
 
 	public float getYScale() {
 		return yScale;
+	}
+
+	public float getXRotationAnchor() {
+		return xRotationAnchor;
+	}
+
+	public float getYRotationAnchor() {
+		return yRotationAnchor;
+	}
+
+	public float getRotationDegrees() {
+		return rotationDegrees;
 	}
 
 	@Override

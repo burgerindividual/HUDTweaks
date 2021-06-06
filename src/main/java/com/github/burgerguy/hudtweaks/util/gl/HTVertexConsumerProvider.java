@@ -18,7 +18,8 @@ public abstract class HTVertexConsumerProvider extends RenderLayer {
 		super("HTAccessor", VertexFormats.POSITION, 0, 0, false, true, null, null);
 	}
 
-	public static VertexConsumer getDashedOutlineConsumer(Identifier texture, double lineWidth) {
+	// FIXME: doesn't work in 1.17
+	public static RenderLayer createDashedOutlineLayer(Identifier texture, double lineWidth) {
 		RenderLayer.MultiPhaseParameters parameters = RenderLayer.MultiPhaseParameters.builder()
 				.texture(new RenderPhase.Texture(texture, false, false))
 				.transparency(TRANSLUCENT_TRANSPARENCY)
@@ -27,10 +28,10 @@ public abstract class HTVertexConsumerProvider extends RenderLayer {
 				.lineWidth(new LineWidth(OptionalDouble.of(lineWidth)))
 				.build(false);
 
-		return vertexConsumerProvider.getBuffer(RenderLayer.of(DASHED_LAYER_NAME_PREFIX + texture, VertexFormats.POSITION_COLOR_TEXTURE, GL11.GL_LINE_STRIP, EMPTY, false, true, parameters));
+		return RenderLayer.of(DASHED_LAYER_NAME_PREFIX + texture, VertexFormats.POSITION_COLOR_TEXTURE, GL11.GL_LINE_STRIP, EMPTY, false, true, parameters);
 	}
 
-	public static VertexConsumer getSolidOutlineConsumer(double lineWidth) {
+	public static RenderLayer createSolidOutlineLayer(double lineWidth) {
 		RenderLayer.MultiPhaseParameters parameters = RenderLayer.MultiPhaseParameters.builder()
 				.transparency(TRANSLUCENT_TRANSPARENCY)
 				.fog(NO_FOG)
@@ -38,7 +39,11 @@ public abstract class HTVertexConsumerProvider extends RenderLayer {
 				.lineWidth(new LineWidth(OptionalDouble.of(lineWidth)))
 				.build(false);
 
-		return vertexConsumerProvider.getBuffer(RenderLayer.of(SOLID_LAYER_NAME_PREFIX, VertexFormats.POSITION_COLOR, GL11.GL_LINE_LOOP, EMPTY, false, true, parameters));
+		return RenderLayer.of(SOLID_LAYER_NAME_PREFIX, VertexFormats.POSITION_COLOR, GL11.GL_LINE_LOOP, EMPTY, false, true, parameters);
+	}
+
+	public static VertexConsumer getConsumer(RenderLayer renderLayer) {
+		return vertexConsumerProvider.getBuffer(renderLayer);
 	}
 
 	public static void draw() {

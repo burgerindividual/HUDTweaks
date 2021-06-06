@@ -36,7 +36,7 @@ public class DefaultTooltipElement extends HudElement {
 	
 	@Override
 	protected float calculateDefaultX(MinecraftClient client) {
-		return (client.getWindow().getScaledWidth() - (int) (getWidth() / xScale)) / 2.0f;
+		return (client.getWindow().getScaledWidth() - getWidth() / xScale) / 2.0f;
 	}
 	
 	@Override

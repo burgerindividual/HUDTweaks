@@ -10,19 +10,15 @@ public final class GLUtil {
 	private GLUtil() {
 		// no instantiation, all contents static
 	}
-	
-	public static void drawBoxOutline(MatrixStack matrices, float x1, float y1, float x2, float y2, int color, float width) {
-		float j;
-		if (x1 < x2) {
-			j = x1;
-			x1 = x2;
-			x2 = j;
-		}
 
-		if (y1 < y2) {
-			j = y1;
-			y1 = y2;
-			y2 = j;
+	private static RenderLayer renderLayer;
+	// used to check if render layer needs to be recreated
+	private static double lineWidth;
+	
+	public static void drawBoxOutline(MatrixStack matrices, float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4, int color, double lineWidth) {
+		if (GLUtil.lineWidth != lineWidth) {
+			GLUtil.lineWidth = lineWidth;
+			renderLayer = HTVertexConsumerProvider.createSolidOutlineLayer(lineWidth);
 		}
 
 		int a = color >> 24 & 255;
@@ -30,11 +26,11 @@ public final class GLUtil {
 		int g = color >> 8 & 255;
 		int b = color & 255;
 		Matrix4f matrix = matrices.peek().getModel();
-		VertexConsumer consumer = HTVertexConsumerProvider.getSolidOutlineConsumer(width);
-		consumer.vertex(matrix, x1, y2, 0.0F).color(r, g, b, a).next();
-		consumer.vertex(matrix, x2, y2, 0.0F).color(r, g, b, a).next();
-		consumer.vertex(matrix, x2, y1, 0.0F).color(r, g, b, a).next();
+		VertexConsumer consumer = HTVertexConsumerProvider.getConsumer(renderLayer);
 		consumer.vertex(matrix, x1, y1, 0.0F).color(r, g, b, a).next();
+		consumer.vertex(matrix, x2, y2, 0.0F).color(r, g, b, a).next();
+		consumer.vertex(matrix, x3, y3, 0.0F).color(r, g, b, a).next();
+		consumer.vertex(matrix, x4, y4, 0.0F).color(r, g, b, a).next();
 		HTVertexConsumerProvider.draw();
 	}
 
