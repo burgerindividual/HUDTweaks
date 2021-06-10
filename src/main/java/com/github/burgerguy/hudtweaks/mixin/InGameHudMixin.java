@@ -74,12 +74,12 @@ public abstract class InGameHudMixin extends DrawableHelper {
 
 	@Inject(method = "renderHotbar", at = @At(value = "HEAD"))
 	private void renderHotbarHead(float tickDelta, MatrixStack matrices, CallbackInfo callbackInfo) {
-		HudContainer.getMatrixCache().tryPushMatrix(DefaultHotbarElement.IDENTIFIER, null);
+		HudContainer.getMatrixCache().tryPushMatrix(DefaultHotbarElement.IDENTIFIER, matrices);
 	}
 
 	@Inject(method = "renderHotbar", at = @At(value = "RETURN"))
 	private void renderHotbarReturn(float tickDelta, MatrixStack matrices, CallbackInfo callbackInfo) {
-		HudContainer.getMatrixCache().tryPopMatrix(DefaultHotbarElement.IDENTIFIER, null);
+		HudContainer.getMatrixCache().tryPopMatrix(DefaultHotbarElement.IDENTIFIER, matrices);
 	}
 
 	@Inject(method = "renderStatusBars",
@@ -97,20 +97,20 @@ public abstract class InGameHudMixin extends DrawableHelper {
 		HudContainer.getMatrixCache().tryPushMatrix(DefaultHealthElement.IDENTIFIER, matrices);
 	}
 
-	// injects before if (i <= 4)
-	// this reverses the negation it does right before
-	@ModifyVariable(method = "renderStatusBars",
-			ordinal = 19,
-			at = @At(value = "JUMP", opcode = Opcodes.IF_ICMPGT))
-	private int flipHealthStackDirection(int healthPos) {
-		HudElement activeHealthElement = HudContainer.getElementRegistry().getActiveElement(DefaultHealthElement.IDENTIFIER);
-		if (activeHealthElement instanceof DefaultHealthElement && ((DefaultHealthElement) activeHealthElement).isFlipped()) {
-			int originalHealthPos = client.getWindow().getScaledHeight() - 39;
-			return originalHealthPos + originalHealthPos - healthPos;
-		} else {
-			return healthPos;
-		}
-	}
+//	// injects before if (i <= 4)
+//	// this reverses the negation it does right before
+//	@ModifyVariable(method = "renderStatusBars",
+//			ordinal = 19,
+//			at = @At(value = "JUMP", opcode = Opcodes.IF_ICMPGT))
+//	private int flipHealthStackDirection(int healthPos) {
+//		HudElement activeHealthElement = HudContainer.getElementRegistry().getActiveElement(DefaultHealthElement.IDENTIFIER);
+//		if (activeHealthElement instanceof DefaultHealthElement && ((DefaultHealthElement) activeHealthElement).isFlipped()) {
+//			int originalHealthPos = client.getWindow().getScaledHeight() - 39;
+//			return originalHealthPos + originalHealthPos - healthPos;
+//		} else {
+//			return healthPos;
+//		}
+//	}
 
 	@Inject(method = "renderStatusBars",
 			at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/client/gui/hud/InGameHud;getHeartCount(Lnet/minecraft/entity/LivingEntity;)I"))

@@ -1,5 +1,5 @@
 plugins {
-	id 'fabric-loom' version '0.7-SNAPSHOT'
+	id 'fabric-loom' version '0.8-SNAPSHOT'
 	id 'maven-publish'
 }
 
@@ -12,10 +12,18 @@ repositories {
 		name = "TerraformersMC"
 		url = "https://maven.terraformersmc.com/"
 	}
+	maven {
+		name = 'Ladysnake Mods'
+		url = 'https://ladysnake.jfrog.io/artifactory/mods'
+		content {
+			includeGroup 'io.github.ladysnake'
+			includeGroupByRegex 'io\\.github\\.onyxstudios.*'
+		}
+	}
 }
 
 minecraft {
-    //accessWidener = file("src/main/resources/hudtweaks.accesswidener")
+    accessWidener = file("src/main/resources/hudtweaks.accesswidener")
 }
 
 group = project.maven_group
@@ -23,8 +31,8 @@ group = project.maven_group
 allprojects {
 	apply plugin: 'fabric-loom'
 	
-	sourceCompatibility = JavaVersion.VERSION_1_8
-	targetCompatibility = JavaVersion.VERSION_1_8
+	sourceCompatibility = JavaVersion.VERSION_16
+	targetCompatibility = JavaVersion.VERSION_16
 	
 	archivesBaseName = project.name
 	version = project.mod_version
@@ -37,15 +45,9 @@ allprojects {
 	
 	processResources {
 		inputs.property "version", project.version
-		
-		from(sourceSets.main.resources.srcDirs) {
-			include "fabric.mod.json"
-			
+
+		filesMatching("fabric.mod.json") {
 			expand "version": project.version
-		}
-		
-		from(sourceSets.main.resources.srcDirs) {
-			exclude "fabric.mod.json"
 		}
 	}
 	
@@ -73,6 +75,9 @@ dependencies {
 	}
 	
 	include "net.fabricmc.fabric-api:fabric-resource-loader-v0:${project.resource_loader_version}"
+
+	modImplementation "io.github.ladysnake:satin:${project.satin_version}"
+	include "io.github.ladysnake:satin:${project.satin_version}"
 	
 	modCompileOnly "com.terraformersmc:modmenu:${project.modmenu_version}"
 	modRuntime "com.terraformersmc:modmenu:${project.modmenu_version}"

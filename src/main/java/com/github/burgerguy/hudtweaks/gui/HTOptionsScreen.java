@@ -14,8 +14,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.Drawable;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.TickableElement;
-import net.minecraft.client.gui.widget.AbstractButtonWidget;
+import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.OrderedText;
@@ -48,7 +47,7 @@ public class HTOptionsScreen extends Screen {
 	}
 
 	@Override
-	protected void init() { // TODO: add entry selector in global elements that only displays when needed
+	protected void init() {
 		super.init();
 
 		// normal drawables are cleared already when setFocused(null) is invoked before
@@ -62,15 +61,15 @@ public class HTOptionsScreen extends Screen {
 
 		if (worldExists) {
 			for (HudElementContainer elementContainer : HudContainer.getElementRegistry().getElementContainers()) {
-				Element widget = elementContainer.createWidget(sidebar::updateValues);
+				HudElementWidget widget = elementContainer.createWidget(sidebar::updateValues);
 				if (widget != null) {
-					children.add(widget);
+					addDrawableChild(widget);
 				}
 			}
 
 			// We want normal elements to be the first to be selected. If they're both HudElementWidgets, use their compareTos.
 			// TODO: This doesn't work with the new scale stuff. Instead, do these checks on click.
-			children.sort((e1, e2) -> {
+			children().sort((e1, e2) -> {
 				boolean isHudElement1 = e1 instanceof HudElementWidget;
 				boolean isHudElement2 = e2 instanceof HudElementWidget;
 				if (isHudElement1 && !isHudElement2) {
@@ -83,7 +82,7 @@ public class HTOptionsScreen extends Screen {
 			});
 
 			// this is added to the start of the list so it is selected before anything else
-			children.add(0, sidebar);
+			((List<Element>) children()).add(0, sidebar); // only way to do this is with unchecked casts
 
 			elementLabel = new ElementLabelWidget(sidebar.width / 2, height - 17, sidebar.width - 42);
 			ArrowButtonWidget leftArrow = new ArrowButtonWidget(5, height - 21, true, new TranslatableText("hudtweaks.options.previous_element.name"), b -> changeHudElementFocus(false));
@@ -110,9 +109,9 @@ public class HTOptionsScreen extends Screen {
 
 		if (worldExists) {
 			// reverse order
-			for (int i = children.size() - 1; i >= 0; i--) {
-				Element element = children.get(i);
-				if (element instanceof Drawable && !(element instanceof AbstractButtonWidget)) {
+			for (int i = children().size() - 1; i >= 0; i--) {
+				Element element = children().get(i);
+				if (element instanceof Drawable && !(element instanceof ClickableWidget)) {
 					((Drawable) element).render(matrixStack, mouseX, mouseY, delta);
 				}
 			}
@@ -169,7 +168,7 @@ public class HTOptionsScreen extends Screen {
 	@Override
 	public void onClose() {
 		ConfigHelper.trySaveConfig();
-		for(Element child : children) {
+		for(Element child : children()) {
 			if (child instanceof AutoCloseable) {
 				try {
 					((AutoCloseable) child).close();
@@ -254,8 +253,8 @@ public class HTOptionsScreen extends Screen {
 	@Override
 	public void tick() {
 		for (Element element : children()) {
-			if (element instanceof TickableElement) {
-				((TickableElement) element).tick();
+			if (element instanceof Tickable) {
+				((Tickable) element).tick();
 			}
 			if (element instanceof TextFieldWidget) {
 				((TextFieldWidget) element).tick();

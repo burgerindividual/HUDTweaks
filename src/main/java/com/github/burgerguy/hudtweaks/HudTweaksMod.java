@@ -7,6 +7,7 @@ import com.github.burgerguy.hudtweaks.hud.HudContainer;
 import com.github.burgerguy.hudtweaks.hud.UpdateEvent;
 import com.github.burgerguy.hudtweaks.hud.element.HudElement;
 import com.github.burgerguy.hudtweaks.util.Util;
+import com.github.burgerguy.hudtweaks.util.gl.HTRenderLayers;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.loader.api.FabricLoader;
 
@@ -15,6 +16,7 @@ public class HudTweaksMod implements ClientModInitializer {
 	
 	@Override
 	public void onInitializeClient() {
+		HTRenderLayers.initializeShaders();
 		HudContainer.init();
 		FabricLoader.getInstance().getEntrypointContainers(MOD_ID, HudTweaksApi.class).forEach(e -> {
 			HudTweaksApi apiImpl = e.getEntrypoint();

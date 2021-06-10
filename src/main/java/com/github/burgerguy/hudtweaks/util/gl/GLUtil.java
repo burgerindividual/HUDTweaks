@@ -3,35 +3,62 @@ package com.github.burgerguy.hudtweaks.util.gl;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.render.*;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Matrix3f;
 import net.minecraft.util.math.Matrix4f;
-import org.lwjgl.opengl.GL11;
 
 public final class GLUtil {
 	private GLUtil() {
 		// no instantiation, all contents static
 	}
 
-	private static RenderLayer renderLayer;
+	public static final VertexConsumerProvider.Immediate VCP_INSTANCE = VertexConsumerProvider.immediate(Tessellator.getInstance().getBuffer());
+
+	private static RenderLayer solidLineLayer;
+	private static RenderLayer dashedLineLayer;
 	// used to check if render layer needs to be recreated
-	private static double lineWidth;
+	private static double solidLineWidth;
+	private static double dashedLineWidth;
 	
 	public static void drawBoxOutline(MatrixStack matrices, float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4, int color, double lineWidth) {
-		if (GLUtil.lineWidth != lineWidth) {
-			GLUtil.lineWidth = lineWidth;
-			renderLayer = HTVertexConsumerProvider.createSolidOutlineLayer(lineWidth);
+		if (GLUtil.solidLineWidth != lineWidth) {
+			GLUtil.solidLineWidth = lineWidth;
+			solidLineLayer = HTRenderLayers.createSolidOutlineLayer(lineWidth);
 		}
 
 		int a = color >> 24 & 255;
 		int r = color >> 16 & 255;
 		int g = color >> 8 & 255;
 		int b = color & 255;
+		VertexConsumer consumer = VCP_INSTANCE.getBuffer(solidLineLayer);
 		Matrix4f matrix = matrices.peek().getModel();
-		VertexConsumer consumer = HTVertexConsumerProvider.getConsumer(renderLayer);
 		consumer.vertex(matrix, x1, y1, 0.0F).color(r, g, b, a).next();
 		consumer.vertex(matrix, x2, y2, 0.0F).color(r, g, b, a).next();
 		consumer.vertex(matrix, x3, y3, 0.0F).color(r, g, b, a).next();
 		consumer.vertex(matrix, x4, y4, 0.0F).color(r, g, b, a).next();
-		HTVertexConsumerProvider.draw();
+		consumer.vertex(matrix, x1, y1, 0.0F).color(r, g, b, a).next();
+		VCP_INSTANCE.draw(solidLineLayer);
+	}
+
+	public static void drawDashedBoxOutline(MatrixStack matrices, float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4, int color, double lineWidth) {
+		if (GLUtil.dashedLineWidth != lineWidth) {
+			GLUtil.dashedLineWidth = lineWidth;
+			dashedLineLayer = HTRenderLayers.createDashedOutlineLayer(lineWidth);
+		}
+
+		int a = color >> 24 & 255;
+		int r = color >> 16 & 255;
+		int g = color >> 8 & 255;
+		int b = color & 255;
+		VertexConsumer consumer = VCP_INSTANCE.getBuffer(RenderLayer.getLineStrip());
+		Matrix4f matrix = matrices.peek().getModel();
+		Matrix3f normal = matrices.peek().getNormal();
+		consumer.vertex(matrix, x1, y1, 0.0F).color(r, g, b, a).normal(normal, 1, 1, 0).next();
+		consumer.vertex(matrix, x2, y2, 0.0F).color(r, g, b, a).normal(normal, 1, 1, 0).next();
+		consumer.vertex(matrix, x3, y3, 0.0F).color(r, g, b, a).normal(normal, 1, 1, 0).next();
+		consumer.vertex(matrix, x4, y4, 0.0F).color(r, g, b, a).normal(normal, 1, 1, 0).next();
+		consumer.vertex(matrix, x1, y1, 0.0F).color(r, g, b, a).normal(normal, 1, 1, 0).next();
+		VCP_INSTANCE.draw(dashedLineLayer);
 	}
 
 	public static void drawFillColor(MatrixStack matrices, float x1, float y1, float x2, float y2, int color) {
@@ -48,22 +75,23 @@ public final class GLUtil {
 			y2 = j;
 		}
 
-		float f = (color >> 24 & 255) / 255.0F;
-		float g = (color >> 16 & 255) / 255.0F;
-		float h = (color >> 8 & 255) / 255.0F;
-		float k = (color & 255) / 255.0F;
-		BufferBuilder bufferBuilder = Tessellator.getInstance().getBuffer();
+		int a = color >> 24 & 255;
+		int r = color >> 16 & 255;
+		int g = color >> 8 & 255;
+		int b = color & 255;
+		BufferBuilder builder = Tessellator.getInstance().getBuffer();
 		RenderSystem.enableBlend();
 		RenderSystem.disableTexture();
 		RenderSystem.defaultBlendFunc();
+		RenderSystem.setShader(GameRenderer::getPositionColorShader);
 		Matrix4f matrix = matrices.peek().getModel();
-		bufferBuilder.begin(GL11.GL_QUADS, VertexFormats.POSITION_COLOR);
-		bufferBuilder.vertex(matrix, x1, y2, 0.0F).color(g, h, k, f).next();
-		bufferBuilder.vertex(matrix, x2, y2, 0.0F).color(g, h, k, f).next();
-		bufferBuilder.vertex(matrix, x2, y1, 0.0F).color(g, h, k, f).next();
-		bufferBuilder.vertex(matrix, x1, y1, 0.0F).color(g, h, k, f).next();
-		bufferBuilder.end();
-		BufferRenderer.draw(bufferBuilder);
+		builder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
+		builder.vertex(matrix, x1, y2, 0.0F).color(r, g, b, a).next();
+		builder.vertex(matrix, x2, y2, 0.0F).color(r, g, b, a).next();
+		builder.vertex(matrix, x2, y1, 0.0F).color(r, g, b, a).next();
+		builder.vertex(matrix, x1, y1, 0.0F).color(r, g, b, a).next();
+		builder.end();
+		BufferRenderer.draw(builder);
 		RenderSystem.enableTexture();
 		RenderSystem.disableBlend();
 	}

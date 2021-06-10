@@ -10,8 +10,10 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-public enum ConfigHelper {
-	;
+public final class ConfigHelper {
+	private ConfigHelper() {
+		// no instantiation, all contents static
+	}
 
 	public static final Path configFile = FabricLoader.getInstance().getConfigDir().resolve("hudtweaks.json");
 

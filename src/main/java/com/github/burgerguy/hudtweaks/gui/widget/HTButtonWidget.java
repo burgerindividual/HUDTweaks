@@ -1,15 +1,16 @@
 package com.github.burgerguy.hudtweaks.gui.widget;
 
+import com.github.burgerguy.hudtweaks.util.gl.GLUtil;
 import com.github.burgerguy.hudtweaks.util.gui.OverflowTextRenderer;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.DrawableHelper;
-import net.minecraft.client.gui.widget.AbstractPressableButtonWidget;
+import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
+import net.minecraft.client.gui.widget.PressableWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.MathHelper;
 
-public abstract class HTButtonWidget extends AbstractPressableButtonWidget {
+public abstract class HTButtonWidget extends PressableWidget {
 	protected final OverflowTextRenderer overflowTextRenderer;
 
 	public HTButtonWidget(int x, int y, int width, int height, Text message) {
@@ -22,20 +23,33 @@ public abstract class HTButtonWidget extends AbstractPressableButtonWidget {
 	public void renderButton(MatrixStack matrices, int mouseX, int mouseY, float delta) {
 		MinecraftClient minecraftClient = MinecraftClient.getInstance();
 		TextRenderer textRenderer = minecraftClient.textRenderer;
-		int x1 = x;
-		int y1 = y;
-		int x2 = x + width;
-		int y2 = y + height;
+		float x1 = x;
+		float y1 = y;
+		float x2 = x + width;
+		float y2 = y + height;
 		int color = isHovered() && active ? 0xFFFFFFFF : 0xFF000000;
-		DrawableHelper.fill(matrices, x1,     y1,     x2,     y1 + 1, color);
-		DrawableHelper.fill(matrices, x1,     y2,     x2,     y2 - 1, color);
-		DrawableHelper.fill(matrices, x1,     y1 + 1, x1 + 1, y2 - 1, color);
-		DrawableHelper.fill(matrices, x2,     y1 + 1, x2 - 1, y2 - 1, color);
-		renderBg(matrices, minecraftClient, mouseX, mouseY);
+		GLUtil.drawBoxOutline(matrices, x1 + 0.5f, y1 + 0.5f, x2 - 0.5f, y1 + 0.5f, x2 - 0.5f, y2 - 0.5f, x1 + 0.5f, y2 - 0.5f, color, 1);
+//		DrawableHelper.fill(matrices, x1,     y1,     x2,     y1 + 1, color);
+//		DrawableHelper.fill(matrices, x1,     y2,     x2,     y2 - 1, color);
+//		DrawableHelper.fill(matrices, x1,     y1 + 1, x1 + 1, y2 - 1, color);
+//		DrawableHelper.fill(matrices, x2,     y1 + 1, x2 - 1, y2 - 1, color);
+		renderBackground(matrices, minecraftClient, mouseX, mouseY);
 		int activeColor = active ? 0x00FFFFFF : 0x00A0A0A0;
 		overflowTextRenderer.render(matrices, textRenderer, getMessage(), delta, activeColor | MathHelper.ceil(alpha * 255.0F) << 24);
 		if (!active) {
-			DrawableHelper.fill(matrices, x1, y1, x2, y2, 0x50303030);
+			GLUtil.drawFillColor(matrices, x1, y1, x2, y2, 0x50303030);
 		}
+
+		if (this.isHovered()) {
+			this.renderToolTip(matrices, mouseX, mouseY);
+		}
+	}
+
+	public void renderToolTip(MatrixStack matrices, int mouseX, int mouseY) {
+		// TODO: add tooltips
+	}
+
+	public void appendNarrations(NarrationMessageBuilder builder) {
+		// TODO: fix narration
 	}
 }

@@ -9,8 +9,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.SerializedName;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.resource.language.I18n;
-import net.minecraft.client.util.math.Vector3f;
+import net.minecraft.util.math.Vec3f;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Matrix4f;
@@ -28,9 +27,9 @@ public abstract class HudElement extends AbstractElementNode {
 	protected transient float yOffset;
 	protected transient float xScale = 1.0f;
 	protected transient float yScale = 1.0f;
-	protected transient float xRotationAnchor;
-	protected transient float yRotationAnchor;
-	protected transient float rotationDegrees;
+	protected transient float xRotationAnchor = .5f;
+	protected transient float yRotationAnchor = .5f;
+	protected transient float rotationDegrees = 45;
 
 	// These are marked transient because we don't want them serialized at all
 	protected transient float cachedWidth;
@@ -99,13 +98,9 @@ public abstract class HudElement extends AbstractElementNode {
 	public void updateSelfX(MinecraftClient client) {
 		cachedWidth = calculateWidth(client) * xScale;
 		cachedDefaultX = calculateDefaultX(client);
-		switch(xPosType) {
-		case DEFAULT:
-			cachedX = getDefaultX() + xOffset;
-			break;
-		case RELATIVE:
-			cachedX = getXParent().getActiveElement().getWidth() * xRelativePos + xOffset + getXParent().getActiveElement().getX() - getWidth() * xAnchorPos;
-			break;
+		switch (xPosType) {
+			case DEFAULT -> cachedX = getDefaultX() + xOffset;
+			case RELATIVE -> cachedX = getXParent().getActiveElement().getWidth() * xRelativePos + xOffset + getXParent().getActiveElement().getX() - getWidth() * xAnchorPos;
 		}
 	}
 
@@ -113,20 +108,18 @@ public abstract class HudElement extends AbstractElementNode {
 	public void updateSelfY(MinecraftClient client) {
 		cachedHeight = calculateHeight(client) * yScale;
 		cachedDefaultY = calculateDefaultY(client);
-		switch(yPosType) {
-		case DEFAULT:
-			cachedY = getDefaultY() + yOffset;
-			break;
-		case RELATIVE:
-			cachedY = getYParent().getActiveElement().getHeight() * yRelativePos + yOffset + getYParent().getActiveElement().getY() - getHeight() * yAnchorPos;
-			break;
+		switch (yPosType) {
+			case DEFAULT -> cachedY = getDefaultY() + yOffset;
+			case RELATIVE -> cachedY = getYParent().getActiveElement().getHeight() * yRelativePos + yOffset + getYParent().getActiveElement().getY() - getHeight() * yAnchorPos;
 		}
 	}
 
 	public Matrix4f createMatrix() {
-		Quaternion quaternion = new Quaternion(Vector3f.POSITIVE_Z, rotationDegrees, true);
+		Quaternion quaternion = new Quaternion(Vec3f.POSITIVE_Z, rotationDegrees, true);
 		Matrix4f matrix = Matrix4f.translate(getX(), getY(), 0);
+		matrix.multiply(Matrix4f.translate(getXRotationAnchor() * getWidth(), getYRotationAnchor() * getHeight(), 0));
 		matrix.multiply(quaternion);
+		matrix.multiply(Matrix4f.translate(-getXRotationAnchor() * getWidth(), -getYRotationAnchor() * getHeight(), 0));
 		matrix.multiply(Matrix4f.scale(xScale, yScale, 1));
 		matrix.multiply(Matrix4f.translate(-getDefaultX(), -getDefaultY(), 0));
 		parentNode.setUpdated();
@@ -474,13 +467,13 @@ public abstract class HudElement extends AbstractElementNode {
 		sidebar.addDrawable(yOffsetField);
 		sidebar.addDrawable(xScaleField);
 		sidebar.addDrawable(yScaleField);
-		sidebar.addDrawable(new HTLabelWidget(I18n.translate("hudtweaks.options.offset.display"), 5, 95, 0xCCFFFFFF, false));
-		sidebar.addDrawable(new HTLabelWidget(I18n.translate("hudtweaks.options.offset.display"), 5, 203, 0xCCFFFFFF, false));
-		sidebar.addDrawable(new HTLabelWidget(I18n.translate("hudtweaks.options.x_pos.display"), 5, 5, 0xCCB0B0B0, false));
-		sidebar.addDrawable(new HTLabelWidget(I18n.translate("hudtweaks.options.y_pos.display"), 5, 113, 0xCCB0B0B0, false));
-		sidebar.addDrawable(new HTLabelWidget(I18n.translate("hudtweaks.options.scale.display"), 5, 221, 0xCCB0B0B0, false));
-		sidebar.addDrawable(new HTLabelWidget(I18n.translate("hudtweaks.options.x_scale.display"), 5, 236, 0xCCFFFFFF, false));
-		sidebar.addDrawable(new HTLabelWidget(I18n.translate("hudtweaks.options.y_scale.display"), 5, 254, 0xCCFFFFFF, false));
+		sidebar.addDrawable(new HTLabelWidget(new TranslatableText("hudtweaks.options.offset.display"), 5, 95, 0xCCFFFFFF, false));
+		sidebar.addDrawable(new HTLabelWidget(new TranslatableText("hudtweaks.options.offset.display"), 5, 203, 0xCCFFFFFF, false));
+		sidebar.addDrawable(new HTLabelWidget(new TranslatableText("hudtweaks.options.x_pos.display"), 5, 5, 0xCCB0B0B0, false));
+		sidebar.addDrawable(new HTLabelWidget(new TranslatableText("hudtweaks.options.y_pos.display"), 5, 113, 0xCCB0B0B0, false));
+		sidebar.addDrawable(new HTLabelWidget(new TranslatableText("hudtweaks.options.scale.display"), 5, 221, 0xCCB0B0B0, false));
+		sidebar.addDrawable(new HTLabelWidget(new TranslatableText("hudtweaks.options.x_scale.display"), 5, 236, 0xCCFFFFFF, false));
+		sidebar.addDrawable(new HTLabelWidget(new TranslatableText("hudtweaks.options.y_scale.display"), 5, 254, 0xCCFFFFFF, false));
 	}
 
 	/**

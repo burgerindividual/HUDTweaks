@@ -1,32 +1,28 @@
 package com.github.burgerguy.hudtweaks.hud.element;
 
-import com.github.burgerguy.hudtweaks.hud.HudContainer;
 import com.github.burgerguy.hudtweaks.hud.element.HudElement.PosType;
 import com.github.burgerguy.hudtweaks.hud.tree.AbstractContainerNode;
 import com.github.burgerguy.hudtweaks.util.Util;
-import com.github.burgerguy.hudtweaks.util.gl.DashedBoxOutline;
 import com.github.burgerguy.hudtweaks.util.gl.GLUtil;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.Drawable;
 import net.minecraft.client.gui.Element;
+import net.minecraft.client.gui.Selectable;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec2f;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
-public class HudElementWidget implements Drawable, Element, AutoCloseable, Comparable<HudElementWidget> {
+public class HudElementWidget implements Drawable, Element, Selectable, AutoCloseable, Comparable<HudElementWidget> {
 	private static final int OUTLINE_COLOR_NORMAL = 0xFFFF0000;
 	private static final int OUTLINE_COLOR_SELECTED = 0xFF0000FF;
-	private static final float TICKS_PER_SHIFT = 20.0F / 4.0F;
-	private static final byte PATTERN_LENGTH = 4;
 
 	private final HudElementContainer elementContainer;
 	private final Runnable valueUpdater;
-	private final DashedBoxOutline dashedBoxOutline = new DashedBoxOutline();
 
-	private float tickCounter;
 	private boolean focused;
 	private boolean lastChildFocused;
 	private boolean lastElementRendered;
@@ -52,8 +48,6 @@ public class HudElementWidget implements Drawable, Element, AutoCloseable, Compa
 
 		if (draw) {
 			HudElement element = elementContainer.getActiveElement();
-			element.rotationDegrees = MathHelper.wrapDegrees(element.rotationDegrees + .5f);
-			elementContainer.setRequiresUpdate();
 			double radians = Math.toRadians(element.getRotationDegrees());
 			float rotateAnchorX = element.getX() + (element.getXRotationAnchor() * element.getWidth());
 			float rotateAnchorY = element.getY() + (element.getYRotationAnchor() * element.getHeight());
@@ -64,14 +58,7 @@ public class HudElementWidget implements Drawable, Element, AutoCloseable, Compa
 
 			int color = focused ? OUTLINE_COLOR_SELECTED : OUTLINE_COLOR_NORMAL;
 			if (dashed) {
-				if (focused) {
-					tickCounter += delta;
-					if (tickCounter >= TICKS_PER_SHIFT) {
-						tickCounter = 0;
-						dashedBoxOutline.cyclePattern();
-					}
-				}
-				dashedBoxOutline.draw(matrixStack, color, 0xC, PATTERN_LENGTH, p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, p4.x, p4.y, client.getWindow().getScaleFactor());
+				GLUtil.drawDashedBoxOutline(matrixStack, p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, p4.x, p4.y, color, client.getWindow().getScaleFactor());
 			} else {
 				GLUtil.drawBoxOutline(matrixStack, p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, p4.x, p4.y, color, client.getWindow().getScaleFactor());
 			}
@@ -164,9 +151,16 @@ public class HudElementWidget implements Drawable, Element, AutoCloseable, Compa
 
 	@Override
 	public void close() {
-		dashedBoxOutline.close();
 		// disassociate from main element so this widget can be gc'd
 		elementContainer.widget = null;
 	}
 
+	public Selectable.SelectionType getType() {
+		return this.focused ? Selectable.SelectionType.FOCUSED : Selectable.SelectionType.NONE;
+	}
+
+	@Override
+	public void appendNarrations(NarrationMessageBuilder builder) {
+		// TODO: add narration
+	}
 }

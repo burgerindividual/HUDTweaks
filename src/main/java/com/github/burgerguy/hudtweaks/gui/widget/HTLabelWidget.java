@@ -5,15 +5,16 @@ import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.Drawable;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.text.Text;
 
 public class HTLabelWidget implements Drawable {
 	private final int x;
 	private final int y;
 	private final boolean centered;
 	public int color;
-	public String text;
+	public Text text;
 
-	public HTLabelWidget(String text, int x, int y, int color, boolean centered) {
+	public HTLabelWidget(Text text, int x, int y, int color, boolean centered) {
 		this.x = x;
 		this.y = y;
 		this.color = color;
@@ -25,7 +26,7 @@ public class HTLabelWidget implements Drawable {
 	public void render(MatrixStack matrixStack, int mouseX, int mouseY, float delta) {
 		TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
 		if (centered) {
-			DrawableHelper.drawCenteredString(matrixStack, textRenderer, text, x, y, color);
+			DrawableHelper.drawCenteredText(matrixStack, textRenderer, text, x, y, color);
 		} else {
 			textRenderer.drawWithShadow(matrixStack, text, x, y, color);
 		}

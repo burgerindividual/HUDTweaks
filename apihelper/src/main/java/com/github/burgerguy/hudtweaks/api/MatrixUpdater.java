@@ -1,7 +1,6 @@
 package com.github.burgerguy.hudtweaks.api;
 
 import net.minecraft.client.util.math.MatrixStack;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Consumer;
 
@@ -12,18 +11,16 @@ public class MatrixUpdater {
 	private Consumer<MatrixStack> onEndRender = NOOP_CONSUMER;
 
 	/**
-	 * @param matrices If null, uses the RenderSystem matrix stack.
+	 * @param matrices The MatrixStack used in rendering
 	 */
-	public void pushMatrices(@Nullable MatrixStack matrices) {
+	public void pushMatrices(MatrixStack matrices) {
 		onStartRender.accept(matrices);
 	}
 
 	/**
-	 * @param matrices If null, uses the RenderSystem matrix stack.
-	 *                    <b>The MatrixStack (or lack of) must be the same
-	 *                    you called onStartRender with.</b>
+	 * @param matrices The MatrixStack that was called with pushMatrices
 	 */
-	public void popMatrices(@Nullable MatrixStack matrices) {
+	public void popMatrices(MatrixStack matrices) {
 		onEndRender.accept(matrices);
 	}
 

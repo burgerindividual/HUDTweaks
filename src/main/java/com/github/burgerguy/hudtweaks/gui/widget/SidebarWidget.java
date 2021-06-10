@@ -1,17 +1,15 @@
 package com.github.burgerguy.hudtweaks.gui.widget;
 
+import com.github.burgerguy.hudtweaks.gui.Tickable;
 import com.github.burgerguy.hudtweaks.util.UnmodifiableMergedList;
 import com.github.burgerguy.hudtweaks.util.Util;
 import com.github.burgerguy.hudtweaks.util.gl.GLUtil;
 import com.github.burgerguy.hudtweaks.util.gl.ScissorStack;
 import com.github.burgerguy.hudtweaks.util.gui.ScrollableWrapperElement;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.AbstractParentElement;
-import net.minecraft.client.gui.Drawable;
-import net.minecraft.client.gui.DrawableHelper;
-import net.minecraft.client.gui.Element;
+import net.minecraft.client.gui.*;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.TickableElement;
+import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.MathHelper;
@@ -20,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.IntSupplier;
 
-public class SidebarWidget extends AbstractParentElement implements Drawable, TickableElement {
+public class SidebarWidget extends AbstractParentElement implements Drawable, Selectable, Tickable { // FIXME: allow for selectables/narration
 	private static final int SCROLLBAR_WIDTH = 2;
 	private static final int SCROLLBAR_COLOR_1 = 0x20A0A0A0;
 	private static final int SCROLLBAR_COLOR_2 = 0x905F5F5F;
@@ -201,8 +199,8 @@ public class SidebarWidget extends AbstractParentElement implements Drawable, Ti
 	@Override
 	public void tick() {
 		for (Drawable drawable : drawables) {
-			if (drawable instanceof TickableElement) {
-				((TickableElement) drawable).tick();
+			if (drawable instanceof Tickable) {
+				((Tickable) drawable).tick();
 			}
 			if (drawable instanceof TextFieldWidget) {
 				((TextFieldWidget) drawable).tick();
@@ -210,8 +208,8 @@ public class SidebarWidget extends AbstractParentElement implements Drawable, Ti
 		}
 
 		for (Drawable drawable : globalDrawables) {
-			if (drawable instanceof TickableElement) {
-				((TickableElement) drawable).tick();
+			if (drawable instanceof Tickable) {
+				((Tickable) drawable).tick();
 			}
 			if (drawable instanceof TextFieldWidget) {
 				((TextFieldWidget) drawable).tick();
@@ -219,4 +217,13 @@ public class SidebarWidget extends AbstractParentElement implements Drawable, Ti
 		}
 	}
 
+	@Override
+	public SelectionType getType() {
+		return SelectionType.NONE; // TODO: is this ok?
+	}
+
+	@Override
+	public void appendNarrations(NarrationMessageBuilder builder) {
+		// TODO: fix narration
+	}
 }

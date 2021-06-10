@@ -18,15 +18,12 @@ public class DefaultTooltipElement extends HudElement {
 	
 	@Override
 	protected float calculateWidth(MinecraftClient client) {
-		if (client.player.inventory != null) {
-			ItemStack currentHeldStack = ((InGameHudAccessor) client.inGameHud).getCurrentStack();
-			MutableText stackText = new LiteralText("").append(currentHeldStack.getName()).formatted(currentHeldStack.getRarity().formatting);
-			if (currentHeldStack.hasCustomName()) {
-				stackText.formatted(Formatting.ITALIC);
-			}
-			return client.textRenderer.getWidth(stackText);
+		ItemStack currentHeldStack = ((InGameHudAccessor) client.inGameHud).getCurrentStack();
+		MutableText stackText = new LiteralText("").append(currentHeldStack.getName()).formatted(currentHeldStack.getRarity().formatting);
+		if (currentHeldStack.hasCustomName()) {
+			stackText.formatted(Formatting.ITALIC);
 		}
-		return 14; // size when measuring width of the text for an air block
+		return client.textRenderer.getWidth(stackText);
 	}
 	
 	@Override
