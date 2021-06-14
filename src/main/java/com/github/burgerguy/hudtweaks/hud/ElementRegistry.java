@@ -50,7 +50,7 @@ public class ElementRegistry {
 		}
 
 		HudElementContainer elementContainer = new HudElementContainer(element);
-		element.setParentNode(elementContainer);
+		element.setContainerNode(elementContainer);
 		element.init();
 		elementContainerMap.put(element.getIdentifier(), elementContainer); // use initial element identifier for overriding
 	}

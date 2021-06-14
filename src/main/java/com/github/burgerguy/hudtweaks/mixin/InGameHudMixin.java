@@ -45,7 +45,7 @@ public abstract class InGameHudMixin extends DrawableHelper {
 			super.fillGradient(matrices, 0, 0, client.getWindow().getScaledWidth(), client.getWindow().getScaledHeight(), 0xC0101010, 0xD0101010);
 		}
 
-		for (HudElementContainer elementContainer : HudContainer.getElementRegistry().getElementContainers()) { // TODO: fix this for when entry switches happen
+		for (HudElementContainer elementContainer : HudContainer.getElementRegistry().getElementContainers()) {
 			// allows us to keep track of what has rendered this frame
 			elementContainer.clearDrawTest();
 		}
@@ -64,9 +64,12 @@ public abstract class InGameHudMixin extends DrawableHelper {
 		}
 
 		for (Object container : Sets.union(updatedElementsX, updatedElementsY)) {
-			if (container instanceof HudElementContainer) {
-				HudElementContainer hudElementContainer = (HudElementContainer) container;
-				HudContainer.getMatrixCache().putMatrix(hudElementContainer.getInitialElement().getIdentifier(), hudElementContainer.getActiveElement().createMatrix());
+			if (container instanceof AbstractContainerNode) {
+				if (container instanceof HudElementContainer) {
+					HudElementContainer hudElementContainer = (HudElementContainer) container;
+					HudContainer.getMatrixCache().putMatrix(hudElementContainer.getInitialElement().getIdentifier(), hudElementContainer.getActiveElement().createMatrix());
+				}
+				((AbstractContainerNode) container).setUpdated();
 			}
 		}
 		client.getProfiler().pop();
@@ -97,6 +100,7 @@ public abstract class InGameHudMixin extends DrawableHelper {
 		HudContainer.getMatrixCache().tryPushMatrix(DefaultHealthElement.IDENTIFIER, matrices);
 	}
 
+	// FIXME
 //	// injects before if (i <= 4)
 //	// this reverses the negation it does right before
 //	@ModifyVariable(method = "renderStatusBars",

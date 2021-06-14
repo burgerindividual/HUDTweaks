@@ -13,7 +13,7 @@ public abstract class AbstractElementNode {
 	protected transient final HTIdentifier identifier;
 	protected transient final Set<UpdateEvent> updateEvents = new HashSet<>();
 
-	protected transient AbstractContainerNode parentNode;
+	protected transient AbstractContainerNode containerNode;
 	protected transient AbstractContainerNode xTreeParent;
 	protected transient AbstractContainerNode yTreeParent;
 
@@ -35,13 +35,13 @@ public abstract class AbstractElementNode {
 		moveYUnder(HudContainer.getScreenRoot());
 	}
 
-	public void setParentNode(AbstractContainerNode parentNode) {
-		this.parentNode = parentNode;
+	public void setContainerNode(AbstractContainerNode containerNode) {
+		this.containerNode = containerNode;
 	}
 
 	@SuppressWarnings("unchecked")
-	public <T extends AbstractContainerNode> T getParentNode() {
-		return (T) parentNode;
+	public <T extends AbstractContainerNode> T getContainerNode() {
+		return (T) containerNode;
 	}
 
 	public final HTIdentifier getIdentifier() {
@@ -59,21 +59,21 @@ public abstract class AbstractElementNode {
 	public void moveXUnder(AbstractContainerNode newXParent) {
 		if (xTreeParent != null) {
 			if (newXParent.equals(xTreeParent)) return;
-			xTreeParent.getXChildren().remove(parentNode);
+			xTreeParent.getXChildren().remove(containerNode);
 		}
-		newXParent.xTreeChildren.add(parentNode);
+		newXParent.xTreeChildren.add(containerNode);
 		xTreeParent = newXParent;
-		parentNode.setRequiresUpdate();
+		containerNode.setRequiresUpdate();
 	}
 
 	public void moveYUnder(AbstractContainerNode newYParent) {
 		if (yTreeParent != null) {
 			if (newYParent.equals(yTreeParent)) return;
-			yTreeParent.getYChildren().remove(parentNode);
+			yTreeParent.getYChildren().remove(containerNode);
 		}
-		newYParent.yTreeChildren.add(parentNode);
+		newYParent.yTreeChildren.add(containerNode);
 		yTreeParent = newYParent;
-		parentNode.setRequiresUpdate();
+		containerNode.setRequiresUpdate();
 	}
 
 	public boolean shouldUpdateOnEvent(UpdateEvent event) {

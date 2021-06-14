@@ -10,7 +10,7 @@ public final class RelativeTreeRootScreen extends AbstractContainerNode {
 
 	public void init() {
 		screenElement = new ScreenElement();
-		screenElement.setParentNode(this);
+		screenElement.setContainerNode(this);
 	}
 
 	@SuppressWarnings("unchecked")

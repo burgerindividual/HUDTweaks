@@ -11,11 +11,12 @@ import org.objectweb.asm.tree.*;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Set;
 
-public class HudTweaksMixinPlugin implements IMixinConfigPlugin {
+public class HTMixinPlugin implements IMixinConfigPlugin {
 
 	@Override
 	public void onLoad(String mixinPackage) {
@@ -40,24 +41,11 @@ public class HudTweaksMixinPlugin implements IMixinConfigPlugin {
 		return null;
 	}
 
-	private boolean bossBarClassModified;
+	private static final Set<String> appliedClasses = new HashSet<>();
 	
 	@Override
 	public void preApply(String targetClassName, ClassNode targetClass, String mixinClassName, IMixinInfo mixinInfo) {
-		/*
-		 note to self:
-		 if asm for other classes is eventually needed, consider moving everything to a mixin extension
-		 so the class doesn't have to have a mixin assigned to it. store a hashset of the pre-mapped class
-		 names to see if it's already been modified (if extensions can have classes loaded multiple times).
-		 see this link for adding an extension:
-		 https://github.com/Chocohead/Fabric-ASM/blob/239e122a532ba8cabf0714df2aa9fdd80f2082d4/src/com/chocohead/mm/Plugin.java#L248
-
-		 if more classes are eventually required for asm, and they all do have mixins associated with them,
-		 stick with a mixin plugin because it won't have to check the name of every class loaded. just make
-		 sure to keep a hashset like described before, because classes with multiple mixins WILL be run
-		 through this function multiple times.
-		*/
-		if (!bossBarClassModified && targetClassName.equals(FabricLoader.getInstance().getMappingResolver().mapClassName("intermediary", "net.minecraft.class_337"))) { // BossBarHud class
+		if (!appliedClasses.contains("net.minecraft.class_337") && classNameEqualsMapped(targetClassName, "net.minecraft.class_337")) { // BossBarHud class
 			for (MethodNode methodNode : targetClass.methods) {
 				if (methodNode.name.equals("render")) {
 					ListIterator<AbstractInsnNode> itr = methodNode.instructions.iterator();
@@ -68,7 +56,7 @@ public class HudTweaksMixinPlugin implements IMixinConfigPlugin {
 					LabelNode label = ((JumpInsnNode) itr.next()).label; // we know the next opcode is a comparison jump, so we extract the label from it
 					itr.remove();
 					itr.add(new InsnNode(Opcodes.I2F));
-					itr.add(new MethodInsnNode(Opcodes.INVOKESTATIC, Type.getInternalName(HudTweaksMixinPlugin.class), "getScreenPercent", Type.getMethodDescriptor(Type.FLOAT_TYPE)));
+					itr.add(new MethodInsnNode(Opcodes.INVOKESTATIC, Type.getInternalName(HTMixinPlugin.class), "getScreenPercent", Type.getMethodDescriptor(Type.FLOAT_TYPE)));
 					itr.add(new InsnNode(Opcodes.FMUL));
 					itr.add(new InsnNode(Opcodes.FCMPL));
 					itr.add(new JumpInsnNode(Opcodes.IFLT, label));
@@ -77,9 +65,13 @@ public class HudTweaksMixinPlugin implements IMixinConfigPlugin {
 					break;
 				}
 			}
-			bossBarClassModified = true;
+			appliedClasses.add("net.minecraft.class_337");
 			Util.LOGGER.debug("BossBarHud class (" + targetClassName + ") successfully modified.");
 		}
+	}
+
+	private static boolean classNameEqualsMapped(String className, String classNameToBeMapped) {
+		return className.equals(FabricLoader.getInstance().getMappingResolver().mapClassName("intermediary", classNameToBeMapped));
 	}
 
 	public static float getScreenPercent() {

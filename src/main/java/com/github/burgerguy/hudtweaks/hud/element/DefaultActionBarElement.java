@@ -47,7 +47,6 @@ public class DefaultActionBarElement extends HudElement {
 		Matrix4f matrix = Matrix4f.scale(xScale, yScale, 1);
 		matrix.multiply(Matrix4f.translate((getX() - getDefaultX()) / xScale,
 				((getY() - getDefaultY()) / yScale) - (Y_OFFSET - Y_OFFSET / yScale), 1));
-		parentNode.setUpdated();
 		return matrix;
 	}
 }

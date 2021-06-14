@@ -11,7 +11,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-
+// TODO: split matrixcache into 2 things, 1 to push matrices and another to start the drawtest and do proper checks on the element (also rename MatrixUpdater to fit)
 public class MatrixCache {
 	private final Map<HTIdentifier, Matrix4f> matrixMap = new HashMap<>();
 	private final Set<HTIdentifier> appliedElements = new HashSet<>();

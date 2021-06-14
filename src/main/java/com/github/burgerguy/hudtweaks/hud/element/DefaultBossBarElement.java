@@ -82,7 +82,7 @@ public class DefaultBossBarElement extends HudElement {
 			@Override
 			public void applyValue() {
 				maxHeight = (float) value;
-				parentNode.setRequiresUpdate();
+				containerNode.setRequiresUpdate();
 			}
 
 			@Override

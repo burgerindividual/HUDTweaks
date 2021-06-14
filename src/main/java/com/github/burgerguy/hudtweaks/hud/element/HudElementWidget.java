@@ -34,7 +34,6 @@ public class HudElementWidget implements Drawable, Element, Selectable, AutoClos
 
 	@Override
 	public void render(MatrixStack matrixStack, int mouseX, int mouseY, float delta) {
-
 		MinecraftClient client = MinecraftClient.getInstance();
 
 		boolean draw = false;
@@ -87,7 +86,7 @@ public class HudElementWidget implements Drawable, Element, Selectable, AutoClos
 			element.xOffset += deltaX;
 			element.yOffset += deltaY;
 		}
-		element.getParentNode().setRequiresUpdate();
+		element.getContainerNode().setRequiresUpdate();
 		if (valueUpdater != null) valueUpdater.run();
 		return true;
 	}

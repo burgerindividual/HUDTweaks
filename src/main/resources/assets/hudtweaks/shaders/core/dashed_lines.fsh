@@ -6,16 +6,18 @@ uniform vec4 ColorModulator;
 uniform float FogStart;
 uniform float FogEnd;
 uniform vec4 FogColor;
+uniform float DashOffset;
+uniform float DashLength;
 
 in float vertexDistance;
 in vec4 vertexColor;
+in float lineDistance;
 
 out vec4 fragColor;
 
 void main() {
-    if (mod(gl_FragCoord.x, 2) == 0) {
+    if (mod(lineDistance + DashOffset, DashLength * 2.0) < DashLength) {
         discard;
     }
-    vec4 color = vertexColor * ColorModulator;
-    fragColor = linear_fog(color, vertexDistance, FogStart, FogEnd, FogColor);
+    fragColor = linear_fog(vertexColor * ColorModulator, vertexDistance, FogStart, FogEnd, FogColor);
 }

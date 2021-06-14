@@ -3,7 +3,7 @@
   "minVersion": "0.8",
   "package": "com.github.burgerguy.hudtweaks.mixin",
   "compatibilityLevel": "JAVA_16",
-  "plugin": "com.github.burgerguy.hudtweaks.HudTweaksMixinPlugin",
+  "plugin": "com.github.burgerguy.hudtweaks.HTMixinPlugin",
   "client": [
     "BossBarHudAccessor",
     "BossBarHudMixin",
@@ -11,8 +11,8 @@
     "InGameHudAccessor",
     "InGameHudMixin",
     "MinecraftClientAccessor",
-    "TextFieldAccessor",
-    "RenderLayerAccessor"
+    "RenderLayerAccessor",
+    "TextFieldAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

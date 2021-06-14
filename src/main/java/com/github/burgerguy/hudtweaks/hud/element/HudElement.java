@@ -29,7 +29,7 @@ public abstract class HudElement extends AbstractElementNode {
 	protected transient float yScale = 1.0f;
 	protected transient float xRotationAnchor = .5f;
 	protected transient float yRotationAnchor = .5f;
-	protected transient float rotationDegrees = 45;
+	protected transient float rotationDegrees = 0;
 
 	// These are marked transient because we don't want them serialized at all
 	protected transient float cachedWidth;
@@ -122,7 +122,6 @@ public abstract class HudElement extends AbstractElementNode {
 		matrix.multiply(Matrix4f.translate(-getXRotationAnchor() * getWidth(), -getYRotationAnchor() * getHeight(), 0));
 		matrix.multiply(Matrix4f.scale(xScale, yScale, 1));
 		matrix.multiply(Matrix4f.translate(-getDefaultX(), -getDefaultY(), 0));
-		parentNode.setUpdated();
 		return matrix;
 	}
 
@@ -229,9 +228,9 @@ public abstract class HudElement extends AbstractElementNode {
 	 * Make sure to call super before anything else.
 	 */
 	public void fillSidebar(SidebarWidget sidebar) {
-		ParentButtonWidget xRelativeParentButton = new ParentButtonWidget(4, 35, sidebar.width - 8, 14, getXParent(), getParentNode(), this::moveXUnder);
+		ParentButtonWidget xRelativeParentButton = new ParentButtonWidget(4, 35, sidebar.width - 8, 14, getXParent(), getContainerNode(), this::moveXUnder);
 
-		ParentButtonWidget yRelativeParentButton = new ParentButtonWidget(4, 143, sidebar.width - 8, 14, getYParent(), getParentNode(), this::moveYUnder);
+		ParentButtonWidget yRelativeParentButton = new ParentButtonWidget(4, 143, sidebar.width - 8, 14, getYParent(), getContainerNode(), this::moveYUnder);
 
 		xRelativeParentButton.active = !xPosType.equals(PosType.DEFAULT);
 		yRelativeParentButton.active = !yPosType.equals(PosType.DEFAULT);
@@ -245,7 +244,7 @@ public abstract class HudElement extends AbstractElementNode {
 			@Override
 			public void applyValue() {
 				xRelativePos = (float) value;
-				parentNode.setRequiresUpdate();
+				containerNode.setRequiresUpdate();
 			}
 
 			@Override
@@ -274,7 +273,7 @@ public abstract class HudElement extends AbstractElementNode {
 			@Override
 			public void applyValue() {
 				yRelativePos = (float) value;
-				parentNode.setRequiresUpdate();
+				containerNode.setRequiresUpdate();
 			}
 
 			@Override
@@ -306,7 +305,7 @@ public abstract class HudElement extends AbstractElementNode {
 			@Override
 			public void applyValue() {
 				xAnchorPos = (float) value;
-				parentNode.setRequiresUpdate();
+				containerNode.setRequiresUpdate();
 			}
 
 			@Override
@@ -335,7 +334,7 @@ public abstract class HudElement extends AbstractElementNode {
 			@Override
 			public void applyValue() {
 				yAnchorPos = (float) value;
-				parentNode.setRequiresUpdate();
+				containerNode.setRequiresUpdate();
 			}
 
 			@Override
@@ -360,7 +359,7 @@ public abstract class HudElement extends AbstractElementNode {
 
 		PosTypeButtonWidget xPosTypeButton = new PosTypeButtonWidget(4, 16, sidebar.width - 8, 14,  xPosType, t -> {
 			xPosType = t;
-			parentNode.setRequiresUpdate();
+			containerNode.setRequiresUpdate();
 			xAnchorSlider.active = !t.equals(PosType.DEFAULT);
 			xRelativeSlider.active = !t.equals(PosType.DEFAULT);
 			xRelativeParentButton.active = !t.equals(PosType.DEFAULT);
@@ -368,7 +367,7 @@ public abstract class HudElement extends AbstractElementNode {
 
 		PosTypeButtonWidget yPosTypeButton = new PosTypeButtonWidget(4, 124, sidebar.width - 8, 14,  yPosType, t -> {
 			yPosType = t;
-			parentNode.setRequiresUpdate();
+			containerNode.setRequiresUpdate();
 			yAnchorSlider.active = !t.equals(PosType.DEFAULT);
 			yRelativeSlider.active = !t.equals(PosType.DEFAULT);
 			yRelativeParentButton.active = !t.equals(PosType.DEFAULT);
@@ -384,11 +383,11 @@ public abstract class HudElement extends AbstractElementNode {
 		xOffsetField.setChangedListener(s -> {
 			if (s.equals("")) {
 				xOffset = 0.0f;
-				parentNode.setRequiresUpdate();
+				containerNode.setRequiresUpdate();
 			} else {
 				try {
 					xOffset = Float.parseFloat(s);
-					parentNode.setRequiresUpdate();
+					containerNode.setRequiresUpdate();
 				} catch(NumberFormatException ignored) {}
 			}
 		});
@@ -403,11 +402,11 @@ public abstract class HudElement extends AbstractElementNode {
 		yOffsetField.setChangedListener(s -> {
 			if (s.equals("")) {
 				yOffset = 0.0f;
-				parentNode.setRequiresUpdate();
+				containerNode.setRequiresUpdate();
 			} else {
 				try {
 					yOffset = Float.parseFloat(s);
-					parentNode.setRequiresUpdate();
+					containerNode.setRequiresUpdate();
 				} catch(NumberFormatException ignored) {}
 			}
 		});
@@ -423,13 +422,13 @@ public abstract class HudElement extends AbstractElementNode {
 		xScaleField.setChangedListener(s -> {
 			if (s.equals("")) {
 				xScale = 0.0f;
-				parentNode.setRequiresUpdate();
+				containerNode.setRequiresUpdate();
 			} else {
 				try {
 					float value = Float.parseFloat(s);
 					float lastValue = xScale;
 					xScale = Math.max(value, 0.0f);
-					if (xScale != lastValue) parentNode.setRequiresUpdate();
+					if (xScale != lastValue) containerNode.setRequiresUpdate();
 				} catch(NumberFormatException ignored) {}
 			}
 		});
@@ -444,13 +443,13 @@ public abstract class HudElement extends AbstractElementNode {
 		yScaleField.setChangedListener(s -> {
 			if (s.equals("")) {
 				yScale = 0.0f;
-				parentNode.setRequiresUpdate();
+				containerNode.setRequiresUpdate();
 			} else {
 				try {
 					float value = Float.parseFloat(s);
 					float lastValue = yScale;
 					yScale = Math.max(value, 0.0f);
-					if (yScale != lastValue) parentNode.setRequiresUpdate();
+					if (yScale != lastValue) containerNode.setRequiresUpdate();
 				} catch(NumberFormatException ignored) {}
 			}
 		});

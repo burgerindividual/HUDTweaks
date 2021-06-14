@@ -11,7 +11,7 @@ public abstract class AbstractContainerNode {
 	protected final Set<AbstractContainerNode> xTreeChildren = new HashSet<>();
 	protected final Set<AbstractContainerNode> yTreeChildren = new HashSet<>();
 
-	private boolean requiresUpdate;
+	private boolean requiresUpdate = true; // this is true by default so it gets updated when it's displayed the first time
 
 	public Set<? extends AbstractContainerNode> getXChildren() {
 		return xTreeChildren;

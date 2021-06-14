@@ -117,8 +117,7 @@ public final class DefaultUpdateEvents {
 					Entity cameraEntity = client.getCameraEntity();
 					if (cameraEntity instanceof PlayerEntity) {
 						Entity ridingEntity = cameraEntity.getVehicle();
-						if (ridingEntity instanceof LivingEntity) {
-							LivingEntity livingEntity = (LivingEntity) ridingEntity;
+						if (ridingEntity instanceof LivingEntity livingEntity) {
 							if (livingEntity.isLiving()) {
 								int ridingHeartCount = MathHelper.clamp((int) (livingEntity.getMaxHealth() + 0.5F) / 2, 0, 30);
 								int ridingHealthRows = (int)Math.ceil(ridingHeartCount / 10.0D);
@@ -169,9 +168,7 @@ public final class DefaultUpdateEvents {
 				@Override
 				public boolean shouldUpdate(MinecraftClient client) {
 					AttackIndicator currentIndicator = client.options.attackIndicator;
-					if (lastIndicator == null ||
-							!currentIndicator.equals(lastIndicator) &&
-							(currentIndicator.equals(AttackIndicator.HOTBAR) || lastIndicator.equals(AttackIndicator.HOTBAR))) {
+					if (lastIndicator == null || !currentIndicator.equals(lastIndicator) && (currentIndicator.equals(AttackIndicator.HOTBAR) || lastIndicator.equals(AttackIndicator.HOTBAR))) {
 						lastIndicator = currentIndicator;
 						return true;
 					}
@@ -183,25 +180,7 @@ public final class DefaultUpdateEvents {
 
 				@Override
 				public String getIdentifier() {
-					return "onHeldItemTickChange"; // this only updates per tick rather than per frame, hence the word "Tick"
-				}
-				
-				@Override
-				public boolean shouldUpdate(MinecraftClient client) {
-					ItemStack currentHeldStack = ((InGameHudAccessor) client.inGameHud).getCurrentStack();
-					if (lastHeldStack == null || !ItemStack.areItemsEqualIgnoreDamage(lastHeldStack, currentHeldStack)) {
-						lastHeldStack = currentHeldStack;
-						return true;
-					}
-					return false;
-				}
-			},
-			new UpdateEvent() {
-				private ItemStack lastHeldStack;
-
-				@Override
-				public String getIdentifier() {
-					return "onHeldItemTickChange"; // this only updates per tick rather than per frame, hence the word "Tick"
+					return "onHeldItemTickChange"; // the itemstack referenced only updates per tick, rather than per frame
 				}
 				
 				@Override
@@ -224,8 +203,9 @@ public final class DefaultUpdateEvents {
 
 				@Override
 				public boolean shouldUpdate(MinecraftClient client) {
+					if (client.interactionManager == null) return false;
 					boolean hasStatusBars = client.interactionManager.hasStatusBars();
-					if (lastHasStatusBars == null || !lastHasStatusBars.equals(hasStatusBars)) {
+					if ((lastHasStatusBars == null || !lastHasStatusBars.equals(hasStatusBars))) {
 						lastHasStatusBars = hasStatusBars;
 						return true;
 					}
@@ -243,7 +223,7 @@ public final class DefaultUpdateEvents {
 				@Override
 				public boolean shouldUpdate(MinecraftClient client) {
 					Map<UUID, ClientBossBar> currentBossBars = ((BossBarHudAccessor) client.inGameHud.getBossBarHud()).getBossBars();
-					if (lastBossBars == null || !lastBossBars.equals(currentBossBars)) {
+					if (!currentBossBars.equals(lastBossBars)) {
 						lastBossBars = new HashMap<>(currentBossBars);
 						return true;
 					}
@@ -270,7 +250,7 @@ public final class DefaultUpdateEvents {
 					}
 
 					Text currentActionBarText = ((InGameHudAccessor) client.inGameHud).getActionBarText();
-					if (lastActionBarText == null || !lastActionBarText.equals(currentActionBarText)) {
+					if ((lastActionBarText == null && currentActionBarText != null) || (lastActionBarText != null && !lastActionBarText.equals(currentActionBarText))) {
 						lastActionBarText = currentActionBarText;
 						passed = true;
 					}
@@ -288,7 +268,7 @@ public final class DefaultUpdateEvents {
 				@Override
 				public boolean shouldUpdate(MinecraftClient client) {
 					Text currentTitleText = ((InGameHudAccessor) client.inGameHud).getTitleText();
-					if (lastTitleText == null || !lastTitleText.equals(currentTitleText)) {
+					if ((lastTitleText == null && currentTitleText != null) || (lastTitleText != null && !lastTitleText.equals(currentTitleText))) {
 						lastTitleText = currentTitleText;
 						return true;
 					}
@@ -306,7 +286,7 @@ public final class DefaultUpdateEvents {
 				@Override
 				public boolean shouldUpdate(MinecraftClient client) {
 					Text currentSubtitleText = ((InGameHudAccessor) client.inGameHud).getSubtitleText();
-					if (lastSubtitleText == null || !lastSubtitleText.equals(currentSubtitleText)) {
+					if ((lastSubtitleText == null && currentSubtitleText != null) || (lastSubtitleText != null && !lastSubtitleText.equals(currentSubtitleText))) {
 						lastSubtitleText = currentSubtitleText;
 						return true;
 					}

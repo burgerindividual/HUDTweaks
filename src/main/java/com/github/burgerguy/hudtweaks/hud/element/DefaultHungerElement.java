@@ -59,7 +59,7 @@ public class DefaultHungerElement extends HudElement {
 			public void onPress() {
 				forceDisplay = !forceDisplay;
 				setMessage(new TranslatableText("hudtweaks.options.forceDisplay.display", forceDisplay ? I18n.translate("hudtweaks.options.forceDisplay.on.display") : I18n.translate("hudtweaks.options.forceDisplay.off.display")));
-				parentNode.setRequiresUpdate();
+				containerNode.setRequiresUpdate();
 			}
 		});
 	}
