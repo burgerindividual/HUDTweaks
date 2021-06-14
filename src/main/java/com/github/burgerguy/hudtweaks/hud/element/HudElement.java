@@ -29,7 +29,7 @@ public abstract class HudElement extends AbstractElementNode {
 	protected transient float yScale = 1.0f;
 	protected transient float xRotationAnchor = .5f;
 	protected transient float yRotationAnchor = .5f;
-	protected transient float rotationDegrees = 0;
+	protected transient float rotationDegrees = 0.0F;
 
 	// These are marked transient because we don't want them serialized at all
 	protected transient float cachedWidth;

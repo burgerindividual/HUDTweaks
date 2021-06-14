@@ -63,14 +63,12 @@ public abstract class InGameHudMixin extends DrawableHelper {
 			}
 		}
 
-		for (Object container : Sets.union(updatedElementsX, updatedElementsY)) {
-			if (container instanceof AbstractContainerNode) {
-				if (container instanceof HudElementContainer) {
-					HudElementContainer hudElementContainer = (HudElementContainer) container;
-					HudContainer.getMatrixCache().putMatrix(hudElementContainer.getInitialElement().getIdentifier(), hudElementContainer.getActiveElement().createMatrix());
-				}
-				((AbstractContainerNode) container).setUpdated();
+		for (AbstractContainerNode container : Sets.union(updatedElementsX, updatedElementsY)) {
+			if (container instanceof HudElementContainer hudElementContainer) {
+				// TODO: do we even need MatrixCache if we can just store them inside the element container?
+				HudContainer.getMatrixCache().putMatrix(hudElementContainer.getInitialElement().getIdentifier(), hudElementContainer.getActiveElement().createMatrix());
 			}
+			container.setUpdated();
 		}
 		client.getProfiler().pop();
 	}
@@ -81,7 +79,7 @@ public abstract class InGameHudMixin extends DrawableHelper {
 	}
 
 	@Inject(method = "renderHotbar", at = @At(value = "RETURN"))
-	private void renderHotbarReturn(float tickDelta, MatrixStack matrices, CallbackInfo callbackInfo) {
+	private void renderHotbarReturn(float tickDelta, MatrixStack matrices, CallbackInfo callbackInfo) { // FIXME: items in hotbar don't move with hotbar
 		HudContainer.getMatrixCache().tryPopMatrix(DefaultHotbarElement.IDENTIFIER, matrices);
 	}
 
@@ -101,20 +99,20 @@ public abstract class InGameHudMixin extends DrawableHelper {
 	}
 
 	// FIXME
-//	// injects before if (i <= 4)
-//	// this reverses the negation it does right before
-//	@ModifyVariable(method = "renderStatusBars",
-//			ordinal = 19,
-//			at = @At(value = "JUMP", opcode = Opcodes.IF_ICMPGT))
-//	private int flipHealthStackDirection(int healthPos) {
-//		HudElement activeHealthElement = HudContainer.getElementRegistry().getActiveElement(DefaultHealthElement.IDENTIFIER);
-//		if (activeHealthElement instanceof DefaultHealthElement && ((DefaultHealthElement) activeHealthElement).isFlipped()) {
-//			int originalHealthPos = client.getWindow().getScaledHeight() - 39;
-//			return originalHealthPos + originalHealthPos - healthPos;
-//		} else {
-//			return healthPos;
-//		}
-//	}
+	// injects before if (i <= 4)
+	// this reverses the negation it does right before
+	@ModifyVariable(method = "renderHealthBar",
+			ordinal = 15,
+			at = @At(value = "JUMP", opcode = Opcodes.IF_ICMPGT))
+	private int flipHealthStackDirection(int healthPos) {
+		HudElement activeHealthElement = HudContainer.getElementRegistry().getActiveElement(DefaultHealthElement.IDENTIFIER);
+		if (activeHealthElement instanceof DefaultHealthElement && ((DefaultHealthElement) activeHealthElement).isFlipped()) {
+			int originalHealthPos = client.getWindow().getScaledHeight() - 39;
+			return originalHealthPos + originalHealthPos - healthPos;
+		} else {
+			return healthPos;
+		}
+	}
 
 	@Inject(method = "renderStatusBars",
 			at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/client/gui/hud/InGameHud;getHeartCount(Lnet/minecraft/entity/LivingEntity;)I"))
