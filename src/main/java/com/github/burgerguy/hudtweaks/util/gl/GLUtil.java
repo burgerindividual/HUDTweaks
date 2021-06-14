@@ -54,16 +54,16 @@ public final class GLUtil {
 		int r = color >> 16 & 255;
 		int g = color >> 8 & 255;
 		int b = color & 255;
-		BufferBuilder bufferBuilder = (BufferBuilder) VCP_INSTANCE.getBuffer(dashedLineLayer);
+		BufferVertexConsumer consumer = (BufferBuilder) VCP_INSTANCE.getBuffer(dashedLineLayer);
 		setupDashes(1000, 3.0F, x1, y1, x2, y2, x3, y3, x4, y4);
 		MatrixStack.Entry entry = matrices.peek();
 		Matrix4f modelMatrix = entry.getModel();
 		Matrix3f normalMatrix = entry.getNormal();
 		float currentDist = 0.0F;
-		currentDist += addDashedLine(bufferBuilder, modelMatrix, normalMatrix, x1, y1, x2, y2, r, g, b, a, currentDist);
-		currentDist += addDashedLine(bufferBuilder, modelMatrix, normalMatrix, x2, y2, x3, y3, r, g, b, a, currentDist);
-		currentDist += addDashedLine(bufferBuilder, modelMatrix, normalMatrix, x3, y3, x4, y4, r, g, b, a, currentDist);
-		addDashedLine(bufferBuilder, modelMatrix, normalMatrix, x4, y4, x1, y1, r, g, b, a, currentDist);
+		currentDist += addDashedLine(consumer, modelMatrix, normalMatrix, x1, y1, x2, y2, r, g, b, a, currentDist);
+		currentDist += addDashedLine(consumer, modelMatrix, normalMatrix, x2, y2, x3, y3, r, g, b, a, currentDist);
+		currentDist += addDashedLine(consumer, modelMatrix, normalMatrix, x3, y3, x4, y4, r, g, b, a, currentDist);
+		addDashedLine(consumer, modelMatrix, normalMatrix, x4, y4, x1, y1, r, g, b, a, currentDist);
 		VCP_INSTANCE.draw(dashedLineLayer);
 	}
 
@@ -89,21 +89,21 @@ public final class GLUtil {
 	/**
 	 * @return the distance between the two provided points
 	 */
-	private static float addDashedLine(BufferBuilder bufferBuilder, Matrix4f modelMatrix, Matrix3f normalMatrix, float x1, float y1, float x2, float y2, int r, int g, int b, int a, float currentDist) {
+	private static float addDashedLine(BufferVertexConsumer consumer, Matrix4f modelMatrix, Matrix3f normalMatrix, float x1, float y1, float x2, float y2, int r, int g, int b, int a, float currentDist) {
 		float xDiff = x2 - x1;
 		float yDiff = y2 - y1;
 		float lineDist = MathHelper.sqrt(xDiff * xDiff + yDiff * yDiff);
 		xDiff /= lineDist;
 		yDiff /= lineDist;
 
-		bufferBuilder.vertex(modelMatrix, x1, y1, 0.0F).color(r, g, b, a).normal(normalMatrix, xDiff, yDiff, 0.0F);
-		bufferBuilder.putFloat(0, currentDist);
-		bufferBuilder.nextElement();
-		bufferBuilder.next();
-		bufferBuilder.vertex(modelMatrix, x2, y2, 0.0F).color(r, g, b, a).normal(normalMatrix, xDiff, yDiff, 0.0F);
-		bufferBuilder.putFloat(0, currentDist + lineDist);
-		bufferBuilder.nextElement();
-		bufferBuilder.next();
+		consumer.vertex(modelMatrix, x1, y1, 0.0F).color(r, g, b, a).normal(normalMatrix, xDiff, yDiff, 0.0F);
+		consumer.putFloat(0, currentDist);
+		consumer.nextElement();
+		consumer.next();
+		consumer.vertex(modelMatrix, x2, y2, 0.0F).color(r, g, b, a).normal(normalMatrix, xDiff, yDiff, 0.0F);
+		consumer.putFloat(0, currentDist + lineDist);
+		consumer.nextElement();
+		consumer.next();
 		return lineDist;
 	}
 
