@@ -22,8 +22,9 @@ repositories {
 	}
 }
 
-minecraft {
+loom {
     accessWidener = file("src/main/resources/hudtweaks.accesswidener")
+	shareCaches = true
 }
 
 group = project.maven_group

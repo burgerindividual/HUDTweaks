@@ -121,19 +121,6 @@ public abstract class InGameHudMixin extends DrawableHelper {
 		HudContainer.getMatrixCache().tryPushMatrix(DefaultHungerElement.IDENTIFIER, matrices);
 	}
 
-	// this makes sure the aa will equal zero so the if (aa == 0) will pass
-	@ModifyVariable(method = "renderStatusBars",
-			ordinal = 11,
-			at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/client/gui/hud/InGameHud;getHeartCount(Lnet/minecraft/entity/LivingEntity;)I"))
-	private int forceRenderHunger(int mountHealth) {
-		HudElement activeHungerElement = HudContainer.getElementRegistry().getActiveElement(DefaultHungerElement.IDENTIFIER);
-		if (activeHungerElement instanceof DefaultHungerElement && ((DefaultHungerElement) activeHungerElement).getForceDisplay()) {
-			return 0;
-		} else {
-			return mountHealth;
-		}
-	}
-
 	@Inject(method = "renderStatusBars",
 			at = @At(value = "INVOKE_STRING", target = "Lnet/minecraft/util/profiler/Profiler;swap(Ljava/lang/String;)V",
 			args = "ldc=air"))

@@ -8,9 +8,12 @@ import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.Vec3f;
+import net.minecraft.util.math.Vector4f;
 
 public class ArrowButtonWidget extends ButtonWidget {
-	private static final Identifier ARROWS_LOCATION = new Identifier(HudTweaksMod.MOD_ID, "arrows.png");
+	private static final Identifier ARROWS_LOCATION = new Identifier(HudTweaksMod.MOD_ID, "textures/arrows.png");
 	private static final int TEXTURE_SIZE = 16;
 	private final boolean isLeft;
 
@@ -21,7 +24,6 @@ public class ArrowButtonWidget extends ButtonWidget {
 
 	@Override
 	public void renderButton(MatrixStack matrices, int mouseX, int mouseY, float delta) {
-		RenderSystem.setShader(GameRenderer::getPositionTexShader);
 		RenderSystem.setShaderTexture(0, ARROWS_LOCATION);
 		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, this.alpha);
 		RenderSystem.enableBlend();

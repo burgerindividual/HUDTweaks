@@ -5,6 +5,10 @@ plugins {
 
 group = project.maven_group + "." + rootProject.name
 
+loom {
+	shareCaches = true
+}
+
 publishing {
 	publications {
 		mavenJava(MavenPublication) {
