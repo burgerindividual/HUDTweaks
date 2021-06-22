@@ -98,22 +98,6 @@ public abstract class InGameHudMixin extends DrawableHelper {
 		HudContainer.getMatrixCache().tryPushMatrix(DefaultHealthElement.IDENTIFIER, matrices);
 	}
 
-	// FIXME
-	// injects before if (i <= 4)
-	// this reverses the negation it does right before
-	@ModifyVariable(method = "renderHealthBar",
-			ordinal = 15,
-			at = @At(value = "JUMP", opcode = Opcodes.IF_ICMPGT))
-	private int flipHealthStackDirection(int healthPos) {
-		HudElement activeHealthElement = HudContainer.getElementRegistry().getActiveElement(DefaultHealthElement.IDENTIFIER);
-		if (activeHealthElement instanceof DefaultHealthElement && ((DefaultHealthElement) activeHealthElement).isFlipped()) {
-			int originalHealthPos = client.getWindow().getScaledHeight() - 39;
-			return originalHealthPos + originalHealthPos - healthPos;
-		} else {
-			return healthPos;
-		}
-	}
-
 	@Inject(method = "renderStatusBars",
 			at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/client/gui/hud/InGameHud;getHeartCount(Lnet/minecraft/entity/LivingEntity;)I"))
 	private void renderHunger(MatrixStack matrices, CallbackInfo callbackInfo) {

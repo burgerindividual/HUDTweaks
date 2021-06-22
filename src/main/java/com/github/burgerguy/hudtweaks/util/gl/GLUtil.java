@@ -67,6 +67,11 @@ public final class GLUtil {
 		VCP_INSTANCE.draw(dashedLineLayer);
 	}
 
+	/**
+	 * This code is used to set up the dashes in a way that the dash length will change to make sure it wraps around the
+	 * top left corner smoothly. It will round to the nearest length required to make this happen, so sometimes the dashes
+	 * will be smaller or larger by a bit on some elements vs others.
+	 */
 	private static void setupDashes(int periodMillis, float targetDashLength, float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4) {
 		float targetPeriodLength = targetDashLength * 2.0F;
 		float totalDistance = 0;

@@ -24,7 +24,6 @@ repositories {
 
 loom {
     accessWidener = file("src/main/resources/hudtweaks.accesswidener")
-	shareCaches = true
 }
 
 group = project.maven_group
@@ -50,6 +49,10 @@ allprojects {
 		filesMatching("fabric.mod.json") {
 			expand "version": project.version
 		}
+	}
+
+	loom {
+		shareCaches = true
 	}
 	
 	// ensure that the encoding is set to UTF-8, no matter what the system default is
