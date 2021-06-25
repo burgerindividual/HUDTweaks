@@ -6,11 +6,13 @@ import com.github.burgerguy.hudtweaks.util.Util;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.Matrix4f;
+import net.minecraft.util.math.Quaternion;
+import net.minecraft.util.math.Vec3f;
 
 public class DefaultSubtitleElement extends HudElement {
 	public static final HTIdentifier IDENTIFIER = new HTIdentifier(Util.MINECRAFT_MODID, new HTIdentifier.ElementId("subtitle", "hudtweaks.element.subtitle"));
-	private static final int SCALE = 2;
-	private static final int Y_OFFSET = 5;
+	private static final float SCALE = 2.0F;
+	private static final float Y_OFFSET = 5.0F;
 
 	public DefaultSubtitleElement() {
 		super(IDENTIFIER, "onSubtitleTextChange");
@@ -32,20 +34,25 @@ public class DefaultSubtitleElement extends HudElement {
 	
 	@Override
 	protected float calculateDefaultX(MinecraftClient client) {
-		return (client.getWindow().getScaledWidth() - getWidth()) / 2.0f;
+		return (client.getWindow().getScaledWidth() - getWidth()) / 2.0F;
 	}
 	
 	@Override
 	protected float calculateDefaultY(MinecraftClient client) {
-		return client.getWindow().getScaledHeight() / 2.0f + Y_OFFSET * SCALE;
+		return client.getWindow().getScaledHeight() / 2.0F + Y_OFFSET * SCALE;
 	}
 
 	@Override
 	// TODO: X scaling is weird here, scales from middle rather than left side
-	public Matrix4f createMatrix() {
-		Matrix4f matrix = Matrix4f.scale(xScale, yScale, 1);
-		matrix.multiply(Matrix4f.translate((getX() - getDefaultX()) / SCALE / xScale,
-				((getY() - getDefaultY()) / SCALE / yScale) - (Y_OFFSET - Y_OFFSET / yScale), 1));
-		return matrix;
+	protected void createMatrix() { // TODO: rotation broken on this, also has weird offset
+		Quaternion quaternion = new Quaternion(Vec3f.POSITIVE_Z, rotationDegrees, true);
+		Matrix4f matrix = Matrix4f.translate(getX() / SCALE, getY() / SCALE, 0);
+		matrix.multiply(Matrix4f.translate(getXRotationAnchor() * getWidth(), getYRotationAnchor() * getHeight(), 0));
+		matrix.multiply(quaternion);
+		matrix.multiply(Matrix4f.translate(-getXRotationAnchor() * getWidth(), -getYRotationAnchor() * getHeight(), 0));
+		matrix.multiply(Matrix4f.translate(-getDefaultX() / SCALE, (-getDefaultY() / SCALE) + Y_OFFSET, 0));
+		matrix.multiply(Matrix4f.scale(xScale, yScale, 1));
+		matrix.multiply(Matrix4f.translate(0, -Y_OFFSET, 0));
+		cachedMatrix = matrix;
 	}
 }

@@ -1,11 +1,13 @@
 package com.github.burgerguy.hudtweaks.hud.element;
 
 import com.github.burgerguy.hudtweaks.api.HudElementOverride;
+import com.github.burgerguy.hudtweaks.hud.HTIdentifier;
 import com.github.burgerguy.hudtweaks.hud.tree.AbstractContainerNode;
 import com.github.burgerguy.hudtweaks.util.Util;
 import com.github.burgerguy.hudtweaks.util.gl.DrawTest;
 import com.google.gson.JsonElement;
 import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.client.util.math.MatrixStack;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -18,6 +20,7 @@ public class HudElementContainer extends AbstractContainerNode {
 	private final List<HudElementOverride> overrides = new ArrayList<>(2);
 
 	protected HudElementWidget widget;
+	protected boolean matrixPushed;
 	protected DrawTest drawTest;
 	protected Boolean drawTestResult;
 	protected boolean drawTestedSinceClear;
@@ -28,13 +31,17 @@ public class HudElementContainer extends AbstractContainerNode {
 		// it has to be on the render thread and it has
 		// to be after lwjgl has initialized
 		RenderSystem.recordRenderCall(() -> drawTest = new DrawTest());
+		initialElement.setContainerNode(this);
+		initialElement.init();
 	}
 
 	public void addOverride(HudElementOverride override) {
 		overrides.add(override);
+		HudElement element = override.getElement();
+		element.setContainerNode(this);
+		element.init();
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public HudElement getInitialElement() {
 		return initialElement;
@@ -43,7 +50,6 @@ public class HudElementContainer extends AbstractContainerNode {
 	/**
 	 * Gets the first enabled override in the list, otherwise the initial element.
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
 	public HudElement getActiveElement() {
 		if (!overrides.isEmpty()) {
@@ -82,6 +88,37 @@ public class HudElementContainer extends AbstractContainerNode {
 					Util.LOGGER.error("Override specified in config doesn't exist in override map, skipping...");
 			}
 		}
+	}
+
+	public void setupActiveMatrix() {
+		getActiveElement().createMatrix();
+	}
+
+	public boolean tryPushMatrix(HTIdentifier elementIdentifier, MatrixStack... matrixStacks) {
+		// we can't push more than once at a time and we can't push if the element isn't active.
+		HudElement activeElement = getActiveElement();
+		if (!matrixPushed && elementIdentifier.equals(activeElement.getIdentifier())) {
+			for (MatrixStack matrixStack : matrixStacks) {
+				matrixStack.push();
+				matrixStack.peek().getModel().multiply(activeElement.getMatrix());
+			}
+			matrixPushed = true;
+			return true;
+		}
+		return false;
+	}
+
+	public boolean tryPopMatrix(HTIdentifier elementIdentifier, MatrixStack... matrixStacks) {
+		// we can't pop if it hasn't been pushed and we can't pop if the element isn't active.
+		HudElement activeElement = getActiveElement();
+		if (matrixPushed && elementIdentifier.equals(activeElement.getIdentifier())) {
+			for (MatrixStack matrixStack : matrixStacks) {
+				matrixStack.pop();
+			}
+			matrixPushed = false;
+			return true;
+		}
+		return false;
 	}
 
 	public void startDrawTest() {

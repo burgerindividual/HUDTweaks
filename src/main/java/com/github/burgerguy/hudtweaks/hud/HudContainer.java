@@ -8,7 +8,6 @@ public final class HudContainer {
 	}
 
 	private static final ElementRegistry ELEMENT_REGISTRY = new ElementRegistry();
-	private static final MatrixCache MATRIX_CACHE = new MatrixCache();
 	private static final UpdateEventRegistry EVENT_REGISTRY = new UpdateEventRegistry();
 	private static final RelativeTreeRootScreen SCREEN_ROOT = new RelativeTreeRootScreen();
 
@@ -20,10 +19,6 @@ public final class HudContainer {
 
 	public static ElementRegistry getElementRegistry() {
 		return ELEMENT_REGISTRY;
-	}
-
-	public static MatrixCache getMatrixCache() {
-		return MATRIX_CACHE;
 	}
 
 	public static RelativeTreeRootScreen getScreenRoot() {

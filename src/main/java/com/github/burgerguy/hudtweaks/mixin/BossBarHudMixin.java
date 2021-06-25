@@ -1,7 +1,7 @@
 package com.github.burgerguy.hudtweaks.mixin;
 
-import com.github.burgerguy.hudtweaks.hud.HudContainer;
 import com.github.burgerguy.hudtweaks.hud.element.DefaultBossBarElement;
+import com.github.burgerguy.hudtweaks.util.RenderStateUtil;
 import net.minecraft.client.gui.hud.BossBarHud;
 import net.minecraft.client.util.math.MatrixStack;
 import org.spongepowered.asm.mixin.Mixin;
@@ -14,11 +14,11 @@ public abstract class BossBarHudMixin {
 
 	@Inject(method = "render", at = @At(value = "HEAD"))
 	private void renderBossBarHead(MatrixStack matrices, CallbackInfo ci) {
-		HudContainer.getMatrixCache().tryPushMatrix(DefaultBossBarElement.IDENTIFIER, matrices);
+		RenderStateUtil.startRender(DefaultBossBarElement.IDENTIFIER, matrices);
 	}
 
 	@Inject(method = "render", at = @At(value = "RETURN"))
 	private void renderBossBarReturn(MatrixStack matrices, CallbackInfo ci) {
-		HudContainer.getMatrixCache().tryPopMatrix(DefaultBossBarElement.IDENTIFIER, matrices);
+		RenderStateUtil.finishRender(DefaultBossBarElement.IDENTIFIER, matrices);
 	}
 }

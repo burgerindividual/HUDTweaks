@@ -39,9 +39,8 @@ public abstract class AbstractElementNode {
 		this.containerNode = containerNode;
 	}
 
-	@SuppressWarnings("unchecked")
-	public <T extends AbstractContainerNode> T getContainerNode() {
-		return (T) containerNode;
+	public AbstractContainerNode getContainerNode() {
+		return containerNode;
 	}
 
 	public final HTIdentifier getIdentifier() {

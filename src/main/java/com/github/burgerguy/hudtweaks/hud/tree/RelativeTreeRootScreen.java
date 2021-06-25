@@ -13,15 +13,13 @@ public final class RelativeTreeRootScreen extends AbstractContainerNode {
 		screenElement.setContainerNode(this);
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
-	public AbstractElementNode getInitialElement() {
+	public ScreenElement getInitialElement() {
 		return screenElement;
 	}
 	
-	@SuppressWarnings("unchecked")
 	@Override
-	public AbstractElementNode getActiveElement() {
+	public ScreenElement getActiveElement() {
 		return screenElement;
 	}
 

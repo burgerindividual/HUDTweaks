@@ -4,13 +4,9 @@ import com.github.burgerguy.hudtweaks.HudTweaksMod;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.Vec3f;
-import net.minecraft.util.math.Vector4f;
 
 public class ArrowButtonWidget extends ButtonWidget {
 	private static final Identifier ARROWS_LOCATION = new Identifier(HudTweaksMod.MOD_ID, "textures/arrows.png");

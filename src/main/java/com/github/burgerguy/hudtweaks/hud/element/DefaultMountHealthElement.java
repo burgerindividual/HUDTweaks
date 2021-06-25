@@ -26,8 +26,7 @@ public class DefaultMountHealthElement extends HudElement {
 		Entity cameraEntity = client.getCameraEntity();
 		if (cameraEntity instanceof PlayerEntity) {
 			Entity ridingEntity = cameraEntity.getVehicle();
-			if (ridingEntity instanceof LivingEntity) {
-				LivingEntity livingEntity = (LivingEntity) ridingEntity;
+			if (ridingEntity instanceof LivingEntity livingEntity) {
 				if (livingEntity.isLiving()) {
 					ridingHeartCount = MathHelper.clamp((int) (livingEntity.getMaxHealth() + 0.5F) / 2, 0, 30);
 				}

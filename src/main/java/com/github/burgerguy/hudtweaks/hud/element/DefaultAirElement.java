@@ -29,8 +29,7 @@ public class DefaultAirElement extends HudElement {
 		Entity cameraEntity = client.getCameraEntity();
 		if (cameraEntity instanceof PlayerEntity) {
 			Entity ridingEntity = cameraEntity.getVehicle();
-			if (ridingEntity instanceof LivingEntity) {
-				LivingEntity livingEntity = (LivingEntity) ridingEntity;
+			if (ridingEntity instanceof LivingEntity livingEntity) {
 				if (livingEntity.isLiving()) {
 					int ridingHeartCount = MathHelper.clamp((int) (livingEntity.getMaxHealth() + 0.5F) / 2, 0, 30);
 					return ((int)Math.ceil(ridingHeartCount / 10.0D) - 1) * 10;

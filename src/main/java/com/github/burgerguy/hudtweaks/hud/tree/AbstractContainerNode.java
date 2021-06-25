@@ -21,9 +21,9 @@ public abstract class AbstractContainerNode {
 		return yTreeChildren;
 	}
 
-	public abstract <T extends AbstractElementNode> T getInitialElement();
+	public abstract AbstractElementNode getInitialElement();
 
-	public abstract <T extends AbstractElementNode> T getActiveElement();
+	public abstract AbstractElementNode getActiveElement();
 
 	/**
 	 * Passing null to the UpdateEvent will try a manual update.

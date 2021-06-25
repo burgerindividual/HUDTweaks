@@ -10,22 +10,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Objects;
 import java.util.Optional;
 
-public final class HTIdentifier {
-	private final ModId modId;
-	private final ElementId elementId;
-
-	public HTIdentifier(ModId modId, ElementId elementId) {
-		this.modId = modId;
-		this.elementId = elementId;
-	}
-
-	public ModId getModId() {
-		return modId;
-	}
-
-	public ElementId getElementId() {
-		return elementId;
-	}
+public record HTIdentifier(ModId modId, ElementId elementId) {
 
 	/**
 	 * Should ONLY be used for profile loading/saving.

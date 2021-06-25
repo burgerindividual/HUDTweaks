@@ -112,16 +112,16 @@ public class HudElementWidget implements Drawable, Element, Selectable, AutoClos
 	}
 
 	private boolean isChildFocused() {
-		for(AbstractContainerNode node : elementContainer.getXChildren()) {
-			if (node instanceof HudElementContainer) {
-				HudElement element = node.getActiveElement();
+		for(AbstractContainerNode containerNode : elementContainer.getXChildren()) {
+			if (containerNode instanceof HudElementContainer hudElementContainer) {
+				HudElement element = hudElementContainer.getActiveElement();
 				if (elementContainer.getWidget().isFocused() && element.getXPosType().equals(PosType.RELATIVE)) return true;
 			}
 		}
 
-		for(AbstractContainerNode node : elementContainer.getYChildren()) {
-			if (node instanceof HudElementContainer) {
-				HudElement element = node.getActiveElement();
+		for(AbstractContainerNode containerNode : elementContainer.getYChildren()) {
+			if (containerNode instanceof HudElementContainer hudElementContainer) {
+				HudElement element = hudElementContainer.getActiveElement();
 				if (elementContainer.getWidget().isFocused() && element.getYPosType().equals(PosType.RELATIVE)) return true;
 			}
 		}

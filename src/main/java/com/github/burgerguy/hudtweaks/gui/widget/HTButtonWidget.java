@@ -4,7 +4,6 @@ import com.github.burgerguy.hudtweaks.util.gl.GLUtil;
 import com.github.burgerguy.hudtweaks.util.gui.OverflowTextRenderer;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.PressableWidget;
 import net.minecraft.client.util.math.MatrixStack;

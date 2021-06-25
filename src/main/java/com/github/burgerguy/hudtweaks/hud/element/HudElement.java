@@ -38,6 +38,7 @@ public abstract class HudElement extends AbstractElementNode {
 	protected transient float cachedDefaultY;
 	protected transient float cachedX;
 	protected transient float cachedY;
+	protected transient Matrix4f cachedMatrix;
 
 	public HudElement(HTIdentifier identifier, String... updateEvents) {
 		super(identifier, updateEvents);
@@ -45,7 +46,7 @@ public abstract class HudElement extends AbstractElementNode {
 
 	public enum PosType {
 		/**
-		 Keeps the position in the unmodified spot, but allows for offset.
+		 * Keeps the position in the unmodified spot, but allows for offset.
 		 */
 		@SerializedName(value = "default", alternate = "DEFAULT")
 		DEFAULT,
@@ -56,6 +57,11 @@ public abstract class HudElement extends AbstractElementNode {
 		 */
 		@SerializedName(value = "relative", alternate = "RELATIVE")
 		RELATIVE
+	}
+
+	@Override
+	public HudElementContainer getContainerNode() {
+		return (HudElementContainer) containerNode;
 	}
 
 	protected abstract float calculateWidth(MinecraftClient client);
@@ -114,7 +120,7 @@ public abstract class HudElement extends AbstractElementNode {
 		}
 	}
 
-	public Matrix4f createMatrix() {
+	protected void createMatrix() { // TODO: fix weird offset when scaling and rotating
 		Quaternion quaternion = new Quaternion(Vec3f.POSITIVE_Z, rotationDegrees, true);
 		Matrix4f matrix = Matrix4f.translate(getX(), getY(), 0);
 		matrix.multiply(Matrix4f.translate(getXRotationAnchor() * getWidth(), getYRotationAnchor() * getHeight(), 0));
@@ -122,7 +128,11 @@ public abstract class HudElement extends AbstractElementNode {
 		matrix.multiply(Matrix4f.translate(-getXRotationAnchor() * getWidth(), -getYRotationAnchor() * getHeight(), 0));
 		matrix.multiply(Matrix4f.scale(xScale, yScale, 1));
 		matrix.multiply(Matrix4f.translate(-getDefaultX(), -getDefaultY(), 0));
-		return matrix;
+		cachedMatrix = matrix;
+	}
+
+	public Matrix4f getMatrix() {
+		return cachedMatrix;
 	}
 
 	public PosType getXPosType() {

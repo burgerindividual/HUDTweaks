@@ -1,14 +1,11 @@
 package com.github.burgerguy.hudtweaks.util.gl;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.render.*;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Matrix3f;
 import net.minecraft.util.math.Matrix4f;
-
-import java.nio.Buffer;
 
 public final class GLUtil {
 	private GLUtil() {

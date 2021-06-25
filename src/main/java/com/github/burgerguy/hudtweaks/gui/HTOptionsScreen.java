@@ -47,6 +47,7 @@ public class HTOptionsScreen extends Screen {
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
 	protected void init() {
 		super.init();
 
@@ -111,12 +112,10 @@ public class HTOptionsScreen extends Screen {
 			// reverse order
 			for (int i = children().size() - 1; i >= 0; i--) {
 				Element element = children().get(i);
-				if (element instanceof Drawable && !(element instanceof ClickableWidget)) {
+				if (element instanceof Drawable) {
 					((Drawable) element).render(matrixStack, mouseX, mouseY, delta);
 				}
 			}
-
-			super.render(matrixStack, mouseX, mouseY, delta);
 		} else {
 			Text text = new TranslatableText("hudtweaks.options.no_world_prompt");
 			List<OrderedText> wrappedLines = textRenderer.wrapLines(text, width);
@@ -194,16 +193,16 @@ public class HTOptionsScreen extends Screen {
 			element.fillSidebar(sidebar);
 			sidebar.setSidebarOptionsHeightSupplier(element::getSidebarOptionsHeight);
 			elementLabel.setHudElementContainer(focusedHudElement.getElementContainer());
-		}
+		} else {
+			if (focused == null) {
+				focusedHudElement = null;
+				sidebar.clearDrawables();
+				sidebar.setSidebarOptionsHeightSupplier(null);
+				if (elementLabel != null) elementLabel.setHudElementContainer(null);
+			}
 
-		if (focused == null) {
-			focusedHudElement = null;
-			sidebar.clearDrawables();
-			sidebar.setSidebarOptionsHeightSupplier(null);
-			if (elementLabel != null) elementLabel.setHudElementContainer(null);
+			super.setFocused(focused);
 		}
-
-		super.setFocused(focused);
 	}
 
 	@Override
