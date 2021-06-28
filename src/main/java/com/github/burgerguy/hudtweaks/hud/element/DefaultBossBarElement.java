@@ -73,7 +73,8 @@ public class DefaultBossBarElement extends HudElement {
 	@Override
 	public void fillSidebar(SidebarWidget sidebar) {
 		super.fillSidebar(sidebar);
-		sidebar.addDrawable(new HTSliderWidget(4, 276, sidebar.width - 8, 14, maxHeight) {
+		sidebar.addPadding(6);
+		sidebar.addEntry(new SidebarWidget.DrawableEntry<>(y -> new HTSliderWidget(4, y, sidebar.width - 8, 14, maxHeight) {
 			@Override
 			protected void updateMessage() {
 				setMessage(new TranslatableText("hudtweaks.options.bossbar.style.screen_percent", Util.RELATIVE_POS_FORMATTER.format(value)));
@@ -100,12 +101,6 @@ public class DefaultBossBarElement extends HudElement {
 				value = MathHelper.clamp(yRelativePos, 0.0D, 1.0D);
 				updateMessage();
 			}
-		});
+		}, 14));
 	}
-
-	@Override
-	public int getSidebarOptionsHeight() {
-		return super.getSidebarOptionsHeight() + 25;
-	}
-
 }

@@ -85,6 +85,8 @@ public class HTOptionsScreen extends Screen {
 			// this is added to the start of the list so it is selected before anything else
 			((List<Element>) children()).add(0, sidebar); // only way to do this is with unchecked casts
 
+			setFocused(sidebar); // we basically always want the sidebar to be focused, the things inside the sidebar are the ones that are
+
 			elementLabel = new ElementLabelWidget(sidebar.width / 2, height - 17, sidebar.width - 42);
 			ArrowButtonWidget leftArrow = new ArrowButtonWidget(5, height - 21, true, new TranslatableText("hudtweaks.options.previous_element.name"), b -> changeHudElementFocus(false));
 			ArrowButtonWidget rightArrow = new ArrowButtonWidget(sidebar.width - 21, height - 21, false, new TranslatableText("hudtweaks.options.next_element.name"), b -> changeHudElementFocus(true));
@@ -188,19 +190,16 @@ public class HTOptionsScreen extends Screen {
 	public void setFocused(Element focused) {
 		if (focused instanceof HudElementWidget && !focused.equals(focusedHudElement)) {
 			focusedHudElement = (HudElementWidget) focused;
-			sidebar.clearDrawables();
+			sidebar.clearEntries();
 			HudElement element = focusedHudElement.getElementContainer().getActiveElement();
 			element.fillSidebar(sidebar);
-			sidebar.setSidebarOptionsHeightSupplier(element::getSidebarOptionsHeight);
+			sidebar.setupEntries();
 			elementLabel.setHudElementContainer(focusedHudElement.getElementContainer());
+		} else if (focused == null) {
+			focusedHudElement = null;
+			sidebar.clearEntries();
+			if (elementLabel != null) elementLabel.setHudElementContainer(null);
 		} else {
-			if (focused == null) {
-				focusedHudElement = null;
-				sidebar.clearDrawables();
-				sidebar.setSidebarOptionsHeightSupplier(null);
-				if (elementLabel != null) elementLabel.setHudElementContainer(null);
-			}
-
 			super.setFocused(focused);
 		}
 	}

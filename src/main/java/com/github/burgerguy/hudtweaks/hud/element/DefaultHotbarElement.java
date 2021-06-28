@@ -35,7 +35,7 @@ public class DefaultHotbarElement extends HudElement {
 	
 	@Override
 	protected float calculateHeight(MinecraftClient client) {
-		return 24;
+		return 23;
 	}
 	
 	@Override
@@ -45,6 +45,6 @@ public class DefaultHotbarElement extends HudElement {
 	
 	@Override
 	protected float calculateDefaultY(MinecraftClient client) {
-		return client.getWindow().getScaledHeight() - 24;
+		return client.getWindow().getScaledHeight() - 23;
 	}
 }

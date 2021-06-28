@@ -54,18 +54,14 @@ public class DefaultHungerElement extends HudElement {
 	@Override
 	public void fillSidebar(SidebarWidget sidebar) {
 		super.fillSidebar(sidebar);
-		sidebar.addDrawable(new HTButtonWidget(4, 276, sidebar.width - 8, 14, new TranslatableText("hudtweaks.options.forceDisplay.display", forceDisplay ? I18n.translate("hudtweaks.options.forceDisplay.on.display") : I18n.translate("hudtweaks.options.forceDisplay.off.display"))) {
+		sidebar.addPadding(6);
+		sidebar.addEntry(new SidebarWidget.DrawableEntry<>(y -> new HTButtonWidget(4, y, sidebar.width - 8, 14, new TranslatableText("hudtweaks.options.forceDisplay.display", forceDisplay ? I18n.translate("hudtweaks.options.forceDisplay.on.display") : I18n.translate("hudtweaks.options.forceDisplay.off.display"))) {
 			@Override
 			public void onPress() {
 				forceDisplay = !forceDisplay;
 				setMessage(new TranslatableText("hudtweaks.options.forceDisplay.display", forceDisplay ? I18n.translate("hudtweaks.options.forceDisplay.on.display") : I18n.translate("hudtweaks.options.forceDisplay.off.display")));
 				containerNode.setRequiresUpdate();
 			}
-		});
-	}
-
-	@Override
-	public int getSidebarOptionsHeight() {
-		return super.getSidebarOptionsHeight() + 25;
+		}, 14));
 	}
 }

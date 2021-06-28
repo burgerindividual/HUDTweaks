@@ -3,9 +3,9 @@ package com.github.burgerguy.hudtweaks.gui.widget;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.text.Text;
 
+// TODO: this class is stupid. back this with a real number and quit messing with strings.
 public class NumberFieldWidget extends HTTextFieldWidget implements ValueUpdatable {
-	protected Number value;
-	
+
 	public NumberFieldWidget(TextRenderer textRenderer, int x, int y, int width, int height, Text text) {
 		super(textRenderer, x, y, width, height, text);
 	}

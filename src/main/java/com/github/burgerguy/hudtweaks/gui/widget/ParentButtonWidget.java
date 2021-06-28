@@ -3,6 +3,7 @@ package com.github.burgerguy.hudtweaks.gui.widget;
 import com.github.burgerguy.hudtweaks.hud.HTIdentifier;
 import com.github.burgerguy.hudtweaks.hud.HudContainer;
 import com.github.burgerguy.hudtweaks.hud.tree.AbstractContainerNode;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 
@@ -47,7 +48,13 @@ public class ParentButtonWidget extends HTButtonWidget {
 
 	@Override
 	public void onPress() {
-		if (++currentIndex >= keyHelper.length) currentIndex = 0;
+		currentIndex += Screen.hasShiftDown() ? -1 : 1;
+
+		if (currentIndex >= keyHelper.length) {
+			currentIndex = 0;
+		} else if (currentIndex <= -1) {
+			currentIndex = keyHelper.length - 1;
+		}
 		AbstractContainerNode newParentNode = innerMap.get(keyHelper[currentIndex]);
 		setMessage(newParentNode);
 

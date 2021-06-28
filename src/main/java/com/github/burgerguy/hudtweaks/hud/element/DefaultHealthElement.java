@@ -84,18 +84,14 @@ public class DefaultHealthElement extends HudElement {
 	@Override
 	public void fillSidebar(SidebarWidget sidebar) {
 		super.fillSidebar(sidebar);
-		sidebar.addDrawable(new HTButtonWidget(4, 276, sidebar.width - 8, 14, new TranslatableText("hudtweaks.options.health.style.display", flipped ? I18n.translate("hudtweaks.options.health.style.flipped.display") : I18n.translate("hudtweaks.options.health.style.normal.display"))) {
+		sidebar.addPadding(6);
+		sidebar.addEntry(new SidebarWidget.DrawableEntry<>(y -> new HTButtonWidget(4, y, sidebar.width - 8, 14, new TranslatableText("hudtweaks.options.health.style.display", flipped ? I18n.translate("hudtweaks.options.health.style.flipped.display") : I18n.translate("hudtweaks.options.health.style.normal.display"))) {
 			@Override
 			public void onPress() {
 				flipped = !flipped;
 				setMessage(new TranslatableText("hudtweaks.options.health.style.display", flipped ? I18n.translate("hudtweaks.options.health.style.flipped.display") : I18n.translate("hudtweaks.options.health.style.normal.display")));
 				containerNode.setRequiresUpdate();
 			}
-		});
-	}
-
-	@Override
-	public int getSidebarOptionsHeight() {
-		return super.getSidebarOptionsHeight() + 25;
+		},  14));
 	}
 }

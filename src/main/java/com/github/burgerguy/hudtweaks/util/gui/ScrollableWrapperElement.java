@@ -1,5 +1,6 @@
 package com.github.burgerguy.hudtweaks.util.gui;
 
+import com.github.burgerguy.hudtweaks.gui.widget.SidebarWidget;
 import net.minecraft.client.gui.Element;
 
 import java.util.function.DoubleSupplier;

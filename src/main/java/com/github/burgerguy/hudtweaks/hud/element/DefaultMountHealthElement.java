@@ -42,7 +42,6 @@ public class DefaultMountHealthElement extends HudElement {
 	
 	@Override
 	protected float calculateDefaultY(MinecraftClient client) {
-		// TODO: i think we can do getHeight here instead of getRawHeight, check this
 		return client.getWindow().getScaledHeight() - 30 - getHeight();
 	}
 }

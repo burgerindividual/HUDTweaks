@@ -20,7 +20,7 @@ public final class HTRenderLayers extends RenderLayer {
 	private static GlUniform dashOffset;
 	private static GlUniform dashLength;
 
-	public static void initializeShaders() {
+	public static void initializeShaders() { // TODO: shaders break on reload
 		ShaderEffectManager.getInstance().manageCoreShader(new Identifier(HudTweaksMod.MOD_ID, "dashed_lines"), HTVertexFormats.LINES_MODIFIED, s -> {
 			net.minecraft.client.render.Shader program = s.getProgram();
 			dashedLinesShader = new RenderPhase.Shader(() -> program);
