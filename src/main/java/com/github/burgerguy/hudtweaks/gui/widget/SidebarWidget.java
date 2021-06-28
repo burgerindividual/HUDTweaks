@@ -98,6 +98,7 @@ public class SidebarWidget extends AbstractParentElement implements Drawable, Se
 		}
 		drawables.clear();
 		elements.clear();
+		elementEntryMap.clear();
 		currentDrawY = 0;
 	}
 

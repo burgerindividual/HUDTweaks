@@ -49,6 +49,7 @@ allprojects {
 		minecraft "com.mojang:minecraft:${project.minecraft_version}"
 		mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
 		modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+
 	}
 
 	configurations {
@@ -83,6 +84,10 @@ allprojects {
 }
 
 dependencies {
+	modRuntime ("com.github.burgerguy:databreaker:bd059551a9") {
+		exclude module: "fabric-loader"
+	}
+
 	afterEvaluate {
 		implementation project(":HUDTweaks-apihelper")
 		include project(":HUDTweaks-apihelper")

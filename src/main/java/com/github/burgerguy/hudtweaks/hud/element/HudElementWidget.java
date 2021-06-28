@@ -16,7 +16,7 @@ import net.minecraft.util.math.Vec2f;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
-public class HudElementWidget implements Drawable, Element, Selectable, AutoCloseable, Comparable<HudElementWidget> {
+public class HudElementWidget implements Drawable, Element, Selectable, AutoCloseable {
 	private static final int OUTLINE_COLOR_NORMAL = 0xFFFF0000;
 	private static final int OUTLINE_COLOR_SELECTED = 0xFF0000FF;
 
@@ -135,17 +135,6 @@ public class HudElementWidget implements Drawable, Element, Selectable, AutoClos
 
 	public HudElementContainer getElementContainer() {
 		return elementContainer;
-	}
-
-	// This makes sure that the smallest elements get selected first if there are multiple on top of another.
-	@Override
-	public int compareTo(HudElementWidget other) {
-		HudElement thisElement = elementContainer.getActiveElement();
-		HudElement otherElement = other.getElementContainer().getActiveElement();
-		return Float.compare(
-				thisElement.getWidth() * thisElement.getHeight(),
-				otherElement.getWidth() * otherElement.getHeight()
-				);
 	}
 
 	@Override

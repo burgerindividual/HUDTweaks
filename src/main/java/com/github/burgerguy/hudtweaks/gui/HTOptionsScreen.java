@@ -14,20 +14,66 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.Drawable;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.OrderedText;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 
-import java.util.List;
-import java.util.ListIterator;
+import java.util.*;
 import java.util.function.Supplier;
 
 public class HTOptionsScreen extends Screen {
 	private static final int SIDEBAR_WIDTH = 116;
 	private static final int SIDEBAR_COLOR = 0x60424242;
+
+	private static final Comparator<Element> SMALLEST_FIRST_COMPARATOR = (e1, e2) -> {
+		boolean isHudElement1 = e1 instanceof HudElementWidget;
+		boolean isHudElement2 = e2 instanceof HudElementWidget;
+		if (isHudElement1 && !isHudElement2) {
+			return 1;
+		} else if (isHudElement1) {
+			HudElement h1 = ((HudElementWidget) e1).getElementContainer().getActiveElement();
+			HudElement h2 = ((HudElementWidget) e2).getElementContainer().getActiveElement();
+			return Float.compare(
+					h1.getWidth() * h1.getHeight(),
+					h2.getWidth() * h2.getHeight()
+			);
+		} else {
+			return 0;
+		}
+	};
+
+	private static final Comparator<Element> LARGEST_FIRST_COMPARATOR = (e1, e2) -> {
+		boolean isHudElement1 = e1 instanceof HudElementWidget;
+		boolean isHudElement2 = e2 instanceof HudElementWidget;
+		if (isHudElement1 && !isHudElement2) {
+			return 1;
+		} else if (isHudElement1) {
+			HudElement h1 = ((HudElementWidget) e1).getElementContainer().getActiveElement();
+			HudElement h2 = ((HudElementWidget) e2).getElementContainer().getActiveElement();
+			return Float.compare(
+					h2.getWidth() * h2.getHeight(),
+					h1.getWidth() * h1.getHeight()
+			);
+		} else {
+			return 0;
+		}
+	};
+
+	private static final Comparator<Element> ALPHABETICAL_COMPARATOR = (e1, e2) -> {
+		boolean isHudElement1 = e1 instanceof HudElementWidget;
+		boolean isHudElement2 = e2 instanceof HudElementWidget;
+		if (isHudElement1 && !isHudElement2) {
+			return 1;
+		} else if (isHudElement1) {
+			String name1 = ((HudElementWidget) e1).getElementContainer().getActiveElement().getIdentifier().elementId().toDisplayableString();
+			String name2 = ((HudElementWidget) e2).getElementContainer().getActiveElement().getIdentifier().elementId().toDisplayableString();
+			return String.CASE_INSENSITIVE_ORDER.compare(name1, name2);
+		} else {
+			return 0;
+		}
+	};
 
 	private static int screensOpened = 0;
 
@@ -68,19 +114,8 @@ public class HTOptionsScreen extends Screen {
 				}
 			}
 
-			// We want normal elements to be the first to be selected. If they're both HudElementWidgets, use their compareTos.
-			// TODO: This doesn't work with the new scale stuff. Instead, do these checks on click.
-			children().sort((e1, e2) -> {
-				boolean isHudElement1 = e1 instanceof HudElementWidget;
-				boolean isHudElement2 = e2 instanceof HudElementWidget;
-				if (isHudElement1 && !isHudElement2) {
-					return 1;
-				} else if (isHudElement1) {
-					return ((HudElementWidget) e1).compareTo((HudElementWidget) e2);
-				} else {
-					return 0;
-				}
-			});
+			// Sort alphabetically internally and when cycling, but sort by size when rendering and selecting
+			children().sort(ALPHABETICAL_COMPARATOR);
 
 			// this is added to the start of the list so it is selected before anything else
 			((List<Element>) children()).add(0, sidebar); // only way to do this is with unchecked casts
@@ -111,11 +146,9 @@ public class HTOptionsScreen extends Screen {
 		super.renderBackground(matrixStack);
 
 		if (worldExists) {
-			// reverse order
-			for (int i = children().size() - 1; i >= 0; i--) {
-				Element element = children().get(i);
-				if (element instanceof Drawable) {
-					((Drawable) element).render(matrixStack, mouseX, mouseY, delta);
+			for(Element element : getLargestFirstChildren()) {
+				if (element instanceof Drawable drawable) {
+					drawable.render(matrixStack, mouseX, mouseY, delta);
 				}
 			}
 		} else {
@@ -141,7 +174,7 @@ public class HTOptionsScreen extends Screen {
 	public boolean mouseClicked(double mouseX, double mouseY, int button) {
 		Element clickedElement = null;
 
-		for (Element element : children()) {
+		for (Element element : getSmallestFirstChildren()) {
 			if (element.mouseClicked(mouseX, mouseY, button)) {
 				clickedElement = element;
 				break;
@@ -188,13 +221,15 @@ public class HTOptionsScreen extends Screen {
 
 	@Override
 	public void setFocused(Element focused) {
-		if (focused instanceof HudElementWidget && !focused.equals(focusedHudElement)) {
-			focusedHudElement = (HudElementWidget) focused;
-			sidebar.clearEntries();
-			HudElement element = focusedHudElement.getElementContainer().getActiveElement();
-			element.fillSidebar(sidebar);
-			sidebar.setupEntries();
-			elementLabel.setHudElementContainer(focusedHudElement.getElementContainer());
+		if (focused instanceof HudElementWidget) {
+			if (!focused.equals(focusedHudElement)) {
+				focusedHudElement = (HudElementWidget) focused;
+				sidebar.clearEntries();
+				HudElement element = focusedHudElement.getElementContainer().getActiveElement();
+				element.fillSidebar(sidebar);
+				sidebar.setupEntries();
+				elementLabel.setHudElementContainer(focusedHudElement.getElementContainer());
+			}
 		} else if (focused == null) {
 			focusedHudElement = null;
 			sidebar.clearEntries();
@@ -262,6 +297,18 @@ public class HTOptionsScreen extends Screen {
 
 	public static boolean isOpen() {
 		return screensOpened > 0;
+	}
+
+	private List<Element> getSmallestFirstChildren() { // TODO: maybe cache these or something
+		List<Element> sizeSortedElements = new ArrayList<>(children());
+		sizeSortedElements.sort(SMALLEST_FIRST_COMPARATOR);
+		return sizeSortedElements;
+	}
+
+	private List<Element> getLargestFirstChildren() {
+		List<Element> sizeSortedElements = new ArrayList<>(children());
+		sizeSortedElements.sort(LARGEST_FIRST_COMPARATOR);
+		return sizeSortedElements;
 	}
 
 }
