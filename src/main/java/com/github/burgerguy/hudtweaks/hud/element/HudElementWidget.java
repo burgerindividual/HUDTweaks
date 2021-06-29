@@ -24,6 +24,7 @@ public class HudElementWidget implements Drawable, Element, Selectable, AutoClos
 	private final Runnable valueUpdater;
 
 	private boolean focused;
+	private boolean dragging;
 	private boolean lastChildFocused;
 	private boolean lastElementRendered;
 
@@ -67,28 +68,45 @@ public class HudElementWidget implements Drawable, Element, Selectable, AutoClos
 	@Override
 	public boolean mouseClicked(double mouseX, double mouseY, int button) {
 		if (isMouseOver(mouseX, mouseY)) {
-			return focused = button == GLFW.GLFW_MOUSE_BUTTON_LEFT;
+			if (button == GLFW.GLFW_MOUSE_BUTTON_LEFT) {
+				dragging = true;
+				focused = true;
+				return true;
+			}
 		}
 		return focused = false;
 	}
 
 	@Override
-	public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
-		HudElement element = elementContainer.getActiveElement();
-		if (Screen.hasShiftDown()) {
-			if (!element.xPosType.equals(PosType.DEFAULT)) {
-				element.xRelativePos = MathHelper.clamp((float) (element.xRelativePos + deltaX / element.getXParent().getActiveElement().getWidth()), 0.0f, 1.0f);
-			}
-			if (!element.yPosType.equals(PosType.DEFAULT)) {
-				element.yRelativePos = MathHelper.clamp((float) (element.yRelativePos + deltaY / element.getYParent().getActiveElement().getHeight()), 0.0f, 1.0f);
-			}
+	public boolean mouseReleased(double mouseX, double mouseY, int button) {
+		if (!dragging) {
+			return false;
 		} else {
-			element.xOffset += deltaX;
-			element.yOffset += deltaY;
+			dragging = false;
+			return true;
 		}
-		element.getContainerNode().setRequiresUpdate();
-		if (valueUpdater != null) valueUpdater.run();
-		return true;
+	}
+
+	@Override
+	public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
+		if (dragging) {
+			HudElement element = elementContainer.getActiveElement();
+			if (Screen.hasShiftDown()) {
+				if (!element.xPosType.equals(PosType.DEFAULT)) {
+					element.xRelativePos = MathHelper.clamp((float) (element.xRelativePos + deltaX / element.getXParent().getActiveElement().getWidth()), 0.0f, 1.0f);
+				}
+				if (!element.yPosType.equals(PosType.DEFAULT)) {
+					element.yRelativePos = MathHelper.clamp((float) (element.yRelativePos + deltaY / element.getYParent().getActiveElement().getHeight()), 0.0f, 1.0f);
+				}
+			} else {
+				element.xOffset += deltaX;
+				element.yOffset += deltaY;
+			}
+			element.getContainerNode().setRequiresUpdate();
+			if (valueUpdater != null) valueUpdater.run();
+			return true;
+		}
+		return false;
 	}
 
 	@Override

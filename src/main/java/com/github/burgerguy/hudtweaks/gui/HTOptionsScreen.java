@@ -200,6 +200,25 @@ public class HTOptionsScreen extends Screen {
 	}
 
 	@Override
+	public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
+		if (focusedHudElement != null && isDragging() && focusedHudElement.mouseDragged(mouseX, mouseY, button, deltaX, deltaY)) {
+			return true;
+		} else {
+			return super.mouseDragged(mouseX, mouseY, button, deltaX, deltaY);
+		}
+	}
+
+	@Override
+	public boolean mouseReleased(double mouseX, double mouseY, int button) {
+		if (focusedHudElement != null && focusedHudElement.mouseReleased(mouseX, mouseY, button)) {
+			this.setDragging(false);
+			return true;
+		} else {
+			return super.mouseReleased(mouseX, mouseY, button);
+		}
+	}
+
+	@Override
 	public void onClose() {
 		ConfigHelper.trySaveConfig();
 		for(Element child : children()) {
