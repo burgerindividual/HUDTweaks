@@ -4,7 +4,9 @@
 
 This mod is still in beta. There are plenty of bugs left to fix and plenty of features left to add. If you want to report a bug or request a feature, please do so [here](https://github.com/burgerguy/HUDTweaks/issues).
 
-This mod does **NOT** require any other mods to function, including Fabric API.
+Since version 1.2, this mod requires Fabric API to run. Previous versions do not have this requirement.
+
+<img src="https://i.imgur.com/Ol1Tcf8.png" alt="Requires Fabric API" width="200" height="67" />
 
 ![Mod Image](https://i.imgur.com/mkqQKU9.png)
 
