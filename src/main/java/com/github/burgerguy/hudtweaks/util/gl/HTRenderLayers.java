@@ -22,10 +22,9 @@ public final class HTRenderLayers extends RenderLayer {
 
 	public static void initializeShaders() { // TODO: shaders break on reload
 		ShaderEffectManager.getInstance().manageCoreShader(new Identifier(HudTweaksMod.MOD_ID, "dashed_lines"), HTVertexFormats.LINES_MODIFIED, s -> {
-			net.minecraft.client.render.Shader program = s.getProgram();
-			dashedLinesShader = new RenderPhase.Shader(() -> program);
-			dashOffset = program.getUniform("DashOffset");
-			dashLength = program.getUniform("DashLength");
+			dashedLinesShader = new RenderPhase.Shader(s::getProgram);
+			dashOffset = s.getProgram().getUniform("DashOffset");
+			dashLength = s.getProgram().getUniform("DashLength");
 		});
 		ShaderEffectManager.getInstance().manageCoreShader(new Identifier(HudTweaksMod.MOD_ID, "solid_lines"), VertexFormats.LINES, s -> {
 			net.minecraft.client.render.Shader program = s.getProgram();

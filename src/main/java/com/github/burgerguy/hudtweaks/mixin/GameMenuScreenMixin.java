@@ -23,7 +23,7 @@ public abstract class GameMenuScreenMixin extends Screen {
 	private void initWidgets(CallbackInfo ci) {
 		Text text = new TranslatableText("hudtweaks.options");
 		int buttonWidth = MinecraftClient.getInstance().textRenderer.getWidth(text) + 14;
-		ButtonWidget button = new ButtonWidget(width - buttonWidth, Util.SHOULD_COMPENSATE_FOR_MODMENU_BUTTON ? 12 : 0, buttonWidth, 20, text, b -> client.openScreen(new HTOptionsScreen(null)));
+		ButtonWidget button = new ButtonWidget(width - buttonWidth, Util.SHOULD_COMPENSATE_FOR_MODMENU_BUTTON ? 12 : 0, buttonWidth, 20, text, b -> client.setScreen(new HTOptionsScreen(null)));
 		addDrawableChild(button);
 	}
 }

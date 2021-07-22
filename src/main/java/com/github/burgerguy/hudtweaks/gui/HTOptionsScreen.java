@@ -231,9 +231,9 @@ public class HTOptionsScreen extends Screen {
 			}
 		}
 		if (client.world == null) {
-			client.openScreen(prevScreen);
+			client.setScreen(prevScreen);
 		} else {
-			client.openScreen(null);
+			client.setScreen(null);
 		}
 		screensOpened--;
 	}
