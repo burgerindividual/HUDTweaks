@@ -27,6 +27,7 @@ loom {
 }
 
 group = project.maven_group
+version = project.mod_version
 
 allprojects {
 	apply plugin: 'fabric-loom'
@@ -43,13 +44,11 @@ allprojects {
 	}
 	
 	archivesBaseName = project.name
-	version = project.mod_version
 	
 	dependencies {
 		minecraft "com.mojang:minecraft:${project.minecraft_version}"
 		mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
 		modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
-
 	}
 
 	configurations {
@@ -88,18 +87,16 @@ dependencies {
 		exclude module: "fabric-loader"
 	}
 
-	afterEvaluate {
-		implementation project(":HUDTweaks-apihelper")
-		include project(":HUDTweaks-apihelper")
-	}
-
-	include "net.fabricmc.fabric-api:fabric-resource-loader-v0:${project.resource_loader_version}"
-
 	modImplementation "io.github.ladysnake:satin:${project.satin_version}"
 	include "io.github.ladysnake:satin:${project.satin_version}"
 
 	modCompileOnly "com.terraformersmc:modmenu:${project.modmenu_version}"
 	modRuntime "com.terraformersmc:modmenu:${project.modmenu_version}"
+
+	afterEvaluate {
+		implementation project(":HUDTweaks-apihelper")
+		include project(":HUDTweaks-apihelper")
+	}
 }
 
 publishing {

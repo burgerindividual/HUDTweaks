@@ -2,11 +2,7 @@ plugins {
 	id 'maven-publish'
 }
 
-group = project.maven_group + "." + rootProject.name
-
-dependencies {
-	modImplementation rootProject
-}
+version = project.mod_version
 
 publishing {
 	publications {
