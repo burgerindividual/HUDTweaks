@@ -133,14 +133,14 @@ public class HudElementWidget implements Drawable, Element, Selectable, AutoClos
 		for(AbstractContainerNode containerNode : elementContainer.getXChildren()) {
 			if (containerNode instanceof HudElementContainer hudElementContainer) {
 				HudElement element = hudElementContainer.getActiveElement();
-				if (elementContainer.getWidget().isFocused() && element.getXPosType().equals(PosType.RELATIVE)) return true;
+				if (hudElementContainer.getWidget().isFocused() && element.getXPosType().equals(PosType.RELATIVE)) return true;
 			}
 		}
 
 		for(AbstractContainerNode containerNode : elementContainer.getYChildren()) {
 			if (containerNode instanceof HudElementContainer hudElementContainer) {
 				HudElement element = hudElementContainer.getActiveElement();
-				if (elementContainer.getWidget().isFocused() && element.getYPosType().equals(PosType.RELATIVE)) return true;
+				if (hudElementContainer.getWidget().isFocused() && element.getYPosType().equals(PosType.RELATIVE)) return true;
 			}
 		}
 

@@ -7,7 +7,8 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 
-import java.util.LinkedHashMap;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 
@@ -17,7 +18,7 @@ public class ParentButtonWidget extends HTButtonWidget {
 	/**
 	 * Actual storage of the parents
 	 */
-	private final Map<HTIdentifier, AbstractContainerNode> innerMap = new LinkedHashMap<>();
+	private final Map<HTIdentifier, AbstractContainerNode> innerMap = new HashMap<>();
 	/**
 	 * Used for iteration and indices
 	 */
@@ -28,6 +29,7 @@ public class ParentButtonWidget extends HTButtonWidget {
 		super(x, y, width, height, createMessage(currentParentNode));
 		recurseAddNode(HudContainer.getScreenRoot(), thisNode);
 		keyHelper = innerMap.keySet().toArray(new HTIdentifier[0]);
+		Arrays.sort(keyHelper, (i1, i2) -> String.CASE_INSENSITIVE_ORDER.compare(i1.toDisplayableString(), i2.toDisplayableString()));
 		for (; currentIndex < keyHelper.length; currentIndex++) { // iterates through the array to find the index of the last saved element
 			if (keyHelper[currentIndex].equals(currentParentNode.getInitialElement().getIdentifier()))
 				break;
