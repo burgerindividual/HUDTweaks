@@ -1,5 +1,6 @@
 package com.github.burgerguy.hudtweaks.hud.element;
 
+import com.github.burgerguy.hudtweaks.asm.HTMixinPlugin;
 import com.github.burgerguy.hudtweaks.gui.widget.HTSliderWidget;
 import com.github.burgerguy.hudtweaks.gui.widget.SidebarWidget;
 import com.github.burgerguy.hudtweaks.hud.HTIdentifier;
@@ -74,33 +75,38 @@ public class DefaultBossBarElement extends HudElement {
 	public void fillSidebar(SidebarWidget sidebar) {
 		super.fillSidebar(sidebar);
 		sidebar.addPadding(6);
-		sidebar.addEntry(new SidebarWidget.DrawableEntry<>(y -> new HTSliderWidget(4, y, sidebar.width - 8, 14, maxHeight) {
-			@Override
-			protected void updateMessage() {
-				setMessage(new TranslatableText("hudtweaks.options.bossbar.style.screen_percent", Util.RELATIVE_POS_FORMATTER.format(value)));
-			}
-
-			@Override
-			public void applyValue() {
-				maxHeight = (float) value;
-				containerNode.setRequiresUpdate();
-			}
-
-			@Override
-			public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-				boolean bl = keyCode == 263;
-				if (bl || keyCode == 262) {
-					setValue(value + (bl ? -0.001 : 0.001));
-					return true;
+		sidebar.addEntry(new SidebarWidget.DrawableEntry<>(y -> {
+			HTSliderWidget widget = new HTSliderWidget(4, y, sidebar.width - 8, 14, maxHeight) {
+				@Override
+				protected void updateMessage() {
+					setMessage(new TranslatableText("hudtweaks.options.bossbar.style.screen_percent", Util.RELATIVE_POS_FORMATTER.format(value)));
 				}
-				return false;
-			}
-			
-			@Override
-			public void updateValue() {
-				value = MathHelper.clamp(yRelativePos, 0.0D, 1.0D);
-				updateMessage();
-			}
+
+				@Override
+				public void applyValue() {
+					maxHeight = (float) value;
+					containerNode.setRequiresUpdate();
+				}
+
+				@Override
+				public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+					boolean bl = keyCode == 263;
+					if (bl || keyCode == 262) {
+						setValue(value + (bl ? -0.001 : 0.001));
+						return true;
+					}
+					return false;
+				}
+
+				@Override
+				public void updateValue() {
+					value = MathHelper.clamp(yRelativePos, 0.0D, 1.0D);
+					updateMessage();
+				}
+			};
+
+			widget.active = HTMixinPlugin.canUnrestrictBossBar();
+			return widget;
 		}, 14));
 	}
 }

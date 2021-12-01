@@ -3,7 +3,7 @@
   "minVersion": "0.8",
   "package": "com.github.burgerguy.hudtweaks.mixin",
   "compatibilityLevel": "JAVA_16",
-  "plugin": "com.github.burgerguy.hudtweaks.HTMixinPlugin",
+  "plugin": "com.github.burgerguy.hudtweaks.asm.HTMixinPlugin",
   "client": [
     "BossBarHudAccessor",
     "BossBarHudMixin",

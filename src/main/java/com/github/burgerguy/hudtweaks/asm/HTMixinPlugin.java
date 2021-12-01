@@ -1,4 +1,4 @@
-package com.github.burgerguy.hudtweaks;
+package com.github.burgerguy.hudtweaks.asm;
 
 import com.github.burgerguy.hudtweaks.hud.HudContainer;
 import com.github.burgerguy.hudtweaks.hud.element.DefaultBossBarElement;
@@ -17,6 +17,10 @@ import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
 import java.util.*;
 
 public class HTMixinPlugin implements IMixinConfigPlugin {
+
+	private static boolean UNRESTRICT_BOSS_BAR_ALLOWED = false;
+	private static boolean FORCE_DISPLAY_HUNGER_ALLOWED = false;
+	private static boolean FLIP_HEALTH_LINES_ALLOWED = false;
 
 	@Override
 	public void onLoad(String mixinPackage) {
@@ -39,6 +43,18 @@ public class HTMixinPlugin implements IMixinConfigPlugin {
 	@Override
 	public List<String> getMixins() {
 		return null;
+	}
+
+	public static boolean canUnrestrictBossBar() {
+		return UNRESTRICT_BOSS_BAR_ALLOWED;
+	}
+
+	public static boolean canForceDisplayHunger() {
+		return FORCE_DISPLAY_HUNGER_ALLOWED;
+	}
+
+	public static boolean canFlipHealthLines() {
+		return FLIP_HEALTH_LINES_ALLOWED;
 	}
 
 	private static final Set<String> appliedClasses = new HashSet<>();
@@ -74,9 +90,11 @@ public class HTMixinPlugin implements IMixinConfigPlugin {
 						while (true) if (!itr.hasPrevious() || itr.previous().getOpcode() == Opcodes.ALOAD)
 							break; // find ALOAD to convert local var to float
 						itr.add(new InsnNode(Opcodes.I2F));
+						UNRESTRICT_BOSS_BAR_ALLOWED = true;
+
 						Util.LOGGER.info("BossBarHud class (" + targetClassName + ") screen percent modification successful.");
 					} catch (Exception e) {
-						Util.LOGGER.error("Error injecting into BossBarHud class (" + targetClassName + "), reverting changes...");
+						Util.LOGGER.error("Error injecting into BossBarHud class (" + targetClassName + ") for screen percent modification, reverting changes...");
 						methodNode.instructions = oldInstructions;
 					}
 				}
@@ -87,10 +105,9 @@ public class HTMixinPlugin implements IMixinConfigPlugin {
 		if (!appliedClasses.contains("net.minecraft.class_329") && classNameEqualsMapped("net.minecraft.class_329", targetClassName)) { // InGameHud class
 			methodLoop:
 			for (MethodNode methodNode : targetClass.methods) {
-				InsnList oldInstructions = null;
-				try {
-					if (methodEqualsMapped("net.minecraft.class_329", "method_1760", "(Lnet/minecraft/class_4587;)V", methodNode.name, methodNode.desc)) { // renderStatusBard
-						oldInstructions = cloneInsnList(methodNode.instructions);
+				if (methodEqualsMapped("net.minecraft.class_329", "method_1760", "(Lnet/minecraft/class_4587;)V", methodNode.name, methodNode.desc)) { // renderStatusBard
+					InsnList oldInstructions = cloneInsnList(methodNode.instructions);
+					try {
 						ListIterator<AbstractInsnNode> itr = methodNode.instructions.iterator();
 						boolean foundLdc = false; // find LDC "food" to get bearings, then move back to before jump (likely IFNE) to start injection
 						while (true) {
@@ -115,9 +132,15 @@ public class HTMixinPlugin implements IMixinConfigPlugin {
 						itr.previous();
 						itr.add(new MethodInsnNode(Opcodes.INVOKESTATIC, Type.getInternalName(HTMixinPlugin.class), "getForceDisplayHunger", Type.getMethodDescriptor(Type.BOOLEAN_TYPE)));
 						itr.add(new JumpInsnNode(Opcodes.IFNE, postJump)); // we do IFNE here because the default constant on the stack is 0. We want out boolean to be true to jump, and true is equal to 1.
+						FORCE_DISPLAY_HUNGER_ALLOWED = true;
 						Util.LOGGER.info("InGameHud class (" + targetClassName + ") force hunger modification successful.");
-					} else if (methodEqualsMapped("net.minecraft.class_329", "method_37298", "(Lnet/minecraft/class_4587;Lnet/minecraft/class_1657;IIIIFIIIZ)V", methodNode.name, methodNode.desc)) { // renderHealthBar
-						oldInstructions = cloneInsnList(methodNode.instructions);
+					} catch (Exception e) {
+						Util.LOGGER.error("Error injecting into InGameHud class (" + targetClassName + ") for force hunger modification, reverting changes...");
+						methodNode.instructions = oldInstructions;
+					}
+				} else if (methodEqualsMapped("net.minecraft.class_329", "method_37298", "(Lnet/minecraft/class_4587;Lnet/minecraft/class_1657;IIIIFIIIZ)V", methodNode.name, methodNode.desc)) { // renderHealthBar
+					InsnList oldInstructions = cloneInsnList(methodNode.instructions);
+					try {
 						ListIterator<AbstractInsnNode> itr = methodNode.instructions.iterator();
 						boolean foundBipush = false; // find BIPUSH 8 because it's right before our target. from there, we can continue to the ISUB.
 						while (true) {
@@ -144,11 +167,12 @@ public class HTMixinPlugin implements IMixinConfigPlugin {
 						itr.add(new InsnNode(Opcodes.IADD));
 						itr.add(new JumpInsnNode(Opcodes.GOTO, preStoreLabel));
 						itr.add(preStoreLabel);
+						FLIP_HEALTH_LINES_ALLOWED = true;
 						Util.LOGGER.info("InGameHud class (" + targetClassName + ") flip health lines modification successful.");
+					} catch (Exception e) {
+						Util.LOGGER.error("Error injecting into InGameHud class (" + targetClassName + ") for flip health lines modification, reverting changes...");
+						methodNode.instructions = oldInstructions;
 					}
-				} catch (Exception e) {
-					Util.LOGGER.error("Error injecting into InGameHud class (" + targetClassName + "), reverting changes...");
-					methodNode.instructions = oldInstructions;
 				}
 			}
 			appliedClasses.add("net.minecraft.class_329");
@@ -167,7 +191,7 @@ public class HTMixinPlugin implements IMixinConfigPlugin {
 	private static Map<LabelNode, LabelNode> cloneLabels(InsnList insns) {
 		HashMap<LabelNode, LabelNode> labelMap = new HashMap<>();
 		for (AbstractInsnNode insn = insns.getFirst(); insn != null; insn = insn.getNext()) {
-			if (insn.getType() == 8) {
+			if (insn.getType() == AbstractInsnNode.LABEL) {
 				labelMap.put((LabelNode) insn, new LabelNode());
 			}
 		}

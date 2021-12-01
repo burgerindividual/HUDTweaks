@@ -1,5 +1,6 @@
 package com.github.burgerguy.hudtweaks.hud.element;
 
+import com.github.burgerguy.hudtweaks.asm.HTMixinPlugin;
 import com.github.burgerguy.hudtweaks.gui.widget.HTButtonWidget;
 import com.github.burgerguy.hudtweaks.gui.widget.SidebarWidget;
 import com.github.burgerguy.hudtweaks.hud.HTIdentifier;
@@ -55,13 +56,18 @@ public class DefaultHungerElement extends HudElement {
 	public void fillSidebar(SidebarWidget sidebar) {
 		super.fillSidebar(sidebar);
 		sidebar.addPadding(6);
-		sidebar.addEntry(new SidebarWidget.DrawableEntry<>(y -> new HTButtonWidget(4, y, sidebar.width - 8, 14, new TranslatableText("hudtweaks.options.forceDisplay.display", forceDisplay ? I18n.translate("hudtweaks.options.forceDisplay.on.display") : I18n.translate("hudtweaks.options.forceDisplay.off.display"))) {
-			@Override
-			public void onPress() {
-				forceDisplay = !forceDisplay;
-				setMessage(new TranslatableText("hudtweaks.options.forceDisplay.display", forceDisplay ? I18n.translate("hudtweaks.options.forceDisplay.on.display") : I18n.translate("hudtweaks.options.forceDisplay.off.display")));
-				containerNode.setRequiresUpdate();
-			}
+		sidebar.addEntry(new SidebarWidget.DrawableEntry<>(y -> {
+			HTButtonWidget widget = new HTButtonWidget(4, y, sidebar.width - 8, 14, new TranslatableText("hudtweaks.options.forceDisplay.display", forceDisplay ? I18n.translate("hudtweaks.options.forceDisplay.on.display") : I18n.translate("hudtweaks.options.forceDisplay.off.display"))) {
+				@Override
+				public void onPress() {
+					forceDisplay = !forceDisplay;
+					setMessage(new TranslatableText("hudtweaks.options.forceDisplay.display", forceDisplay ? I18n.translate("hudtweaks.options.forceDisplay.on.display") : I18n.translate("hudtweaks.options.forceDisplay.off.display")));
+					containerNode.setRequiresUpdate();
+				}
+			};
+
+			widget.active = HTMixinPlugin.canForceDisplayHunger();
+			return widget;
 		}, 14));
 	}
 }
