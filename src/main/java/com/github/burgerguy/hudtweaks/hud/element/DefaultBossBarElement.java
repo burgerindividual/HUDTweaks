@@ -14,7 +14,8 @@ import net.minecraft.util.math.MathHelper;
 
 public class DefaultBossBarElement extends HudElement {
 	public static final HTIdentifier IDENTIFIER = new HTIdentifier(Util.MINECRAFT_MODID, new HTIdentifier.ElementId("bossbar", "hudtweaks.element.bossbar"));
-	private float maxHeight = 1.0f / 3.0f;
+	private static final float DEFAULT_MAX_HEIGHT = 1.0f / 3.0f;
+	private float maxHeight = DEFAULT_MAX_HEIGHT;
 	
 	public DefaultBossBarElement() {
 		super(IDENTIFIER, "onBossBarsChange");
@@ -54,11 +55,11 @@ public class DefaultBossBarElement extends HudElement {
 	}
 
 	public float getRawMaxHeight() {
-		return maxHeight;
+		return HTMixinPlugin.canUnrestrictBossBar() ? maxHeight : DEFAULT_MAX_HEIGHT;
 	}
 
 	public float getScaledMaxHeight() {
-		return maxHeight * (yScale == 0.0 ? 0.0f : (float) (1.0 / yScale));
+		return getRawMaxHeight() * (yScale == 0.0 ? 0.0f : (float) (1.0 / yScale));
 	}
 
 	public void setMaxHeight(float screenPercent) {

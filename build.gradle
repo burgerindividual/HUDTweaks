@@ -1,6 +1,7 @@
 plugins {
-	id 'fabric-loom' version '0.9-SNAPSHOT'
+	id 'fabric-loom' version '0.10-SNAPSHOT'
 	id 'maven-publish'
+	id "io.github.juuxel.loom-quiltflower-mini" version "1.1.0"
 }
 
 repositories {
@@ -23,7 +24,11 @@ repositories {
 }
 
 loom {
-    accessWidener = file("src/main/resources/hudtweaks.accesswidener")
+    setAccessWidenerPath(file("src/main/resources/hudtweaks.accesswidener"))
+}
+
+quiltflower {
+	addToRuntimeClasspath.set(true)
 }
 
 group = project.maven_group

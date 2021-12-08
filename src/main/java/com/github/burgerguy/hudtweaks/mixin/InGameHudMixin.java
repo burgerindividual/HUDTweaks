@@ -165,58 +165,6 @@ public abstract class InGameHudMixin extends DrawableHelper {
 		RenderStateUtil.startRender(DefaultStatusEffectsElement.IDENTIFIER, matrices);
 	}
 	
-	@Unique
-	private static final int STATUS_EFFECT_OFFSET = 25;
-	@Unique
-	private int preY;
-	@Unique
-	private int postX;
-	@Unique
-	private int postY;
-	
-	@Inject(method = "renderStatusEffectOverlay",
-			at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/effect/StatusEffect;isBeneficial()Z"),
-			locals = LocalCapture.CAPTURE_FAILHARD)
-	private void setupPreCalcVars(MatrixStack matrices, CallbackInfo callbackInfo,
-			Collection<?> u1, int u2, int u3, StatusEffectSpriteManager u4, List<?> u5, Iterator<?> u6, StatusEffectInstance u7, StatusEffect u8, // unused vars
-			int x, int y) {
-		preY = y;
-	}
-	
-	@Inject(method = "renderStatusEffectOverlay",
-			at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/effect/StatusEffectInstance;isAmbient()Z"),
-			locals = LocalCapture.CAPTURE_FAILHARD)
-	private void setupPostCalcVars(MatrixStack matrices, CallbackInfo callbackInfo,
-			Collection<?> u1, int u2, int u3, StatusEffectSpriteManager u4, List<?> u5, Iterator<?> u6, StatusEffectInstance u7, StatusEffect u8, // unused vars
-			int x, int y) {
-		postX = x;
-		postY = y;
-	}
-	
-	@ModifyVariable(method = "renderStatusEffectOverlay",
-			ordinal = 2,
-			at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/effect/StatusEffectInstance;isAmbient()Z"))
-	private int modifyStatusEffectX(int x, MatrixStack matrices) {
-		HudElement activeStatusEffectsElement = HudContainer.getElementRegistry().getActiveElement(DefaultStatusEffectsElement.IDENTIFIER);
-		if (activeStatusEffectsElement instanceof DefaultStatusEffectsElement && ((DefaultStatusEffectsElement) activeStatusEffectsElement).isVertical()) {
-			return client.getWindow().getScaledWidth() - STATUS_EFFECT_OFFSET + preY - postY;
-		} else {
-			return x;
-		}
-	}
-	
-	@ModifyVariable(method = "renderStatusEffectOverlay",
-			ordinal = 3,
-			at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/effect/StatusEffectInstance;isAmbient()Z"))
-	private int modifyStatusEffectY(int y, MatrixStack matrices) {
-		HudElement activeStatusEffectsElement = HudContainer.getElementRegistry().getActiveElement(DefaultStatusEffectsElement.IDENTIFIER);
-		if (activeStatusEffectsElement instanceof DefaultStatusEffectsElement && ((DefaultStatusEffectsElement) activeStatusEffectsElement).isVertical()) {
-			return preY + client.getWindow().getScaledWidth() - postX - STATUS_EFFECT_OFFSET;
-		} else {
-			return y;
-		}
-	}
-	
 	@Inject(method = "renderStatusEffectOverlay", at = @At(value = "RETURN"))
 	private void renderStatusEffectOverlayReturn(MatrixStack matrices, CallbackInfo callbackInfo) {
 		RenderStateUtil.finishRender(DefaultStatusEffectsElement.IDENTIFIER, matrices);

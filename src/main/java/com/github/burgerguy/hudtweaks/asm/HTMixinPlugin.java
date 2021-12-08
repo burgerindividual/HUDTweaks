@@ -1,10 +1,7 @@
 package com.github.burgerguy.hudtweaks.asm;
 
 import com.github.burgerguy.hudtweaks.hud.HudContainer;
-import com.github.burgerguy.hudtweaks.hud.element.DefaultBossBarElement;
-import com.github.burgerguy.hudtweaks.hud.element.DefaultHealthElement;
-import com.github.burgerguy.hudtweaks.hud.element.DefaultHungerElement;
-import com.github.burgerguy.hudtweaks.hud.element.HudElement;
+import com.github.burgerguy.hudtweaks.hud.element.*;
 import com.github.burgerguy.hudtweaks.util.Util;
 import net.fabricmc.loader.api.FabricLoader;
 import org.objectweb.asm.Opcodes;
@@ -21,6 +18,7 @@ public class HTMixinPlugin implements IMixinConfigPlugin {
 	private static boolean UNRESTRICT_BOSS_BAR_ALLOWED = false;
 	private static boolean FORCE_DISPLAY_HUNGER_ALLOWED = false;
 	private static boolean FLIP_HEALTH_LINES_ALLOWED = false;
+	private static boolean FORCE_EFFECTS_VERTICAL_ALLOWED = false;
 
 	@Override
 	public void onLoad(String mixinPackage) {
@@ -55,6 +53,10 @@ public class HTMixinPlugin implements IMixinConfigPlugin {
 
 	public static boolean canFlipHealthLines() {
 		return FLIP_HEALTH_LINES_ALLOWED;
+	}
+
+	public static boolean canForceEffectsVertical() {
+		return FORCE_EFFECTS_VERTICAL_ALLOWED;
 	}
 
 	private static final Set<String> appliedClasses = new HashSet<>();
@@ -103,7 +105,6 @@ public class HTMixinPlugin implements IMixinConfigPlugin {
 		}
 
 		if (!appliedClasses.contains("net.minecraft.class_329") && classNameEqualsMapped("net.minecraft.class_329", targetClassName)) { // InGameHud class
-			methodLoop:
 			for (MethodNode methodNode : targetClass.methods) {
 				if (methodEqualsMapped("net.minecraft.class_329", "method_1760", "(Lnet/minecraft/class_4587;)V", methodNode.name, methodNode.desc)) { // renderStatusBard
 					InsnList oldInstructions = cloneInsnList(methodNode.instructions);
@@ -118,8 +119,7 @@ public class HTMixinPlugin implements IMixinConfigPlugin {
 									foundLdc = true;
 								}
 							} else {
-								Util.LOGGER.error("InGameHud class (" + targetClassName + ") unable to find injection point for force hunger modification.");
-								continue methodLoop;
+								throw new RuntimeException("unexpected bytecode");
 							}
 						}
 						itr.next();
@@ -152,8 +152,7 @@ public class HTMixinPlugin implements IMixinConfigPlugin {
 									foundBipush = true;
 								}
 							} else {
-								Util.LOGGER.error("InGameHud class (" + targetClassName + ") unable to find injection point for flip health lines modification.");
-								continue methodLoop;
+								throw new RuntimeException("unexpected bytecode");
 							}
 						}
 						itr.previous();
@@ -173,6 +172,103 @@ public class HTMixinPlugin implements IMixinConfigPlugin {
 						Util.LOGGER.error("Error injecting into InGameHud class (" + targetClassName + ") for flip health lines modification, reverting changes...");
 						methodNode.instructions = oldInstructions;
 					}
+				} else if (methodEqualsMapped("net.minecraft.class_329", "method_1765", "(Lnet/minecraft/class_4587;)V", methodNode.name, methodNode.desc)) { // renderStatusEffectOverlay TODO: fix parameters
+					InsnList oldInstructions = cloneInsnList(methodNode.instructions);
+					try {
+						ListIterator<AbstractInsnNode> itr = methodNode.instructions.iterator();
+						// note: local variable table index = lvti
+						// 1. Navigate to the first IINC after two ISUBs and save lvti of IINC
+						// 2. Backtrack to last ISTORE, save lvti, then swap with first lvti
+						// 3. Backtrack until two IINCs have been hit, swapping any references
+						//    of the first lvti with the second lvti
+						// TODO: update
+						Map<LabelNode, LabelNode> labelMap = new HashMap<>(); // used for cloning insns later
+						int isubsFound = 0;
+						IincInsnNode lastIincInsn;
+						while (true) {
+							if (itr.hasNext()) {
+								AbstractInsnNode insn = itr.next();
+								if (insn.getType() == AbstractInsnNode.LABEL) {
+									labelMap.put((LabelNode) insn, new LabelNode());
+								}
+								if (isubsFound == 2) {
+									if (insn instanceof IincInsnNode iincInsn) {
+										lastIincInsn = iincInsn;
+										break;
+									}
+								} else if (insn.getOpcode() == Opcodes.ISUB) {
+									isubsFound++;
+								}
+							} else {
+								throw new RuntimeException("unexpected bytecode");
+							}
+						}
+
+						// rewind
+						while (true) {
+							if (itr.hasPrevious()) {
+								AbstractInsnNode insn = itr.previous();
+								if (insn.getOpcode() == Opcodes.IFEQ) {
+									itr.previous(); // go back one more
+									break;
+								}
+							} else {
+								throw new RuntimeException("unexpected bytecode");
+							}
+						}
+
+						int yLvtIdx = lastIincInsn.var;
+						int xLvtIdx = Integer.MIN_VALUE;
+						// Contains the instructions for the custom branch condition.
+						List<AbstractInsnNode> modifiedBranchInsns = new ArrayList<>();
+						boolean shouldFlipSign = false;
+						while (true) {
+							if (itr.hasNext()) {
+								AbstractInsnNode insn = itr.next();
+								if (insn instanceof VarInsnNode varInsn && insn.getOpcode() == Opcodes.ILOAD) {
+									shouldFlipSign = varInsn.var == xLvtIdx || varInsn.var == yLvtIdx;
+								}
+
+								if (xLvtIdx == Integer.MIN_VALUE && insn instanceof VarInsnNode varInsn && insn.getOpcode() == Opcodes.ISTORE) {
+									modifiedBranchInsns.add(new VarInsnNode(Opcodes.ISTORE, yLvtIdx));
+									xLvtIdx = varInsn.var;
+								} else if (insn instanceof VarInsnNode varInsn && varInsn.var == xLvtIdx) {
+									VarInsnNode clonedInsn = (VarInsnNode) insn.clone(labelMap);
+									clonedInsn.var = yLvtIdx;
+									modifiedBranchInsns.add(clonedInsn);
+								} else if (insn instanceof VarInsnNode varInsn && varInsn.var == yLvtIdx) {
+									VarInsnNode clonedInsn = (VarInsnNode) insn.clone(labelMap);
+									clonedInsn.var = xLvtIdx;
+									modifiedBranchInsns.add(clonedInsn);
+								} else if (shouldFlipSign && insn.getOpcode() == Opcodes.ISUB) {
+									// flip sign
+									modifiedBranchInsns.add(new InsnNode(Opcodes.IADD));
+								} else if (shouldFlipSign && insn.getOpcode() == Opcodes.IADD) {
+									// flip sign
+									modifiedBranchInsns.add(new InsnNode(Opcodes.ISUB));
+								} else if (insn instanceof IincInsnNode iincInsn && iincInsn.var == xLvtIdx) {
+									// negate and swap var if applicable
+									modifiedBranchInsns.add(new IincInsnNode(yLvtIdx, -iincInsn.incr));
+								} else if (insn instanceof IincInsnNode iincInsn && iincInsn.var == yLvtIdx) {
+									// negate and swap var if applicable
+									modifiedBranchInsns.add(new IincInsnNode(xLvtIdx, -iincInsn.incr));
+								} else {
+									modifiedBranchInsns.add(insn.clone(labelMap));
+								}
+
+								if (insn.equals(lastIincInsn)) {
+									break;
+								}
+							} else {
+								throw new RuntimeException("unexpected bytecode");
+							}
+						}
+						FLIP_HEALTH_LINES_ALLOWED = true;
+						Util.LOGGER.info("InGameHud class (" + targetClassName + ") force effects vertical modification successful.");
+					} catch (Exception e) {
+						Util.LOGGER.error("Error injecting into InGameHud class (" + targetClassName + ") for force effects vertical modification, reverting changes...");
+						methodNode.instructions = oldInstructions;
+					}
 				}
 			}
 			appliedClasses.add("net.minecraft.class_329");
@@ -189,7 +285,7 @@ public class HTMixinPlugin implements IMixinConfigPlugin {
 
 	// FIXME: USE VISITOR API!!! THIS IS GROSS!!!!
 	private static Map<LabelNode, LabelNode> cloneLabels(InsnList insns) {
-		HashMap<LabelNode, LabelNode> labelMap = new HashMap<>();
+		Map<LabelNode, LabelNode> labelMap = new HashMap<>();
 		for (AbstractInsnNode insn = insns.getFirst(); insn != null; insn = insn.getNext()) {
 			if (insn.getType() == AbstractInsnNode.LABEL) {
 				labelMap.put((LabelNode) insn, new LabelNode());
@@ -227,6 +323,11 @@ public class HTMixinPlugin implements IMixinConfigPlugin {
 	public static boolean getFlipHealthLines() {
 		HudElement activeHealthElement = HudContainer.getElementRegistry().getActiveElement(DefaultHealthElement.IDENTIFIER);
 		return activeHealthElement instanceof DefaultHealthElement && ((DefaultHealthElement) activeHealthElement).isFlipped();
+	}
+
+	public static boolean getForceEffectsVertical() {
+		HudElement activeStatusEffectsElement = HudContainer.getElementRegistry().getActiveElement(DefaultStatusEffectsElement.IDENTIFIER);
+		return activeStatusEffectsElement instanceof DefaultStatusEffectsElement && ((DefaultStatusEffectsElement) activeStatusEffectsElement).isVertical();
 	}
 
 	@Override

@@ -14,7 +14,8 @@ import net.minecraft.util.math.MathHelper;
 
 public class DefaultHealthElement extends HudElement {
 	public static final HTIdentifier IDENTIFIER = new HTIdentifier(Util.MINECRAFT_MODID, new HTIdentifier.ElementId("health", "hudtweaks.element.health"));
-	private boolean flipped;
+	private static final boolean DEFAULT_FLIPPED_VALUE = false;
+	private boolean flipped = DEFAULT_FLIPPED_VALUE;
 	
 	public DefaultHealthElement() {
 		super(IDENTIFIER, "onHealthRowsChange");
@@ -33,7 +34,7 @@ public class DefaultHealthElement extends HudElement {
 	}
 
 	private int getHeartJumpDistance(MinecraftClient client) {
-		if (flipped || client == null || client.player == null) {
+		if (isFlipped() || client == null || client.player == null) {
 			return 2;
 		} else {
 			// absorption hearts don't jump, so if we know the top row
@@ -65,11 +66,11 @@ public class DefaultHealthElement extends HudElement {
 	
 	@Override
 	protected float calculateDefaultY(MinecraftClient client) {
-		return client.getWindow().getScaledHeight() - 39 - (flipped || client.player == null ? 0 : getRawHeight(client)) - getHeartJumpDistance(client);
+		return client.getWindow().getScaledHeight() - 39 - (isFlipped() || client.player == null ? 0 : getRawHeight(client)) - getHeartJumpDistance(client);
 	}
 
 	public boolean isFlipped() {
-		return flipped;
+		return HTMixinPlugin.canFlipHealthLines() ? flipped : DEFAULT_FLIPPED_VALUE;
 	}
 
 	public void setFlipped(boolean flipped) {
