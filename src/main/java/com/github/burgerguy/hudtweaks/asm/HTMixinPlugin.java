@@ -92,7 +92,6 @@ public class HTMixinPlugin implements IMixinConfigPlugin {
 							break; // find ALOAD to convert local var to float
 						itr.add(new InsnNode(Opcodes.I2F));
 						UNRESTRICT_BOSS_BAR_ALLOWED = true;
-
 						Util.LOGGER.info("BossBarHud class (" + targetClassName + ") screen percent modification successful.");
 					} catch (Exception e) {
 						Util.LOGGER.error("Error injecting into BossBarHud class (" + targetClassName + ") for screen percent modification, reverting changes...");
@@ -229,16 +228,22 @@ public class HTMixinPlugin implements IMixinConfigPlugin {
 						int xLvtIdx = finalIstoreInsn.var;
 						// Contains the instructions for the custom branch condition.
 						InsnList modifiedBranchInsns = new InsnList();
-						boolean shouldFlipSign = false;
 						while (true) {
 							if (itr.hasNext()) {
 								AbstractInsnNode insn = itr.next();
-								if (insn instanceof VarInsnNode varInsn && insn.getOpcode() == Opcodes.ILOAD) {
-									// TODO: instead, flip sign based off ISTORE reading backwards, and add a negation
-									shouldFlipSign = varInsn.var == xLvtIdx || varInsn.var == yLvtIdx;
+
+								if (insn.getNext() instanceof VarInsnNode nextVarInsn
+										&& nextVarInsn.getOpcode() == Opcodes.ISTORE
+										&& (nextVarInsn.var == xLvtIdx || nextVarInsn.var == yLvtIdx)) {
+									// negate before doing operation, then store
+									// TODO: this might not always work
+									modifiedBranchInsns.add(new InsnNode(Opcodes.INEG));
 								}
 
-								if (insn instanceof VarInsnNode varInsn && varInsn.var == xLvtIdx) {
+								if (insn instanceof LineNumberNode) {
+									// get rid of line number nodes, they'll be inaccurate
+									continue;
+								} else if (insn instanceof VarInsnNode varInsn && varInsn.var == xLvtIdx) {
 									VarInsnNode clonedInsn = (VarInsnNode) insn.clone(labelMap);
 									clonedInsn.var = yLvtIdx;
 									modifiedBranchInsns.add(clonedInsn);
@@ -246,12 +251,6 @@ public class HTMixinPlugin implements IMixinConfigPlugin {
 									VarInsnNode clonedInsn = (VarInsnNode) insn.clone(labelMap);
 									clonedInsn.var = xLvtIdx;
 									modifiedBranchInsns.add(clonedInsn);
-								} else if (shouldFlipSign && insn.getOpcode() == Opcodes.ISUB) {
-									// flip sign
-									modifiedBranchInsns.add(new InsnNode(Opcodes.IADD));
-								} else if (shouldFlipSign && insn.getOpcode() == Opcodes.IADD) {
-									// flip sign
-									modifiedBranchInsns.add(new InsnNode(Opcodes.ISUB));
 								} else if (insn instanceof IincInsnNode iincInsn && iincInsn.var == xLvtIdx) {
 									// negate and swap var if applicable
 									modifiedBranchInsns.add(new IincInsnNode(yLvtIdx, -iincInsn.incr));
@@ -295,7 +294,7 @@ public class HTMixinPlugin implements IMixinConfigPlugin {
 
 						itr.add(new MethodInsnNode(Opcodes.INVOKESTATIC, Type.getInternalName(HTMixinPlugin.class), "getForceEffectsVertical", Type.getMethodDescriptor(Type.BOOLEAN_TYPE)));
 						itr.add(new JumpInsnNode(Opcodes.IFNE, branchStartLabel));
-						FLIP_HEALTH_LINES_ALLOWED = true;
+						FORCE_EFFECTS_VERTICAL_ALLOWED = true;
 						Util.LOGGER.info("InGameHud class (" + targetClassName + ") force effects vertical modification successful.");
 					} catch (Exception e) {
 						Util.LOGGER.error("Error injecting into InGameHud class (" + targetClassName + ") for force effects vertical modification, reverting changes...");
