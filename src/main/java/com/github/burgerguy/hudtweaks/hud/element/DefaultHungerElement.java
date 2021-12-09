@@ -12,7 +12,8 @@ import net.minecraft.text.TranslatableText;
 
 public class DefaultHungerElement extends HudElement {
 	public static final HTIdentifier IDENTIFIER = new HTIdentifier(Util.MINECRAFT_MODID, new HTIdentifier.ElementId("hunger", "hudtweaks.element.hunger"));
-	private boolean forceDisplay;
+	private static final boolean DEFAULT_FORCE_DISPLAY_VALUE = false;
+	private boolean forceDisplay = DEFAULT_FORCE_DISPLAY_VALUE;
 	
 	public DefaultHungerElement() {
 		super(IDENTIFIER);
@@ -39,7 +40,7 @@ public class DefaultHungerElement extends HudElement {
 	}
 	
 	public boolean getForceDisplay() {
-		return forceDisplay;
+		return HTMixinPlugin.canForceDisplayHunger() ? forceDisplay : DEFAULT_FORCE_DISPLAY_VALUE;
 	}
 	
 	public void setForceDisplay(boolean forceDisplay) {

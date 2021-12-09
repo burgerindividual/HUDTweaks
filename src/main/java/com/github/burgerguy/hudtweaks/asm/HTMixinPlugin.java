@@ -3,6 +3,7 @@ package com.github.burgerguy.hudtweaks.asm;
 import com.github.burgerguy.hudtweaks.hud.HudContainer;
 import com.github.burgerguy.hudtweaks.hud.element.*;
 import com.github.burgerguy.hudtweaks.util.Util;
+import java.util.*;
 import net.fabricmc.loader.api.FabricLoader;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
@@ -10,8 +11,6 @@ import org.objectweb.asm.tree.*;
 import org.spongepowered.asm.mixin.MixinEnvironment;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
-
-import java.util.*;
 
 public class HTMixinPlugin implements IMixinConfigPlugin {
 
@@ -184,17 +183,24 @@ public class HTMixinPlugin implements IMixinConfigPlugin {
 						// TODO: update
 						Map<LabelNode, LabelNode> labelMap = new HashMap<>(); // used for cloning insns later
 						int isubsFound = 0;
-						IincInsnNode lastIincInsn;
+						IincInsnNode finalIincInsn = null;
+						VarInsnNode finalIstoreInsn = null;
+						AbstractInsnNode finalInsn;
 						while (true) {
 							if (itr.hasNext()) {
 								AbstractInsnNode insn = itr.next();
-								if (insn.getType() == AbstractInsnNode.LABEL) {
-									labelMap.put((LabelNode) insn, new LabelNode());
+								if (insn instanceof LabelNode labelInsn) {
+									labelMap.put(labelInsn, new LabelNode());
+									if (finalIincInsn != null && finalIstoreInsn != null) {
+										finalInsn = insn;
+										break;
+									}
+								} else if (insn instanceof VarInsnNode varInsn && insn.getOpcode() == Opcodes.ISTORE) {
+									finalIstoreInsn = varInsn;
 								}
 								if (isubsFound == 2) {
 									if (insn instanceof IincInsnNode iincInsn) {
-										lastIincInsn = iincInsn;
-										break;
+										finalIincInsn = iincInsn;
 									}
 								} else if (insn.getOpcode() == Opcodes.ISUB) {
 									isubsFound++;
@@ -209,7 +215,9 @@ public class HTMixinPlugin implements IMixinConfigPlugin {
 							if (itr.hasPrevious()) {
 								AbstractInsnNode insn = itr.previous();
 								if (insn.getOpcode() == Opcodes.IFEQ) {
-									itr.previous(); // go back one more
+									// go back 2 more
+									itr.previous();
+									itr.previous();
 									break;
 								}
 							} else {
@@ -217,22 +225,20 @@ public class HTMixinPlugin implements IMixinConfigPlugin {
 							}
 						}
 
-						int yLvtIdx = lastIincInsn.var;
-						int xLvtIdx = Integer.MIN_VALUE;
+						int yLvtIdx = finalIincInsn.var;
+						int xLvtIdx = finalIstoreInsn.var;
 						// Contains the instructions for the custom branch condition.
-						List<AbstractInsnNode> modifiedBranchInsns = new ArrayList<>();
+						InsnList modifiedBranchInsns = new InsnList();
 						boolean shouldFlipSign = false;
 						while (true) {
 							if (itr.hasNext()) {
 								AbstractInsnNode insn = itr.next();
 								if (insn instanceof VarInsnNode varInsn && insn.getOpcode() == Opcodes.ILOAD) {
+									// TODO: instead, flip sign based off ISTORE reading backwards, and add a negation
 									shouldFlipSign = varInsn.var == xLvtIdx || varInsn.var == yLvtIdx;
 								}
 
-								if (xLvtIdx == Integer.MIN_VALUE && insn instanceof VarInsnNode varInsn && insn.getOpcode() == Opcodes.ISTORE) {
-									modifiedBranchInsns.add(new VarInsnNode(Opcodes.ISTORE, yLvtIdx));
-									xLvtIdx = varInsn.var;
-								} else if (insn instanceof VarInsnNode varInsn && varInsn.var == xLvtIdx) {
+								if (insn instanceof VarInsnNode varInsn && varInsn.var == xLvtIdx) {
 									VarInsnNode clonedInsn = (VarInsnNode) insn.clone(labelMap);
 									clonedInsn.var = yLvtIdx;
 									modifiedBranchInsns.add(clonedInsn);
@@ -256,13 +262,39 @@ public class HTMixinPlugin implements IMixinConfigPlugin {
 									modifiedBranchInsns.add(insn.clone(labelMap));
 								}
 
-								if (insn.equals(lastIincInsn)) {
+								if (insn.equals(finalInsn)) {
 									break;
 								}
 							} else {
 								throw new RuntimeException("unexpected bytecode");
 							}
 						}
+
+						LabelNode branchEndLabel = new LabelNode();
+						itr.add(new JumpInsnNode(Opcodes.GOTO, branchEndLabel));
+						LabelNode branchStartLabel = new LabelNode();
+						itr.add(branchStartLabel);
+						// this messes with the iterator, but since we're immediately going previous again, it should be fine
+						modifiedBranchInsns.add(branchEndLabel);
+						methodNode.instructions.insert(branchStartLabel, modifiedBranchInsns);
+
+						// rewind again
+						while (true) {
+							if (itr.hasPrevious()) {
+								AbstractInsnNode insn = itr.previous();
+								if (insn.getOpcode() == Opcodes.IFEQ) {
+									// go back 2 more
+									itr.previous();
+									itr.previous();
+									break;
+								}
+							} else {
+								throw new RuntimeException("unexpected bytecode");
+							}
+						}
+
+						itr.add(new MethodInsnNode(Opcodes.INVOKESTATIC, Type.getInternalName(HTMixinPlugin.class), "getForceEffectsVertical", Type.getMethodDescriptor(Type.BOOLEAN_TYPE)));
+						itr.add(new JumpInsnNode(Opcodes.IFNE, branchStartLabel));
 						FLIP_HEALTH_LINES_ALLOWED = true;
 						Util.LOGGER.info("InGameHud class (" + targetClassName + ") force effects vertical modification successful.");
 					} catch (Exception e) {

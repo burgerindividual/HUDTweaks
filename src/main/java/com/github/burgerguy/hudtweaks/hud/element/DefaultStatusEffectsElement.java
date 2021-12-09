@@ -1,5 +1,6 @@
 package com.github.burgerguy.hudtweaks.hud.element;
 
+import com.github.burgerguy.hudtweaks.asm.HTMixinPlugin;
 import com.github.burgerguy.hudtweaks.gui.widget.HTButtonWidget;
 import com.github.burgerguy.hudtweaks.gui.widget.SidebarWidget;
 import com.github.burgerguy.hudtweaks.hud.HTIdentifier;
@@ -12,7 +13,8 @@ import net.minecraft.text.TranslatableText;
 
 public class DefaultStatusEffectsElement extends HudElement {
 	public static final HTIdentifier IDENTIFIER = new HTIdentifier(Util.MINECRAFT_MODID, new HTIdentifier.ElementId("statuseffects", "hudtweaks.element.statuseffects"));
-	private boolean vertical;
+	private static final boolean DEFAULT_VERTICAL_VALUE = false;
+	private boolean vertical = DEFAULT_VERTICAL_VALUE;
 
 	public DefaultStatusEffectsElement() {
 		super(IDENTIFIER, "onStatusEffectsChange");
@@ -20,12 +22,12 @@ public class DefaultStatusEffectsElement extends HudElement {
 
 	@Override
 	protected float calculateWidth(MinecraftClient client) {
-		return vertical ? getRawHeight(client) : getRawWidth(client);
+		return isVertical() ? getRawHeight(client) : getRawWidth(client);
 	}
 
 	@Override
 	protected float calculateHeight(MinecraftClient client) {
-		return vertical ? getRawWidth(client) : getRawHeight(client);
+		return isVertical() ? getRawWidth(client) : getRawHeight(client);
 	}
 
 	private int getRawWidth(MinecraftClient client) {
@@ -71,16 +73,16 @@ public class DefaultStatusEffectsElement extends HudElement {
 
 	@Override
 	protected float calculateDefaultX(MinecraftClient client) {
-		return client.getWindow().getScaledWidth() - calculateWidth(client) - 1 - (vertical ? getNonBeneficialOffset(client) : 0);
+		return client.getWindow().getScaledWidth() - calculateWidth(client) - 1 - (isVertical() ? getNonBeneficialOffset(client) : 0);
 	}
 
 	@Override
 	protected float calculateDefaultY(MinecraftClient client) {
-		return (client.isDemo() ? 16 : 1) + (vertical ? 0 : getNonBeneficialOffset(client));
+		return (client.isDemo() ? 16 : 1) + (isVertical() ? 0 : getNonBeneficialOffset(client));
 	}
 
 	public boolean isVertical() {
-		return vertical;
+		return HTMixinPlugin.canForceEffectsVertical() ? vertical : DEFAULT_VERTICAL_VALUE;
 	}
 
 	public void setVertical(boolean vertical) {
@@ -97,13 +99,18 @@ public class DefaultStatusEffectsElement extends HudElement {
 	public void fillSidebar(SidebarWidget sidebar) {
 		super.fillSidebar(sidebar);
 		sidebar.addPadding(6);
-		sidebar.addEntry(new SidebarWidget.DrawableEntry<>(y -> new HTButtonWidget(4, y, sidebar.width - 8, 14, new TranslatableText("hudtweaks.options.statuseffects.style.display", vertical ? I18n.translate("hudtweaks.options.statuseffects.style.vertical.display") : I18n.translate("hudtweaks.options.statuseffects.style.horizontal.display"))) {
-			@Override
-			public void onPress() {
-				vertical = !vertical;
-				setMessage(new TranslatableText("hudtweaks.options.statuseffects.style.display", vertical ? I18n.translate("hudtweaks.options.statuseffects.style.vertical.display") : I18n.translate("hudtweaks.options.statuseffects.style.horizontal.display")));
-				containerNode.setRequiresUpdate();
-			}
+		sidebar.addEntry(new SidebarWidget.DrawableEntry<>(y -> {
+			HTButtonWidget widget = new HTButtonWidget(4, y, sidebar.width - 8, 14, new TranslatableText("hudtweaks.options.statuseffects.style.display", vertical ? I18n.translate("hudtweaks.options.statuseffects.style.vertical.display") : I18n.translate("hudtweaks.options.statuseffects.style.horizontal.display"))) {
+				@Override
+				public void onPress() {
+					vertical = !vertical;
+					setMessage(new TranslatableText("hudtweaks.options.statuseffects.style.display", vertical ? I18n.translate("hudtweaks.options.statuseffects.style.vertical.display") : I18n.translate("hudtweaks.options.statuseffects.style.horizontal.display")));
+					containerNode.setRequiresUpdate();
+				}
+			};
+
+			widget.active = HTMixinPlugin.canForceEffectsVertical();
+			return widget;
 		}, 14));
 	}
 }
