@@ -36,7 +36,8 @@ public class ElementRegistry {
 	}
 	
 	public HudElement getActiveElement(HTIdentifier identifier) {
-		return getElementContainer(identifier).getActiveElement();
+		HudElementContainer hudElementContainer = getElementContainer(identifier);
+		return hudElementContainer != null ? hudElementContainer.getActiveElement() : null;
 	}
 
 	public Collection<HudElementContainer> getElementContainers() {

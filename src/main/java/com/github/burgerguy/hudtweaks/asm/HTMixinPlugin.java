@@ -95,6 +95,7 @@ public class HTMixinPlugin implements IMixinConfigPlugin {
 						Util.LOGGER.info("BossBarHud class (" + targetClassName + ") screen percent modification successful.");
 					} catch (Exception e) {
 						Util.LOGGER.error("Error injecting into BossBarHud class (" + targetClassName + ") for screen percent modification, reverting changes...");
+						Util.LOGGER.debug(e);
 						methodNode.instructions = oldInstructions;
 					}
 				}
@@ -117,7 +118,7 @@ public class HTMixinPlugin implements IMixinConfigPlugin {
 									foundLdc = true;
 								}
 							} else {
-								throw new RuntimeException("unexpected bytecode");
+								throw new UnexpectedBytecodeException("unable to locate LDC \"food\"");
 							}
 						}
 						itr.next();
@@ -134,6 +135,7 @@ public class HTMixinPlugin implements IMixinConfigPlugin {
 						Util.LOGGER.info("InGameHud class (" + targetClassName + ") force hunger modification successful.");
 					} catch (Exception e) {
 						Util.LOGGER.error("Error injecting into InGameHud class (" + targetClassName + ") for force hunger modification, reverting changes...");
+						Util.LOGGER.debug(e);
 						methodNode.instructions = oldInstructions;
 					}
 				} else if (methodEqualsMapped("net.minecraft.class_329", "method_37298", "(Lnet/minecraft/class_4587;Lnet/minecraft/class_1657;IIIIFIIIZ)V", methodNode.name, methodNode.desc)) { // renderHealthBar
@@ -150,7 +152,7 @@ public class HTMixinPlugin implements IMixinConfigPlugin {
 									foundBipush = true;
 								}
 							} else {
-								throw new RuntimeException("unexpected bytecode");
+								throw new UnexpectedBytecodeException("unable to locate expected instructions on first pass");
 							}
 						}
 						itr.previous();
@@ -168,6 +170,7 @@ public class HTMixinPlugin implements IMixinConfigPlugin {
 						Util.LOGGER.info("InGameHud class (" + targetClassName + ") flip health lines modification successful.");
 					} catch (Exception e) {
 						Util.LOGGER.error("Error injecting into InGameHud class (" + targetClassName + ") for flip health lines modification, reverting changes...");
+						Util.LOGGER.debug(e);
 						methodNode.instructions = oldInstructions;
 					}
 				} else if (methodEqualsMapped("net.minecraft.class_329", "method_1765", "(Lnet/minecraft/class_4587;)V", methodNode.name, methodNode.desc)) { // renderStatusEffectOverlay TODO: fix parameters
@@ -205,7 +208,7 @@ public class HTMixinPlugin implements IMixinConfigPlugin {
 									isubsFound++;
 								}
 							} else {
-								throw new RuntimeException("unexpected bytecode");
+								throw new UnexpectedBytecodeException("unable to locate expected instructions on first pass");
 							}
 						}
 
@@ -220,12 +223,15 @@ public class HTMixinPlugin implements IMixinConfigPlugin {
 									break;
 								}
 							} else {
-								throw new RuntimeException("unexpected bytecode");
+								throw new UnexpectedBytecodeException("unable to find IFEQ on first rewind");
 							}
 						}
 
 						int yLvtIdx = finalIincInsn.var;
 						int xLvtIdx = finalIstoreInsn.var;
+
+						boolean findEffectSize = false;
+						int effectSize = 0;
 						// Contains the instructions for the custom branch condition.
 						InsnList modifiedBranchInsns = new InsnList();
 						while (true) {
@@ -235,19 +241,38 @@ public class HTMixinPlugin implements IMixinConfigPlugin {
 								if (insn.getNext() instanceof VarInsnNode nextVarInsn
 										&& nextVarInsn.getOpcode() == Opcodes.ISTORE
 										&& (nextVarInsn.var == xLvtIdx || nextVarInsn.var == yLvtIdx)) {
-									// negate before doing operation, then store
-									// TODO: this might not always work
+									// negate before doing operation and before storing
+									// this might not always work
 									modifiedBranchInsns.add(new InsnNode(Opcodes.INEG));
+								}
+
+								if (insn instanceof IntInsnNode intInsn &&
+										(insn.getOpcode() == Opcodes.BIPUSH || insn.getOpcode() == Opcodes.SIPUSH)) {
+									// save modifier and stop searching if applicable
+									if (findEffectSize) {
+										effectSize = intInsn.operand;
+										findEffectSize = false;
+									}
 								}
 
 								if (insn instanceof LineNumberNode) {
 									// get rid of line number nodes, they'll be inaccurate
 									continue;
 								} else if (insn instanceof VarInsnNode varInsn && varInsn.var == xLvtIdx) {
+									// search for modifier
+									if (insn.getOpcode() == Opcodes.ILOAD && effectSize == 0) {
+										findEffectSize = true;
+									}
+									// swap var
 									VarInsnNode clonedInsn = (VarInsnNode) insn.clone(labelMap);
 									clonedInsn.var = yLvtIdx;
 									modifiedBranchInsns.add(clonedInsn);
 								} else if (insn instanceof VarInsnNode varInsn && varInsn.var == yLvtIdx) {
+									// search for modifier
+									if (insn.getOpcode() == Opcodes.ILOAD && effectSize == 0) {
+										findEffectSize = true;
+									}
+									// swap var
 									VarInsnNode clonedInsn = (VarInsnNode) insn.clone(labelMap);
 									clonedInsn.var = xLvtIdx;
 									modifiedBranchInsns.add(clonedInsn);
@@ -265,17 +290,23 @@ public class HTMixinPlugin implements IMixinConfigPlugin {
 									break;
 								}
 							} else {
-								throw new RuntimeException("unexpected bytecode");
+								throw new UnexpectedBytecodeException("unable to find final instruction on second pass");
 							}
 						}
 
+						if (effectSize == 0) throw new UnexpectedBytecodeException("effect size set to 0 or not found");
+
 						LabelNode branchEndLabel = new LabelNode();
+						modifiedBranchInsns.add(branchEndLabel);
+
 						itr.add(new JumpInsnNode(Opcodes.GOTO, branchEndLabel));
 						LabelNode branchStartLabel = new LabelNode();
 						itr.add(branchStartLabel);
+						itr.add(new IincInsnNode(xLvtIdx, -effectSize));
+						IincInsnNode secondIincInsn = new IincInsnNode(yLvtIdx, -effectSize);
+						itr.add(secondIincInsn);
 						// this messes with the iterator, but since we're immediately going previous again, it should be fine
-						modifiedBranchInsns.add(branchEndLabel);
-						methodNode.instructions.insert(branchStartLabel, modifiedBranchInsns);
+						methodNode.instructions.insert(secondIincInsn, modifiedBranchInsns);
 
 						// rewind again
 						while (true) {
@@ -288,7 +319,7 @@ public class HTMixinPlugin implements IMixinConfigPlugin {
 									break;
 								}
 							} else {
-								throw new RuntimeException("unexpected bytecode");
+								throw new UnexpectedBytecodeException("unable to find IFEQ on second rewind");
 							}
 						}
 
@@ -298,6 +329,7 @@ public class HTMixinPlugin implements IMixinConfigPlugin {
 						Util.LOGGER.info("InGameHud class (" + targetClassName + ") force effects vertical modification successful.");
 					} catch (Exception e) {
 						Util.LOGGER.error("Error injecting into InGameHud class (" + targetClassName + ") for force effects vertical modification, reverting changes...");
+						Util.LOGGER.debug(e);
 						methodNode.instructions = oldInstructions;
 					}
 				}
