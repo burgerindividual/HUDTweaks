@@ -32,8 +32,8 @@ public final class GLUtil {
 		int b = color & 255;
 		VertexConsumer consumer = VCP_INSTANCE.getBuffer(solidLineLayer);
 		MatrixStack.Entry entry = matrices.peek();
-		Matrix4f modelMatrix = entry.getModel();
-		Matrix3f normalMatrix = entry.getNormal();
+		Matrix4f modelMatrix = entry.getPositionMatrix();
+		Matrix3f normalMatrix = entry.getNormalMatrix();
 		addSolidLine(consumer, modelMatrix, normalMatrix, x1, y1, x2, y2, r, g, b, a);
 		addSolidLine(consumer, modelMatrix, normalMatrix, x2, y2, x3, y3, r, g, b, a);
 		addSolidLine(consumer, modelMatrix, normalMatrix, x3, y3, x4, y4, r, g, b, a);
@@ -54,8 +54,8 @@ public final class GLUtil {
 		BufferVertexConsumer consumer = (BufferBuilder) VCP_INSTANCE.getBuffer(dashedLineLayer);
 		setupDashes(1000, 3.0F, x1, y1, x2, y2, x3, y3, x4, y4);
 		MatrixStack.Entry entry = matrices.peek();
-		Matrix4f modelMatrix = entry.getModel();
-		Matrix3f normalMatrix = entry.getNormal();
+		Matrix4f modelMatrix = entry.getPositionMatrix();
+		Matrix3f normalMatrix = entry.getNormalMatrix();
 		float currentDist = 0.0F;
 		currentDist += addDashedLine(consumer, modelMatrix, normalMatrix, x1, y1, x2, y2, r, g, b, a, currentDist);
 		currentDist += addDashedLine(consumer, modelMatrix, normalMatrix, x2, y2, x3, y3, r, g, b, a, currentDist);
@@ -143,7 +143,7 @@ public final class GLUtil {
 		RenderSystem.disableTexture();
 		RenderSystem.defaultBlendFunc();
 		RenderSystem.setShader(GameRenderer::getPositionColorShader);
-		Matrix4f matrix = matrices.peek().getModel();
+		Matrix4f matrix = matrices.peek().getPositionMatrix();
 		builder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
 		builder.vertex(matrix, x1, y2, 0.0F).color(r, g, b, a).next();
 		builder.vertex(matrix, x2, y2, 0.0F).color(r, g, b, a).next();

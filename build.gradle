@@ -80,10 +80,6 @@ allprojects {
 }
 
 dependencies {
-	modRuntimeOnly ("com.github.burgerguy:databreaker:bd059551a9") {
-		exclude module: "fabric-loader"
-	}
-
 	modCompileOnly "com.terraformersmc:modmenu:${project.modmenu_version}"
 	modRuntimeOnly "com.terraformersmc:modmenu:${project.modmenu_version}"
 

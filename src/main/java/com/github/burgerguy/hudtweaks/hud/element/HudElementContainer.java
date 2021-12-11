@@ -100,7 +100,7 @@ public class HudElementContainer extends AbstractContainerNode {
 		if (!matrixPushed && elementIdentifier.equals(activeElement.getIdentifier())) {
 			for (MatrixStack matrixStack : matrixStacks) {
 				matrixStack.push();
-				matrixStack.peek().getModel().multiply(activeElement.getMatrix());
+				matrixStack.peek().getPositionMatrix().multiply(activeElement.getMatrix());
 			}
 			matrixPushed = true;
 			return true;
