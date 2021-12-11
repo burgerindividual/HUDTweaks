@@ -4,7 +4,7 @@
         "srcrgb": "srcalpha",
         "dstrgb": "1-srcalpha"
     },
-    "vertex": "hudtweaks:solid_lines",
+    "vertex": "solid_lines",
     "fragment": "rendertype_lines",
     "attributes": [
         "Position",

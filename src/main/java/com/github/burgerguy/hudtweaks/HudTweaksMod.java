@@ -16,7 +16,6 @@ public class HudTweaksMod implements ClientModInitializer {
 	
 	@Override
 	public void onInitializeClient() {
-		HTRenderLayers.initializeShaders();
 		HudContainer.init();
 		FabricLoader.getInstance().getEntrypointContainers(MOD_ID, HudTweaksApi.class).forEach(e -> {
 			HudTweaksApi apiImpl = e.getEntrypoint();

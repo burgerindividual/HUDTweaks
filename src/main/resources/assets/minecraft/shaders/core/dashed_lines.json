@@ -4,8 +4,8 @@
     "srcrgb": "srcalpha",
     "dstrgb": "1-srcalpha"
   },
-  "vertex": "hudtweaks:dashed_lines",
-  "fragment": "hudtweaks:dashed_lines",
+  "vertex": "dashed_lines",
+  "fragment": "dashed_lines",
   "attributes": [
     "Position",
     "Color",

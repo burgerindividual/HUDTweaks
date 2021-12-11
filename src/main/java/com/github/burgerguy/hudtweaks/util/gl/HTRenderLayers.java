@@ -2,7 +2,6 @@ package com.github.burgerguy.hudtweaks.util.gl;
 
 import com.github.burgerguy.hudtweaks.HudTweaksMod;
 import com.github.burgerguy.hudtweaks.mixin.RenderLayerAccessor;
-import ladysnake.satin.api.managed.ShaderEffectManager;
 import net.minecraft.client.gl.GlUniform;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.RenderPhase;
@@ -15,22 +14,10 @@ import java.util.OptionalDouble;
 public final class HTRenderLayers extends RenderLayer {
 	private static final String DASHED_LAYER_NAME = HudTweaksMod.MOD_ID + "/dashed-line-layer";
 	private static final String SOLID_LAYER_NAME = HudTweaksMod.MOD_ID + "/solid-line-layer";
-	private static RenderPhase.Shader dashedLinesShader;
-	private static RenderPhase.Shader solidLinesShader; // minecraft has a built in one but it's slightly broken
-	private static GlUniform dashOffset;
-	private static GlUniform dashLength;
-
-	public static void initializeShaders() { // TODO: shaders break on reload
-		ShaderEffectManager.getInstance().manageCoreShader(new Identifier(HudTweaksMod.MOD_ID, "dashed_lines"), HTVertexFormats.LINES_MODIFIED, s -> {
-			dashedLinesShader = new RenderPhase.Shader(s::getProgram);
-			dashOffset = s.getProgram().getUniform("DashOffset");
-			dashLength = s.getProgram().getUniform("DashLength");
-		});
-		ShaderEffectManager.getInstance().manageCoreShader(new Identifier(HudTweaksMod.MOD_ID, "solid_lines"), VertexFormats.LINES, s -> {
-			net.minecraft.client.render.Shader program = s.getProgram();
-			solidLinesShader = new RenderPhase.Shader(() -> program);
-		});
-	}
+	public static RenderPhase.Shader dashedLinesShader;
+	public static RenderPhase.Shader solidLinesShader; // minecraft has a built in one but it's slightly broken
+	public static GlUniform dashOffset;
+	public static GlUniform dashLength;
 
 	private HTRenderLayers() {
 		// random values just so we can access the class

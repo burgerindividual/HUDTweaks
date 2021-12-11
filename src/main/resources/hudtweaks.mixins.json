@@ -12,7 +12,8 @@
     "InGameHudMixin",
     "MinecraftClientAccessor",
     "RenderLayerAccessor",
-    "TextFieldAccessor"
+    "TextFieldAccessor",
+    "GameRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1

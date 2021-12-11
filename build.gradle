@@ -13,14 +13,6 @@ repositories {
 		name = "TerraformersMC"
 		url = "https://maven.terraformersmc.com/"
 	}
-	maven {
-		name = 'Ladysnake Mods'
-		url = 'https://ladysnake.jfrog.io/artifactory/mods'
-		content {
-			includeGroup 'io.github.ladysnake'
-			includeGroupByRegex 'io\\.github\\.onyxstudios.*'
-		}
-	}
 }
 
 loom {
@@ -65,7 +57,7 @@ allprojects {
 	}
 
 	loom {
-		shareCaches = true
+		setShareRemapCaches(true)
 	}
 	
 	java {
@@ -88,15 +80,12 @@ allprojects {
 }
 
 dependencies {
-	modRuntime ("com.github.burgerguy:databreaker:bd059551a9") {
+	modRuntimeOnly ("com.github.burgerguy:databreaker:bd059551a9") {
 		exclude module: "fabric-loader"
 	}
 
-	modImplementation "io.github.ladysnake:satin:${project.satin_version}"
-	include "io.github.ladysnake:satin:${project.satin_version}"
-
 	modCompileOnly "com.terraformersmc:modmenu:${project.modmenu_version}"
-	modRuntime "com.terraformersmc:modmenu:${project.modmenu_version}"
+	modRuntimeOnly "com.terraformersmc:modmenu:${project.modmenu_version}"
 
 	afterEvaluate {
 		implementation project(":HUDTweaks-apihelper")
@@ -107,13 +96,7 @@ dependencies {
 publishing {
 	publications {
 		mavenJava(MavenPublication) {
-			// add all the jars that should be included when publishing to maven
-			artifact(remapJar) {
-				builtBy remapJar
-			}
-			artifact(sourcesJar) {
-				builtBy remapSourcesJar
-			}
+			from components.java
 		}
 	}
 	
