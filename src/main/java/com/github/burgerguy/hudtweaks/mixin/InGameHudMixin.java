@@ -182,7 +182,7 @@ public abstract class InGameHudMixin extends DrawableHelper {
 
 	@Inject(method = "render",
 			at = @At(value = "INVOKE",
-			target = "Lnet/minecraft/client/font/TextRenderer;draw(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/text/Text;FFI)I"))
+			target = "Lnet/minecraft/client/gui/hud/InGameHud;drawTextBackground(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/font/TextRenderer;III)V"))
 	private void renderActionBarStart(MatrixStack matrices, float tickDelta, CallbackInfo callbackInfo) {
 		RenderStateUtil.startRender(DefaultActionBarElement.IDENTIFIER, matrices);
 	}
