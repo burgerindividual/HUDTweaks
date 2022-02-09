@@ -177,7 +177,8 @@ public abstract class InGameHudMixin extends DrawableHelper {
 
 	@Inject(method = "render",
 			at = @At(value = "INVOKE",
-			target = "Lnet/minecraft/client/gui/hud/InGameHud;drawTextBackground(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/font/TextRenderer;III)V"))
+			target = "Lnet/minecraft/client/gui/hud/InGameHud;drawTextBackground(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/font/TextRenderer;III)V",
+			ordinal = 0))
 	private void renderActionBarStart(MatrixStack matrices, float tickDelta, CallbackInfo callbackInfo) {
 		RenderStateUtil.startRender(DefaultActionBarElement.IDENTIFIER, matrices);
 	}
@@ -192,8 +193,8 @@ public abstract class InGameHudMixin extends DrawableHelper {
 
 	@Inject(method = "render",
 			at = @At(value = "INVOKE",
-			target = "Lnet/minecraft/client/font/TextRenderer;drawWithShadow(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/text/Text;FFI)I",
-			ordinal = 0))
+			target = "Lnet/minecraft/client/gui/hud/InGameHud;drawTextBackground(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/font/TextRenderer;III)V",
+			ordinal = 1))
 	private void renderTitleStart(MatrixStack matrices, float tickDelta, CallbackInfo callbackInfo) {
 		RenderStateUtil.startRender(DefaultTitleElement.IDENTIFIER, matrices);
 	}
@@ -209,8 +210,8 @@ public abstract class InGameHudMixin extends DrawableHelper {
 
 	@Inject(method = "render",
 			at = @At(value = "INVOKE",
-			target = "Lnet/minecraft/client/font/TextRenderer;drawWithShadow(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/text/Text;FFI)I",
-			ordinal = 1))
+			target = "Lnet/minecraft/client/gui/hud/InGameHud;drawTextBackground(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/font/TextRenderer;III)V",
+			ordinal = 2))
 	private void renderSubtitleStart(MatrixStack matrices, float tickDelta, CallbackInfo callbackInfo) {
 		RenderStateUtil.startRender(DefaultSubtitleElement.IDENTIFIER, matrices);
 	}
