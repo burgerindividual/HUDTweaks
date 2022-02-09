@@ -7,12 +7,16 @@ import com.github.burgerguy.hudtweaks.hud.HudContainer;
 import com.github.burgerguy.hudtweaks.hud.UpdateEvent;
 import com.github.burgerguy.hudtweaks.hud.element.HudElement;
 import com.github.burgerguy.hudtweaks.util.Util;
+import java.nio.file.Path;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.loader.api.FabricLoader;
 
 public class HudTweaksMod implements ClientModInitializer {
 	public static final String MOD_ID = "hudtweaks";
-	
+
+	private static final Path CONFIG_FILE_PATH = FabricLoader.getInstance().getConfigDir().resolve("hudtweaks.json");
+	private static Config CONFIG;
+
 	@Override
 	public void onInitializeClient() {
 		HudContainer.init();
@@ -32,7 +36,11 @@ public class HudTweaksMod implements ClientModInitializer {
 				HudContainer.getElementRegistry().addOverride(override);
 			}
 		});
-		Config.tryLoadConfig();
+		CONFIG = Config.tryLoadConfig(CONFIG_FILE_PATH);
+	}
+
+	public static Config getConfig() {
+		return CONFIG;
 	}
 
 }

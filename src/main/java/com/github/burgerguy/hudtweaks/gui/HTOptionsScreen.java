@@ -1,5 +1,6 @@
 package com.github.burgerguy.hudtweaks.gui;
 
+import com.github.burgerguy.hudtweaks.HudTweaksMod;
 import com.github.burgerguy.hudtweaks.config.Config;
 import com.github.burgerguy.hudtweaks.gui.widget.ArrowButtonWidget;
 import com.github.burgerguy.hudtweaks.gui.widget.ElementLabelWidget;
@@ -220,7 +221,7 @@ public class HTOptionsScreen extends Screen {
 
 	@Override
 	public void onClose() {
-		Config.trySaveConfig();
+		HudTweaksMod.getConfig().trySaveConfig();
 		for(Element child : children()) {
 			if (child instanceof AutoCloseable) {
 				try {
