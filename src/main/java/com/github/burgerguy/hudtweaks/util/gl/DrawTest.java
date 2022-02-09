@@ -1,86 +1,122 @@
 package com.github.burgerguy.hudtweaks.util.gl;
 
-import org.lwjgl.opengl.GL;
-import org.lwjgl.opengl.GL15;
-import org.lwjgl.opengl.GL33;
-import org.lwjgl.opengl.GL43;
+import org.lwjgl.opengl.*;
 import org.lwjgl.system.MemoryUtil;
 
 public class DrawTest implements AutoCloseable {
 	private static final int QUERY_TARGET = getQueryTarget();
-	private final int queryId;
-	private boolean active;
 
+	private final int queryId;
 	private final long pointer;
 
+	// these two variables have to be kept track of separately to avoid hard syncing the call state to the query state.
+	private QueryState queryState;
+	private LastCallState lastCallState;
+	private boolean latestResult;
+
 	public DrawTest() {
-		queryId = GL15.glGenQueries();
-		pointer = MemoryUtil.nmemAlloc(5); // use the first 4 bytes to store the result, use the last 1 byte to store the availability.
+		queryId = GL15C.glGenQueries();
+		// use the first 4 bytes to store the result, use the last 1 byte to store the availability.
+		pointer = MemoryUtil.nmemAlloc(4 + 1);
 	}
 
-	/**
-	 * @return true if the method was called while inactive.
-	 */
-	public boolean start() {
-		if (!active) {
-			active = true;
-			GL15.glBeginQuery(QUERY_TARGET, queryId);
-			return true;
+	public void markStart() {
+		if (lastCallState != null && lastCallState.equals(LastCallState.BEGIN)) {
+			throw new IllegalStateException("Start called twice in a row");
 		}
-		return false;
+		lastCallState = LastCallState.BEGIN;
+
+		// ACTIVE is indirectly handled above through BEGIN
+		// ignore if FINISHED
+		if (queryState == null || queryState.equals(QueryState.RETRIEVED)) {
+			queryState = QueryState.ACTIVE;
+			GL15C.glBeginQuery(QUERY_TARGET, queryId);
+		}
 	}
 
-	/**
-	 * @return true if the method was called while active.
-	 */
-	public boolean end() {
-		if (active) {
-			GL15.glEndQuery(QUERY_TARGET);
-			active = false;
-			return true;
+	public void markEnd() {
+		if (lastCallState == null || lastCallState.equals(LastCallState.UPDATE)) {
+			throw new IllegalStateException("End called before start");
+		} else if (lastCallState.equals(LastCallState.END)) {
+			throw new IllegalStateException("End called twice in a row");
 		}
-		return false;
+		lastCallState = LastCallState.END;
+
+		// RETRIEVED is indirectly handled above through UPDATE
+		// ignore if FINISHED as long as END wasn't called multiple times in a row
+		// queryState null indirectly handled by lastCallState null
+		if (queryState.equals(QueryState.ACTIVE)) {
+			GL15C.glEndQuery(QUERY_TARGET);
+			queryState = QueryState.FINISHED;
+		}
 	}
 
 	public boolean isActive() {
-		return active;
+		return queryState != null && queryState.equals(QueryState.ACTIVE);
 	}
 
-	public boolean getAvailability() {
-		GL15.nglGetQueryObjectiv(queryId, GL15.GL_QUERY_RESULT_AVAILABLE, pointer + 4);
-		return MemoryUtil.memGetBoolean(pointer + 4);
-	}
-
-	public boolean getResultSync() {
-		GL15.nglGetQueryObjectiv(queryId, GL15.GL_QUERY_RESULT, pointer);
-		return MemoryUtil.memGetInt(pointer) > 0;
-	}
-
-	/**
-	 * @return null if the result is not available, otherwise return the result.
-	 */
-	public Boolean tryGetResultAsync() {
-		if (getAvailability()) {
-			return getResultSync();
+	private void updateResult() {
+		if (lastCallState == null || lastCallState.equals(LastCallState.UPDATE)) {
+			// this happens when begin and end weren't called, so we can assume that the entire rendering method wasn't
+			// called.
+			latestResult = false;
+			lastCallState = LastCallState.UPDATE;
+			return;
+		} else if (lastCallState.equals(LastCallState.BEGIN)) {
+			throw new IllegalStateException("Update called before end");
 		}
-		return null;
+		lastCallState = LastCallState.UPDATE;
+
+		// ACTIVE indirectly handled above through BEGIN
+		// RETRIEVED indirectly handled above through multiple calls to UPDATE
+		// queryState null indirectly handled by lastCallState null
+		if (queryState.equals(QueryState.FINISHED)) {
+			// get availability
+			GL15C.nglGetQueryObjectiv(queryId, GL15C.GL_QUERY_RESULT_AVAILABLE, pointer + 4);
+			boolean available = MemoryUtil.memGetBoolean(pointer + 4);
+			if (available) {
+				// get result
+				GL15C.nglGetQueryObjectiv(queryId, GL15C.GL_QUERY_RESULT, pointer);
+				latestResult = MemoryUtil.memGetInt(pointer) > 0;
+				queryState = QueryState.RETRIEVED;
+			}
+		}
+	}
+
+	public boolean getResult() {
+		updateResult();
+		return latestResult;
 	}
 
 	private static int getQueryTarget() {
-		int queryTarget = GL15.GL_SAMPLES_PASSED;
-		if (GL.getCapabilities().OpenGL33) {
-			queryTarget = GL33.GL_ANY_SAMPLES_PASSED;
-			if (GL.getCapabilities().OpenGL43) {
-				queryTarget = GL43.GL_ANY_SAMPLES_PASSED_CONSERVATIVE;
-			}
-		}
-
-		return queryTarget;
+		// occlusion queries are slower and buggier in some instances, so let's just stick to primitives generated.
+		return GL30C.GL_PRIMITIVES_GENERATED;
 	}
 	
 	@Override
 	public void close() {
-		GL15.glDeleteQueries(queryId);
+		GL15C.glDeleteQueries(queryId);
 		MemoryUtil.nmemFree(pointer);
+	}
+
+	private enum QueryState {
+		/**
+		 * State for when the query is between its beginning and end. GL calls during this will be recorded if applicable.
+		 */
+		ACTIVE,
+		/**
+		 * State for when the query is past its end, but hasn't had its value retrieved.
+		 */
+		FINISHED,
+		/**
+		 * State for when the query has had its value retrieved.
+		 */
+		RETRIEVED
+	}
+
+	private enum LastCallState {
+		BEGIN,
+		END,
+		UPDATE
 	}
 }

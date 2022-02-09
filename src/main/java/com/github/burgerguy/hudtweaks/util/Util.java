@@ -26,7 +26,6 @@ public final class Util {
 	}
 
 	public static final Gson GSON;
-	public static final JsonParser JSON_PARSER = new JsonParser();
 	public static final Logger LOGGER = LogManager.getLogger("HUDTweaks");
 
 	public static final NumberFormat RELATIVE_POS_FORMATTER = new DecimalFormat("%##0.0");

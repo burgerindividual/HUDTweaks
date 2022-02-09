@@ -4,14 +4,15 @@ import com.github.burgerguy.hudtweaks.hud.HudContainer;
 import com.github.burgerguy.hudtweaks.util.Util;
 import com.google.gson.JsonIOException;
 import com.google.gson.JsonParseException;
+import com.google.gson.JsonParser;
 import net.fabricmc.loader.api.FabricLoader;
 
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-public final class ConfigHelper {
-	private ConfigHelper() {
+public final class Config {
+	private Config() {
 		// no instantiation, all contents static
 	}
 
@@ -24,7 +25,7 @@ public final class ConfigHelper {
 		if (Files.exists(configFile)) {
 			Util.LOGGER.info("Loading config file...");
 			try (BufferedReader reader = new BufferedReader(new FileReader(configFile.toFile()))) {
-				HudContainer.getElementRegistry().updateFromJson(Util.JSON_PARSER.parse(reader));
+				HudContainer.getElementRegistry().updateFromJson(JsonParser.parseReader(reader));
 			} catch (JsonIOException e) {
 				Util.LOGGER.error("Unable to read config file", e);
 			} catch (JsonParseException e) {

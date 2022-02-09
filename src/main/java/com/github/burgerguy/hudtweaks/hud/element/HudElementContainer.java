@@ -22,8 +22,6 @@ public class HudElementContainer extends AbstractContainerNode {
 	protected HudElementWidget widget;
 	protected boolean matrixPushed;
 	protected DrawTest drawTest;
-	protected Boolean drawTestResult;
-	protected boolean drawTestedSinceClear;
 
 	public HudElementContainer(HudElement initialElement) {
 		this.initialElement = initialElement;
@@ -121,23 +119,16 @@ public class HudElementContainer extends AbstractContainerNode {
 		return false;
 	}
 
-	public void startDrawTest() {
-		drawTest.start();
+	public void markDrawTestStart() {
+		drawTest.markStart();
 	}
 
-	public void endDrawTest() {
-		if (drawTest.end()) drawTestedSinceClear = true;
-	}
-
-	public void clearDrawTest() {
-		drawTestResult = null;
-		drawTestedSinceClear = false;
+	public void markDrawTestEnd() {
+		drawTest.markEnd();
 	}
 
 	public boolean isRendered() {
-		if (!drawTestedSinceClear) return false;
-		if (drawTestResult == null) drawTestResult = drawTest.getResultSync();
-		return drawTestResult;
+		return drawTest.getResult();
 	}
 
 	@Nullable

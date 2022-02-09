@@ -2,12 +2,11 @@ package com.github.burgerguy.hudtweaks;
 
 import com.github.burgerguy.hudtweaks.api.HudElementOverride;
 import com.github.burgerguy.hudtweaks.api.HudTweaksApi;
-import com.github.burgerguy.hudtweaks.config.ConfigHelper;
+import com.github.burgerguy.hudtweaks.config.Config;
 import com.github.burgerguy.hudtweaks.hud.HudContainer;
 import com.github.burgerguy.hudtweaks.hud.UpdateEvent;
 import com.github.burgerguy.hudtweaks.hud.element.HudElement;
 import com.github.burgerguy.hudtweaks.util.Util;
-import com.github.burgerguy.hudtweaks.util.gl.HTRenderLayers;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.loader.api.FabricLoader;
 
@@ -33,7 +32,7 @@ public class HudTweaksMod implements ClientModInitializer {
 				HudContainer.getElementRegistry().addOverride(override);
 			}
 		});
-		ConfigHelper.tryLoadConfig();
+		Config.tryLoadConfig();
 	}
 
 }

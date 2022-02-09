@@ -19,7 +19,7 @@ public final class RenderStateUtil {
     public static void startRender(HTIdentifier containerIdentifier, HTIdentifier elementIdentifier, MatrixStack... matrixStacks) {
         HudElementContainer hudElementContainer = HudContainer.getElementRegistry().getElementContainer(containerIdentifier);
         hudElementContainer.tryPushMatrix(elementIdentifier, matrixStacks);
-        if (HTOptionsScreen.isOpen()) hudElementContainer.startDrawTest();
+        if (HTOptionsScreen.isOpen()) hudElementContainer.markDrawTestStart();
     }
 
     // utility method for default elements
@@ -30,6 +30,6 @@ public final class RenderStateUtil {
     public static void finishRender(HTIdentifier containerIdentifier, HTIdentifier elementIdentifier, MatrixStack... matrixStacks) {
         HudElementContainer hudElementContainer = HudContainer.getElementRegistry().getElementContainer(containerIdentifier);
         hudElementContainer.tryPopMatrix(elementIdentifier, matrixStacks);
-        hudElementContainer.endDrawTest();
+        if (HTOptionsScreen.isOpen()) hudElementContainer.markDrawTestEnd();
     }
 }
