@@ -33,7 +33,7 @@
 	"hudtweaks.options.statuseffects.style.display": "Стиль: %s",
 	"hudtweaks.options.statuseffects.style.vertical.display": "Вертикальный",
 	"hudtweaks.options.statuseffects.style.horizontal.display": "Горизонтальный",
-	"hudtweaks.options.bossbar.style.screen_percent": "Максимальное здоровье: %s",
+	"hudtweaks.options.bossbar.style.screen_percent": "Максимальная высота: %s",
 	"hudtweaks.options.forceDisplay.display": "Принудительно отобразить: %s",
 	"hudtweaks.options.forceDisplay.on.display": "Включён",
 	"hudtweaks.options.forceDisplay.off.display": "Выключен",
