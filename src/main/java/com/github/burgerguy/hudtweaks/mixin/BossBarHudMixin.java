@@ -14,11 +14,11 @@ public abstract class BossBarHudMixin {
 
 	@Inject(method = "render", at = @At(value = "HEAD"))
 	private void renderBossBarHead(MatrixStack matrices, CallbackInfo ci) {
-		RenderStateUtil.startRender(DefaultBossBarElement.IDENTIFIER, matrices);
+		RenderStateUtil.tryStartRender(DefaultBossBarElement.IDENTIFIER, matrices);
 	}
 
 	@Inject(method = "render", at = @At(value = "RETURN"))
 	private void renderBossBarReturn(MatrixStack matrices, CallbackInfo ci) {
-		RenderStateUtil.finishRender(DefaultBossBarElement.IDENTIFIER, matrices);
+		RenderStateUtil.tryFinishRender(DefaultBossBarElement.IDENTIFIER, matrices);
 	}
 }

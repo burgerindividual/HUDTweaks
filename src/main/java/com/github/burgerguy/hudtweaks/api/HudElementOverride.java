@@ -3,6 +3,7 @@ package com.github.burgerguy.hudtweaks.api;
 import com.github.burgerguy.hudtweaks.hud.HTIdentifier;
 import com.github.burgerguy.hudtweaks.hud.element.HudElement;
 
+import com.github.burgerguy.hudtweaks.util.RenderStateUtil;
 import java.util.function.BooleanSupplier;
 
 public class HudElementOverride {
@@ -14,8 +15,8 @@ public class HudElementOverride {
         this.overrideTarget = overrideTarget;
         this.override = override;
         this.isEnabledSupplier = isEnabledSupplier;
-        updater.fill(ms -> override.getContainerNode().tryPushMatrix(override.getIdentifier(), ms),
-                ms -> override.getContainerNode().tryPopMatrix(override.getIdentifier(), ms));
+        updater.fill(ms -> RenderStateUtil.tryStartRender(override, ms),
+                ms -> RenderStateUtil.tryFinishRender(override, ms));
     }
 
     public HTIdentifier getOverrideTarget() {

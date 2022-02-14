@@ -27,11 +27,14 @@
 	],
 	"depends": {
 		"fabricloader": ">=0.7.4",
-		"minecraft": ">=1.17-rc1",
+		"minecraft": ">=1.18",
 		"fabric": ">=0.36.0"
 	},
 	"recommends": {
 		"modmenu": "*"
+	},
+	"breaks": {
+		"spiffyhud": "*"
 	},
 	"accessWidener" : "hudtweaks.accesswidener"
 }

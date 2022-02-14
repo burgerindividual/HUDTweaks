@@ -1,13 +1,13 @@
 package com.github.burgerguy.hudtweaks.hud.element;
 
 import com.github.burgerguy.hudtweaks.api.HudElementOverride;
-import com.github.burgerguy.hudtweaks.hud.HTIdentifier;
 import com.github.burgerguy.hudtweaks.hud.tree.AbstractContainerNode;
 import com.github.burgerguy.hudtweaks.util.Util;
 import com.github.burgerguy.hudtweaks.util.gl.DrawTest;
 import com.google.gson.JsonElement;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.util.math.Matrix4f;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -20,8 +20,9 @@ public class HudElementContainer extends AbstractContainerNode {
 	private final List<HudElementOverride> overrides = new ArrayList<>(2);
 
 	protected HudElementWidget widget;
-	protected boolean matrixPushed;
-	protected DrawTest drawTest;
+	private boolean matrixPushed;
+	private DrawTest drawTest;
+	private boolean drawTestFailed;
 
 	public HudElementContainer(HudElement initialElement) {
 		this.initialElement = initialElement;
@@ -92,13 +93,13 @@ public class HudElementContainer extends AbstractContainerNode {
 		getActiveElement().createMatrix();
 	}
 
-	public boolean tryPushMatrix(HTIdentifier elementIdentifier, MatrixStack... matrixStacks) {
-		// we can't push more than once at a time and we can't push if the element isn't active.
-		HudElement activeElement = getActiveElement();
-		if (!matrixPushed && elementIdentifier.equals(activeElement.getIdentifier())) {
+	public boolean tryPushMatrix(MatrixStack... matrixStacks) {
+		// we can't push more than once at a time
+		if (!matrixPushed) {
+			Matrix4f activeElementMatrix = getActiveElement().getMatrix();
 			for (MatrixStack matrixStack : matrixStacks) {
 				matrixStack.push();
-				matrixStack.peek().getPositionMatrix().multiply(activeElement.getMatrix());
+				matrixStack.peek().getPositionMatrix().multiply(activeElementMatrix);
 			}
 			matrixPushed = true;
 			return true;
@@ -106,10 +107,9 @@ public class HudElementContainer extends AbstractContainerNode {
 		return false;
 	}
 
-	public boolean tryPopMatrix(HTIdentifier elementIdentifier, MatrixStack... matrixStacks) {
-		// we can't pop if it hasn't been pushed and we can't pop if the element isn't active.
-		HudElement activeElement = getActiveElement();
-		if (matrixPushed && elementIdentifier.equals(activeElement.getIdentifier())) {
+	public boolean tryPopMatrix(MatrixStack... matrixStacks) {
+		// we can't pop if it hasn't been pushed
+		if (matrixPushed) {
 			for (MatrixStack matrixStack : matrixStacks) {
 				matrixStack.pop();
 			}
@@ -120,15 +120,41 @@ public class HudElementContainer extends AbstractContainerNode {
 	}
 
 	public void markDrawTestStart() {
-		drawTest.markStart();
+		if (!drawTestFailed) {
+			try {
+				drawTest.markStart();
+			} catch (IllegalStateException e) {
+				drawTestFail(e);
+			}
+		}
 	}
 
 	public void markDrawTestEnd() {
-		drawTest.markEnd();
+		if (!drawTestFailed) {
+			try {
+				drawTest.markEnd();
+			} catch (IllegalStateException e) {
+				drawTestFail(e);
+			}
+		}
 	}
 
 	public boolean isRendered() {
-		return drawTest.getResult();
+		if (!drawTestFailed) {
+			try {
+				return drawTest.getResult();
+			} catch (IllegalStateException e) {
+				drawTestFail(e);
+			}
+		}
+		return false;
+	}
+
+	private void drawTestFail(Throwable e) {
+		drawTestFailed = true;
+		// this is done so that we don't accidentally mess up the next draw test and cause a gl error
+		if (drawTest.isActive()) drawTest.markEnd();
+		Util.LOGGER.error("Draw test failed for element " + getActiveElement().getIdentifier().toString() + " (container: " + getInitialElement().getIdentifier() + "), likely due to other mod.\nTo mod devs: please implement the HUDTweaks API and avoid unnecessary cancellations.", e);
 	}
 
 	@Nullable

@@ -85,4 +85,20 @@ public abstract class AbstractContainerNode {
 	public void setUpdated() {
 		requiresUpdate = false;
 	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+
+		AbstractContainerNode that = (AbstractContainerNode) o;
+
+		return this.getInitialElement().equals(that.getInitialElement());
+	}
+
+	@Override
+	public int hashCode() {
+		// multiplied by 31 to not collied with underlying element (doesn't really matter as it's not used though)
+		return getInitialElement().hashCode() * 31;
+	}
 }

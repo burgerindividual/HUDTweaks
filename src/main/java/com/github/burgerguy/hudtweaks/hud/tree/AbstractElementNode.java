@@ -79,6 +79,21 @@ public abstract class AbstractElementNode {
 		return Util.containsNotNull(updateEvents, event);
 	}
 
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+
+		AbstractElementNode that = (AbstractElementNode) o;
+
+		return identifier.equals(that.identifier);
+	}
+
+	@Override
+	public int hashCode() {
+		return identifier.hashCode();
+	}
+
 	public abstract float getX();
 
 	public abstract float getWidth();
