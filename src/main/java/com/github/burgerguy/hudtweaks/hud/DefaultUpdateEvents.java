@@ -16,6 +16,7 @@ import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
+import net.minecraft.util.Arm;
 import net.minecraft.util.math.MathHelper;
 
 import java.util.*;
@@ -31,7 +32,7 @@ public final class DefaultUpdateEvents {
 				public String getIdentifier() {
 					return "onRender";
 				}
-				
+
 				@Override
 				public boolean shouldUpdate(MinecraftClient client) {
 					return true;
@@ -45,7 +46,7 @@ public final class DefaultUpdateEvents {
 				public String getIdentifier() {
 					return "onScreenBoundsChange";
 				}
-				
+
 				@Override
 				public boolean shouldUpdate(MinecraftClient client) {
 					int scaledWidth = client.getWindow().getScaledWidth();
@@ -67,7 +68,7 @@ public final class DefaultUpdateEvents {
 				public String getIdentifier() {
 					return "onOffhandStatusChange";
 				}
-				
+
 				@Override
 				public boolean shouldUpdate(MinecraftClient client) {
 					Entity cameraEntity = client.getCameraEntity();
@@ -88,7 +89,7 @@ public final class DefaultUpdateEvents {
 				public String getIdentifier() {
 					return "onHealthRowsChange";
 				}
-				
+
 				@Override
 				public boolean shouldUpdate(MinecraftClient client) {
 					ClientPlayerEntity playerEntity = client.player;
@@ -111,7 +112,7 @@ public final class DefaultUpdateEvents {
 				public String getIdentifier() {
 					return "onRidingHealthRowsChange";
 				}
-				
+
 				@Override
 				public boolean shouldUpdate(MinecraftClient client) {
 					Entity cameraEntity = client.getCameraEntity();
@@ -120,7 +121,7 @@ public final class DefaultUpdateEvents {
 						if (ridingEntity instanceof LivingEntity livingEntity) {
 							if (livingEntity.isLiving()) {
 								int ridingHeartCount = MathHelper.clamp((int) (livingEntity.getMaxHealth() + 0.5F) / 2, 0, 30);
-								int ridingHealthRows = (int)Math.ceil(ridingHeartCount / 10.0D);
+								int ridingHealthRows = (int) Math.ceil(ridingHeartCount / 10.0D);
 								if (ridingHealthRows != lastRidingHealthRows) {
 									lastRidingHealthRows = ridingHealthRows;
 									return true;
@@ -138,7 +139,7 @@ public final class DefaultUpdateEvents {
 				public String getIdentifier() {
 					return "onStatusEffectsChange";
 				}
-				
+
 				@Override
 				public boolean shouldUpdate(MinecraftClient client) {
 					ClientPlayerEntity playerEntity = client.player;
@@ -146,7 +147,7 @@ public final class DefaultUpdateEvents {
 						Collection<StatusEffectInstance> effectInstances = playerEntity.getStatusEffects();
 						StatusEffect[] statusEffects = new StatusEffect[effectInstances.size()];
 						int i = 0;
-						for(StatusEffectInstance effectInstance : effectInstances) {
+						for (StatusEffectInstance effectInstance : effectInstances) {
 							statusEffects[i++] = effectInstance.getEffectType();
 						}
 						if (lastStatusEffects == null || !Arrays.deepEquals(lastStatusEffects, statusEffects)) {
@@ -164,7 +165,7 @@ public final class DefaultUpdateEvents {
 				public String getIdentifier() {
 					return "onHotbarAttackIndicatorChange";
 				}
-				
+
 				@Override
 				public boolean shouldUpdate(MinecraftClient client) {
 					AttackIndicator currentIndicator = client.options.attackIndicator;
@@ -182,7 +183,7 @@ public final class DefaultUpdateEvents {
 				public String getIdentifier() {
 					return "onHeldItemTickChange"; // the itemstack referenced only updates per tick, rather than per frame
 				}
-				
+
 				@Override
 				public boolean shouldUpdate(MinecraftClient client) {
 					ItemStack currentHeldStack = ((InGameHudAccessor) client.inGameHud).getCurrentStack();
@@ -214,12 +215,12 @@ public final class DefaultUpdateEvents {
 			},
 			new UpdateEvent() {
 				private Map<UUID, ClientBossBar> lastBossBars;
-				
+
 				@Override
 				public String getIdentifier() {
 					return "onBossBarsChange";
 				}
-				
+
 				@Override
 				public boolean shouldUpdate(MinecraftClient client) {
 					Map<UUID, ClientBossBar> currentBossBars = ((BossBarHudAccessor) client.inGameHud.getBossBarHud()).getBossBars();
@@ -233,12 +234,12 @@ public final class DefaultUpdateEvents {
 			new UpdateEvent() {
 				private Text lastActionBarText;
 				private Boolean lastTimeThresholdResult;
-				
+
 				@Override
 				public String getIdentifier() {
 					return "onActionBarChange";
 				}
-				
+
 				@Override
 				public boolean shouldUpdate(MinecraftClient client) {
 					boolean passed = false;
@@ -259,12 +260,12 @@ public final class DefaultUpdateEvents {
 			},
 			new UpdateEvent() {
 				private Text lastTitleText;
-				
+
 				@Override
 				public String getIdentifier() {
 					return "onTitleTextChange";
 				}
-				
+
 				@Override
 				public boolean shouldUpdate(MinecraftClient client) {
 					Text currentTitleText = ((InGameHudAccessor) client.inGameHud).getTitleText();
@@ -277,12 +278,12 @@ public final class DefaultUpdateEvents {
 			},
 			new UpdateEvent() {
 				private Text lastSubtitleText;
-				
+
 				@Override
 				public String getIdentifier() {
 					return "onSubtitleTextChange";
 				}
-				
+
 				@Override
 				public boolean shouldUpdate(MinecraftClient client) {
 					Text currentSubtitleText = ((InGameHudAccessor) client.inGameHud).getSubtitleText();
@@ -292,6 +293,25 @@ public final class DefaultUpdateEvents {
 					}
 					return false;
 				}
+			},
+			new UpdateEvent() {
+				private Arm lastMainArm;
+
+				@Override
+				public String getIdentifier() {
+					return "onMainArmChange";
+				}
+
+				@Override
+				public boolean shouldUpdate(MinecraftClient client) {
+					if (client.player == null) return false;
+					Arm currentMainArm = client.player.getMainArm();
+					if ((lastMainArm == null && currentMainArm != null) || (lastMainArm != null && !lastMainArm.equals(currentMainArm))) {
+						lastMainArm = currentMainArm;
+						return true;
+					}
+					return false;
+				}
 			}
-			);
+	);
 }

@@ -6,12 +6,13 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.AttackIndicator;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.Arm;
 
 public class DefaultHotbarElement extends HudElement {
 	public static final HTIdentifier IDENTIFIER = new HTIdentifier(Util.MINECRAFT_MODID, new HTIdentifier.ElementId("hotbar", "hudtweaks.element.hotbar"));
 	
 	public DefaultHotbarElement() {
-		super(IDENTIFIER, "onOffhandStatusChange", "onHotbarAttackIndicatorChange");
+		super(IDENTIFIER, "onOffhandStatusChange", "onHotbarAttackIndicatorChange", "onMainArmChange");
 	}
 
 	private int getAttackIndicatorOffset(MinecraftClient client) {
@@ -27,6 +28,11 @@ public class DefaultHotbarElement extends HudElement {
 		}
 		return 0;
 	}
+
+	// flip side of off-hand item when left-handed mode is on
+	private boolean isRightHanded(MinecraftClient client) {
+		return client != null && client.player != null && client.player.getMainArm().equals(Arm.RIGHT);
+	}
 	
 	@Override
 	protected float calculateWidth(MinecraftClient client) {
@@ -40,7 +46,7 @@ public class DefaultHotbarElement extends HudElement {
 	
 	@Override
 	protected float calculateDefaultX(MinecraftClient client) {
-		return client.getWindow().getScaledWidth() / 2.0f - 91 - getOffhandOffset(client);
+		return client.getWindow().getScaledWidth() / 2.0f - 91 - (isRightHanded(client) ? getOffhandOffset(client) : 0);
 	}
 	
 	@Override
