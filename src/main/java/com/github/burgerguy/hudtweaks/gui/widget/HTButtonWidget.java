@@ -15,7 +15,7 @@ public abstract class HTButtonWidget extends PressableWidget {
 
 	public HTButtonWidget(int x, int y, int width, int height, Text message) {
 		super(x, y, width, height, message);
-		setAlpha(0.8F);
+		setAlpha(0.8f);
 		overflowTextRenderer = new OverflowTextRenderer(40, 40, 4, x + width / 2, y + (height - 8) / 2, width - 2);
 	}
 	
@@ -28,13 +28,13 @@ public abstract class HTButtonWidget extends PressableWidget {
 		float x2 = x + width;
 		float y2 = y + height;
 		int color = isHovered() && active ? 0xFFFFFFFF : 0xFF000000;
-		GLUtil.drawFillColor(matrices, x1, y1, x2, y1 + 1.0F, color);
-		GLUtil.drawFillColor(matrices, x1, y2, x2, y2 - 1.0F, color);
-		GLUtil.drawFillColor(matrices, x1, y1 + 1.0F, x1 + 1.0F, y2 - 1.0F, color);
-		GLUtil.drawFillColor(matrices, x2, y1 + 1.0F, x2 - 1.0F, y2 - 1.0F, color);
+		GLUtil.drawFillColor(matrices, x1, y1, x2, y1 + 1.0f, color);
+		GLUtil.drawFillColor(matrices, x1, y2, x2, y2 - 1.0f, color);
+		GLUtil.drawFillColor(matrices, x1, y1 + 1.0f, x1 + 1.0f, y2 - 1.0f, color);
+		GLUtil.drawFillColor(matrices, x2, y1 + 1.0f, x2 - 1.0f, y2 - 1.0f, color);
 		renderBackground(matrices, minecraftClient, mouseX, mouseY);
 		int activeColor = active ? 0x00FFFFFF : 0x00A0A0A0;
-		overflowTextRenderer.render(matrices, textRenderer, getMessage(), delta, activeColor | MathHelper.ceil(alpha * 255.0F) << 24);
+		overflowTextRenderer.render(matrices, textRenderer, getMessage(), delta, activeColor | MathHelper.ceil(alpha * 255.0f) << 24);
 		if (!active) {
 			GLUtil.drawFillColor(matrices, x1, y1, x2, y2, 0x50303030);
 		}

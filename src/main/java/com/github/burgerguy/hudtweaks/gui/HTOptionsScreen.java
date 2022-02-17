@@ -17,6 +17,7 @@ import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.text.LiteralText;
 import net.minecraft.text.OrderedText;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
@@ -140,6 +141,10 @@ public class HTOptionsScreen extends Screen {
 	public void resize(MinecraftClient client, int width, int height) {
 		screensOpened--;
 		this.init(client, width, height);
+		client.setScreen(new PopupBoxScreen(this, new LiteralText("test"), new LiteralText("This is a test window, feel free to screenshot. The quick brown fox jumped over the lazy dog."),
+				new PopupBoxScreen.Option(new LiteralText("Ok"), () -> {}),
+				new PopupBoxScreen.Option(new LiteralText("Yes"), () -> {}),
+				new PopupBoxScreen.Option(new LiteralText("Close"), () -> MinecraftClient.getInstance().setScreen(null))));
 	}
 
 	@Override

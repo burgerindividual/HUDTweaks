@@ -20,7 +20,7 @@ public final class GLUtil {
 	private static double solidLineWidth;
 	private static double dashedLineWidth;
 
-	public static void drawBoxOutline(MatrixStack matrices, float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4, int color, double lineWidth) {
+	public static void drawBoxOutline(MatrixStack matrixStack, float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4, int color, double lineWidth) {
 		if (GLUtil.solidLineWidth != lineWidth) {
 			GLUtil.solidLineWidth = lineWidth;
 			solidLineLayer = HTRenderLayers.createSolidOutlineLayer(lineWidth);
@@ -31,7 +31,7 @@ public final class GLUtil {
 		int g = color >> 8 & 255;
 		int b = color & 255;
 		VertexConsumer consumer = VCP_INSTANCE.getBuffer(solidLineLayer);
-		MatrixStack.Entry entry = matrices.peek();
+		MatrixStack.Entry entry = matrixStack.peek();
 		Matrix4f modelMatrix = entry.getPositionMatrix();
 		Matrix3f normalMatrix = entry.getNormalMatrix();
 		addSolidLine(consumer, modelMatrix, normalMatrix, x1, y1, x2, y2, r, g, b, a);
@@ -41,7 +41,7 @@ public final class GLUtil {
 		VCP_INSTANCE.draw(solidLineLayer);
 	}
 
-	public static void drawDashedBoxOutline(MatrixStack matrices, float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4, int color, double lineWidth) {
+	public static void drawDashedBoxOutline(MatrixStack matrixStack, float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4, int color, double lineWidth) {
 		if (GLUtil.dashedLineWidth != lineWidth) {
 			GLUtil.dashedLineWidth = lineWidth;
 			dashedLineLayer = HTRenderLayers.createDashedOutlineLayer(lineWidth);
@@ -53,7 +53,7 @@ public final class GLUtil {
 		int b = color & 255;
 		BufferVertexConsumer consumer = (BufferBuilder) VCP_INSTANCE.getBuffer(dashedLineLayer);
 		setupDashes(1000, 3.0F, x1, y1, x2, y2, x3, y3, x4, y4);
-		MatrixStack.Entry entry = matrices.peek();
+		MatrixStack.Entry entry = matrixStack.peek();
 		Matrix4f modelMatrix = entry.getPositionMatrix();
 		Matrix3f normalMatrix = entry.getNormalMatrix();
 		float currentDist = 0.0F;
@@ -120,7 +120,7 @@ public final class GLUtil {
 		consumer.vertex(modelMatrix, x2, y2, 0.0F).color(r, g, b, a).normal(normalMatrix, xDiff, yDiff, 0.0F).next();
 	}
 
-	public static void drawFillColor(MatrixStack matrices, float x1, float y1, float x2, float y2, int color) {
+	public static void drawFillColor(MatrixStack matrixStack, float x1, float y1, float x2, float y2, int color) {
 		float j;
 		if (x1 < x2) {
 			j = x1;
@@ -143,7 +143,7 @@ public final class GLUtil {
 		RenderSystem.disableTexture();
 		RenderSystem.defaultBlendFunc();
 		RenderSystem.setShader(GameRenderer::getPositionColorShader);
-		Matrix4f matrix = matrices.peek().getPositionMatrix();
+		Matrix4f matrix = matrixStack.peek().getPositionMatrix();
 		builder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
 		builder.vertex(matrix, x1, y2, 0.0F).color(r, g, b, a).next();
 		builder.vertex(matrix, x2, y2, 0.0F).color(r, g, b, a).next();
