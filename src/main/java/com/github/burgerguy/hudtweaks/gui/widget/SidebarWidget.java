@@ -25,7 +25,6 @@ public class SidebarWidget extends AbstractParentElement implements Drawable, Se
 	private static final int SCROLLBAR_COLOR_1 = 0x20A0A0A0;
 	private static final int SCROLLBAR_COLOR_2 = 0x905F5F5F;
 	private static final int SCROLL_PIXEL_MULTIPLIER = 8;
-	public int cutoffFromBottom = 25;
 
 	private final List<Element> globalElements = new ArrayList<>();
 	private final List<Drawable> globalDrawables = new ArrayList<>();
@@ -35,17 +34,20 @@ public class SidebarWidget extends AbstractParentElement implements Drawable, Se
 	private final List<Entry> tempEntries = new ArrayList<>();
 	private final Map<Element, DrawableEntry<?>> elementEntryMap = new HashMap<>();
 
-	private int currentDrawY;
-
 	private final Screen parentScreen;
+	public int cutoffFromBottom;
 	public int width;
 	public int color;
+
+	private int optionsFullHeight;
+
 	private float scrolledDist;
 
-	public SidebarWidget(Screen parentScreen, int width, int color) {
+	public SidebarWidget(Screen parentScreen, int width, int color, int cutoffFromBottom) {
 		this.parentScreen = parentScreen;
 		this.width = width;
 		this.color = color;
+		this.cutoffFromBottom = cutoffFromBottom;
 	}
 
 	public void addEntry(Entry entry) {
@@ -73,7 +75,7 @@ public class SidebarWidget extends AbstractParentElement implements Drawable, Se
 	public void setupEntries() {
 		for(Entry entry : tempEntries) {
 			if (entry instanceof DrawableEntry<?> drawableEntry) {
-				drawableEntry.provideCoord(currentDrawY);
+				drawableEntry.provideCoord(optionsFullHeight);
 				Drawable drawable = drawableEntry.getDrawable();
 				if (drawable != null) {
 					drawables.add(drawable);
@@ -84,7 +86,7 @@ public class SidebarWidget extends AbstractParentElement implements Drawable, Se
 					}
 				}
 			}
-			currentDrawY += entry.getHeight();
+			optionsFullHeight += entry.getHeight();
 		}
 		tempEntries.clear();
 		updateScrolledDist();
@@ -99,7 +101,7 @@ public class SidebarWidget extends AbstractParentElement implements Drawable, Se
 		drawables.clear();
 		elements.clear();
 		elementEntryMap.clear();
-		currentDrawY = 0;
+		optionsFullHeight = 0;
 	}
 
 	public void addGlobalDrawable(Drawable drawable) {
@@ -120,7 +122,7 @@ public class SidebarWidget extends AbstractParentElement implements Drawable, Se
 	}
 
 	public void updateScrolledDist() {
-		scrolledDist = Util.minClamp(scrolledDist, 0, currentDrawY - parentScreen.height + cutoffFromBottom);
+		scrolledDist = Util.minClamp(scrolledDist, 0, optionsFullHeight - parentScreen.height + cutoffFromBottom);
 	}
 
 	@Override
@@ -150,8 +152,7 @@ public class SidebarWidget extends AbstractParentElement implements Drawable, Se
 		if (optionsVisibleHeight > 0) {
 			boolean scrollable = false;
 			boolean matrixPushed = false;
-			if (currentDrawY > 0) {
-				int optionsFullHeight = currentDrawY;
+			if (optionsFullHeight > 0) {
 				if (optionsVisibleHeight < optionsFullHeight) {
 					float scale = (float) MinecraftClient.getInstance().getWindow().getScaleFactor();
 					int x = width - 2;
@@ -243,10 +244,10 @@ public class SidebarWidget extends AbstractParentElement implements Drawable, Se
 		if (childScrolled) {
 			return true;
 		} else {
-			if (currentDrawY <= 0 || mouseY > parentScreen.height - cutoffFromBottom) {
+			if (optionsFullHeight <= 0 || mouseY > parentScreen.height - cutoffFromBottom) {
 				return false;
 			} else {
-				scrolledDist = Util.minClamp(scrolledDist - (float) amount * SCROLL_PIXEL_MULTIPLIER, 0, currentDrawY - parentScreen.height + cutoffFromBottom);
+				scrolledDist = Util.minClamp(scrolledDist - (float) amount * SCROLL_PIXEL_MULTIPLIER, 0, optionsFullHeight - parentScreen.height + cutoffFromBottom);
 				return true;
 			}
 		}

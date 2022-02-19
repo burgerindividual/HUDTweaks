@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 
-public class ParentButtonWidget extends HTButtonWidget {
+public class ParentButtonWidget extends HTOverflowButtonWidget {
 	private final Consumer<AbstractContainerNode> onClick;
 
 	/**

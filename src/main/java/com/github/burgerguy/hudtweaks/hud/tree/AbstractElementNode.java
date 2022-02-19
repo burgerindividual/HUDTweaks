@@ -28,7 +28,7 @@ public abstract class AbstractElementNode {
 	}
 
 	/**
-	 * Only call this after the parent node has been set.
+	 * Only call this after the container node has been set.
 	 */
 	public void init() {
 		moveXUnder(HudContainer.getScreenRoot());

@@ -67,6 +67,12 @@ public class DefaultBossBarElement extends HudElement {
 	}
 
 	@Override
+	public void resetToDefaults() {
+		super.resetToDefaults();
+		maxHeight = DEFAULT_MAX_HEIGHT;
+	}
+
+	@Override
 	public void updateFromJson(JsonElement json) {
 		super.updateFromJson(json);
 		setMaxHeight(json.getAsJsonObject().get("maxHeight").getAsFloat());

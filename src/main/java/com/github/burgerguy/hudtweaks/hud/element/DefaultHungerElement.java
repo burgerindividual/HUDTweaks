@@ -2,6 +2,7 @@ package com.github.burgerguy.hudtweaks.hud.element;
 
 import com.github.burgerguy.hudtweaks.asm.HTMixinPlugin;
 import com.github.burgerguy.hudtweaks.gui.widget.HTButtonWidget;
+import com.github.burgerguy.hudtweaks.gui.widget.HTOverflowButtonWidget;
 import com.github.burgerguy.hudtweaks.gui.widget.SidebarWidget;
 import com.github.burgerguy.hudtweaks.hud.HTIdentifier;
 import com.github.burgerguy.hudtweaks.util.Util;
@@ -46,6 +47,12 @@ public class DefaultHungerElement extends HudElement {
 	public void setForceDisplay(boolean forceDisplay) {
 		this.forceDisplay = forceDisplay;
 	}
+
+	@Override
+	public void resetToDefaults() {
+		super.resetToDefaults();
+		forceDisplay = DEFAULT_FORCE_DISPLAY_VALUE;
+	}
 	
 	@Override
 	public void updateFromJson(JsonElement json) {
@@ -58,7 +65,7 @@ public class DefaultHungerElement extends HudElement {
 		super.fillSidebar(sidebar);
 		sidebar.addPadding(6);
 		sidebar.addEntry(new SidebarWidget.DrawableEntry<>(y -> {
-			HTButtonWidget widget = new HTButtonWidget(4, y, sidebar.width - 8, 14, new TranslatableText("hudtweaks.options.forceDisplay.display", forceDisplay ? I18n.translate("hudtweaks.options.forceDisplay.on.display") : I18n.translate("hudtweaks.options.forceDisplay.off.display"))) {
+			HTButtonWidget widget = new HTOverflowButtonWidget(4, y, sidebar.width - 8, 14, new TranslatableText("hudtweaks.options.forceDisplay.display", forceDisplay ? I18n.translate("hudtweaks.options.forceDisplay.on.display") : I18n.translate("hudtweaks.options.forceDisplay.off.display"))) {
 				@Override
 				public void onPress() {
 					forceDisplay = !forceDisplay;

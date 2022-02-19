@@ -68,6 +68,12 @@ public class ElementRegistry {
 		}
 	}
 
+	public void resetToDefaults() {
+		for (HudElementContainer container : getElementContainers()) {
+			container.resetToDefaults();
+		}
+	}
+
 	public void updateFromJson(JsonElement json) {
 		for (Entry<String, JsonElement> entry : json.getAsJsonObject().entrySet()) {
 			try {

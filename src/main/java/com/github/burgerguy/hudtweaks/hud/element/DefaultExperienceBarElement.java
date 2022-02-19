@@ -1,6 +1,7 @@
 package com.github.burgerguy.hudtweaks.hud.element;
 
 import com.github.burgerguy.hudtweaks.gui.widget.HTButtonWidget;
+import com.github.burgerguy.hudtweaks.gui.widget.HTOverflowButtonWidget;
 import com.github.burgerguy.hudtweaks.gui.widget.SidebarWidget;
 import com.github.burgerguy.hudtweaks.hud.HTIdentifier;
 import com.github.burgerguy.hudtweaks.util.Util;
@@ -11,7 +12,8 @@ import net.minecraft.text.TranslatableText;
 
 public class DefaultExperienceBarElement extends HudElement {
 	public static final HTIdentifier IDENTIFIER = new HTIdentifier(Util.MINECRAFT_MODID, new HTIdentifier.ElementId("expbar", "hudtweaks.element.expbar"));
-	private boolean forceDisplay;
+	private static final boolean DEFAULT_FORCE_DISPLAY_VALUE = false;
+	private boolean forceDisplay = DEFAULT_FORCE_DISPLAY_VALUE;
 	
 	public DefaultExperienceBarElement() {
 		super(IDENTIFIER);
@@ -47,6 +49,12 @@ public class DefaultExperienceBarElement extends HudElement {
 	}
 
 	@Override
+	public void resetToDefaults() {
+		super.resetToDefaults();
+		forceDisplay = DEFAULT_FORCE_DISPLAY_VALUE;
+	}
+
+	@Override
 	public void updateFromJson(JsonElement json) {
 		super.updateFromJson(json);
 		setForceDisplay(json.getAsJsonObject().get("forceDisplay").getAsBoolean());
@@ -56,7 +64,7 @@ public class DefaultExperienceBarElement extends HudElement {
 	public void fillSidebar(SidebarWidget sidebar) {
 		super.fillSidebar(sidebar);
 		sidebar.addPadding(6);
-		sidebar.addEntry(new SidebarWidget.DrawableEntry<>(y -> new HTButtonWidget(4, y, sidebar.width - 8, 14, new TranslatableText("hudtweaks.options.forceDisplay.display", forceDisplay ? I18n.translate("hudtweaks.options.forceDisplay.on.display") : I18n.translate("hudtweaks.options.forceDisplay.off.display"))) {
+		sidebar.addEntry(new SidebarWidget.DrawableEntry<>(y -> new HTOverflowButtonWidget(4, y, sidebar.width - 8, 14, new TranslatableText("hudtweaks.options.forceDisplay.display", forceDisplay ? I18n.translate("hudtweaks.options.forceDisplay.on.display") : I18n.translate("hudtweaks.options.forceDisplay.off.display"))) {
 			@Override
 			public void onPress() {
 				forceDisplay = !forceDisplay;

@@ -194,6 +194,27 @@ public abstract class HudElement extends AbstractElementNode {
 		return getIdentifier().toString();
 	}
 
+	/**
+	 * Override if any extra options are added to the element.
+	 * Make sure to call super before anything else.
+	 */
+	public void resetToDefaults() {
+		containerNode.setRequiresUpdate();
+		this.xPosType = PosType.DEFAULT;
+		this.yPosType = PosType.DEFAULT;
+		this.xAnchorPos = 0.0f;
+		this.yAnchorPos = 0.0f;
+		this.xRelativePos = 0.0f;
+		this.yRelativePos = 0.0f;
+		this.xOffset = 0.0f;
+		this.yOffset = 0.0f;
+		this.xScale = 1.0f;
+		this.yScale = 1.0f;
+		this.xRotationAnchor = .5f;
+		this.yRotationAnchor = .5f;
+		this.rotationDegrees = 0.0F;
+	}
+
 	// TODO: fix all of the garbage below here
 	
 	/**

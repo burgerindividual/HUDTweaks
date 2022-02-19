@@ -2,6 +2,7 @@ package com.github.burgerguy.hudtweaks.hud.element;
 
 import com.github.burgerguy.hudtweaks.asm.HTMixinPlugin;
 import com.github.burgerguy.hudtweaks.gui.widget.HTButtonWidget;
+import com.github.burgerguy.hudtweaks.gui.widget.HTOverflowButtonWidget;
 import com.github.burgerguy.hudtweaks.gui.widget.SidebarWidget;
 import com.github.burgerguy.hudtweaks.hud.HTIdentifier;
 import com.github.burgerguy.hudtweaks.util.Util;
@@ -78,6 +79,12 @@ public class DefaultHealthElement extends HudElement {
 	}
 
 	@Override
+	public void resetToDefaults() {
+		super.resetToDefaults();
+		flipped = DEFAULT_FLIPPED_VALUE;
+	}
+
+	@Override
 	public void updateFromJson(JsonElement json) {
 		super.updateFromJson(json);
 		setFlipped(json.getAsJsonObject().get("flipped").getAsBoolean());
@@ -88,7 +95,7 @@ public class DefaultHealthElement extends HudElement {
 		super.fillSidebar(sidebar);
 		sidebar.addPadding(6);
 		sidebar.addEntry(new SidebarWidget.DrawableEntry<>(y -> {
-			HTButtonWidget widget = new HTButtonWidget(4, y, sidebar.width - 8, 14, new TranslatableText("hudtweaks.options.health.style.display", flipped ? I18n.translate("hudtweaks.options.health.style.flipped.display") : I18n.translate("hudtweaks.options.health.style.normal.display"))) {
+			HTButtonWidget widget = new HTOverflowButtonWidget(4, y, sidebar.width - 8, 14, new TranslatableText("hudtweaks.options.health.style.display", flipped ? I18n.translate("hudtweaks.options.health.style.flipped.display") : I18n.translate("hudtweaks.options.health.style.normal.display"))) {
 				@Override
 				public void onPress() {
 					flipped = !flipped;

@@ -68,6 +68,14 @@ public class HudElementContainer extends AbstractContainerNode {
 		return Collections.unmodifiableList(overrides);
 	}
 
+	public void resetToDefaults() {
+		initialElement.resetToDefaults();
+
+		for (HudElementOverride override : overrides) {
+			override.getElement().resetToDefaults();
+		}
+	}
+
 	public void updateFromJson(JsonElement json) {
 		initialElement.updateFromJson(json);
 		JsonElement overridesElement = json.getAsJsonObject().get("overrides");

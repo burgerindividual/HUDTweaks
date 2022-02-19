@@ -7,7 +7,7 @@ import net.minecraft.text.TranslatableText;
 
 import java.util.function.Consumer;
 
-public class PosTypeButtonWidget extends HTButtonWidget {
+public class PosTypeButtonWidget extends HTOverflowButtonWidget {
 	private final Consumer<PosType> onClick;
 	private PosType posType;
 	

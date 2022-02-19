@@ -1,32 +1,32 @@
 package com.github.burgerguy.hudtweaks.gui;
 
 import com.github.burgerguy.hudtweaks.HudTweaksMod;
-import com.github.burgerguy.hudtweaks.config.Config;
-import com.github.burgerguy.hudtweaks.gui.widget.ArrowButtonWidget;
-import com.github.burgerguy.hudtweaks.gui.widget.ElementLabelWidget;
-import com.github.burgerguy.hudtweaks.gui.widget.SidebarWidget;
+import com.github.burgerguy.hudtweaks.gui.widget.*;
 import com.github.burgerguy.hudtweaks.hud.HudContainer;
 import com.github.burgerguy.hudtweaks.hud.element.HudElement;
 import com.github.burgerguy.hudtweaks.hud.element.HudElementContainer;
 import com.github.burgerguy.hudtweaks.hud.element.HudElementWidget;
 import com.github.burgerguy.hudtweaks.util.Util;
 import io.netty.util.BooleanSupplier;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.function.Supplier;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.Drawable;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.OrderedText;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
-
-import java.util.*;
-import java.util.function.Supplier;
+import org.lwjgl.glfw.GLFW;
 
 public class HTOptionsScreen extends Screen {
 	private static final int SIDEBAR_WIDTH = 116;
+	private static final int SIDEBAR_CUTOFF_FROM_BOTTOM = 25;
 	private static final int SIDEBAR_COLOR = 0x60424242;
 
 	private static final Comparator<Element> SMALLEST_FIRST_COMPARATOR = (e1, e2) -> {
@@ -79,19 +79,19 @@ public class HTOptionsScreen extends Screen {
 
 	private static int screensOpened = 0;
 
-	private final Screen prevScreen;
+	private final Screen previousScreen;
 	private final SidebarWidget sidebar;
-	private ElementLabelWidget elementLabel;
+	private ElementLabelWidget elementLabelWidget;
 
 	private HudElementWidget focusedHudElement;
 
 	private boolean worldExists = false;
 
-	public HTOptionsScreen(Screen prevScreen) {
+	public HTOptionsScreen(Screen previousScreen) {
 		super(new TranslatableText("hudtweaks.options"));
-		this.prevScreen = prevScreen;
+		this.previousScreen = previousScreen;
 
-		sidebar = new SidebarWidget(this, SIDEBAR_WIDTH, SIDEBAR_COLOR);
+		sidebar = new SidebarWidget(this, SIDEBAR_WIDTH, SIDEBAR_COLOR, SIDEBAR_CUTOFF_FROM_BOTTOM);
 	}
 
 	@Override
@@ -124,13 +124,13 @@ public class HTOptionsScreen extends Screen {
 
 			setFocused(sidebar); // we basically always want the sidebar to be focused, the things inside the sidebar are the ones that are
 
-			elementLabel = new ElementLabelWidget(sidebar.width / 2, height - 17, sidebar.width - 42);
-			ArrowButtonWidget leftArrow = new ArrowButtonWidget(5, height - 21, true, new TranslatableText("hudtweaks.options.previous_element.name"), b -> changeHudElementFocus(false));
-			ArrowButtonWidget rightArrow = new ArrowButtonWidget(sidebar.width - 21, height - 21, false, new TranslatableText("hudtweaks.options.next_element.name"), b -> changeHudElementFocus(true));
+			elementLabelWidget = new ElementLabelWidget(sidebar.width / 2, height - 17, sidebar.width - 42);
+			ArrowButtonWidget leftArrowButton = new ArrowButtonWidget(5, height - 21, true, new TranslatableText("hudtweaks.options.previous_element.name"), b -> changeHudElementFocus(false));
+			ArrowButtonWidget rightArrowButton = new ArrowButtonWidget(sidebar.width - 21, height - 21, false, new TranslatableText("hudtweaks.options.next_element.name"), b -> changeHudElementFocus(true));
 
-			sidebar.addGlobalDrawable(elementLabel);
-			sidebar.addGlobalDrawable(leftArrow);
-			sidebar.addGlobalDrawable(rightArrow);
+			sidebar.addGlobalDrawable(elementLabelWidget);
+			sidebar.addGlobalDrawable(leftArrowButton);
+			sidebar.addGlobalDrawable(rightArrowButton);
 		}
 	}
 
@@ -141,10 +141,6 @@ public class HTOptionsScreen extends Screen {
 	public void resize(MinecraftClient client, int width, int height) {
 		screensOpened--;
 		this.init(client, width, height);
-		client.setScreen(new PopupBoxScreen(this, new LiteralText("test"), new LiteralText("This is a test window, feel free to screenshot. The quick brown fox jumped over the lazy dog."),
-				new PopupBoxScreen.Option(new LiteralText("Ok"), () -> {}),
-				new PopupBoxScreen.Option(new LiteralText("Yes"), () -> {}),
-				new PopupBoxScreen.Option(new LiteralText("Close"), () -> MinecraftClient.getInstance().setScreen(null))));
 	}
 
 	@Override
@@ -225,7 +221,88 @@ public class HTOptionsScreen extends Screen {
 	}
 
 	@Override
+	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+		// ctrl-r = reset element
+		// ctrl-shift-r = reset all
+		if (keyCode == GLFW.GLFW_KEY_R && Screen.hasControlDown()) {
+			if (Screen.hasShiftDown()) {
+				showResetAllPopup();
+				return true;
+			} else if (focusedHudElement != null) {
+				showResetElementPopup();
+				return true;
+			}
+		}
+		return super.keyPressed(keyCode, scanCode, modifiers);
+	}
+
+	private void showResetElementPopup() {
+		if (focusedHudElement == null) return;
+
+		PopupBoxScreen popupBoxScreen = new PopupBoxScreen(
+				HTOptionsScreen.this,
+				new TranslatableText("hudtweaks.options.popup.confirm.name"),
+				new TranslatableText("hudtweaks.options.popup.reset_element"),
+				new PopupBoxScreen.Option(
+						new TranslatableText("hudtweaks.options.popup.option.reset"),
+						(s, b) -> {
+							focusedHudElement.getElementContainer().getActiveElement().resetToDefaults();
+							sidebar.updateValues();
+							s.onClose();
+						}
+				),
+				new PopupBoxScreen.Option(
+						new TranslatableText("hudtweaks.options.popup.option.cancel"),
+						(s, b) -> s.onClose()
+				)
+		);
+		PopupBoxScreen.overlayPopupBox(client, popupBoxScreen);
+	}
+
+	private void showResetAllPopup() {
+		PopupBoxScreen popupBoxScreen1 = new PopupBoxScreen(
+				HTOptionsScreen.this,
+				new TranslatableText("hudtweaks.options.popup.confirm.name"),
+				new TranslatableText("hudtweaks.options.popup.reset_all_1"),
+				new PopupBoxScreen.Option(
+						new TranslatableText("hudtweaks.options.popup.option.reset"),
+						(s, b) -> {
+							s.onClose();
+							PopupBoxScreen popupBoxScreen2 = new PopupBoxScreen(
+									HTOptionsScreen.this,
+									new TranslatableText("hudtweaks.options.popup.confirm.name"),
+									new TranslatableText("hudtweaks.options.popup.reset_all_2"),
+									new PopupBoxScreen.Option(
+											new TranslatableText("hudtweaks.options.popup.option.reset"),
+											(s2, b2) -> {
+												HudContainer.getElementRegistry().resetToDefaults();
+												s2.onClose();
+											}
+									),
+									new PopupBoxScreen.Option(
+											new TranslatableText("hudtweaks.options.popup.option.cancel"),
+											(s2, b2) -> s2.onClose()
+									)
+							);
+							PopupBoxScreen.overlayPopupBox(client, popupBoxScreen2);
+						}
+				),
+				new PopupBoxScreen.Option(
+						new TranslatableText("hudtweaks.options.popup.option.cancel"),
+						(s, b) -> s.onClose()
+				)
+		);
+		PopupBoxScreen.overlayPopupBox(client, popupBoxScreen1);
+	}
+
+	@Override
+	public void removed() {
+		screensOpened--;
+	}
+
+	@Override
 	public void onClose() {
+		// TODO: move to separate button
 		HudTweaksMod.getConfig().trySaveConfig();
 		for(Element child : children()) {
 			if (child instanceof AutoCloseable) {
@@ -237,11 +314,10 @@ public class HTOptionsScreen extends Screen {
 			}
 		}
 		if (client.world == null) {
-			client.setScreen(prevScreen);
+			client.setScreen(previousScreen);
 		} else {
 			client.setScreen(null);
 		}
-		screensOpened--;
 	}
 
 	@Override
@@ -253,12 +329,12 @@ public class HTOptionsScreen extends Screen {
 				HudElement element = focusedHudElement.getElementContainer().getActiveElement();
 				element.fillSidebar(sidebar);
 				sidebar.setupEntries();
-				elementLabel.setHudElementContainer(focusedHudElement.getElementContainer());
+				elementLabelWidget.setHudElementContainer(focusedHudElement.getElementContainer());
 			}
 		} else if (focused == null) {
 			focusedHudElement = null;
 			sidebar.clearEntries();
-			if (elementLabel != null) elementLabel.setHudElementContainer(null);
+			if (elementLabelWidget != null) elementLabelWidget.setHudElementContainer(null);
 		} else {
 			super.setFocused(focused);
 		}

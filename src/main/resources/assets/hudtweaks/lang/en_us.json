@@ -45,5 +45,13 @@
 	"hudtweaks.options.next_element.name": "Next Element",
 	"hudtweaks.options.previous_element.name": "Previous Element",
 	"hudtweaks.options.current_element.blank.display": "None Selected",
+	"hudtweaks.options.reset_element.name": "§6Reset Element",
+	"hudtweaks.options.reset_all.name": "§4Reset All",
+	"hudtweaks.options.popup.confirm.name": "Confirm",
+	"hudtweaks.options.popup.reset_element": "Are you sure you want to reset the configuration for this HUD element?",
+	"hudtweaks.options.popup.reset_all_1": "Are you sure you want to reset the configuration of all HUD elements?",
+	"hudtweaks.options.popup.reset_all_2": "Are you REALLY sure you want to reset the configuration of all HUD elements?\n\n§4THIS ACTION IS NOT REVERSIBLE!",
+	"hudtweaks.options.popup.option.reset": "§4Reset",
+	"hudtweaks.options.popup.option.cancel": "Cancel",
 	"hudtweaks.options.no_world_prompt": "This configuration screen is only available in game.\nPlease enter a game before opening."
 }

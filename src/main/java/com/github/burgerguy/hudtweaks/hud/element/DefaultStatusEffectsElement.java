@@ -2,6 +2,7 @@ package com.github.burgerguy.hudtweaks.hud.element;
 
 import com.github.burgerguy.hudtweaks.asm.HTMixinPlugin;
 import com.github.burgerguy.hudtweaks.gui.widget.HTButtonWidget;
+import com.github.burgerguy.hudtweaks.gui.widget.HTOverflowButtonWidget;
 import com.github.burgerguy.hudtweaks.gui.widget.SidebarWidget;
 import com.github.burgerguy.hudtweaks.hud.HTIdentifier;
 import com.github.burgerguy.hudtweaks.util.Util;
@@ -90,6 +91,12 @@ public class DefaultStatusEffectsElement extends HudElement {
 	}
 
 	@Override
+	public void resetToDefaults() {
+		super.resetToDefaults();
+		vertical = DEFAULT_VERTICAL_VALUE;
+	}
+
+	@Override
 	public void updateFromJson(JsonElement json) {
 		super.updateFromJson(json);
 		setVertical(json.getAsJsonObject().get("vertical").getAsBoolean());
@@ -100,7 +107,7 @@ public class DefaultStatusEffectsElement extends HudElement {
 		super.fillSidebar(sidebar);
 		sidebar.addPadding(6);
 		sidebar.addEntry(new SidebarWidget.DrawableEntry<>(y -> {
-			HTButtonWidget widget = new HTButtonWidget(4, y, sidebar.width - 8, 14, new TranslatableText("hudtweaks.options.statuseffects.style.display", vertical ? I18n.translate("hudtweaks.options.statuseffects.style.vertical.display") : I18n.translate("hudtweaks.options.statuseffects.style.horizontal.display"))) {
+			HTButtonWidget widget = new HTOverflowButtonWidget(4, y, sidebar.width - 8, 14, new TranslatableText("hudtweaks.options.statuseffects.style.display", vertical ? I18n.translate("hudtweaks.options.statuseffects.style.vertical.display") : I18n.translate("hudtweaks.options.statuseffects.style.horizontal.display"))) {
 				@Override
 				public void onPress() {
 					vertical = !vertical;
