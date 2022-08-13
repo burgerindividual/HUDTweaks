@@ -8,6 +8,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.hud.ClientBossBar;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.option.AttackIndicator;
+import net.minecraft.client.option.SimpleOption;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.EntityAttributes;
@@ -159,7 +160,7 @@ public final class DefaultUpdateEvents {
 				}
 			},
 			new UpdateEvent() {
-				private AttackIndicator lastIndicator;
+				private SimpleOption<AttackIndicator> lastIndicator;
 
 				@Override
 				public String getIdentifier() {
@@ -168,7 +169,7 @@ public final class DefaultUpdateEvents {
 
 				@Override
 				public boolean shouldUpdate(MinecraftClient client) {
-					AttackIndicator currentIndicator = client.options.attackIndicator;
+					var currentIndicator = client.options.getAttackIndicator();
 					if (lastIndicator == null || !currentIndicator.equals(lastIndicator) && (currentIndicator.equals(AttackIndicator.HOTBAR) || lastIndicator.equals(AttackIndicator.HOTBAR))) {
 						lastIndicator = currentIndicator;
 						return true;

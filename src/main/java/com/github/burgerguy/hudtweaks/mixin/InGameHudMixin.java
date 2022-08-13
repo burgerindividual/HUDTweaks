@@ -180,7 +180,7 @@ public abstract class InGameHudMixin extends DrawableHelper {
 
 	@Inject(method = "render",
 			at = @At(value = "INVOKE",
-			target = "Lnet/minecraft/client/font/TextRenderer;draw(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/text/Text;FFI)I",
+			target = "Lnet/minecraft/client/font/TextRenderer;drawWithShadow(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/text/Text;FFI)I",
 			shift = At.Shift.AFTER))
 	private void renderActionBarEnd(MatrixStack matrices, float tickDelta, CallbackInfo callbackInfo) {
 		RenderStateUtil.tryFinishRender(DefaultActionBarElement.IDENTIFIER, matrices);

@@ -5,7 +5,6 @@ import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.widget.SliderWidget;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.MathHelper;
 
@@ -13,7 +12,7 @@ public abstract class HTSliderWidget extends SliderWidget implements ValueUpdata
 	private static final int HANDLE_WIDTH = 7;
 	
 	public HTSliderWidget(int x, int y, int width, int height, double value) {
-		super(x, y, width, height, LiteralText.EMPTY, value);
+		super(x, y, width, height, Text.empty(), value);
 		setAlpha(0.8F);
 		updateMessage();
 	}

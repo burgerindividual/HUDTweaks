@@ -7,9 +7,8 @@ import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.Drawable;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.Style;
-import net.minecraft.text.TranslatableText;
+import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
 
 public class ElementLabelWidget implements Drawable {
@@ -30,9 +29,9 @@ public class ElementLabelWidget implements Drawable {
 	public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
 		TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
 		if (elementContainer == null) {
-			DrawableHelper.drawCenteredText(matrices, textRenderer, new TranslatableText("hudtweaks.options.current_element.blank.display").setStyle(STYLE), x, y, 0xCCB0B0B0);
+			DrawableHelper.drawCenteredText(matrices, textRenderer, Text.translatable("hudtweaks.options.current_element.blank.display").setStyle(STYLE), x, y, 0xCCB0B0B0);
 		} else {
-			overflowTextRenderer.render(matrices, textRenderer, new LiteralText(elementContainer.getActiveElement().getIdentifier().toDisplayableString()).setStyle(STYLE), delta, 0xCCFFFFFF);
+			overflowTextRenderer.render(matrices, textRenderer, Text.literal(elementContainer.getActiveElement().getIdentifier().toDisplayableString()).setStyle(STYLE), delta, 0xCCFFFFFF);
 		}
 	}
 

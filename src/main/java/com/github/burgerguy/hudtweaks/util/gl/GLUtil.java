@@ -149,8 +149,7 @@ public final class GLUtil {
 		builder.vertex(matrix, x2, y2, 0.0F).color(r, g, b, a).next();
 		builder.vertex(matrix, x2, y1, 0.0F).color(r, g, b, a).next();
 		builder.vertex(matrix, x1, y1, 0.0F).color(r, g, b, a).next();
-		builder.end();
-		BufferRenderer.draw(builder);
+		BufferRenderer.drawWithShader(builder.end());
 		RenderSystem.enableTexture();
 		RenderSystem.disableBlend();
 	}

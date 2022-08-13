@@ -10,7 +10,7 @@ import com.google.gson.JsonElement;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.text.TranslatableText;
+import net.minecraft.text.Text;
 
 public class DefaultStatusEffectsElement extends HudElement {
 	public static final HTIdentifier IDENTIFIER = new HTIdentifier(Util.MINECRAFT_MODID, new HTIdentifier.ElementId("statuseffects", "hudtweaks.element.statuseffects"));
@@ -107,11 +107,11 @@ public class DefaultStatusEffectsElement extends HudElement {
 		super.fillSidebar(sidebar);
 		sidebar.addPadding(6);
 		sidebar.addEntry(new SidebarWidget.DrawableEntry<>(y -> {
-			HTButtonWidget widget = new HTOverflowButtonWidget(4, y, sidebar.width - 8, 14, new TranslatableText("hudtweaks.options.statuseffects.style.display", vertical ? I18n.translate("hudtweaks.options.statuseffects.style.vertical.display") : I18n.translate("hudtweaks.options.statuseffects.style.horizontal.display"))) {
+			HTButtonWidget widget = new HTOverflowButtonWidget(4, y, sidebar.width - 8, 14, Text.translatable("hudtweaks.options.statuseffects.style.display", vertical ? I18n.translate("hudtweaks.options.statuseffects.style.vertical.display") : I18n.translate("hudtweaks.options.statuseffects.style.horizontal.display"))) {
 				@Override
 				public void onPress() {
 					vertical = !vertical;
-					setMessage(new TranslatableText("hudtweaks.options.statuseffects.style.display", vertical ? I18n.translate("hudtweaks.options.statuseffects.style.vertical.display") : I18n.translate("hudtweaks.options.statuseffects.style.horizontal.display")));
+					setMessage(Text.translatable("hudtweaks.options.statuseffects.style.display", vertical ? I18n.translate("hudtweaks.options.statuseffects.style.vertical.display") : I18n.translate("hudtweaks.options.statuseffects.style.horizontal.display")));
 					containerNode.setRequiresUpdate();
 				}
 			};

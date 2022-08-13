@@ -16,7 +16,7 @@ public class DefaultHotbarElement extends HudElement {
 	}
 
 	private int getAttackIndicatorOffset(MinecraftClient client) {
-		return client != null && client.options.attackIndicator.equals(AttackIndicator.HOTBAR) ? 24 : 0;
+		return client != null && client.options.getAttackIndicator().equals(AttackIndicator.HOTBAR) ? 24 : 0;
 	}
 
 	private int getOffhandOffset(MinecraftClient client) {

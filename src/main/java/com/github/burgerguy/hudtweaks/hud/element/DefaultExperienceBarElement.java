@@ -8,7 +8,7 @@ import com.github.burgerguy.hudtweaks.util.Util;
 import com.google.gson.JsonElement;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.resource.language.I18n;
-import net.minecraft.text.TranslatableText;
+import net.minecraft.text.Text;
 
 public class DefaultExperienceBarElement extends HudElement {
 	public static final HTIdentifier IDENTIFIER = new HTIdentifier(Util.MINECRAFT_MODID, new HTIdentifier.ElementId("expbar", "hudtweaks.element.expbar"));
@@ -64,11 +64,11 @@ public class DefaultExperienceBarElement extends HudElement {
 	public void fillSidebar(SidebarWidget sidebar) {
 		super.fillSidebar(sidebar);
 		sidebar.addPadding(6);
-		sidebar.addEntry(new SidebarWidget.DrawableEntry<>(y -> new HTOverflowButtonWidget(4, y, sidebar.width - 8, 14, new TranslatableText("hudtweaks.options.forceDisplay.display", forceDisplay ? I18n.translate("hudtweaks.options.forceDisplay.on.display") : I18n.translate("hudtweaks.options.forceDisplay.off.display"))) {
+		sidebar.addEntry(new SidebarWidget.DrawableEntry<>(y -> new HTOverflowButtonWidget(4, y, sidebar.width - 8, 14, Text.translatable("hudtweaks.options.forceDisplay.display", forceDisplay ? I18n.translate("hudtweaks.options.forceDisplay.on.display") : I18n.translate("hudtweaks.options.forceDisplay.off.display"))) {
 			@Override
 			public void onPress() {
 				forceDisplay = !forceDisplay;
-				setMessage(new TranslatableText("hudtweaks.options.forceDisplay.display", forceDisplay ? I18n.translate("hudtweaks.options.forceDisplay.on.display") : I18n.translate("hudtweaks.options.forceDisplay.off.display")));
+				setMessage(Text.translatable("hudtweaks.options.forceDisplay.display", forceDisplay ? I18n.translate("hudtweaks.options.forceDisplay.on.display") : I18n.translate("hudtweaks.options.forceDisplay.off.display")));
 				containerNode.setRequiresUpdate();
 			}
 		}, 14));

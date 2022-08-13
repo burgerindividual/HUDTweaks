@@ -9,7 +9,7 @@ import com.github.burgerguy.hudtweaks.util.Util;
 import com.google.gson.JsonElement;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.hud.ClientBossBar;
-import net.minecraft.text.TranslatableText;
+import net.minecraft.text.Text;
 import net.minecraft.util.math.MathHelper;
 
 public class DefaultBossBarElement extends HudElement {
@@ -86,7 +86,7 @@ public class DefaultBossBarElement extends HudElement {
 			HTSliderWidget widget = new HTSliderWidget(4, y, sidebar.width - 8, 14, maxHeight) {
 				@Override
 				protected void updateMessage() {
-					setMessage(new TranslatableText("hudtweaks.options.bossbar.style.screen_percent", Util.RELATIVE_POS_FORMATTER.format(value)));
+					setMessage(Text.translatable("hudtweaks.options.bossbar.style.screen_percent", Util.RELATIVE_POS_FORMATTER.format(value)));
 				}
 
 				@Override

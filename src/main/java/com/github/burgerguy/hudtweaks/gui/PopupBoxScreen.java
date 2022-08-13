@@ -109,7 +109,7 @@ public class PopupBoxScreen extends Screen {
      * Emulates a setScreen without calling init on the previous screen.
      */
     @Override
-    public void onClose() {
+    public void close() {
         this.removed();
         MinecraftClient.getInstance().currentScreen = previousScreen;
     }
