@@ -21,7 +21,6 @@ import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.OrderedText;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 import org.lwjgl.glfw.GLFW;
 
 public class HTOptionsScreen extends Screen {
@@ -88,7 +87,7 @@ public class HTOptionsScreen extends Screen {
 	private boolean worldExists = false;
 
 	public HTOptionsScreen(Screen previousScreen) {
-		super(new TranslatableText("hudtweaks.options"));
+		super(Text.translatable("hudtweaks.options"));
 		this.previousScreen = previousScreen;
 
 		sidebar = new SidebarWidget(this, SIDEBAR_WIDTH, SIDEBAR_COLOR, SIDEBAR_CUTOFF_FROM_BOTTOM);
@@ -125,8 +124,8 @@ public class HTOptionsScreen extends Screen {
 			setFocused(sidebar); // we basically always want the sidebar to be focused, the things inside the sidebar are the ones that are
 
 			elementLabelWidget = new ElementLabelWidget(sidebar.width / 2, height - 17, sidebar.width - 42);
-			ArrowButtonWidget leftArrowButton = new ArrowButtonWidget(5, height - 21, true, new TranslatableText("hudtweaks.options.previous_element.name"), b -> changeHudElementFocus(false));
-			ArrowButtonWidget rightArrowButton = new ArrowButtonWidget(sidebar.width - 21, height - 21, false, new TranslatableText("hudtweaks.options.next_element.name"), b -> changeHudElementFocus(true));
+			ArrowButtonWidget leftArrowButton = new ArrowButtonWidget(5, height - 21, true, Text.translatable("hudtweaks.options.previous_element.name"), b -> changeHudElementFocus(false));
+			ArrowButtonWidget rightArrowButton = new ArrowButtonWidget(sidebar.width - 21, height - 21, false, Text.translatable("hudtweaks.options.next_element.name"), b -> changeHudElementFocus(true));
 
 			sidebar.addGlobalDrawable(elementLabelWidget);
 			sidebar.addGlobalDrawable(leftArrowButton);
@@ -154,7 +153,7 @@ public class HTOptionsScreen extends Screen {
 				}
 			}
 		} else {
-			Text text = new TranslatableText("hudtweaks.options.no_world_prompt");
+			Text text = Text.translatable("hudtweaks.options.no_world_prompt");
 			List<OrderedText> wrappedLines = textRenderer.wrapLines(text, width);
 			int textHeight = wrappedLines.size() * textRenderer.fontHeight;
 			int drawYOffset = 0;
@@ -241,19 +240,19 @@ public class HTOptionsScreen extends Screen {
 
 		PopupBoxScreen popupBoxScreen = new PopupBoxScreen(
 				HTOptionsScreen.this,
-				new TranslatableText("hudtweaks.options.popup.confirm.name"),
-				new TranslatableText("hudtweaks.options.popup.reset_element"),
+				Text.translatable("hudtweaks.options.popup.confirm.name"),
+				Text.translatable("hudtweaks.options.popup.reset_element"),
 				new PopupBoxScreen.Option(
-						new TranslatableText("hudtweaks.options.popup.option.reset"),
+						Text.translatable("hudtweaks.options.popup.option.reset"),
 						(s, b) -> {
 							focusedHudElement.getElementContainer().getActiveElement().resetToDefaults();
 							sidebar.updateValues();
-							s.onClose();
+							s.close();
 						}
 				),
 				new PopupBoxScreen.Option(
-						new TranslatableText("hudtweaks.options.popup.option.cancel"),
-						(s, b) -> s.onClose()
+						Text.translatable("hudtweaks.options.popup.option.cancel"),
+						(s, b) -> s.close()
 				)
 		);
 		PopupBoxScreen.overlayPopupBox(client, popupBoxScreen);
@@ -262,34 +261,34 @@ public class HTOptionsScreen extends Screen {
 	private void showResetAllPopup() {
 		PopupBoxScreen popupBoxScreen1 = new PopupBoxScreen(
 				HTOptionsScreen.this,
-				new TranslatableText("hudtweaks.options.popup.confirm.name"),
-				new TranslatableText("hudtweaks.options.popup.reset_all_1"),
+				Text.translatable("hudtweaks.options.popup.confirm.name"),
+				Text.translatable("hudtweaks.options.popup.reset_all_1"),
 				new PopupBoxScreen.Option(
-						new TranslatableText("hudtweaks.options.popup.option.reset"),
+						Text.translatable("hudtweaks.options.popup.option.reset"),
 						(s, b) -> {
-							s.onClose();
+							s.close();
 							PopupBoxScreen popupBoxScreen2 = new PopupBoxScreen(
 									HTOptionsScreen.this,
-									new TranslatableText("hudtweaks.options.popup.confirm.name"),
-									new TranslatableText("hudtweaks.options.popup.reset_all_2"),
+									Text.translatable("hudtweaks.options.popup.confirm.name"),
+									Text.translatable("hudtweaks.options.popup.reset_all_2"),
 									new PopupBoxScreen.Option(
-											new TranslatableText("hudtweaks.options.popup.option.reset"),
+											Text.translatable("hudtweaks.options.popup.option.reset"),
 											(s2, b2) -> {
 												HudContainer.getElementRegistry().resetToDefaults();
-												s2.onClose();
+												s2.close();
 											}
 									),
 									new PopupBoxScreen.Option(
-											new TranslatableText("hudtweaks.options.popup.option.cancel"),
-											(s2, b2) -> s2.onClose()
+											Text.translatable("hudtweaks.options.popup.option.cancel"),
+											(s2, b2) -> s2.close()
 									)
 							);
 							PopupBoxScreen.overlayPopupBox(client, popupBoxScreen2);
 						}
 				),
 				new PopupBoxScreen.Option(
-						new TranslatableText("hudtweaks.options.popup.option.cancel"),
-						(s, b) -> s.onClose()
+						Text.translatable("hudtweaks.options.popup.option.cancel"),
+						(s, b) -> s.close()
 				)
 		);
 		PopupBoxScreen.overlayPopupBox(client, popupBoxScreen1);
@@ -301,7 +300,7 @@ public class HTOptionsScreen extends Screen {
 	}
 
 	@Override
-	public void onClose() {
+	public void close() {
 		// TODO: move to separate button
 		HudTweaksMod.getConfig().trySaveConfig();
 		for(Element child : children()) {

@@ -3,7 +3,6 @@ package com.github.burgerguy.hudtweaks.gui.widget;
 import com.github.burgerguy.hudtweaks.hud.element.HudElement.PosType;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 
 import java.util.function.Consumer;
 
@@ -31,7 +30,7 @@ public class PosTypeButtonWidget extends HTOverflowButtonWidget {
 	}
 
 	private static Text createMessage(PosType posType) {
-		return new TranslatableText("hudtweaks.options.pos_type.display", I18n.translate("hudtweaks.options.pos_type." + posType.toString().toLowerCase()));
+		return Text.translatable("hudtweaks.options.pos_type.display", I18n.translate("hudtweaks.options.pos_type." + posType.toString().toLowerCase()));
 	}
 
 	public void setType(PosType posType) {

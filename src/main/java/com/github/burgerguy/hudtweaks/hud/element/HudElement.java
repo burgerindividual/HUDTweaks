@@ -10,8 +10,9 @@ import com.google.gson.JsonObject;
 import com.google.gson.annotations.SerializedName;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.Drawable;
+import net.minecraft.text.Text;
 import net.minecraft.util.math.Vec3f;
-import net.minecraft.text.TranslatableText;
+import net.minecraft.text.TranslatableTextContent;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Matrix4f;
 import net.minecraft.util.math.Quaternion;
@@ -277,7 +278,7 @@ public abstract class HudElement extends AbstractElementNode {
 			HTSliderWidget inner = new HTSliderWidget(4, y, sidebar.width - 8, 14, xRelativePos) {
 				@Override
 				protected void updateMessage() {
-					setMessage(new TranslatableText("hudtweaks.options.relative_pos.display", Util.RELATIVE_POS_FORMATTER.format(value)));
+					setMessage(Text.translatable("hudtweaks.options.relative_pos.display", Util.RELATIVE_POS_FORMATTER.format(value)));
 				}
 
 				@Override
@@ -310,7 +311,7 @@ public abstract class HudElement extends AbstractElementNode {
 			HTSliderWidget inner = new HTSliderWidget(4, y, sidebar.width - 8, 14, yRelativePos) {
 				@Override
 				protected void updateMessage() {
-					setMessage(new TranslatableText("hudtweaks.options.relative_pos.display", Util.RELATIVE_POS_FORMATTER.format(value)));
+					setMessage(Text.translatable("hudtweaks.options.relative_pos.display", Util.RELATIVE_POS_FORMATTER.format(value)));
 				}
 
 				@Override
@@ -343,7 +344,7 @@ public abstract class HudElement extends AbstractElementNode {
 			HTSliderWidget inner = new HTSliderWidget(4, y, sidebar.width - 8, 14, xAnchorPos) {
 				@Override
 				protected void updateMessage() {
-					setMessage(new TranslatableText("hudtweaks.options.anchor_pos.display", Util.ANCHOR_POS_FORMATTER.format(value)));
+					setMessage(Text.translatable("hudtweaks.options.anchor_pos.display", Util.ANCHOR_POS_FORMATTER.format(value)));
 				}
 
 				@Override
@@ -376,7 +377,7 @@ public abstract class HudElement extends AbstractElementNode {
 			HTSliderWidget inner = new HTSliderWidget(4, y, sidebar.width - 8, 14, yAnchorPos) {
 				@Override
 				protected void updateMessage() {
-					setMessage(new TranslatableText("hudtweaks.options.anchor_pos.display", Util.ANCHOR_POS_FORMATTER.format(value)));
+					setMessage(Text.translatable("hudtweaks.options.anchor_pos.display", Util.ANCHOR_POS_FORMATTER.format(value)));
 				}
 
 				@Override
@@ -422,8 +423,8 @@ public abstract class HudElement extends AbstractElementNode {
 		}), 14);
 
 		SidebarWidget.DrawableEntry<LabeledFieldWidget<?>> xOffsetField = new SidebarWidget.DrawableEntry<>(y ->
-			new LabeledFieldWidget<>(5, y, sidebar.width - 9, 14, 0xCCFFFFFF, 3, new TranslatableText("hudtweaks.options.offset.display"), (x, width) -> {
-				NumberFieldWidget inner = new NumberFieldWidget(MinecraftClient.getInstance().textRenderer, 43, y, sidebar.width - 47, 14, new TranslatableText("hudtweaks.options.offset.name")) {
+			new LabeledFieldWidget<>(5, y, sidebar.width - 9, 14, 0xCCFFFFFF, 3, Text.translatable("hudtweaks.options.offset.display"), (x, width) -> {
+				NumberFieldWidget inner = new NumberFieldWidget(MinecraftClient.getInstance().textRenderer, 43, y, sidebar.width - 47, 14, Text.translatable("hudtweaks.options.offset.name")) {
 					@Override
 					public void updateValue() {
 						setText(Float.toString(xOffset));
@@ -445,8 +446,8 @@ public abstract class HudElement extends AbstractElementNode {
 			}), 14);
 
 		SidebarWidget.DrawableEntry<LabeledFieldWidget<?>> yOffsetField = new SidebarWidget.DrawableEntry<>(y ->
-			new LabeledFieldWidget<>(5, y, sidebar.width - 9, 14, 0xCCFFFFFF, 3, new TranslatableText("hudtweaks.options.offset.display"), (x, width) -> {
-				NumberFieldWidget inner = new NumberFieldWidget(MinecraftClient.getInstance().textRenderer, x, y, width, 14, new TranslatableText("hudtweaks.options.offset.name")) {
+			new LabeledFieldWidget<>(5, y, sidebar.width - 9, 14, 0xCCFFFFFF, 3, Text.translatable("hudtweaks.options.offset.display"), (x, width) -> {
+				NumberFieldWidget inner = new NumberFieldWidget(MinecraftClient.getInstance().textRenderer, x, y, width, 14, Text.translatable("hudtweaks.options.offset.name")) {
 					@Override
 					public void updateValue() {
 						setText(Float.toString(yOffset));
@@ -469,8 +470,8 @@ public abstract class HudElement extends AbstractElementNode {
 			}), 14);
 
 		SidebarWidget.DrawableEntry<LabeledFieldWidget<?>> xScaleField = new SidebarWidget.DrawableEntry<>(y ->
-			new LabeledFieldWidget<>(5, y, sidebar.width - 9, 14, 0xCCFFFFFF, 3, new TranslatableText("hudtweaks.options.x_scale.display"), (x, width) -> {
-				NumberFieldWidget inner = new NumberFieldWidget(MinecraftClient.getInstance().textRenderer, x, y, width, 14, new TranslatableText("hudtweaks.options.x_scale.name")) {
+			new LabeledFieldWidget<>(5, y, sidebar.width - 9, 14, 0xCCFFFFFF, 3, Text.translatable("hudtweaks.options.x_scale.display"), (x, width) -> {
+				NumberFieldWidget inner = new NumberFieldWidget(MinecraftClient.getInstance().textRenderer, x, y, width, 14, Text.translatable("hudtweaks.options.x_scale.name")) {
 					@Override
 					public void updateValue() {
 						setText(Float.toString(xScale));
@@ -494,8 +495,8 @@ public abstract class HudElement extends AbstractElementNode {
 			}), 14);
 
 		SidebarWidget.DrawableEntry<LabeledFieldWidget<?>> yScaleField = new SidebarWidget.DrawableEntry<>(y ->
-			new LabeledFieldWidget<>(5, y, sidebar.width - 9, 14, 0xCCFFFFFF, 3, new TranslatableText("hudtweaks.options.y_scale.display"), (x, width) -> {
-				NumberFieldWidget inner = new NumberFieldWidget(MinecraftClient.getInstance().textRenderer, x, y, width, 14, new TranslatableText("hudtweaks.options.y_scale.name")) {
+			new LabeledFieldWidget<>(5, y, sidebar.width - 9, 14, 0xCCFFFFFF, 3, Text.translatable("hudtweaks.options.y_scale.display"), (x, width) -> {
+				NumberFieldWidget inner = new NumberFieldWidget(MinecraftClient.getInstance().textRenderer, x, y, width, 14, Text.translatable("hudtweaks.options.y_scale.name")) {
 					@Override
 					public void updateValue() {
 						setText(Float.toString(yScale));
@@ -521,7 +522,7 @@ public abstract class HudElement extends AbstractElementNode {
 
 		int labelHeight = MinecraftClient.getInstance().textRenderer.fontHeight;
 		sidebar.addPadding(4);
-		sidebar.addEntry(new SidebarWidget.DrawableEntry<>(y -> new HTLabelWidget(new TranslatableText("hudtweaks.options.x_pos.display"), 5, y, 0xCCB0B0B0, false), labelHeight));
+		sidebar.addEntry(new SidebarWidget.DrawableEntry<>(y -> new HTLabelWidget(Text.translatable("hudtweaks.options.x_pos.display"), 5, y, 0xCCB0B0B0, false), labelHeight));
 		sidebar.addPadding(3);
 		sidebar.addEntry(xPosTypeButton);
 		sidebar.addPadding(3);
@@ -533,7 +534,7 @@ public abstract class HudElement extends AbstractElementNode {
 		sidebar.addPadding(3);
 		sidebar.addEntry(xOffsetField);
 		sidebar.addPadding(5);
-		sidebar.addEntry(new SidebarWidget.DrawableEntry<>(y -> new HTLabelWidget(new TranslatableText("hudtweaks.options.y_pos.display"), 5, y, 0xCCB0B0B0, false), labelHeight));
+		sidebar.addEntry(new SidebarWidget.DrawableEntry<>(y -> new HTLabelWidget(Text.translatable("hudtweaks.options.y_pos.display"), 5, y, 0xCCB0B0B0, false), labelHeight));
 		sidebar.addPadding(3);
 		sidebar.addEntry(yPosTypeButton);
 		sidebar.addPadding(3);
@@ -545,7 +546,7 @@ public abstract class HudElement extends AbstractElementNode {
 		sidebar.addPadding(3);
 		sidebar.addEntry(yOffsetField);
 		sidebar.addPadding(5);
-		sidebar.addEntry(new SidebarWidget.DrawableEntry<>(y -> new HTLabelWidget(new TranslatableText("hudtweaks.options.scale.display"), 5, y, 0xCCB0B0B0, false), labelHeight));
+		sidebar.addEntry(new SidebarWidget.DrawableEntry<>(y -> new HTLabelWidget(Text.translatable("hudtweaks.options.scale.display"), 5, y, 0xCCB0B0B0, false), labelHeight));
 		sidebar.addPadding(3);
 		sidebar.addEntry(xScaleField);
 		sidebar.addPadding(3);

@@ -10,7 +10,7 @@ import com.google.gson.JsonElement;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.entity.attribute.EntityAttributes;
-import net.minecraft.text.TranslatableText;
+import net.minecraft.text.Text;
 import net.minecraft.util.math.MathHelper;
 
 public class DefaultHealthElement extends HudElement {
@@ -95,11 +95,11 @@ public class DefaultHealthElement extends HudElement {
 		super.fillSidebar(sidebar);
 		sidebar.addPadding(6);
 		sidebar.addEntry(new SidebarWidget.DrawableEntry<>(y -> {
-			HTButtonWidget widget = new HTOverflowButtonWidget(4, y, sidebar.width - 8, 14, new TranslatableText("hudtweaks.options.health.style.display", flipped ? I18n.translate("hudtweaks.options.health.style.flipped.display") : I18n.translate("hudtweaks.options.health.style.normal.display"))) {
+			HTButtonWidget widget = new HTOverflowButtonWidget(4, y, sidebar.width - 8, 14, Text.translatable("hudtweaks.options.health.style.display", flipped ? I18n.translate("hudtweaks.options.health.style.flipped.display") : I18n.translate("hudtweaks.options.health.style.normal.display"))) {
 				@Override
 				public void onPress() {
 					flipped = !flipped;
-					setMessage(new TranslatableText("hudtweaks.options.health.style.display", flipped ? I18n.translate("hudtweaks.options.health.style.flipped.display") : I18n.translate("hudtweaks.options.health.style.normal.display")));
+					setMessage(Text.translatable("hudtweaks.options.health.style.display", flipped ? I18n.translate("hudtweaks.options.health.style.flipped.display") : I18n.translate("hudtweaks.options.health.style.normal.display")));
 					containerNode.setRequiresUpdate();
 				}
 			};

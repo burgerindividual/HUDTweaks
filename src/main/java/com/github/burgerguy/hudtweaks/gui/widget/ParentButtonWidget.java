@@ -5,7 +5,6 @@ import com.github.burgerguy.hudtweaks.hud.HudContainer;
 import com.github.burgerguy.hudtweaks.hud.tree.AbstractContainerNode;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -65,7 +64,7 @@ public class ParentButtonWidget extends HTOverflowButtonWidget {
 
 	private static Text createMessage(AbstractContainerNode node) {
 		// display active name, but store with initial name
-		return new TranslatableText("hudtweaks.options.parent.display", node.getActiveElement().getIdentifier().toDisplayableString());
+		return Text.translatable("hudtweaks.options.parent.display", node.getActiveElement().getIdentifier().toDisplayableString());
 	}
 
 	public void setMessage(AbstractContainerNode node) {

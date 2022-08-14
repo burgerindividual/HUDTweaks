@@ -5,7 +5,7 @@ import com.github.burgerguy.hudtweaks.mixin.InGameHudAccessor;
 import com.github.burgerguy.hudtweaks.util.Util;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
-import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
 import net.minecraft.text.MutableText;
 import net.minecraft.util.Formatting;
 
@@ -19,7 +19,7 @@ public class DefaultTooltipElement extends HudElement {
 	@Override
 	protected float calculateWidth(MinecraftClient client) {
 		ItemStack currentHeldStack = ((InGameHudAccessor) client.inGameHud).getCurrentStack();
-		MutableText stackText = new LiteralText("").append(currentHeldStack.getName()).formatted(currentHeldStack.getRarity().formatting);
+		MutableText stackText = Text.literal("").append(currentHeldStack.getName()).formatted(currentHeldStack.getRarity().formatting);
 		if (currentHeldStack.hasCustomName()) {
 			stackText.formatted(Formatting.ITALIC);
 		}
